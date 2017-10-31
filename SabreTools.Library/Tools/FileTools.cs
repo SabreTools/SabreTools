@@ -1283,7 +1283,7 @@ namespace SabreTools.Library.Tools
 			byte[] sha1 = chd.GetSHA1FromHeader();
 
 			// Set the SHA-1 of the Disk to return
-			datItem.SHA1 = (sha1 == null ? null : BitConverter.ToString(sha1).Replace("-", string.Empty).ToLowerInvariant());
+			datItem.SHA1 = (sha1 == null ? null : Style.ByteArrayToString(sha1));
 
 			return datItem;
 		}
