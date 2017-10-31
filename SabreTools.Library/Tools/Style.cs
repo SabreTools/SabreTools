@@ -938,13 +938,36 @@ namespace SabreTools.Library.Tools
 		/// <summary>
 		/// http://stackoverflow.com/questions/311165/how-do-you-convert-byte-array-to-hexadecimal-string-and-vice-versa
 		/// </summary>
+		public static string ByteArrayToString(byte[] bytes)
+		{
+			try
+			{
+				string hex = BitConverter.ToString(bytes);
+				return hex.Replace("-", string.Empty).ToLowerInvariant();
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+		/// <summary>
+		/// http://stackoverflow.com/questions/311165/how-do-you-convert-byte-array-to-hexadecimal-string-and-vice-versa
+		/// </summary>
 		public static byte[] StringToByteArray(string hex)
 		{
-			int NumberChars = hex.Length;
-			byte[] bytes = new byte[NumberChars / 2];
-			for (int i = 0; i < NumberChars; i += 2)
-				bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
-			return bytes;
+			try
+			{
+				int NumberChars = hex.Length;
+				byte[] bytes = new byte[NumberChars / 2];
+				for (int i = 0; i < NumberChars; i += 2)
+					bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
+				return bytes;
+			}
+			catch
+			{
+				return null;
+			}
 		}
 
 		/// <summary>

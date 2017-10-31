@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 
 using SabreTools.Library.Data;
+using SabreTools.Library.Tools;
 
 namespace SabreTools.Library.Items
 {
@@ -13,12 +15,12 @@ namespace SabreTools.Library.Items
 
 		// Rom information
 		private long _size;
-		private string _crc;
-		private string _md5;
-		private string _sha1;
-		private string _sha256;
-		private string _sha384;
-		private string _sha512;
+		private byte[] _crc; // 8 bytes
+		private byte[] _md5; // 16 bytes
+		private byte[] _sha1; // 20 bytes
+		private byte[] _sha256; // 32 bytes
+		private byte[] _sha384; // 48 bytes
+		private byte[] _sha512; // 64 bytes
 		private string _date;
 		private ItemStatus _itemStatus;
 
@@ -34,33 +36,33 @@ namespace SabreTools.Library.Items
 		}
 		public string CRC
 		{
-			get { return _crc; }
-			set { _crc = value; }
+			get { return Style.ByteArrayToString(_crc); }
+			set { _crc = Style.StringToByteArray(value); }
 		}
 		public string MD5
 		{
-			get { return _md5; }
-			set { _md5 = value; }
+			get { return Style.ByteArrayToString(_md5); }
+			set { _md5 = Style.StringToByteArray(value); }
 		}
 		public string SHA1
 		{
-			get { return _sha1; }
-			set { _sha1 = value; }
+			get { return Style.ByteArrayToString(_sha1); }
+			set { _sha1 = Style.StringToByteArray(value); }
 		}
 		public string SHA256
 		{
-			get { return _sha256; }
-			set { _sha256 = value; }
+			get { return Style.ByteArrayToString(_sha256); }
+			set { _sha256 = Style.StringToByteArray(value); }
 		}
 		public string SHA384
 		{
-			get { return _sha384; }
-			set { _sha384 = value; }
+			get { return Style.ByteArrayToString(_sha384); }
+			set { _sha384 = Style.StringToByteArray(value); }
 		}
 		public string SHA512
 		{
-			get { return _sha512; }
-			set { _sha512 = value; }
+			get { return Style.ByteArrayToString(_sha512); }
+			set { _sha512 = Style.StringToByteArray(value); }
 		}
 		public string Date
 		{
@@ -103,27 +105,27 @@ namespace SabreTools.Library.Items
 			_size = -1;
 			if ((omitFromScan & Hash.CRC) == 0)
 			{
-				_crc = "null";
+				_crc = null;
 			}
 			if ((omitFromScan & Hash.MD5) == 0)
 			{
-				_md5 = "null";
+				_md5 = null;
 			}
 			if ((omitFromScan & Hash.SHA1) == 0)
 			{
-				_sha1 = "null";
+				_sha1 = null;
 			}
 			if ((omitFromScan & Hash.SHA256) == 0)
 			{
-				_sha256 = "null";
+				_sha256 = null;
 			}
 			if ((omitFromScan & Hash.SHA384) == 0)
 			{
-				_sha384 = "null";
+				_sha384 = null;
 			}
 			if ((omitFromScan & Hash.SHA512) == 0)
 			{
-				_sha512 = "null";
+				_sha512 = null;
 			}
 			_itemStatus = ItemStatus.None;
 
@@ -176,12 +178,12 @@ namespace SabreTools.Library.Items
 				Source = this.Source,
 
 				Size = this.Size,
-				CRC = this.CRC,
-				MD5 = this.MD5,
-				SHA1 = this.SHA1,
-				SHA256 = this.SHA256,
-				SHA384 = this.SHA384,
-				SHA512 = this.SHA512,
+				_crc = this._crc,
+				_md5 = this._md5,
+				_sha1 = this._sha1,
+				_sha256 = this._sha256,
+				_sha384 = this._sha384,
+				_sha512 = this._sha512,
 				ItemStatus = this.ItemStatus,
 				Date = this.Date,
 			};
@@ -211,22 +213,22 @@ namespace SabreTools.Library.Items
 			}
 
 			// If we can determine that the roms have no non-empty hashes in common, we return false
-			if ((String.IsNullOrEmpty(_crc) || String.IsNullOrEmpty(newOther.CRC))
-				&& (String.IsNullOrEmpty(_md5) || String.IsNullOrEmpty(newOther.MD5))
-				&& (String.IsNullOrEmpty(_sha1) || String.IsNullOrEmpty(newOther.SHA1))
-				&& (String.IsNullOrEmpty(_sha256) || String.IsNullOrEmpty(newOther.SHA256))
-				&& (String.IsNullOrEmpty(_sha384) || String.IsNullOrEmpty(newOther.SHA384))
-				&& (String.IsNullOrEmpty(_sha512) || String.IsNullOrEmpty(newOther.SHA512)))
+			if ((_crc == null || newOther._crc == null)
+				&& (this._md5 == null || newOther._md5 == null)
+				&& (this._sha1 == null || newOther._sha1 == null)
+				&& (this._sha256 == null || newOther._sha256 == null)
+				&& (this._sha384 == null || newOther._sha384 == null)
+				&& (this._sha512 == null || newOther._sha512 == null))
 			{
 				dupefound = false;
 			}
 			else if ((this.Size == newOther.Size)
-				&& ((String.IsNullOrEmpty(_crc) || String.IsNullOrEmpty(newOther.CRC)) || _crc == newOther.CRC)
-				&& ((String.IsNullOrEmpty(_md5) || String.IsNullOrEmpty(newOther.MD5)) || _md5 == newOther.MD5)
-				&& ((String.IsNullOrEmpty(_sha1) || String.IsNullOrEmpty(newOther.SHA1)) || _sha1 == newOther.SHA1)
-				&& ((String.IsNullOrEmpty(_sha256) || String.IsNullOrEmpty(newOther.SHA256)) || _sha256 == newOther.SHA256)
-				&& ((String.IsNullOrEmpty(_sha384) || String.IsNullOrEmpty(newOther.SHA384)) || _sha384 == newOther.SHA384)
-				&& ((String.IsNullOrEmpty(_sha512) || String.IsNullOrEmpty(newOther.SHA512)) || _sha512 == newOther.SHA512))
+				&& ((this._crc == null || newOther._crc == null) || Enumerable.SequenceEqual(this._crc, newOther._crc))
+				&& ((this._md5 == null || newOther._md5 == null) || Enumerable.SequenceEqual(this._md5, newOther._md5))
+				&& ((this._sha1 == null || newOther._sha1 == null) || Enumerable.SequenceEqual(this._sha1, newOther._sha1))
+				&& ((this._sha256 == null || newOther._sha256 == null) || Enumerable.SequenceEqual(this._sha256, newOther._sha256))
+				&& ((this._sha384 == null || newOther._sha384 == null) || Enumerable.SequenceEqual(this._sha384, newOther._sha384))
+				&& ((this._sha512 == null || newOther._sha512 == null) || Enumerable.SequenceEqual(this._sha512, newOther._sha512)))
 			{
 				dupefound = true;
 			}
