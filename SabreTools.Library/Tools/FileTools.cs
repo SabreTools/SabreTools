@@ -423,10 +423,7 @@ namespace SabreTools.Library.Tools
 
 			// Extract the header as a string for the database
 			byte[] hbin = br.ReadBytes((int)rule.StartOffset);
-			for (int i = 0; i < (int)rule.StartOffset; i++)
-			{
-				hstr += BitConverter.ToString(new byte[] { hbin[i] });
-			}
+			hstr = Style.ByteArrayToString(hbin);
 			br.Dispose();
 
 			// Apply the rule to the file
