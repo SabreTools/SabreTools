@@ -950,12 +950,7 @@ namespace SabreTools.Library.Tools
 				br.Dispose();
 
 				// Convert it to an uppercase string
-				string mstr = string.Empty;
-				for (int i = 0; i < magic.Length; i++)
-				{
-					mstr += BitConverter.ToString(new byte[] { magic[i] });
-				}
-				mstr = mstr.ToUpperInvariant();
+				string mstr = Style.ByteArrayToString(magic).ToUpperInvariant();
 
 				// Now try to match it to a known signature
 				if (mstr.StartsWith(Constants.SevenZipSig))
