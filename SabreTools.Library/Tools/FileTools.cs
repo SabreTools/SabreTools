@@ -720,10 +720,7 @@ namespace SabreTools.Library.Tools
 
 			// Extract the header as a string for the database
 			byte[] hbin = br.ReadBytes((int)rule.StartOffset);
-			for (int i = 0; i < (int)rule.StartOffset; i++)
-			{
-				hstr += BitConverter.ToString(new byte[] { hbin[i] });
-			}
+			hstr = Style.ByteArrayToString(hbin);
 			br.Dispose();
 
 			// Apply the rule to the file
@@ -1199,27 +1196,27 @@ namespace SabreTools.Library.Tools
 				if ((omitFromScan & Hash.MD5) == 0)
 				{
 					md5.TransformFinalBlock(buffer, 0, 0);
-					rom.MD5 = BitConverter.ToString(md5.Hash).Replace("-", "").ToLowerInvariant();
+					rom.MD5 = Style.ByteArrayToString(md5.Hash);
 				}
 				if ((omitFromScan & Hash.SHA1) == 0)
 				{
 					sha1.TransformFinalBlock(buffer, 0, 0);
-					rom.SHA1 = BitConverter.ToString(sha1.Hash).Replace("-", "").ToLowerInvariant();
+					rom.SHA1 = Style.ByteArrayToString(sha1.Hash);
 				}
 				if ((omitFromScan & Hash.SHA256) == 0)
 				{
 					sha256.TransformFinalBlock(buffer, 0, 0);
-					rom.SHA256 = BitConverter.ToString(sha256.Hash).Replace("-", "").ToLowerInvariant();
+					rom.SHA256 = Style.ByteArrayToString(sha256.Hash);
 				}
 				if ((omitFromScan & Hash.SHA384) == 0)
 				{
 					sha384.TransformFinalBlock(buffer, 0, 0);
-					rom.SHA384 = BitConverter.ToString(sha384.Hash).Replace("-", "").ToLowerInvariant();
+					rom.SHA384 = Style.ByteArrayToString(sha384.Hash);
 				}
 				if ((omitFromScan & Hash.SHA512) == 0)
 				{
 					sha512.TransformFinalBlock(buffer, 0, 0);
-					rom.SHA512 = BitConverter.ToString(sha512.Hash).Replace("-", "").ToLowerInvariant();
+					rom.SHA512 = Style.ByteArrayToString(sha512.Hash);
 				}
 				if ((omitFromScan & Hash.xxHash) == 0)
 				{
@@ -1283,7 +1280,7 @@ namespace SabreTools.Library.Tools
 			byte[] sha1 = chd.GetSHA1FromHeader();
 
 			// Set the SHA-1 of the Disk to return
-			datItem.SHA1 = (sha1 == null ? null : BitConverter.ToString(sha1).Replace("-", string.Empty).ToLowerInvariant());
+			datItem.SHA1 = (sha1 == null ? null : Style.ByteArrayToString(sha1));
 
 			return datItem;
 		}
