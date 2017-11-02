@@ -28,27 +28,27 @@ namespace SabreTools.Library.Items
 		// Disk information
 		public string MD5
 		{
-			get { return Style.ByteArrayToString(_md5); }
+			get { return _md5.IsNullOrEmpty() ? null : Style.ByteArrayToString(_md5); }
 			set { _md5 = Style.StringToByteArray(value); }
 		}
 		public string SHA1
 		{
-			get { return Style.ByteArrayToString(_sha1); }
+			get { return _sha1.IsNullOrEmpty() ? null : Style.ByteArrayToString(_sha1); }
 			set { _sha1 = Style.StringToByteArray(value); }
 		}
 		public string SHA256
 		{
-			get { return Style.ByteArrayToString(_sha256); }
+			get { return _sha256.IsNullOrEmpty() ? null : Style.ByteArrayToString(_sha256); }
 			set { _sha256 = Style.StringToByteArray(value); }
 		}
 		public string SHA384
 		{
-			get { return Style.ByteArrayToString(_sha384); }
+			get { return _sha384.IsNullOrEmpty() ? null : Style.ByteArrayToString(_sha384); }
 			set { _sha384 = Style.StringToByteArray(value); }
 		}
 		public string SHA512
 		{
-			get { return Style.ByteArrayToString(_sha512); }
+			get { return _sha512.IsNullOrEmpty() ? null : Style.ByteArrayToString(_sha512); }
 			set { _sha512 = Style.StringToByteArray(value); }
 		}
 		public ItemStatus ItemStatus
@@ -146,19 +146,19 @@ namespace SabreTools.Library.Items
 			}
 
 			// If we can determine that the disks have no non-empty hashes in common, we return false
-			if ((this._md5 == null || newOther._md5 == null)
-				&& (this._sha1 == null || newOther._sha1 == null)
-				&& (this._sha256 == null || newOther._sha256 == null)
-				&& (this._sha384 == null || newOther._sha384 == null)
-				&& (this._sha512 == null || newOther._sha512 == null))
+			if ((this._md5.IsNullOrEmpty() || newOther._md5.IsNullOrEmpty())
+				&& (this._sha1.IsNullOrEmpty() || newOther._sha1.IsNullOrEmpty())
+				&& (this._sha256.IsNullOrEmpty() || newOther._sha256.IsNullOrEmpty())
+				&& (this._sha384.IsNullOrEmpty() || newOther._sha384.IsNullOrEmpty())
+				&& (this._sha512.IsNullOrEmpty() || newOther._sha512.IsNullOrEmpty()))
 			{
 				dupefound = false;
 			}
-			else if (((this._md5 == null || newOther._md5 == null) || Enumerable.SequenceEqual(this._md5, newOther._md5))
-				&& ((this._sha1 == null || newOther._sha1 == null) || Enumerable.SequenceEqual(this._sha1, newOther._sha1))
-				&& ((this._sha256 == null || newOther._sha256 == null) || Enumerable.SequenceEqual(this._sha256, newOther._sha256))
-				&& ((this._sha384 == null || newOther._sha384 == null) || Enumerable.SequenceEqual(this._sha384, newOther._sha384))
-				&& ((this._sha512 == null || newOther._sha512 == null) || Enumerable.SequenceEqual(this._sha512, newOther._sha512)))
+			else if (((this._md5.IsNullOrEmpty() || newOther._md5.IsNullOrEmpty()) || Enumerable.SequenceEqual(this._md5, newOther._md5))
+				&& ((this._sha1.IsNullOrEmpty() || newOther._sha1.IsNullOrEmpty()) || Enumerable.SequenceEqual(this._sha1, newOther._sha1))
+				&& ((this._sha256.IsNullOrEmpty() || newOther._sha256.IsNullOrEmpty()) || Enumerable.SequenceEqual(this._sha256, newOther._sha256))
+				&& ((this._sha384.IsNullOrEmpty() || newOther._sha384.IsNullOrEmpty()) || Enumerable.SequenceEqual(this._sha384, newOther._sha384))
+				&& ((this._sha512.IsNullOrEmpty() || newOther._sha512.IsNullOrEmpty()) || Enumerable.SequenceEqual(this._sha512, newOther._sha512)))
 			{
 				dupefound = true;
 			}
