@@ -338,7 +338,7 @@ namespace SabreTools
 			SplitType splitType, bool chdsAsFiles)
 		{
 			// Get the archive scanning level
-			ArchiveScanLevel asl = ArchiveTools.GetArchiveScanLevelFromNumbers(sevenzip, gz, rar, zip);
+			ArchiveScanLevel asl = FileTools.GetArchiveScanLevelFromNumbers(sevenzip, gz, rar, zip);
 
 			// Get a list of files from the input datfiles
 			datfiles = FileTools.GetOnlyFilesFromInputs(datfiles);
@@ -749,7 +749,7 @@ namespace SabreTools
 			string headerToCheckAgainst, SplitType splitType, bool chdsAsFiles)
 		{
 			// Get the archive scanning level
-			ArchiveScanLevel asl = ArchiveTools.GetArchiveScanLevelFromNumbers(1, 1, 1, 1);
+			ArchiveScanLevel asl = FileTools.GetArchiveScanLevelFromNumbers(1, 1, 1, 1);
 
 			// Get a list of files from the input datfiles
 			datfiles = FileTools.GetOnlyFilesFromInputs(datfiles);
