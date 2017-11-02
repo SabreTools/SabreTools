@@ -216,10 +216,9 @@ namespace SabreTools.Library.FileTypes
 					Rom tempRom = new Rom(gamename, gamename, omitFromScan);
 					BinaryReader br = new BinaryReader(FileTools.TryOpenRead(_filename));
 					br.BaseStream.Seek(-8, SeekOrigin.End);
-					byte[] headercrc = br.ReadBytes(4);
-					tempRom.CRC = Style.ByteArrayToString(headercrc.Reverse().ToArray());
-					byte[] headersize = br.ReadBytes(4);
-					tempRom.Size = BitConverter.ToInt32(headersize.Reverse().ToArray(), 0);
+					byte[] headercrc = br.ReadBytesReverse(4);
+					tempRom.CRC = Style.ByteArrayToString(headercrc);
+					tempRom.Size = br.ReadInt32Reverse();
 					br.Dispose();
 
 					found.Add(tempRom);

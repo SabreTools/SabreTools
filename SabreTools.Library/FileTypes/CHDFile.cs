@@ -2,6 +2,7 @@
 using System.Linq;
 
 using SabreTools.Library.Data;
+using SabreTools.Library.Tools;
 
 #if MONO
 using System.IO;
@@ -132,8 +133,8 @@ namespace SabreTools.Library.FileTypes
 			}
 
 			// Get the header size and version
-			m_headersize = ReadUInt32();
-			m_version = ReadUInt32();
+			m_headersize = m_br.ReadUInt32Reverse();
+			m_version = m_br.ReadUInt32Reverse();
 
 			// If we have an invalid combination of size and version
 			if ((m_version == 3 && m_headersize != Constants.CHD_V3_HEADER_SIZE)
@@ -198,7 +199,7 @@ namespace SabreTools.Library.FileTypes
 			m_mapentrybytes = 16;
 
 			// Read the CHD flags
-			uint flags = ReadUInt32();
+			uint flags = m_br.ReadUInt32Reverse();
 
 			// Determine compression
 			switch (m_br.ReadUInt32())
@@ -212,12 +213,12 @@ namespace SabreTools.Library.FileTypes
 
 			m_compression[1] = m_compression[2] = m_compression[3] = CHDCodecType.CHD_CODEC_NONE;
 
-			m_hunkcount = ReadUInt32();
-			m_logicalbytes = ReadUInt64();
-			m_metaoffset = ReadUInt32();
+			m_hunkcount = m_br.ReadUInt32Reverse();
+			m_logicalbytes = m_br.ReadUInt64Reverse();
+			m_metaoffset = m_br.ReadUInt32Reverse();
 
 			m_br.BaseStream.Seek(76, SeekOrigin.Begin);
-			m_hunkbytes = ReadUInt32();
+			m_hunkbytes = m_br.ReadUInt32Reverse();
 
 			m_br.BaseStream.Seek(Constants.CHDv3SHA1Offset, SeekOrigin.Begin);
 			sha1 = m_br.ReadBytes(20);
@@ -246,7 +247,7 @@ namespace SabreTools.Library.FileTypes
 			m_mapentrybytes = 16;
 
 			// Read the CHD flags
-			uint flags = ReadUInt32();
+			uint flags = m_br.ReadUInt32Reverse();
 
 			// Determine compression
 			switch (m_br.ReadUInt32())
@@ -260,12 +261,12 @@ namespace SabreTools.Library.FileTypes
 
 			m_compression[1] = m_compression[2] = m_compression[3] = CHDCodecType.CHD_CODEC_NONE;
 
-			m_hunkcount = ReadUInt32();
-			m_logicalbytes = ReadUInt64();
-			m_metaoffset = ReadUInt32();
+			m_hunkcount = m_br.ReadUInt32Reverse();
+			m_logicalbytes = m_br.ReadUInt64Reverse();
+			m_metaoffset = m_br.ReadUInt32Reverse();
 
 			m_br.BaseStream.Seek(44, SeekOrigin.Begin);
-			m_hunkbytes = ReadUInt32();
+			m_hunkbytes = m_br.ReadUInt32Reverse();
 
 			m_br.BaseStream.Seek(Constants.CHDv4SHA1Offset, SeekOrigin.Begin);
 			sha1 = m_br.ReadBytes(20);
@@ -289,17 +290,17 @@ namespace SabreTools.Library.FileTypes
 			byte[] sha1 = new byte[20];
 
 			// Determine compression
-			m_compression[0] = (CHDCodecType)ReadUInt32();
-			m_compression[1] = (CHDCodecType)ReadUInt32();
-			m_compression[2] = (CHDCodecType)ReadUInt32();
-			m_compression[3] = (CHDCodecType)ReadUInt32();
+			m_compression[0] = (CHDCodecType)m_br.ReadUInt32Reverse();
+			m_compression[1] = (CHDCodecType)m_br.ReadUInt32Reverse();
+			m_compression[2] = (CHDCodecType)m_br.ReadUInt32Reverse();
+			m_compression[3] = (CHDCodecType)m_br.ReadUInt32Reverse();
 
-			m_logicalbytes = ReadUInt64();
-			m_mapoffset = ReadUInt64();
-			m_metaoffset = ReadUInt64();
-			m_hunkbytes = ReadUInt32();
+			m_logicalbytes = m_br.ReadUInt64Reverse();
+			m_mapoffset = m_br.ReadUInt64Reverse();
+			m_metaoffset = m_br.ReadUInt64Reverse();
+			m_hunkbytes = m_br.ReadUInt32Reverse();
 			m_hunkcount = (m_logicalbytes + m_hunkbytes - 1) / m_hunkbytes;
-			m_unitbytes = ReadUInt32();
+			m_unitbytes = m_br.ReadUInt32Reverse();
 			m_unitcount = (m_logicalbytes + m_unitbytes - 1) / m_unitbytes;
 
 			// m_allow_writes = !compressed();
@@ -310,26 +311,6 @@ namespace SabreTools.Library.FileTypes
 			m_br.BaseStream.Seek(Constants.CHDv5SHA1Offset, SeekOrigin.Begin);
 			sha1 = m_br.ReadBytes(20);
 			return sha1;
-		}
-
-		#endregion
-
-		#region Helpers
-
-		/// <summary>
-		/// Read a proper UInt32 from the stream
-		/// </summary>
-		private uint ReadUInt32()
-		{
-			return BitConverter.ToUInt32(m_br.ReadBytes(4).Reverse().ToArray(), 0);
-		}
-
-		/// <summary>
-		/// Read a proper UInt64 from the stream
-		/// </summary>
-		private ulong ReadUInt64()
-		{
-			return BitConverter.ToUInt64(m_br.ReadBytes(8).Reverse().ToArray(), 0);
 		}
 
 		#endregion
