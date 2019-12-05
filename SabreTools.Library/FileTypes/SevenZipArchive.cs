@@ -18,18 +18,16 @@ using MemoryStream = System.IO.MemoryStream;
 using SeekOrigin = System.IO.SeekOrigin;
 using Stream = System.IO.Stream;
 #endif
+using Compress;
+using Compress.SevenZip;
 using Compress.ZipFile;
-using SevenZip; // TODO: Remove this when 7zip write is implemented in SharpCompress
-using SharpCompress.Archives;
-using SharpCompress.Archives.SevenZip;
-using SharpCompress.Readers;
+using NaturalSort;
 
 namespace SabreTools.Library.FileTypes
 {
     /// <summary>
     /// Represents a Torrent7zip archive for reading and writing
     /// </summary>
-    /// TODO: Torrent 7-zip: https://sourceforge.net/p/t7z/code/HEAD/tree/
     public class SevenZipArchive : BaseArchive
     {
         #region Constructors
@@ -74,13 +72,62 @@ namespace SabreTools.Library.FileTypes
                 Directory.CreateDirectory(outDir);
 
                 // Extract all files to the temp directory
-                SharpCompress.Archives.SevenZip.SevenZipArchive sza = SharpCompress.Archives.SevenZip.SevenZipArchive.Open(Utilities.TryOpenRead(this.Filename));
-                foreach (SevenZipArchiveEntry entry in sza.Entries)
+                SevenZ zf = new SevenZ();
+                ZipReturn zr = zf.ZipFileOpen(this.Filename, -1, true);
+                if (zr != ZipReturn.ZipGood)
                 {
-                    entry.WriteToDirectory(outDir, new SharpCompress.Common.ExtractionOptions { PreserveFileTime = true, ExtractFullPath = true, Overwrite = true });
+                    throw new Exception(ZipFile.ZipErrorMessageText(zr));
                 }
+
+                for (int i = 0; i < zf.LocalFilesCount() && zr == ZipReturn.ZipGood; i++)
+                {
+                    // Open the read stream
+                    zr = zf.ZipFileOpenReadStream(i, out Stream readStream, out ulong streamsize);
+
+                    // Create the rest of the path, if needed
+                    if (!String.IsNullOrWhiteSpace(Path.GetDirectoryName(zf.Filename(i))))
+                    {
+                        Directory.CreateDirectory(Path.Combine(outDir, Path.GetDirectoryName(zf.Filename(i))));
+                    }
+
+                    // If the entry ends with a directory separator, continue to the next item, if any
+                    if (zf.Filename(i).EndsWith(Path.DirectorySeparatorChar.ToString())
+                        || zf.Filename(i).EndsWith(Path.AltDirectorySeparatorChar.ToString())
+                        || zf.Filename(i).EndsWith(Path.PathSeparator.ToString()))
+                    {
+                        zf.ZipFileCloseReadStream();
+                        continue;
+                    }
+
+                    FileStream writeStream = Utilities.TryCreate(Path.Combine(outDir, zf.Filename(i)));
+
+                    // If the stream is smaller than the buffer, just run one loop through to avoid issues
+                    if (streamsize < _bufferSize)
+                    {
+                        byte[] ibuffer = new byte[streamsize];
+                        int ilen = readStream.Read(ibuffer, 0, (int)streamsize);
+                        writeStream.Write(ibuffer, 0, ilen);
+                        writeStream.Flush();
+                    }
+                    // Otherwise, we do the normal loop
+                    else
+                    {
+                        int realBufferSize = (streamsize < _bufferSize ? (int)streamsize : _bufferSize);
+                        byte[] ibuffer = new byte[realBufferSize];
+                        int ilen;
+                        while ((ilen = readStream.Read(ibuffer, 0, realBufferSize)) > 0)
+                        {
+                            writeStream.Write(ibuffer, 0, ilen);
+                            writeStream.Flush();
+                        }
+                    }
+
+                    zr = zf.ZipFileCloseReadStream();
+                    writeStream.Dispose();
+                }
+
+                zf.ZipFileClose();
                 encounteredErrors = false;
-                sza.Dispose();
             }
             catch (EndOfStreamException)
             {
@@ -158,18 +205,52 @@ namespace SabreTools.Library.FileTypes
 
             try
             {
-                SharpCompress.Archives.SevenZip.SevenZipArchive sza = SharpCompress.Archives.SevenZip.SevenZipArchive.Open(this.Filename, new ReaderOptions { LeaveStreamOpen = false, });
-                foreach (SevenZipArchiveEntry entry in sza.Entries)
+                SevenZ zf = new SevenZ();
+                ZipReturn zr = zf.ZipFileOpen(this.Filename, -1, true);
+                if (zr != ZipReturn.ZipGood)
                 {
-                    if (entry != null && !entry.IsDirectory && entry.Key.Contains(entryName))
+                    throw new Exception(ZipFile.ZipErrorMessageText(zr));
+                }
+
+                for (int i = 0; i < zf.LocalFilesCount() && zr == ZipReturn.ZipGood; i++)
+                {
+                    if (zf.Filename(i).Contains(entryName))
                     {
-                        // Write the file out
-                        realEntry = entry.Key;
-                        entry.WriteTo(ms);
-                        break;
+                        // Open the read stream
+                        realEntry = zf.Filename(i);
+                        zr = zf.ZipFileOpenReadStream(i, out Stream readStream, out ulong streamsize);
+
+                        // If the stream is smaller than the buffer, just run one loop through to avoid issues
+                        if (streamsize < _bufferSize)
+                        {
+                            byte[] ibuffer = new byte[streamsize];
+                            int ilen = readStream.Read(ibuffer, 0, (int)streamsize);
+                            ms.Write(ibuffer, 0, ilen);
+                            ms.Flush();
+                        }
+                        // Otherwise, we do the normal loop
+                        else
+                        {
+                            byte[] ibuffer = new byte[_bufferSize];
+                            int ilen;
+                            while (streamsize > _bufferSize)
+                            {
+                                ilen = readStream.Read(ibuffer, 0, _bufferSize);
+                                ms.Write(ibuffer, 0, ilen);
+                                ms.Flush();
+                                streamsize -= _bufferSize;
+                            }
+
+                            ilen = readStream.Read(ibuffer, 0, (int)streamsize);
+                            ms.Write(ibuffer, 0, ilen);
+                            ms.Flush();
+                        }
+
+                        zr = zf.ZipFileCloseReadStream();
                     }
                 }
-                sza.Dispose();
+
+                zf.ZipFileClose();
             }
             catch (Exception ex)
             {
@@ -199,18 +280,47 @@ namespace SabreTools.Library.FileTypes
 
             try
             {
-                SharpCompress.Archives.SevenZip.SevenZipArchive sza = SharpCompress.Archives.SevenZip.SevenZipArchive.Open(Utilities.TryOpenRead(this.Filename));
-                foreach (SevenZipArchiveEntry entry in sza.Entries.Where(e => e != null && !e.IsDirectory))
+                SevenZ zf = new SevenZ();
+                ZipReturn zr = zf.ZipFileOpen(this.Filename, -1, true);
+                if (zr != ZipReturn.ZipGood)
                 {
+                    throw new Exception(ZipFile.ZipErrorMessageText(zr));
+                }
+
+                for (int i = 0; i < zf.LocalFilesCount(); i++)
+                {
+                    // Open the read stream
+                    zr = zf.ZipFileOpenReadStream(i, out Stream readStream, out ulong streamsize);
+
+                    // If we get a read error, log it and continue
+                    if (zr != ZipReturn.ZipGood)
+                    {
+                        Globals.Logger.Warning("An error occurred while reading archive {0}: Zip Error - {1}", this.Filename, zr);
+                        zr = zf.ZipFileCloseReadStream();
+                        continue;
+                    }
+
+                    // If the entry ends with a directory separator, continue to the next item, if any
+                    if (zf.Filename(i).EndsWith(Path.DirectorySeparatorChar.ToString())
+                        || zf.Filename(i).EndsWith(Path.AltDirectorySeparatorChar.ToString())
+                        || zf.Filename(i).EndsWith(Path.PathSeparator.ToString()))
+                    {
+                        zr = zf.ZipFileCloseReadStream();
+                        continue;
+                    }
+
                     // If secure hashes are disabled, do a quickscan
                     if (omitFromScan == Hash.SecureHashes)
                     {
+                        string newname = zf.Filename(i);
+                        long newsize = (long)zf.UncompressedSize(i);
+                        byte[] newcrc = zf.CRC32(i);
+
                         found.Add(new BaseFile
                         {
-                            Filename = entry.Key,
-                            Size = entry.Size,
-                            CRC = BitConverter.GetBytes(entry.Crc),
-                            Date = (date && entry.LastModifiedTime != null ? entry.LastModifiedTime?.ToString("yyyy/MM/dd hh:mm:ss") : null),
+                            Filename = newname,
+                            Size = newsize,
+                            CRC = newcrc,
 
                             Parent = gamename,
                         });
@@ -218,18 +328,16 @@ namespace SabreTools.Library.FileTypes
                     // Otherwise, use the stream directly
                     else
                     {
-                        Stream entryStream = entry.OpenEntryStream();
-                        BaseFile sevenZipEntryRom = Utilities.GetStreamInfo(entryStream, entry.Size, omitFromScan: omitFromScan);
-                        sevenZipEntryRom.Filename = entry.Key;
-                        sevenZipEntryRom.Parent = gamename;
-                        sevenZipEntryRom.Date = (date && entry.LastModifiedTime != null ? entry.LastModifiedTime?.ToString("yyyy/MM/dd hh:mm:ss") : null);
-                        found.Add(sevenZipEntryRom);
-                        entryStream.Dispose();
+                        BaseFile zipEntryRom = Utilities.GetStreamInfo(readStream, (long)zf.UncompressedSize(i), omitFromScan: omitFromScan, keepReadOpen: true);
+                        zipEntryRom.Filename = zf.Filename(i);
+                        zipEntryRom.Parent = gamename;
+                        found.Add(zipEntryRom);
                     }
                 }
 
                 // Dispose of the archive
-                sza.Dispose();
+                zr = zf.ZipFileCloseReadStream();
+                zf.ZipFileClose();
             }
             catch (Exception ex)
             {
@@ -251,24 +359,36 @@ namespace SabreTools.Library.FileTypes
 
             try
             {
-                SharpCompress.Archives.SevenZip.SevenZipArchive sza = SharpCompress.Archives.SevenZip.SevenZipArchive.Open(this.Filename, new ReaderOptions { LeaveStreamOpen = false });
-                List<SevenZipArchiveEntry> sevenZipEntries = sza.Entries.OrderBy(e => e.Key, new NaturalSort.NaturalReversedComparer()).ToList();
-                string lastSevenZipEntry = null;
-                foreach (SevenZipArchiveEntry entry in sevenZipEntries)
+                SevenZ zf = new SevenZ();
+                ZipReturn zr = zf.ZipFileOpen(this.Filename, -1, true);
+                if (zr != ZipReturn.ZipGood)
                 {
-                    if (entry != null)
+                    throw new Exception(ZipFile.ZipErrorMessageText(zr));
+                }
+
+                List<(string, bool)> zipEntries = new List<(string, bool)>();
+                for (int i = 0; i < zf.LocalFilesCount(); i++)
+                {
+                    zipEntries.Add((zf.Filename(i), zf.IsDirectory(i)));
+                }
+
+                zipEntries = zipEntries.OrderBy(p => p.Item1, new NaturalReversedComparer()).ToList();
+                string lastZipEntry = null;
+                foreach ((string, bool) entry in zipEntries)
+                {
+                    // If the current is a superset of last, we skip it
+                    if (lastZipEntry != null && lastZipEntry.StartsWith(entry.Item1))
                     {
-                        // If the current is a superset of last, we skip it
-                        if (lastSevenZipEntry != null && lastSevenZipEntry.StartsWith(entry.Key))
+                        // No-op
+                    }
+                    // If the entry is a directory, we add it
+                    else
+                    {
+                        if (entry.Item2)
                         {
-                            // No-op
+                            empties.Add(entry.Item1);
                         }
-                        // If the entry is a directory, we add it
-                        else if (entry.IsDirectory)
-                        {
-                            empties.Add(entry.Key);
-                            lastSevenZipEntry = entry.Key;
-                        }
+                        lastZipEntry = entry.Item1;
                     }
                 }
             }
@@ -283,43 +403,16 @@ namespace SabreTools.Library.FileTypes
         /// <summary>
         /// Check whether the input file is a standardized format
         /// </summary>
-        /// TODO: Finish reading T7z information
         public override bool IsTorrent()
         {
-            bool ist7z = false;
-
-            if (File.Exists(this.Filename))
+            SevenZ zf = new SevenZ();
+            ZipReturn zr = zf.ZipFileOpen(this.Filename, -1, true);
+            if (zr != ZipReturn.ZipGood)
             {
-                try
-                {
-                    Stream fread = Utilities.TryOpenRead(this.Filename);
-                    uint ar, offs = 0;
-                    fread.Seek(0, SeekOrigin.Begin);
-                    byte[] buffer = new byte[128];
-                    ar = (uint)fread.Read(buffer, 0, 4 + Constants.Torrent7ZipSignature.Length + 4);
-                    if (ar < (4 + Constants.Torrent7ZipSignature.Length + 4))
-                    {
-                        if (ar >= Constants.Torrent7ZipSignature.Length + 4)
-                        {
-                            ar -= (uint)(Constants.Torrent7ZipSignature.Length + 4);
-                        }
-                        if (ar <= Constants.Torrent7ZipHeader.Length)
-                        {
-                            ar = (uint)Constants.Torrent7ZipHeader.Length;
-                        }
-                        // memset(buffer+offs+ar,0,crcsz-ar)
-                    }
-
-                    fread.Dispose();
-                }
-                catch
-                {
-                    Globals.Logger.Warning("File '{0}' could not be opened", this.Filename);
-                    ist7z = false;
-                }
+                throw new Exception(ZipFile.ZipErrorMessageText(zr));
             }
 
-            return ist7z;
+            return zf.ZipStatus == ZipStatus.Trrnt7Zip;
         }
 
         #endregion
@@ -371,122 +464,155 @@ namespace SabreTools.Library.FileTypes
             inputStream.Seek(0, SeekOrigin.Begin);
 
             // Get the output archive name from the first rebuild rom
-            string archiveFileName = Path.Combine(outDir, Utilities.RemovePathUnsafeCharacters(rom.MachineName) + (rom.MachineName.EndsWith(".7z") ? "" : ".7z"));
+            string archiveFileName = Path.Combine(outDir, Utilities.RemovePathUnsafeCharacters(rom.MachineName) + (rom.MachineName.EndsWith(".zip") ? "" : ".zip"));
 
             // Set internal variables
-            SevenZipBase.SetLibraryPath("7za.dll");
-            SevenZipExtractor oldZipFile = null;
-            SevenZipCompressor zipFile;
+            Stream writeStream = null;
+            SevenZ oldZipFile = new SevenZ();
+            SevenZ zipFile = new SevenZ();
+            ZipReturn zipReturn = ZipReturn.ZipGood;
 
             try
             {
                 // If the full output path doesn't exist, create it
-                if (!Directory.Exists(Path.GetDirectoryName(tempFile)))
+                if (!Directory.Exists(Path.GetDirectoryName(archiveFileName)))
                 {
-                    Directory.CreateDirectory(Path.GetDirectoryName(tempFile));
+                    Directory.CreateDirectory(Path.GetDirectoryName(archiveFileName));
                 }
 
                 // If the archive doesn't exist, create it and put the single file
                 if (!File.Exists(archiveFileName))
                 {
-                    zipFile = new SevenZipCompressor()
-                    {
-                        ArchiveFormat = OutArchiveFormat.SevenZip,
-                        CompressionLevel = CompressionLevel.Normal,
-                    };
+                    inputStream.Seek(0, SeekOrigin.Begin);
+                    zipReturn = zipFile.ZipFileCreate(tempFile);
 
-                    // Create the temp directory
-                    string tempPath = Path.Combine(outDir, Guid.NewGuid().ToString());
-                    if (!Directory.Exists(tempPath))
+                    // Open the input file for reading
+                    ulong istreamSize = (ulong)(inputStream.Length);
+
+                    DateTime dt = DateTime.Now;
+                    if (date && !String.IsNullOrWhiteSpace(rom.Date) && DateTime.TryParse(rom.Date.Replace('\\', '/'), out dt))
                     {
-                        Directory.CreateDirectory(tempPath);
+                        uint msDosDateTime = Utilities.ConvertDateTimeToMsDosTimeFormat(dt);
+                        zipFile.ZipFileOpenWriteStream(false, false, rom.Name.Replace('\\', '/'), istreamSize, 0, out writeStream);
+                    }
+                    else
+                    {
+                        zipFile.ZipFileOpenWriteStream(false, true, rom.Name.Replace('\\', '/'), istreamSize, 0, out writeStream);
                     }
 
-                    // Create a stream dictionary
-                    Dictionary<string, Stream> dict = new Dictionary<string, Stream>();
-                    dict.Add(rom.Name, inputStream);
-
-                    // Now add the stream
-                    zipFile.CompressStreamDictionary(dict, tempFile);
+                    // Copy the input stream to the output
+                    byte[] ibuffer = new byte[_bufferSize];
+                    int ilen;
+                    while ((ilen = inputStream.Read(ibuffer, 0, _bufferSize)) > 0)
+                    {
+                        writeStream.Write(ibuffer, 0, ilen);
+                        writeStream.Flush();
+                    }
+                    inputStream.Dispose();
+                    zipFile.ZipFileCloseWriteStream(Utilities.StringToByteArray(rom.CRC));
                 }
 
                 // Otherwise, sort the input files and write out in the correct order
                 else
                 {
                     // Open the old archive for reading
-                    using (oldZipFile = new SevenZipExtractor(archiveFileName))
+                    oldZipFile.ZipFileOpen(archiveFileName, new FileInfo(archiveFileName).LastWriteTime.Ticks, true);
+
+                    // Map all inputs to index
+                    Dictionary<string, int> inputIndexMap = new Dictionary<string, int>();
+                    var oldZipFileContents = new List<string>();
+                    for (int i = 0; i < oldZipFile.LocalFilesCount(); i++)
                     {
-                        // Map all inputs to index
-                        Dictionary<string, int> inputIndexMap = new Dictionary<string, int>();
+                        oldZipFileContents.Add(oldZipFile.Filename(i));
+                    }
 
-                        // If the old one doesn't contain the new file, then add it
-                        if (!oldZipFile.ArchiveFileNames.Contains(rom.Name.Replace('\\', '/')))
+                    // If the old one doesn't contain the new file, then add it
+                    if (!oldZipFileContents.Contains(rom.Name.Replace('\\', '/')))
+                    {
+                        inputIndexMap.Add(rom.Name.Replace('\\', '/'), -1);
+                    }
+
+                    // Then add all of the old entries to it too
+                    for (int i = 0; i < oldZipFile.LocalFilesCount(); i++)
+                    {
+                        inputIndexMap.Add(oldZipFile.Filename(i), i);
+                    }
+
+                    // If the number of entries is the same as the old archive, skip out
+                    if (inputIndexMap.Keys.Count <= oldZipFile.LocalFilesCount())
+                    {
+                        success = true;
+                        return success;
+                    }
+
+                    // Otherwise, process the old zipfile
+                    zipFile.ZipFileCreate(tempFile);
+
+                    // Get the order for the entries with the new file
+                    List<string> keys = inputIndexMap.Keys.ToList();
+                    keys.Sort(ZipFile.TrrntZipStringCompare);
+
+                    // Copy over all files to the new archive
+                    foreach (string key in keys)
+                    {
+                        // Get the index mapped to the key
+                        int index = inputIndexMap[key];
+
+                        // If we have the input file, add it now
+                        if (index < 0)
                         {
-                            inputIndexMap.Add(rom.Name.Replace('\\', '/'), -1);
-                        }
+                            // Open the input file for reading
+                            ulong istreamSize = (ulong)(inputStream.Length);
 
-                        // Then add all of the old entries to it too
-                        for (int i = 0; i < oldZipFile.FilesCount; i++)
-                        {
-                            inputIndexMap.Add(oldZipFile.ArchiveFileNames[i], i);
-                        }
-
-                        // If the number of entries is the same as the old archive, skip out
-                        if (inputIndexMap.Keys.Count <= oldZipFile.FilesCount)
-                        {
-                            success = true;
-                            return success;
-                        }
-
-                        // Otherwise, process the old zipfile
-                        zipFile = new SevenZipCompressor()
-                        {
-                            ArchiveFormat = OutArchiveFormat.SevenZip,
-                            CompressionLevel = CompressionLevel.Normal,
-                        };
-
-                        // Get the order for the entries with the new file
-                        List<string> keys = inputIndexMap.Keys.ToList();
-                        keys.Sort(ZipFile.TrrntZipStringCompare);
-
-                        // Copy over all files to the new archive
-                        foreach (string key in keys)
-                        {
-                            // Get the index mapped to the key
-                            int index = inputIndexMap[key];
-
-                            // If we have the input file, add it now
-                            if (index < 0)
+                            DateTime dt = DateTime.Now;
+                            if (date && !String.IsNullOrWhiteSpace(rom.Date) && DateTime.TryParse(rom.Date.Replace('\\', '/'), out dt))
                             {
-                                // Create a stream dictionary
-                                Dictionary<string, Stream> dict = new Dictionary<string, Stream>();
-                                dict.Add(rom.Name, inputStream);
-
-                                // Now add the stream
-                                zipFile.CompressStreamDictionary(dict, tempFile);
+                                uint msDosDateTime = Utilities.ConvertDateTimeToMsDosTimeFormat(dt);
+                                zipFile.ZipFileOpenWriteStream(false, false, rom.Name.Replace('\\', '/'), istreamSize, 0, out writeStream);
                             }
-
-                            // Otherwise, copy the file from the old archive
                             else
                             {
-                                Stream oldZipFileEntryStream = new MemoryStream();
-                                oldZipFile.ExtractFile(index, oldZipFileEntryStream);
-                                oldZipFileEntryStream.Seek(0, SeekOrigin.Begin);
-
-                                // Create a stream dictionary
-                                Dictionary<string, Stream> dict = new Dictionary<string, Stream>();
-                                dict.Add(oldZipFile.ArchiveFileNames[index], oldZipFileEntryStream);
-
-                                // Now add the stream
-                                zipFile.CompressStreamDictionary(dict, tempFile);
-                                oldZipFileEntryStream.Dispose();
+                                zipFile.ZipFileOpenWriteStream(false, true, rom.Name.Replace('\\', '/'), istreamSize, 0, out writeStream);
                             }
 
-                            // After the first file, make sure we're in append mode
-                            zipFile.CompressionMode = CompressionMode.Append;
+                            // Copy the input stream to the output
+                            byte[] ibuffer = new byte[_bufferSize];
+                            int ilen;
+                            while ((ilen = inputStream.Read(ibuffer, 0, _bufferSize)) > 0)
+                            {
+                                writeStream.Write(ibuffer, 0, ilen);
+                                writeStream.Flush();
+                            }
+
+                            inputStream.Dispose();
+                            zipFile.ZipFileCloseWriteStream(Utilities.StringToByteArray(rom.CRC));
+                        }
+
+                        // Otherwise, copy the file from the old archive
+                        else
+                        {
+                            // Instantiate the streams
+                            oldZipFile.ZipFileOpenReadStream(index, out Stream zreadStream, out ulong istreamSize);
+                            zipFile.ZipFileOpenWriteStream(false, true, oldZipFile.Filename(index), istreamSize, 0, out writeStream);
+
+                            // Copy the input stream to the output
+                            byte[] ibuffer = new byte[_bufferSize];
+                            int ilen;
+                            while ((ilen = zreadStream.Read(ibuffer, 0, _bufferSize)) > 0)
+                            {
+                                writeStream.Write(ibuffer, 0, ilen);
+                                writeStream.Flush();
+                            }
+
+                            oldZipFile.ZipFileCloseReadStream();
+                            zipFile.ZipFileCloseWriteStream(oldZipFile.CRC32(index));
                         }
                     }
                 }
+
+                // Close the output zip file
+                zipFile.ZipFileClose();
+                oldZipFile.ZipFileClose();
 
                 success = true;
             }
@@ -506,33 +632,6 @@ namespace SabreTools.Library.FileTypes
                 Utilities.TryDeleteFile(archiveFileName);
             }
             File.Move(tempFile, archiveFileName);
-
-            // Now make the file T7Z
-            // TODO: Add ACTUAL T7Z compatible code
-
-            BinaryWriter bw = new BinaryWriter(Utilities.TryOpenReadWrite(archiveFileName));
-            bw.Seek(0, SeekOrigin.Begin);
-            bw.Write(Constants.Torrent7ZipHeader);
-            bw.Seek(0, SeekOrigin.End);
-
-            using (oldZipFile = new SevenZipExtractor(Utilities.TryOpenReadWrite(archiveFileName)))
-            {
-
-                // Get the correct signature to use (Default 0, Unicode 1, SingleFile 2, StripFileNames 4)
-                byte[] tempsig = Constants.Torrent7ZipSignature;
-                if (oldZipFile.FilesCount > 1)
-                {
-                    tempsig[16] = 0x2;
-                }
-                else
-                {
-                    tempsig[16] = 0;
-                }
-
-                bw.Write(tempsig);
-                bw.Flush();
-                bw.Dispose();
-            }
 
             return true;
         }
@@ -573,12 +672,13 @@ namespace SabreTools.Library.FileTypes
             }
 
             // Get the output archive name from the first rebuild rom
-            string archiveFileName = Path.Combine(outDir, Utilities.RemovePathUnsafeCharacters(roms[0].MachineName) + (roms[0].MachineName.EndsWith(".7z") ? "" : ".7z"));
+            string archiveFileName = Path.Combine(outDir, Utilities.RemovePathUnsafeCharacters(roms[0].MachineName) + (roms[0].MachineName.EndsWith(".zip") ? "" : ".zip"));
 
             // Set internal variables
-            SevenZipBase.SetLibraryPath("7za.dll");
-            SevenZipExtractor oldZipFile;
-            SevenZipCompressor zipFile;
+            Stream writeStream = null;
+            SevenZ oldZipFile = new SevenZ();
+            SevenZ zipFile = new SevenZ();
+            ZipReturn zipReturn = ZipReturn.ZipGood;
 
             try
             {
@@ -591,11 +691,7 @@ namespace SabreTools.Library.FileTypes
                 // If the archive doesn't exist, create it and put the single file
                 if (!File.Exists(archiveFileName))
                 {
-                    zipFile = new SevenZipCompressor()
-                    {
-                        ArchiveFormat = OutArchiveFormat.SevenZip,
-                        CompressionLevel = CompressionLevel.Normal,
-                    };
+                    zipReturn = zipFile.ZipFileCreate(tempFile);
 
                     // Map all inputs to index
                     Dictionary<string, int> inputIndexMap = new Dictionary<string, int>();
@@ -608,113 +704,146 @@ namespace SabreTools.Library.FileTypes
                     List<string> keys = inputIndexMap.Keys.ToList();
                     keys.Sort(ZipFile.TrrntZipStringCompare);
 
-                    // Create the temp directory
-                    string tempPath = Path.Combine(outDir, Guid.NewGuid().ToString());
-                    if (!Directory.Exists(tempPath))
-                    {
-                        Directory.CreateDirectory(tempPath);
-                    }
-
                     // Now add all of the files in order
                     foreach (string key in keys)
                     {
-                        string newkey = Path.Combine(tempPath, key);
+                        // Get the index mapped to the key
+                        int index = inputIndexMap[key];
 
-                        File.Move(inputFiles[inputIndexMap[key]], newkey);
-                        zipFile.CompressFiles(tempFile, newkey);
-                        File.Move(newkey, inputFiles[inputIndexMap[key]]);
+                        // Open the input file for reading
+                        Stream freadStream = Utilities.TryOpenRead(inputFiles[index]);
+                        ulong istreamSize = (ulong)(new FileInfo(inputFiles[index]).Length);
 
-                        // After the first file, make sure we're in append mode
-                        zipFile.CompressionMode = CompressionMode.Append;
+                        DateTime dt = DateTime.Now;
+                        if (date && !String.IsNullOrWhiteSpace(roms[index].Date) && DateTime.TryParse(roms[index].Date.Replace('\\', '/'), out dt))
+                        {
+                            uint msDosDateTime = Utilities.ConvertDateTimeToMsDosTimeFormat(dt);
+                            zipFile.ZipFileOpenWriteStream(false, false, roms[index].Name.Replace('\\', '/'), istreamSize, 0, out writeStream);
+                        }
+                        else
+                        {
+                            zipFile.ZipFileOpenWriteStream(false, true, roms[index].Name.Replace('\\', '/'), istreamSize, 0, out writeStream);
+                        }
+
+                        // Copy the input stream to the output
+                        byte[] ibuffer = new byte[_bufferSize];
+                        int ilen;
+                        while ((ilen = freadStream.Read(ibuffer, 0, _bufferSize)) > 0)
+                        {
+                            writeStream.Write(ibuffer, 0, ilen);
+                            writeStream.Flush();
+                        }
+
+                        freadStream.Dispose();
+                        zipFile.ZipFileCloseWriteStream(Utilities.StringToByteArray(roms[index].CRC));
                     }
-
-                    Utilities.CleanDirectory(tempPath);
-                    Utilities.TryDeleteDirectory(tempPath);
                 }
 
                 // Otherwise, sort the input files and write out in the correct order
                 else
                 {
                     // Open the old archive for reading
-                    using (oldZipFile = new SevenZipExtractor(archiveFileName))
+                    oldZipFile.ZipFileOpen(archiveFileName, new FileInfo(archiveFileName).LastWriteTime.Ticks, true);
+
+                    // Map all inputs to index
+                    Dictionary<string, int> inputIndexMap = new Dictionary<string, int>();
+                    for (int i = 0; i < inputFiles.Count; i++)
                     {
-                        // Map all inputs to index
-                        Dictionary<string, int> inputIndexMap = new Dictionary<string, int>();
-                        for (int i = 0; i < inputFiles.Count; i++)
+                        var oldZipFileContents = new List<string>();
+                        for (int j = 0; j < oldZipFile.LocalFilesCount(); j++)
                         {
-                            // If the old one contains the new file, then just skip out
-                            if (oldZipFile.ArchiveFileNames.Contains(roms[i].Name.Replace('\\', '/')))
+                            oldZipFileContents.Add(oldZipFile.Filename(j));
+                        }
+
+                        // If the old one contains the new file, then just skip out
+                        if (oldZipFileContents.Contains(roms[i].Name.Replace('\\', '/')))
+                        {
+                            continue;
+                        }
+
+                        inputIndexMap.Add(roms[i].Name.Replace('\\', '/'), -(i + 1));
+                    }
+
+                    // Then add all of the old entries to it too
+                    for (int i = 0; i < oldZipFile.LocalFilesCount(); i++)
+                    {
+                        inputIndexMap.Add(oldZipFile.Filename(i), i);
+                    }
+
+                    // If the number of entries is the same as the old archive, skip out
+                    if (inputIndexMap.Keys.Count <= oldZipFile.LocalFilesCount())
+                    {
+                        success = true;
+                        return success;
+                    }
+
+                    // Otherwise, process the old zipfile
+                    zipFile.ZipFileCreate(tempFile);
+
+                    // Get the order for the entries with the new file
+                    List<string> keys = inputIndexMap.Keys.ToList();
+                    keys.Sort(ZipFile.TrrntZipStringCompare);
+
+                    // Copy over all files to the new archive
+                    foreach (string key in keys)
+                    {
+                        // Get the index mapped to the key
+                        int index = inputIndexMap[key];
+
+                        // If we have the input file, add it now
+                        if (index < 0)
+                        {
+                            // Open the input file for reading
+                            Stream freadStream = Utilities.TryOpenRead(inputFiles[-index - 1]);
+                            ulong istreamSize = (ulong)(new FileInfo(inputFiles[-index - 1]).Length);
+
+                            DateTime dt = DateTime.Now;
+                            if (date && !String.IsNullOrWhiteSpace(roms[-index - 1].Date) && DateTime.TryParse(roms[-index - 1].Date.Replace('\\', '/'), out dt))
                             {
-                                continue;
+                                uint msDosDateTime = Utilities.ConvertDateTimeToMsDosTimeFormat(dt);
+                                zipFile.ZipFileOpenWriteStream(false, false, roms[-index - 1].Name.Replace('\\', '/'), istreamSize, 0, out writeStream);
                             }
-
-                            inputIndexMap.Add(roms[i].Name.Replace('\\', '/'), -(i + 1));
-                        }
-
-                        // Then add all of the old entries to it too
-                        for (int i = 0; i < oldZipFile.FilesCount; i++)
-                        {
-                            inputIndexMap.Add(oldZipFile.ArchiveFileNames[i], i);
-                        }
-
-                        // If the number of entries is the same as the old archive, skip out
-                        if (inputIndexMap.Keys.Count <= oldZipFile.FilesCount)
-                        {
-                            success = true;
-                            return success;
-                        }
-
-                        // Otherwise, process the old zipfile
-                        zipFile = new SevenZipCompressor()
-                        {
-                            ArchiveFormat = OutArchiveFormat.SevenZip,
-                            CompressionLevel = CompressionLevel.Normal,
-                        };
-
-                        // Get the order for the entries with the new file
-                        List<string> keys = inputIndexMap.Keys.ToList();
-                        keys.Sort(ZipFile.TrrntZipStringCompare);
-
-                        // Copy over all files to the new archive
-                        foreach (string key in keys)
-                        {
-                            // Get the index mapped to the key
-                            int index = inputIndexMap[key];
-
-                            // If we have the input file, add it now
-                            if (index < 0)
-                            {
-                                FileStream inputStream = Utilities.TryOpenRead(inputFiles[-index - 1]);
-
-                                // Create a stream dictionary
-                                Dictionary<string, Stream> dict = new Dictionary<string, Stream>();
-                                dict.Add(key, inputStream);
-
-                                // Now add the stream
-                                zipFile.CompressStreamDictionary(dict, tempFile);
-                            }
-
-                            // Otherwise, copy the file from the old archive
                             else
                             {
-                                Stream oldZipFileEntryStream = new MemoryStream();
-                                oldZipFile.ExtractFile(index, oldZipFileEntryStream);
-                                oldZipFileEntryStream.Seek(0, SeekOrigin.Begin);
-
-                                // Create a stream dictionary
-                                Dictionary<string, Stream> dict = new Dictionary<string, Stream>();
-                                dict.Add(oldZipFile.ArchiveFileNames[index], oldZipFileEntryStream);
-
-                                // Now add the stream
-                                zipFile.CompressStreamDictionary(dict, tempFile);
-                                oldZipFileEntryStream.Dispose();
+                                zipFile.ZipFileOpenWriteStream(false, true, roms[-index - 1].Name.Replace('\\', '/'), istreamSize, 0, out writeStream);
                             }
 
-                            // After the first file, make sure we're in append mode
-                            zipFile.CompressionMode = CompressionMode.Append;
+                            // Copy the input stream to the output
+                            byte[] ibuffer = new byte[_bufferSize];
+                            int ilen;
+                            while ((ilen = freadStream.Read(ibuffer, 0, _bufferSize)) > 0)
+                            {
+                                writeStream.Write(ibuffer, 0, ilen);
+                                writeStream.Flush();
+                            }
+                            freadStream.Dispose();
+                            zipFile.ZipFileCloseWriteStream(Utilities.StringToByteArray(roms[-index - 1].CRC));
+                        }
+
+                        // Otherwise, copy the file from the old archive
+                        else
+                        {
+                            // Instantiate the streams
+                            oldZipFile.ZipFileOpenReadStream(index, out Stream zreadStream, out ulong istreamSize);
+                            zipFile.ZipFileOpenWriteStream(false, true, oldZipFile.Filename(index), istreamSize, 0, out writeStream);
+
+                            // Copy the input stream to the output
+                            byte[] ibuffer = new byte[_bufferSize];
+                            int ilen;
+                            while ((ilen = zreadStream.Read(ibuffer, 0, _bufferSize)) > 0)
+                            {
+                                writeStream.Write(ibuffer, 0, ilen);
+                                writeStream.Flush();
+                            }
+
+                            zipFile.ZipFileCloseWriteStream(oldZipFile.CRC32(index));
                         }
                     }
                 }
+
+                // Close the output zip file
+                zipFile.ZipFileClose();
+                oldZipFile.ZipFileClose();
 
                 success = true;
             }
@@ -730,32 +859,6 @@ namespace SabreTools.Library.FileTypes
                 Utilities.TryDeleteFile(archiveFileName);
             }
             File.Move(tempFile, archiveFileName);
-
-            // Now make the file T7Z
-            // TODO: Add ACTUAL T7Z compatible code
-
-            BinaryWriter bw = new BinaryWriter(Utilities.TryOpenReadWrite(archiveFileName));
-            bw.Seek(0, SeekOrigin.Begin);
-            bw.Write(Constants.Torrent7ZipHeader);
-            bw.Seek(0, SeekOrigin.End);
-
-            using (oldZipFile = new SevenZipExtractor(Utilities.TryOpenReadWrite(archiveFileName)))
-            {
-                // Get the correct signature to use (Default 0, Unicode 1, SingleFile 2, StripFileNames 4)
-                byte[] tempsig = Constants.Torrent7ZipSignature;
-                if (oldZipFile.FilesCount > 1)
-                {
-                    tempsig[16] = 0x2;
-                }
-                else
-                {
-                    tempsig[16] = 0;
-                }
-
-                bw.Write(tempsig);
-                bw.Flush();
-                bw.Dispose();
-            }
 
             return true;
         }

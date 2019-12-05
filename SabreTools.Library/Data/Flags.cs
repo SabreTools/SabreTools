@@ -231,18 +231,6 @@ namespace SabreTools.Library.Data
         LastAccessTimePresent =     1 << 3,
     }
 
-    /// <summary>
-    /// Zipfile special status
-    /// </summary>
-    /// <remarks>https://github.com/gjefferyes/RomVault/blob/5a93500001f0d068f32cf77a048950717507f733/ROMVault2/SupportedFiles/ZipEnums.cs</remarks>
-    [Flags]
-    public enum ZipStatus
-    {
-        None =          0x00,
-        TorrentZip =    1 << 0,
-        ExtraData =     1 << 1
-    }
-
     #endregion
 
     #region DatFile related

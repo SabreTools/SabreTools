@@ -19,7 +19,7 @@ using Stream = System.IO.Stream;
 #endif
 using Compress;
 using Compress.ZipFile;
-using SharpCompress.Readers;
+using NaturalSort;
 
 namespace SabreTools.Library.FileTypes
 {
@@ -93,6 +93,7 @@ namespace SabreTools.Library.FileTypes
                         || zf.Filename(i).EndsWith(Path.AltDirectorySeparatorChar.ToString())
                         || zf.Filename(i).EndsWith(Path.PathSeparator.ToString()))
                     {
+                        zf.ZipFileCloseReadStream();
                         continue;
                     }
 
@@ -360,27 +361,36 @@ namespace SabreTools.Library.FileTypes
 
             try
             {
-                SharpCompress.Archives.Zip.ZipArchive za = SharpCompress.Archives.Zip.ZipArchive.Open(this.Filename, new ReaderOptions { LeaveStreamOpen = false });
-                List<SharpCompress.Archives.Zip.ZipArchiveEntry> zipEntries = za.Entries.OrderBy(e => e.Key, new NaturalSort.NaturalReversedComparer()).ToList();
-                string lastZipEntry = null;
-                foreach (SharpCompress.Archives.Zip.ZipArchiveEntry entry in zipEntries)
+                ZipFile zf = new ZipFile();
+                ZipReturn zr = zf.ZipFileOpen(this.Filename, -1, true);
+                if (zr != ZipReturn.ZipGood)
                 {
-                    if (entry != null)
+                    throw new Exception(ZipFile.ZipErrorMessageText(zr));
+                }
+
+                List<(string, bool)> zipEntries = new List<(string, bool)>();
+                for (int i = 0; i < zf.LocalFilesCount(); i++)
+                {
+                    zipEntries.Add((zf.Filename(i), zf.IsDirectory(i)));
+                }
+
+                zipEntries = zipEntries.OrderBy(p => p.Item1, new NaturalReversedComparer()).ToList();
+                string lastZipEntry = null;
+                foreach ((string, bool) entry in zipEntries)
+                {
+                    // If the current is a superset of last, we skip it
+                    if (lastZipEntry != null && lastZipEntry.StartsWith(entry.Item1))
                     {
-                        // If the current is a superset of last, we skip it
-                        if (lastZipEntry != null && lastZipEntry.StartsWith(entry.Key))
+                        // No-op
+                    }
+                    // If the entry is a directory, we add it
+                    else
+                    {
+                        if (entry.Item2)
                         {
-                            // No-op
+                            empties.Add(entry.Item1);
                         }
-                        // If the entry is a directory, we add it
-                        else
-                        {
-                            if (entry.IsDirectory)
-                            {
-                                empties.Add(entry.Key);
-                            }
-                            lastZipEntry = entry.Key;
-                        }
+                        lastZipEntry = entry.Item1;
                     }
                 }
             }
@@ -397,7 +407,14 @@ namespace SabreTools.Library.FileTypes
         /// </summary>
         public override bool IsTorrent()
         {
-            throw new NotImplementedException();
+            ZipFile zf = new ZipFile();
+            ZipReturn zr = zf.ZipFileOpen(this.Filename, -1, true);
+            if (zr != ZipReturn.ZipGood)
+            {
+                throw new Exception(ZipFile.ZipErrorMessageText(zr));
+            }
+
+            return zf.ZipStatus == ZipStatus.TrrntZip;
         }
 
         #endregion
