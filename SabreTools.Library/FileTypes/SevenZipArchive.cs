@@ -289,6 +289,15 @@ namespace SabreTools.Library.FileTypes
 
                 for (int i = 0; i < zf.LocalFilesCount(); i++)
                 {
+                    // If the entry is a directory (or looks like a directory), we don't want to open it
+                    if (zf.IsDirectory(i)
+                        || zf.Filename(i).EndsWith(Path.DirectorySeparatorChar.ToString())
+                        || zf.Filename(i).EndsWith(Path.AltDirectorySeparatorChar.ToString())
+                        || zf.Filename(i).EndsWith(Path.PathSeparator.ToString()))
+                    {
+                        continue;
+                    }
+
                     // Open the read stream
                     zr = zf.ZipFileOpenReadStream(i, out Stream readStream, out ulong streamsize);
 
@@ -296,15 +305,6 @@ namespace SabreTools.Library.FileTypes
                     if (zr != ZipReturn.ZipGood)
                     {
                         Globals.Logger.Warning("An error occurred while reading archive {0}: Zip Error - {1}", this.Filename, zr);
-                        zr = zf.ZipFileCloseReadStream();
-                        continue;
-                    }
-
-                    // If the entry ends with a directory separator, continue to the next item, if any
-                    if (zf.Filename(i).EndsWith(Path.DirectorySeparatorChar.ToString())
-                        || zf.Filename(i).EndsWith(Path.AltDirectorySeparatorChar.ToString())
-                        || zf.Filename(i).EndsWith(Path.PathSeparator.ToString()))
-                    {
                         zr = zf.ZipFileCloseReadStream();
                         continue;
                     }
