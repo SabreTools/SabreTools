@@ -516,7 +516,7 @@ namespace SabreTools.Library.FileTypes
                 else
                 {
                     // Open the old archive for reading
-                    oldZipFile.ZipFileOpen(archiveFileName, new FileInfo(archiveFileName).LastWriteTime.Ticks, true);
+                    oldZipFile.ZipFileOpen(archiveFileName, -1, true);
 
                     // Map all inputs to index
                     Dictionary<string, int> inputIndexMap = new Dictionary<string, int>();
@@ -743,7 +743,7 @@ namespace SabreTools.Library.FileTypes
                 else
                 {
                     // Open the old archive for reading
-                    oldZipFile.ZipFileOpen(archiveFileName, new FileInfo(archiveFileName).LastWriteTime.Ticks, true);
+                    oldZipFile.ZipFileOpen(archiveFileName, -1, true);
 
                     // Map all inputs to index
                     Dictionary<string, int> inputIndexMap = new Dictionary<string, int>();
