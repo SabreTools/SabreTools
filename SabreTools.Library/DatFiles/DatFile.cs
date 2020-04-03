@@ -4094,6 +4094,9 @@ namespace SabreTools.Library.DatFiles
         private bool RebuildIndividualFile(DatItem datItem, string file, string outDir, bool date,
             bool inverse, OutputFormat outputFormat, bool romba, bool updateDat, bool? isZip, string headerToCheckAgainst)
         {
+            // Set the initial output value
+            bool rebuilt = false;
+
             // If the DatItem is a Disk, force rebuilding to a folder except if TGZ
             if (datItem.ItemType == ItemType.Disk && outputFormat != OutputFormat.TorrentGzip)
             {
@@ -4187,9 +4190,7 @@ namespace SabreTools.Library.DatFiles
                     fileStream.Seek(0, SeekOrigin.Begin);
 
                 Globals.Logger.User("Matches found for '{0}', rebuilding accordingly...", Path.GetFileName(datItem.Name));
-                
-                // Set the initial output value
-                bool rebuilt = true;
+                rebuilt = true;
 
                 // Now loop through the list and rebuild accordingly
                 foreach (DatItem item in dupes)
