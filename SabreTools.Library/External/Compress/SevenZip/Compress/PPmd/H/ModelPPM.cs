@@ -883,7 +883,7 @@ namespace Compress.SevenZip.Compress.PPmd.H
                 charMask[rs.Symbol] = 0;
                 prevSuccess = 0;
             }
-            for (;;)
+            for (; ; )
             {
                 State s = tempState1.Initialize(Heap);
                 int i;
@@ -920,7 +920,7 @@ namespace Compress.SevenZip.Compress.PPmd.H
                 {
                     byte symbol;
                     State ps = tempState2.Initialize(Heap);
-                    for (hiCnt = 0, i = 0, ps.Address = minContext.ps[i]; (hiCnt += ps.Freq) <= count; i++, ps.Address = minContext.ps[i]);
+                    for (hiCnt = 0, i = 0, ps.Address = minContext.ps[i]; (hiCnt += ps.Freq) <= count; i++, ps.Address = minContext.ps[i]) ;
                     s.Address = ps.Address;
                     decoder.Decode((uint)(hiCnt - s.Freq), (uint)s.Freq);
                     see.update();

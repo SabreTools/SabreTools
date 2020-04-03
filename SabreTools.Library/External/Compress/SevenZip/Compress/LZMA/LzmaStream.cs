@@ -181,11 +181,11 @@ namespace Compress.SevenZip.Compress.LZMA
                     toProcess = (int)availableBytes;
 
                 outWindow.SetLimit(toProcess);
-                if(uncompressedChunk)
+                if (uncompressedChunk)
                 {
                     inputPosition += outWindow.CopyStream(inputStream, toProcess);
                 }
-                else if(decoder.Code(dictionarySize, outWindow, rangeDecoder)
+                else if (decoder.Code(dictionarySize, outWindow, rangeDecoder)
                         && outputSize < 0)
                 {
                     availableBytes = outWindow.AvailableBytes;
@@ -281,10 +281,10 @@ namespace Compress.SevenZip.Compress.LZMA
 
         public override long Seek(long offset, SeekOrigin origin)
         {
-            if (origin!=SeekOrigin.Current)
-               throw new NotImplementedException();
+            if (origin != SeekOrigin.Current)
+                throw new NotImplementedException();
 
-            byte[] tmpBuff=new byte[1024];
+            byte[] tmpBuff = new byte[1024];
             long sizeToGo = offset;
             while (sizeToGo > 0)
             {
@@ -292,7 +292,7 @@ namespace Compress.SevenZip.Compress.LZMA
                 Read(tmpBuff, 0, sizenow);
                 sizeToGo -= sizenow;
             }
-            
+
             return offset;
         }
 

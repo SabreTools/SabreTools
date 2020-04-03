@@ -14,9 +14,9 @@ namespace Compress.SevenZip.Structure
 
         public void Read(BinaryReader br)
         {
-            for (;;)
+            for (; ; )
             {
-                HeaderProperty hp = (HeaderProperty) br.ReadByte();
+                HeaderProperty hp = (HeaderProperty)br.ReadByte();
                 switch (hp)
                 {
                     case HeaderProperty.kPackInfo:
@@ -42,11 +42,18 @@ namespace Compress.SevenZip.Structure
 
         public void Write(BinaryWriter bw)
         {
-            bw.Write((byte) HeaderProperty.kMainStreamsInfo);
+            bw.Write((byte)HeaderProperty.kMainStreamsInfo);
             PackedStreamInfo.Write(bw, PackPosition, PackedStreams);
             Folder.WriteUnPackInfo(bw, Folders);
             Folder.WriteSubStreamsInfo(bw, Folders);
-            bw.Write((byte) HeaderProperty.kEnd);
+            bw.Write((byte)HeaderProperty.kEnd);
+        }
+
+        public void WriteHeader(BinaryWriter bw)
+        {
+            PackedStreamInfo.Write(bw, PackPosition, PackedStreams);
+            Folder.WriteUnPackInfo(bw, Folders);
+            bw.Write((byte)HeaderProperty.kEnd);
         }
 
 

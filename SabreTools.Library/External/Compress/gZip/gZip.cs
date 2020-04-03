@@ -189,7 +189,7 @@ namespace Compress.gZip
                     uint crc16 = zipBr.ReadUInt16();
                 }
 
-                CompressedSize = (ulong) (_zipFs.Length - _zipFs.Position) - 8;
+                CompressedSize = (ulong)(_zipFs.Length - _zipFs.Position) - 8;
 
                 dataStartPos = _zipFs.Position;
 
@@ -212,7 +212,7 @@ namespace Compress.gZip
                 }
                 else
                 {
-                    CRC = new[] {gzcrc[3], gzcrc[2], gzcrc[1], gzcrc[0]};
+                    CRC = new[] { gzcrc[3], gzcrc[2], gzcrc[1], gzcrc[0] };
                 }
 
                 if (UnCompressedSize != 0)
@@ -272,23 +272,23 @@ namespace Compress.gZip
             {
                 UnCompressedSize = unCompressedSize;
 
-                zipBw.Write((byte) 0x1f); // ID1 = 0x1f
-                zipBw.Write((byte) 0x8b); // ID2 = 0x8b
-                zipBw.Write((byte) 0x08); // CM  = 0x08
-                zipBw.Write((byte) 0x04); // FLG = 0x04
-                zipBw.Write((uint) 0); // MTime = 0
-                zipBw.Write((byte) 0x00); // XFL = 0x00
-                zipBw.Write((byte) 0xff); // OS  = 0x00
+                zipBw.Write((byte)0x1f); // ID1 = 0x1f
+                zipBw.Write((byte)0x8b); // ID2 = 0x8b
+                zipBw.Write((byte)0x08); // CM  = 0x08
+                zipBw.Write((byte)0x04); // FLG = 0x04
+                zipBw.Write((uint)0); // MTime = 0
+                zipBw.Write((byte)0x00); // XFL = 0x00
+                zipBw.Write((byte)0xff); // OS  = 0x00
 
                 if (ExtraData == null)
                 {
-                    zipBw.Write((short) 12);
+                    zipBw.Write((short)12);
                     headerStartPos = zipBw.BaseStream.Position;
                     zipBw.Write(new byte[12]);
                 }
                 else
                 {
-                    zipBw.Write((short) ExtraData.Length); // XLEN 16+4+8+1+16+20+4+8
+                    zipBw.Write((short)ExtraData.Length); // XLEN 16+4+8+1+16+20+4+8
                     headerStartPos = zipBw.BaseStream.Position;
                     zipBw.Write(ExtraData);
                 }
@@ -326,7 +326,7 @@ namespace Compress.gZip
 
         public long TimeStamp => _zipFileInfo?.LastWriteTime ?? 0;
 
-        public void ZipFileAddDirectory()
+        public void ZipFileAddZeroLengthFile()
         {
             throw new NotImplementedException();
         }
@@ -354,15 +354,15 @@ namespace Compress.gZip
 
         public ZipReturn ZipFileCloseWriteStream(byte[] crc32)
         {
-            using (BinaryWriter zipBw = new BinaryWriter(_zipFs,Encoding.UTF8,true))
+            using (BinaryWriter zipBw = new BinaryWriter(_zipFs, Encoding.UTF8, true))
             {
-                CompressedSize = (ulong) (zipBw.BaseStream.Position - dataStartPos);
+                CompressedSize = (ulong)(zipBw.BaseStream.Position - dataStartPos);
 
                 zipBw.Write(CRC[3]);
                 zipBw.Write(CRC[2]);
                 zipBw.Write(CRC[1]);
                 zipBw.Write(CRC[0]);
-                zipBw.Write((uint) UnCompressedSize);
+                zipBw.Write((uint)UnCompressedSize);
 
                 long endpos = _zipFs.Position;
 

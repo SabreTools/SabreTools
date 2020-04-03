@@ -5,7 +5,7 @@ namespace Compress.ThreadReaders
 {
     public class ThreadCRC : IDisposable
     {
-        private Utils.CRC crc; 
+        private Utils.CRC crc;
         private readonly AutoResetEvent _waitEvent;
         private readonly AutoResetEvent _outEvent;
         private readonly Thread _tWorker;
@@ -17,7 +17,7 @@ namespace Compress.ThreadReaders
 
         public ThreadCRC()
         {
-            crc=new Utils.CRC();
+            crc = new Utils.CRC();
             _waitEvent = new AutoResetEvent(false);
             _outEvent = new AutoResetEvent(false);
             _finished = false;
@@ -44,7 +44,7 @@ namespace Compress.ThreadReaders
                     break;
                 }
 
-                crc.SlurpBlock(_buffer,0,_size);
+                crc.SlurpBlock(_buffer, 0, _size);
 
                 _outEvent.Set();
             }

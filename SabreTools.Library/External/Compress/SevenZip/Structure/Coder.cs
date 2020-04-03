@@ -29,7 +29,8 @@ namespace Compress.SevenZip.Structure
         BCJ2,
         PPMd,
         BZip2,
-        LZMA2
+        LZMA2,
+        ZSTD
     }
 
 
@@ -73,39 +74,41 @@ namespace Compress.SevenZip.Structure
                 throw new NotSupportedException("External flag");
             }
 
-            if ((Method.Length == 1) && (Method[0] == 0))
+            if (Method.Length == 1 && Method[0] == 0)
             {
                 DecoderType = DecompressType.Stored;
             }
-            else if ((Method.Length == 1) && (Method[0] == 3))
+            else if (Method.Length == 1 && Method[0] == 3)
             {
                 DecoderType = DecompressType.Delta;
             }
-            else if ((Method.Length == 3) && (Method[0] == 3) && (Method[1] == 1) && (Method[2] == 1))
+            else if (Method.Length == 3 && Method[0] == 3 && Method[1] == 1 && Method[2] == 1)
             {
                 DecoderType = DecompressType.LZMA;
             }
-            else if ((Method.Length == 4) && (Method[0] == 3) && (Method[1] == 3) && (Method[2] == 1) &&
-                     (Method[3] == 3))
+            else if (Method.Length == 4 && Method[0] == 3 && Method[1] == 3 && Method[2] == 1 && Method[3] == 3)
             {
                 DecoderType = DecompressType.BCJ;
             }
-            else if ((Method.Length == 4) && (Method[0] == 3) && (Method[1] == 3) && (Method[2] == 1) &&
-                     (Method[3] == 27))
+            else if (Method.Length == 4 && Method[0] == 3 && Method[1] == 3 && Method[2] == 1 && Method[3] == 27)
             {
                 DecoderType = DecompressType.BCJ2;
             }
-            else if ((Method.Length == 3) && (Method[0] == 3) && (Method[1] == 4) && (Method[2] == 1))
+            else if (Method.Length == 3 && Method[0] == 3 && Method[1] == 4 && Method[2] == 1)
             {
                 DecoderType = DecompressType.PPMd;
             }
-            else if ((Method.Length == 3) && (Method[0] == 4) && (Method[1] == 2) && (Method[2] == 2))
+            else if (Method.Length == 3 && Method[0] == 4 && Method[1] == 2 && Method[2] == 2)
             {
                 DecoderType = DecompressType.BZip2;
             }
-            else if ((Method.Length == 1) && (Method[0] == 33))
+            else if (Method.Length == 1 && Method[0] == 33)
             {
                 DecoderType = DecompressType.LZMA2;
+            }
+            else if (SevenZ.supportZstd && Method.Length == 4 && Method[0] == 4 && Method[1] == 247 && Method[2] == 17 && Method[3] == 1)
+            {
+                DecoderType = DecompressType.ZSTD;
             }
 
             InputStreamsSourceInfo = new InStreamSourceInfo[NumInStreams];

@@ -206,7 +206,7 @@ namespace Compress.SevenZip.Compress.PPmd.H
             // Bug fixed
             freeListPos = heapStart + allocSize;
             //UPGRADE_ISSUE: The following fragment of code could not be parsed and was not converted. "ms-help://MS.VSCC.v80/dv_commoner/local/redirect.htm?index='!DefaultContextWindowIndex'&keyword='jlca1156'"
-            //assert(realAllocSize - tempMemBlockPos == RarMemBlock.size): realAllocSize 
+            //assert(realAllocSize - tempMemBlockPos == RarMemBlock.size): realAllocSize
             //+   + tempMemBlockPos +   + RarMemBlock.size;
 
             // Init freeList

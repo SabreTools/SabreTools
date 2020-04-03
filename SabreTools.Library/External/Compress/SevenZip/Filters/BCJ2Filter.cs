@@ -51,7 +51,7 @@ namespace Compress.SevenZip.Filters
             code = 0;
             range = 0xFFFFFFFF;
 
-            byte[] controlbuf=new byte[5];
+            byte[] controlbuf = new byte[5];
             control.Read(controlbuf, 0, 5);
 
             for (i = 0; i < 5; i++)
@@ -139,7 +139,7 @@ namespace Compress.SevenZip.Filters
                         if (range < kTopValue)
                         {
                             range <<= 8;
-                            code = (code << 8) | (byte)control.ReadByte(); 
+                            code = (code << 8) | (byte)control.ReadByte();
                         }
                         prevByte = b;
                     }

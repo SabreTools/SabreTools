@@ -387,7 +387,7 @@ namespace Compress.SevenZip.Compress.LZMA
             set { }
         }
         public override void Flush() { }
-        public override int Read(byte[] buffer, int offset, int count) 
+        public override int Read(byte[] buffer, int offset, int count)
         {
             return 0;
         }

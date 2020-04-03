@@ -38,17 +38,12 @@ namespace Compress.SevenZip.Structure
         }
 
 
-        private void Write(BinaryWriter bw)
+        public void WriteHeader(BinaryWriter bw)
         {
             bw.Write((byte)HeaderProperty.kHeader);
             StreamsInfo.Write(bw);
             FileInfo.Write(bw);
             bw.Write((byte)HeaderProperty.kEnd);
-        }
-
-        public void WriteHeader(BinaryWriter bw)
-        {
-            Write(bw);
         }
 
         public static ZipReturn ReadHeaderOrPackedHeader(Stream stream, long baseOffset, out Header header)

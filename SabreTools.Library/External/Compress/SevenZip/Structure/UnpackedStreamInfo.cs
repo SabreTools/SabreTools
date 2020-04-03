@@ -7,7 +7,7 @@ namespace Compress.SevenZip.Structure
     {
         public ulong UnpackedSize;
         public uint? Crc;
-        
+
         public void Report(ref StringBuilder sb)
         {
             sb.AppendLine($"      Crc = {Crc.ToHex()} , Size = {UnpackedSize}");

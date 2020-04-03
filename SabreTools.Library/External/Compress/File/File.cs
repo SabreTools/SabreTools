@@ -171,7 +171,7 @@ namespace Compress.File
 
 
 
-        public void ZipFileAddDirectory()
+        public void ZipFileAddZeroLengthFile()
         {
             throw new NotImplementedException();
         }

@@ -111,12 +111,12 @@ namespace Compress.SevenZip
             {
                 if ((firstByte & mask) == 0)
                 {
-                    ulong highPart = (ulong) (firstByte & (mask - 1));
-                    value += highPart << (8*i);
+                    ulong highPart = (ulong)(firstByte & (mask - 1));
+                    value += highPart << (8 * i);
                     return value;
                 }
                 byte b = br.ReadByte();
-                value |= (ulong) b << (8*i);
+                value |= (ulong)b << (8 * i);
                 mask >>= 1;
             }
             return value;
@@ -129,9 +129,9 @@ namespace Compress.SevenZip
             int i;
             for (i = 0; i < 8; i++)
             {
-                if (value < (ulong) 1 << (7*(i + 1)))
+                if (value < (ulong)1 << (7 * (i + 1)))
                 {
-                    firstByte |= (byte) (value >> (8*i));
+                    firstByte |= (byte)(value >> (8 * i));
                     break;
                 }
                 firstByte |= mask;
@@ -140,7 +140,7 @@ namespace Compress.SevenZip
             bw.Write(firstByte);
             for (; i > 0; i--)
             {
-                bw.Write((byte) value);
+                bw.Write((byte)value);
                 value >>= 8;
             }
         }
@@ -148,9 +148,9 @@ namespace Compress.SevenZip
         public static string ReadName(this BinaryReader br)
         {
             StringBuilder stringBuilder = new StringBuilder();
-            for (;;)
+            for (; ; )
             {
-                char c = (char) br.ReadUInt16();
+                char c = (char)br.ReadUInt16();
                 if (c == 0)
                 {
                     return stringBuilder.ToString();
@@ -164,9 +164,9 @@ namespace Compress.SevenZip
             char[] chars = name.ToCharArray();
             for (int i = 0; i < chars.Length; i++)
             {
-                bw.Write((ushort) chars[i]);
+                bw.Write((ushort)chars[i]);
             }
-            bw.Write((ushort) 0);
+            bw.Write((ushort)0);
         }
 
 
@@ -179,6 +179,23 @@ namespace Compress.SevenZip
                 if (digestsDefined[i])
                 {
                     digests[i] = br.ReadUInt32();
+                }
+            }
+        }
+
+        public static void WritePackedCRCs(BinaryWriter bw, uint?[] digests)
+        {
+            bool[] digestsDefined = new bool[digests.Length];
+            for (int i = 0; i < digests.Length; i++)
+            {
+                digestsDefined[i] = digests[i] != null;
+            }
+            WriteBoolFlagsDefaultTrue(bw, digestsDefined);
+            for (int i = 0; i < digests.Length; i++)
+            {
+                if (digestsDefined[i])
+                {
+                    bw.Write((uint)digests[i]);
                 }
             }
         }
@@ -196,6 +213,22 @@ namespace Compress.SevenZip
                 flags[i] = true;
             }
             return flags;
+        }
+
+        private static void WriteBoolFlagsDefaultTrue(BinaryWriter bw, bool[] bArray)
+        {
+            bool allTrue = true;
+            foreach (bool b in bArray)
+            {
+                allTrue &= b;
+            }
+
+            if (allTrue)
+            {
+                bw.Write((byte)1);
+                return;
+            }
+            WriteBoolFlags(bw, bArray);
         }
 
         public static bool[] ReadBoolFlags(BinaryReader br, ulong numItems)
@@ -238,9 +271,9 @@ namespace Compress.SevenZip
 
         public static void WriteUint32Def(BinaryWriter br, uint[] values)
         {
-            br.WriteEncodedUInt64((ulong) (values.Length*4 + 2));
-            br.Write((byte) 1);
-            br.Write((byte) 0);
+            br.WriteEncodedUInt64((ulong)(values.Length * 4 + 2));
+            br.Write((byte)1);
+            br.Write((byte)0);
             for (int i = 0; i < values.Length; i++)
             {
                 br.Write(values[i]);
@@ -275,7 +308,7 @@ namespace Compress.SevenZip
 
         public static void WriteBoolFlags(BinaryWriter bw, bool[] bArray)
         {
-            bw.WriteEncodedUInt64((ulong) ((bArray.Length + 7)/8));
+            bw.WriteEncodedUInt64((ulong)((bArray.Length + 7) / 8));
             byte mask = 0x80;
             byte tmpOut = 0;
             for (int i = 0; i < bArray.Length; i++)
@@ -307,13 +340,13 @@ namespace Compress.SevenZip
             {
                 return null;
             }
-            uint c = (uint) crc;
+            uint c = (uint)crc;
 
             byte[] b = new byte[4];
-            b[0] = (byte) ((c >> 24) & 0xff);
-            b[1] = (byte) ((c >> 16) & 0xff);
-            b[2] = (byte) ((c >> 8) & 0xff);
-            b[3] = (byte) ((c >> 0) & 0xff);
+            b[0] = (byte)((c >> 24) & 0xff);
+            b[1] = (byte)((c >> 16) & 0xff);
+            b[2] = (byte)((c >> 8) & 0xff);
+            b[3] = (byte)((c >> 0) & 0xff);
             return b;
         }
 
@@ -324,7 +357,7 @@ namespace Compress.SevenZip
                 return null;
             }
 
-            return (uint?) ((crc[0] << 24) | (crc[1] << 16) | (crc[2] << 8) | (crc[3] << 0));
+            return (uint?)((crc[0] << 24) | (crc[1] << 16) | (crc[2] << 8) | (crc[3] << 0));
         }
 
         public static bool ByteArrCompare(byte[] b0, byte[] b1)

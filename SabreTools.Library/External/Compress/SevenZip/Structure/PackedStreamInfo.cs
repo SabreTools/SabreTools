@@ -26,9 +26,9 @@ namespace Compress.SevenZip.Structure
 
             ulong streamPosition = 0;
 
-            for (;;)
+            for (; ; )
             {
-                HeaderProperty hp = (HeaderProperty) br.ReadByte();
+                HeaderProperty hp = (HeaderProperty)br.ReadByte();
                 switch (hp)
                 {
                     case HeaderProperty.kSize:
@@ -60,12 +60,12 @@ namespace Compress.SevenZip.Structure
 
         public static void Write(BinaryWriter bw, ulong packPosition, PackedStreamInfo[] packedStreams)
         {
-            ulong numPackStreams = (ulong) packedStreams.Length;
-            bw.Write((byte) HeaderProperty.kPackInfo);
+            ulong numPackStreams = (ulong)packedStreams.Length;
+            bw.Write((byte)HeaderProperty.kPackInfo);
             bw.WriteEncodedUInt64(packPosition);
             bw.WriteEncodedUInt64(numPackStreams);
 
-            bw.Write((byte) HeaderProperty.kSize);
+            bw.Write((byte)HeaderProperty.kSize);
             ulong streamPosition = 0;
             for (ulong i = 0; i < numPackStreams; i++)
             {
@@ -77,14 +77,14 @@ namespace Compress.SevenZip.Structure
             // Only checking the first CRC assuming all the reset will be the same
             if (packedStreams[0].Crc != null)
             {
-                bw.Write((byte) HeaderProperty.kCRC);
+                bw.Write((byte)HeaderProperty.kCRC);
                 for (ulong i = 0; i < numPackStreams; i++)
                 {
                     bw.WriteEncodedUInt64(packedStreams[i].Crc ?? 0);
                 }
             }
 
-            bw.Write((byte) HeaderProperty.kEnd);
+            bw.Write((byte)HeaderProperty.kEnd);
         }
 
 

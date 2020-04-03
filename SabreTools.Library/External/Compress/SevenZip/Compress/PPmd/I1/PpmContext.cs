@@ -377,7 +377,7 @@ namespace Compress.SevenZip.Compress.PPmd.I1
             Coder.LowCount = lowCount;
             lowCount += state.Frequency;
             Coder.HighCount = lowCount;
-            for (PpmState p1 = state; --index != 0; )
+            for (PpmState p1 = state; --index != 0;)
             {
                 do
                 {

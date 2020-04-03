@@ -33,9 +33,9 @@ namespace Compress.SevenZip.Compress.PPmd.I1
 
         public void RangeEncoderNormalize(Stream stream)
         {
-            while ((low ^ (low + range)) < RangeTop || range < RangeBottom && ((range = (uint) -low & (RangeBottom - 1)) != 0 || true))
+            while ((low ^ (low + range)) < RangeTop || range < RangeBottom && ((range = (uint)-low & (RangeBottom - 1)) != 0 || true))
             {
-                stream.WriteByte((byte) (low >> 24));
+                stream.WriteByte((byte)(low >> 24));
                 range <<= 8;
                 low <<= 8;
             }
@@ -57,7 +57,7 @@ namespace Compress.SevenZip.Compress.PPmd.I1
         {
             for (uint index = 0; index < 4; index++)
             {
-                stream.WriteByte((byte) (low >> 24));
+                stream.WriteByte((byte)(low >> 24));
                 low <<= 8;
             }
         }
@@ -68,14 +68,14 @@ namespace Compress.SevenZip.Compress.PPmd.I1
             code = 0;
             range = uint.MaxValue;
             for (uint index = 0; index < 4; index++)
-                code = (code << 8) | (byte) stream.ReadByte();
+                code = (code << 8) | (byte)stream.ReadByte();
         }
 
         public void RangeDecoderNormalize(Stream stream)
         {
-            while ((low ^ (low + range)) < RangeTop || range < RangeBottom && ((range = (uint) -low & (RangeBottom - 1)) != 0 || true))
+            while ((low ^ (low + range)) < RangeTop || range < RangeBottom && ((range = (uint)-low & (RangeBottom - 1)) != 0 || true))
             {
-                code = (code << 8) | (byte) stream.ReadByte();
+                code = (code << 8) | (byte)stream.ReadByte();
                 range <<= 8;
                 low <<= 8;
             }

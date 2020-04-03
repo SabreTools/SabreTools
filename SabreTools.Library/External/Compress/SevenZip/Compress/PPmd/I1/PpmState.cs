@@ -58,13 +58,13 @@ namespace Compress.SevenZip.Compress.PPmd.I1
         /// </summary>
         public Model.PpmContext Successor
         {
-            get { return new Model.PpmContext(((uint) Memory[Address + 2]) | ((uint) Memory[Address + 3]) << 8 | ((uint) Memory[Address + 4]) << 16 | ((uint) Memory[Address + 5]) << 24, Memory); }
+            get { return new Model.PpmContext(((uint)Memory[Address + 2]) | ((uint)Memory[Address + 3]) << 8 | ((uint)Memory[Address + 4]) << 16 | ((uint)Memory[Address + 5]) << 24, Memory); }
             set
             {
-                Memory[Address + 2] = (byte) value.Address;
-                Memory[Address + 3] = (byte) (value.Address >> 8);
-                Memory[Address + 4] = (byte) (value.Address >> 16);
-                Memory[Address + 5] = (byte) (value.Address >> 24);
+                Memory[Address + 2] = (byte)value.Address;
+                Memory[Address + 3] = (byte)(value.Address >> 8);
+                Memory[Address + 4] = (byte)(value.Address >> 16);
+                Memory[Address + 5] = (byte)(value.Address >> 24);
             }
         }
 
@@ -76,7 +76,7 @@ namespace Compress.SevenZip.Compress.PPmd.I1
         /// <returns></returns>
         public PpmState this[int offset]
         {
-            get { return new PpmState((uint) (Address + offset * Size), Memory); }
+            get { return new PpmState((uint)(Address + offset * Size), Memory); }
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace Compress.SevenZip.Compress.PPmd.I1
         /// <returns></returns>
         public static PpmState operator +(PpmState state, int offset)
         {
-            state.Address = (uint) (state.Address + offset * Size);
+            state.Address = (uint)(state.Address + offset * Size);
             return state;
         }
 
@@ -120,7 +120,7 @@ namespace Compress.SevenZip.Compress.PPmd.I1
         /// <returns></returns>
         public static PpmState operator -(PpmState state, int offset)
         {
-            state.Address = (uint) (state.Address - offset * Size);
+            state.Address = (uint)(state.Address - offset * Size);
             return state;
         }
 
@@ -188,7 +188,7 @@ namespace Compress.SevenZip.Compress.PPmd.I1
         {
             if (obj is PpmState)
             {
-                PpmState state = (PpmState) obj;
+                PpmState state = (PpmState)obj;
                 return state.Address == Address;
             }
             return base.Equals(obj);

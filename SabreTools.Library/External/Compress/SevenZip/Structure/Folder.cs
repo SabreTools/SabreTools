@@ -30,8 +30,8 @@ namespace Compress.SevenZip.Structure
                 Coders[i] = new Coder();
                 Coders[i].Read(br);
 
-                numInStreams += (int) Coders[i].NumInStreams;
-                numOutStreams += (int) Coders[i].NumOutStreams;
+                numInStreams += (int)Coders[i].NumInStreams;
+                numOutStreams += (int)Coders[i].NumOutStreams;
             }
 
             int numBindPairs = numOutStreams - 1;
@@ -127,63 +127,63 @@ namespace Compress.SevenZip.Structure
         public static void ReadUnPackInfo(BinaryReader br, out Folder[] Folders)
         {
             Folders = null;
-            for (;;)
+            for (; ; )
             {
-                HeaderProperty hp = (HeaderProperty) br.ReadByte();
+                HeaderProperty hp = (HeaderProperty)br.ReadByte();
                 switch (hp)
                 {
                     case HeaderProperty.kFolder:
-                    {
-                        ulong numFolders = br.ReadEncodedUInt64();
-
-                        Folders = new Folder[numFolders];
-
-                        byte external = br.ReadByte();
-                        switch (external)
                         {
-                            case 0:
-                            {
-                                ulong folderIndex = 0;
-                                for (uint i = 0; i < numFolders; i++)
-                                {
-                                    Folders[i] = new Folder();
-                                    Folders[i].ReadFolder(br);
-                                    Folders[i].PackedStreamIndexBase = folderIndex;
-                                    folderIndex += (ulong) Folders[i].PackedStreamIndices.Length;
-                                }
+                            ulong numFolders = br.ReadEncodedUInt64();
 
-                                break;
+                            Folders = new Folder[numFolders];
+
+                            byte external = br.ReadByte();
+                            switch (external)
+                            {
+                                case 0:
+                                    {
+                                        ulong folderIndex = 0;
+                                        for (uint i = 0; i < numFolders; i++)
+                                        {
+                                            Folders[i] = new Folder();
+                                            Folders[i].ReadFolder(br);
+                                            Folders[i].PackedStreamIndexBase = folderIndex;
+                                            folderIndex += (ulong)Folders[i].PackedStreamIndices.Length;
+                                        }
+
+                                        break;
+                                    }
+
+                                case 1:
+                                    throw new NotSupportedException("External flag");
                             }
 
-                            case 1:
-                                throw new NotSupportedException("External flag");
+                            continue;
                         }
-
-                        continue;
-                    }
 
 
                     case HeaderProperty.kCodersUnPackSize:
-                    {
-                        for (uint i = 0; i < Folders.Length; i++)
                         {
-                            Folders[i].ReadUnpackedStreamSize(br);
-                        }
+                            for (uint i = 0; i < Folders.Length; i++)
+                            {
+                                Folders[i].ReadUnpackedStreamSize(br);
+                            }
 
-                        continue;
-                    }
+                            continue;
+                        }
 
                     case HeaderProperty.kCRC:
-                    {
-                        uint?[] crcs;
-                        Util.UnPackCRCs(br, (ulong) Folders.Length, out crcs);
-                        for (int i = 0; i < Folders.Length; i++)
                         {
-                            Folders[i].UnpackCRC = crcs[i];
-                        }
+                            uint?[] crcs;
+                            Util.UnPackCRCs(br, (ulong)Folders.Length, out crcs);
+                            for (int i = 0; i < Folders.Length; i++)
+                            {
+                                Folders[i].UnpackCRC = crcs[i];
+                            }
 
-                        continue;
-                    }
+                            continue;
+                        }
 
                     case HeaderProperty.kEnd:
                         return;
@@ -196,91 +196,91 @@ namespace Compress.SevenZip.Structure
 
         public static void ReadSubStreamsInfo(BinaryReader br, ref Folder[] Folders)
         {
-            for (;;)
+            for (; ; )
             {
-                HeaderProperty hp = (HeaderProperty) br.ReadByte();
+                HeaderProperty hp = (HeaderProperty)br.ReadByte();
                 switch (hp)
                 {
                     case HeaderProperty.kNumUnPackStream:
-                    {
-                        for (int f = 0; f < Folders.Length; f++)
                         {
-                            int numStreams = (int) br.ReadEncodedUInt64();
-                            Folders[f].UnpackedStreamInfo = new UnpackedStreamInfo[numStreams];
-                            for (int i = 0; i < numStreams; i++)
+                            for (int f = 0; f < Folders.Length; f++)
                             {
-                                Folders[f].UnpackedStreamInfo[i] = new UnpackedStreamInfo();
-                            }
-                        }
-
-                        continue;
-                    }
-
-                    case HeaderProperty.kSize:
-                    {
-                        for (int f = 0; f < Folders.Length; f++)
-                        {
-                            Folder folder = Folders[f];
-
-                            if (folder.UnpackedStreamInfo.Length == 0)
-                            {
-                                continue;
-                            }
-
-                            ulong sum = 0;
-                            for (int i = 0; i < folder.UnpackedStreamInfo.Length - 1; i++)
-                            {
-                                ulong size = br.ReadEncodedUInt64();
-                                folder.UnpackedStreamInfo[i].UnpackedSize = size;
-                                sum += size;
-                            }
-
-                            folder.UnpackedStreamInfo[folder.UnpackedStreamInfo.Length - 1].UnpackedSize =
-                                folder.GetUnpackSize() - sum;
-                        }
-
-                        continue;
-                    }
-
-                    case HeaderProperty.kCRC:
-                    {
-                        ulong numCRC = 0;
-                        foreach (Folder folder in Folders)
-                        {
-                            if (folder.UnpackedStreamInfo == null)
-                            {
-                                folder.UnpackedStreamInfo = new UnpackedStreamInfo[1];
-                                folder.UnpackedStreamInfo[0] = new UnpackedStreamInfo();
-                                folder.UnpackedStreamInfo[0].UnpackedSize = folder.GetUnpackSize();
-                            }
-
-                            if ((folder.UnpackedStreamInfo.Length != 1) || !folder.UnpackCRC.HasValue)
-                            {
-                                numCRC += (ulong) folder.UnpackedStreamInfo.Length;
-                            }
-                        }
-
-                        int crcIndex = 0;
-                        uint?[] crc;
-                        Util.UnPackCRCs(br, numCRC, out crc);
-                        for (uint i = 0; i < Folders.Length; i++)
-                        {
-                            Folder folder = Folders[i];
-                            if ((folder.UnpackedStreamInfo.Length == 1) && folder.UnpackCRC.HasValue)
-                            {
-                                folder.UnpackedStreamInfo[0].Crc = folder.UnpackCRC;
-                            }
-                            else
-                            {
-                                for (uint j = 0; j < folder.UnpackedStreamInfo.Length; j++, crcIndex++)
+                                int numStreams = (int)br.ReadEncodedUInt64();
+                                Folders[f].UnpackedStreamInfo = new UnpackedStreamInfo[numStreams];
+                                for (int i = 0; i < numStreams; i++)
                                 {
-                                    folder.UnpackedStreamInfo[j].Crc = crc[crcIndex];
+                                    Folders[f].UnpackedStreamInfo[i] = new UnpackedStreamInfo();
                                 }
                             }
+
+                            continue;
                         }
 
-                        continue;
-                    }
+                    case HeaderProperty.kSize:
+                        {
+                            for (int f = 0; f < Folders.Length; f++)
+                            {
+                                Folder folder = Folders[f];
+
+                                if (folder.UnpackedStreamInfo.Length == 0)
+                                {
+                                    continue;
+                                }
+
+                                ulong sum = 0;
+                                for (int i = 0; i < folder.UnpackedStreamInfo.Length - 1; i++)
+                                {
+                                    ulong size = br.ReadEncodedUInt64();
+                                    folder.UnpackedStreamInfo[i].UnpackedSize = size;
+                                    sum += size;
+                                }
+
+                                folder.UnpackedStreamInfo[folder.UnpackedStreamInfo.Length - 1].UnpackedSize =
+                                    folder.GetUnpackSize() - sum;
+                            }
+
+                            continue;
+                        }
+
+                    case HeaderProperty.kCRC:
+                        {
+                            ulong numCRC = 0;
+                            foreach (Folder folder in Folders)
+                            {
+                                if (folder.UnpackedStreamInfo == null)
+                                {
+                                    folder.UnpackedStreamInfo = new UnpackedStreamInfo[1];
+                                    folder.UnpackedStreamInfo[0] = new UnpackedStreamInfo();
+                                    folder.UnpackedStreamInfo[0].UnpackedSize = folder.GetUnpackSize();
+                                }
+
+                                if ((folder.UnpackedStreamInfo.Length != 1) || !folder.UnpackCRC.HasValue)
+                                {
+                                    numCRC += (ulong)folder.UnpackedStreamInfo.Length;
+                                }
+                            }
+
+                            int crcIndex = 0;
+                            uint?[] crc;
+                            Util.UnPackCRCs(br, numCRC, out crc);
+                            for (uint i = 0; i < Folders.Length; i++)
+                            {
+                                Folder folder = Folders[i];
+                                if ((folder.UnpackedStreamInfo.Length == 1) && folder.UnpackCRC.HasValue)
+                                {
+                                    folder.UnpackedStreamInfo[0].Crc = folder.UnpackCRC;
+                                }
+                                else
+                                {
+                                    for (uint j = 0; j < folder.UnpackedStreamInfo.Length; j++, crcIndex++)
+                                    {
+                                        folder.UnpackedStreamInfo[j].Crc = crc[crcIndex];
+                                    }
+                                }
+                            }
+
+                            continue;
+                        }
 
                     case HeaderProperty.kEnd:
                         return;
@@ -293,14 +293,14 @@ namespace Compress.SevenZip.Structure
 
         private void WriteFolder(BinaryWriter bw)
         {
-            ulong numCoders = (ulong) Coders.Length;
+            ulong numCoders = (ulong)Coders.Length;
             bw.WriteEncodedUInt64(numCoders);
             for (ulong i = 0; i < numCoders; i++)
             {
                 Coders[i].Write(bw);
             }
 
-            ulong numBindingPairs = BindPairs == null ? 0 : (ulong) BindPairs.Length;
+            ulong numBindingPairs = BindPairs == null ? 0 : (ulong)BindPairs.Length;
             for (ulong i = 0; i < numBindingPairs; i++)
             {
                 BindPairs[i].Write(bw);
@@ -311,7 +311,7 @@ namespace Compress.SevenZip.Structure
 
         private void WriteUnpackedStreamSize(BinaryWriter bw)
         {
-            ulong numUnpackedStreamSizes = (ulong) UnpackedStreamSizes.Length;
+            ulong numUnpackedStreamSizes = (ulong)UnpackedStreamSizes.Length;
             for (ulong i = 0; i < numUnpackedStreamSizes; i++)
             {
                 bw.WriteEncodedUInt64(UnpackedStreamSizes[i]);
@@ -320,45 +320,53 @@ namespace Compress.SevenZip.Structure
 
         public static void WriteUnPackInfo(BinaryWriter bw, Folder[] Folders)
         {
-            bw.Write((byte) HeaderProperty.kUnPackInfo);
+            bw.Write((byte)HeaderProperty.kUnPackInfo);
 
-            bw.Write((byte) HeaderProperty.kFolder);
-            ulong numFolders = (ulong) Folders.Length;
+            bw.Write((byte)HeaderProperty.kFolder);
+            ulong numFolders = (ulong)Folders.Length;
             bw.WriteEncodedUInt64(numFolders);
-            bw.Write((byte) 0); //External Flag
+            bw.Write((byte)0); //External Flag
             for (ulong i = 0; i < numFolders; i++)
             {
                 Folders[i].WriteFolder(bw);
             }
 
 
-            bw.Write((byte) HeaderProperty.kCodersUnPackSize);
+            bw.Write((byte)HeaderProperty.kCodersUnPackSize);
             for (ulong i = 0; i < numFolders; i++)
             {
                 Folders[i].WriteUnpackedStreamSize(bw);
             }
 
-            if (Folders[0].UnpackCRC != null)
+            bool hasCRC = false;
+            uint?[] CRCs = new uint?[numFolders];
+            for (ulong i = 0; i < numFolders; i++)
             {
-                bw.Write((byte) HeaderProperty.kCRC);
-                throw new NotImplementedException();
+                CRCs[i] = Folders[i].UnpackCRC;
+                hasCRC |= (CRCs[i] != null);
             }
 
-            bw.Write((byte) HeaderProperty.kEnd);
+            if (hasCRC)
+            {
+                bw.Write((byte)HeaderProperty.kCRC);
+                Util.WritePackedCRCs(bw, CRCs);
+            }
+
+            bw.Write((byte)HeaderProperty.kEnd);
         }
 
         public static void WriteSubStreamsInfo(BinaryWriter bw, Folder[] Folders)
         {
-            bw.Write((byte) HeaderProperty.kSubStreamsInfo);
+            bw.Write((byte)HeaderProperty.kSubStreamsInfo);
 
-            bw.Write((byte) HeaderProperty.kNumUnPackStream);
+            bw.Write((byte)HeaderProperty.kNumUnPackStream);
             for (int f = 0; f < Folders.Length; f++)
             {
-                ulong numStreams = (ulong) Folders[f].UnpackedStreamInfo.Length;
+                ulong numStreams = (ulong)Folders[f].UnpackedStreamInfo.Length;
                 bw.WriteEncodedUInt64(numStreams);
             }
 
-            bw.Write((byte) HeaderProperty.kSize);
+            bw.Write((byte)HeaderProperty.kSize);
 
             for (int f = 0; f < Folders.Length; f++)
             {
@@ -369,8 +377,8 @@ namespace Compress.SevenZip.Structure
                 }
             }
 
-            bw.Write((byte) HeaderProperty.kCRC);
-            bw.Write((byte) 1); // crc flags default to true
+            bw.Write((byte)HeaderProperty.kCRC);
+            bw.Write((byte)1); // crc flags default to true
             for (int f = 0; f < Folders.Length; f++)
             {
                 Folder folder = Folders[f];
@@ -380,7 +388,7 @@ namespace Compress.SevenZip.Structure
                 }
             }
 
-            bw.Write((byte) HeaderProperty.kEnd);
+            bw.Write((byte)HeaderProperty.kEnd);
         }
 
 

@@ -149,7 +149,7 @@ namespace Compress.SevenZip.Filters
             while (seekToGo > 0)
             {
                 long get = seekToGo > bufferSize ? bufferSize : seekToGo;
-                Read(seekBuffer, 0, (int) get);
+                Read(seekBuffer, 0, (int)get);
                 seekToGo -= get;
             }
             return position;

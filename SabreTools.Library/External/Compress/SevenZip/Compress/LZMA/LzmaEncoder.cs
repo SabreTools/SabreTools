@@ -876,7 +876,7 @@ namespace Compress.SevenZip.Compress.LZMA
                     }
                 }
 
-                UInt32 startLen = 2; // speed optimization 
+                UInt32 startLen = 2; // speed optimization
 
                 for (UInt32 repIndex = 0; repIndex < Base.kNumRepDistances; repIndex++)
                 {
@@ -1418,7 +1418,7 @@ namespace Compress.SevenZip.Compress.LZMA
         }
 
 
-        static string[] kMatchFinderIDs = 
+        static string[] kMatchFinderIDs =
         {
             "BT2",
             "BT4",

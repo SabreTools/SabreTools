@@ -29,6 +29,7 @@ namespace Compress
         ZipErrorTimeStamp,
         ZipErrorRollBackFile,
         ZipTryingToAccessADirectory,
+        ZipErrorWritingToOutputStream,
         ZipUntested
 
     }

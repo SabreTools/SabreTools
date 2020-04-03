@@ -4,7 +4,7 @@ namespace Compress.SevenZip.Filters
 {
     public class BCJFilter : Filter
     {
-        private static readonly bool[] MASK_TO_ALLOWED_STATUS = new bool[] {true, true, true, false, true, false, false, false};
+        private static readonly bool[] MASK_TO_ALLOWED_STATUS = new bool[] { true, true, true, false, true, false, false, false };
         private static readonly int[] MASK_TO_BIT_NUMBER = new int[] { 0, 1, 2, 2, 3, 3, 3, 3 };
 
         private int pos;
@@ -26,18 +26,24 @@ namespace Compress.SevenZip.Filters
             int end = offset + count - 5;
             int i;
 
-            for (i = offset; i <= end; ++i) {
+            for (i = offset; i <= end; ++i)
+            {
                 if ((buffer[i] & 0xFE) != 0xE8)
                     continue;
 
                 prevPos = i - prevPos;
-                if ((prevPos & ~3) != 0) { // (unsigned)prevPos > 3
+                if ((prevPos & ~3) != 0)
+                { // (unsigned)prevPos > 3
                     prevMask = 0;
-                } else {
+                }
+                else
+                {
                     prevMask = (prevMask << (prevPos - 1)) & 7;
-                    if (prevMask != 0) {
+                    if (prevMask != 0)
+                    {
                         if (!MASK_TO_ALLOWED_STATUS[prevMask] || test86MSByte(
-                                buffer[i + 4 - MASK_TO_BIT_NUMBER[prevMask]])) {
+                                buffer[i + 4 - MASK_TO_BIT_NUMBER[prevMask]]))
+                        {
                             prevPos = i;
                             prevMask = (prevMask << 1) | 1;
                             continue;
@@ -47,13 +53,15 @@ namespace Compress.SevenZip.Filters
 
                 prevPos = i;
 
-                if (test86MSByte(buffer[i + 4])) {
+                if (test86MSByte(buffer[i + 4]))
+                {
                     int src = buffer[i + 1]
                               | (buffer[i + 2] << 8)
                               | (buffer[i + 3] << 16)
                               | (buffer[i + 4] << 24);
                     int dest;
-                    while (true) {
+                    while (true)
+                    {
                         if (isEncoder)
                             dest = src + (pos + i - offset);
                         else
@@ -74,7 +82,9 @@ namespace Compress.SevenZip.Filters
                     buffer[i + 3] = (byte)(dest >> 16);
                     buffer[i + 4] = (byte)(~(((dest >> 24) & 1) - 1));
                     i += 4;
-                } else {
+                }
+                else
+                {
                     prevMask = (prevMask << 1) | 1;
                 }
             }

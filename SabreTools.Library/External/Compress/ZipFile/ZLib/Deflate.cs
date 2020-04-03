@@ -545,10 +545,10 @@ namespace Compress.ZipFile.ZLib
         internal void send_tree(short[] tree, int max_code)
         {
             int n;                           // iterates over all tree elements
-            int prevlen   = -1;              // last emitted length
+            int prevlen = -1;              // last emitted length
             int curlen;                      // length of current code
-            int nextlen   = tree[0 * 2 + 1]; // length of next code
-            int count     = 0;               // repeat count of the current code
+            int nextlen = tree[0 * 2 + 1]; // length of next code
+            int count = 0;               // repeat count of the current code
             int max_count = 7;               // max repeat count
             int min_count = 4;               // min repeat count
 
@@ -729,7 +729,7 @@ namespace Compress.ZipFile.ZLib
             *                                                             *
             * this code is not turned on by default in ZLIB Trrntzip code *
             *                                                             *
-            * ************************************************************* 
+            * *************************************************************
             */
             if (false)   //CompSettings
             {

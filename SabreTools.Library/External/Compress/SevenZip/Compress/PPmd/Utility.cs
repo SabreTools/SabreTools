@@ -119,7 +119,7 @@ namespace Compress.SevenZip.Compress.PPmd
         }
 
         /// <summary> Read a int value from the byte array at the given position (Big Endian)
-        /// 
+        ///
         /// </summary>
         /// <param name="array">the array to read from
         /// </param>
@@ -142,7 +142,7 @@ namespace Compress.SevenZip.Compress.PPmd
 
         /// <summary> Read a short value from the byte array at the given position (little
         /// Endian)
-        /// 
+        ///
         /// </summary>
         /// <param name="array">the array to read from
         /// </param>
@@ -157,7 +157,7 @@ namespace Compress.SevenZip.Compress.PPmd
 
         /// <summary> Read an int value from the byte array at the given position (little
         /// Endian)
-        /// 
+        ///
         /// </summary>
         /// <param name="array">the array to read from
         /// </param>
@@ -171,7 +171,7 @@ namespace Compress.SevenZip.Compress.PPmd
         }
 
         /// <summary> Write an int value into the byte array at the given position (Big endian)
-        /// 
+        ///
         /// </summary>
         /// <param name="array">the array
         /// </param>
@@ -189,7 +189,7 @@ namespace Compress.SevenZip.Compress.PPmd
 
         /// <summary> Write a short value into the byte array at the given position (little
         /// endian)
-        /// 
+        ///
         /// </summary>
         /// <param name="array">the array
         /// </param>
@@ -221,7 +221,7 @@ namespace Compress.SevenZip.Compress.PPmd
 
         /// <summary> Write an int value into the byte array at the given position (little
         /// endian)
-        /// 
+        ///
         /// </summary>
         /// <param name="array">the array
         /// </param>

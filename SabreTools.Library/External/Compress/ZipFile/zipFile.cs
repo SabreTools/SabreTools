@@ -138,10 +138,6 @@ namespace Compress.ZipFile
             bool lTrrntzip = true;
 
             _centerDirStart = (ulong)_zipFs.Position;
-            if (_centerDirStart >= 0xffffffff)
-            {
-                _zip64 = true;
-            }
 
             using (CrcCalculatorStream crcCs = new CrcCalculatorStream(_zipFs, true))
             {
@@ -160,6 +156,9 @@ namespace Compress.ZipFile
                 _fileComment = lTrrntzip ? GetBytes("TORRENTZIPPED-" + crcCs.Crc.ToString("X8")) : new byte[0];
                 ZipStatus = lTrrntzip ? ZipStatus.TrrntZip : ZipStatus.None;
             }
+            _zip64 |= _centerDirStart >= 0xffffffff;
+            _zip64 |= _centerDirSize >= 0xffffffff;
+            _zip64 |= _localFiles.Count >= 0xffff;
 
             if (_zip64)
             {
@@ -218,7 +217,6 @@ namespace Compress.ZipFile
             return ZipReturn.ZipGood;
         }
 
-        // TODO: Figure out how to re-add the file time functionality to this
         public ZipReturn ZipFileOpenWriteStream(bool raw, bool trrntzip, string filename, ulong uncompressedSize, ushort compressionMethod, out Stream stream)
         {
             stream = null;
@@ -271,9 +269,9 @@ namespace Compress.ZipFile
             return ZipReturn.ZipGood;
         }
 
-        public void ZipFileAddDirectory()
+        public void ZipFileAddZeroLengthFile()
         {
-            LocalFile.LocalFileAddDirectory(_zipFs);
+            LocalFile.LocalFileAddZeroLengthFile(_zipFs);
         }
 
         /*
@@ -375,7 +373,7 @@ namespace Compress.ZipFile
 
                 _localFilesCount = zipBr.ReadUInt16(); // TotalNumberOfEnteriesDisk
 
-                tushort = zipBr.ReadUInt16(); // TotalNumber of enteries in the central directory 
+                tushort = zipBr.ReadUInt16(); // TotalNumber of enteries in the central directory
                 if (tushort != _localFilesCount)
                 {
                     return ZipReturn.ZipEndOfCentralDirectoryError;
@@ -405,7 +403,7 @@ namespace Compress.ZipFile
                 bw.Write((ushort)0); // NumberOfThisDisk
                 bw.Write((ushort)0); // NumberOfThisDiskCenterDir
                 bw.Write((ushort)(_localFiles.Count >= 0xffff ? 0xffff : _localFiles.Count)); // TotalNumberOfEnteriesDisk
-                bw.Write((ushort)(_localFiles.Count >= 0xffff ? 0xffff : _localFiles.Count)); // TotalNumber of enteries in the central directory 
+                bw.Write((ushort)(_localFiles.Count >= 0xffff ? 0xffff : _localFiles.Count)); // TotalNumber of enteries in the central directory
                 bw.Write((uint)(_centerDirSize >= 0xffffffff ? 0xffffffff : _centerDirSize));
                 bw.Write((uint)(_centerDirStart >= 0xffffffff ? 0xffffffff : _centerDirStart));
                 bw.Write((ushort)_fileComment.Length);
@@ -528,7 +526,7 @@ namespace Compress.ZipFile
 
 
 
-        // TODO: Figure out the timestamp instead of using ticks like we were before
+
         public ZipReturn ZipFileOpen(string newFilename, long timestamp, bool readHeaders)
         {
             ZipFileClose();
@@ -1042,7 +1040,7 @@ namespace Compress.ZipFile
             return true;
         }
 
-        public static int TrrntZipStringCompare(string string1, string string2)
+        private static int TrrntZipStringCompare(string string1, string string2)
         {
             char[] bytes1 = string1.ToCharArray();
             char[] bytes2 = string2.ToCharArray();
@@ -1799,8 +1797,12 @@ namespace Compress.ZipFile
 
                 if (_compressedSize == 0 && UncompressedSize == 0)
                 {
-                    LocalFileAddDirectory(zipFs);
+                    LocalFileAddZeroLengthFile(zipFs);
                     _compressedSize = (ulong)zipFs.Position - _dataLocation;
+                }
+                else if (_compressedSize == 0 && UncompressedSize != 0)
+                {
+                    return ZipReturn.ZipErrorWritingToOutputStream;
                 }
 
                 CRC = crc32;
@@ -1814,7 +1816,7 @@ namespace Compress.ZipFile
                 long posNow = zipFs.Position;
                 using (BinaryWriter bw = new BinaryWriter(zipFs, Encoding.UTF8, true))
                 {
-                    // _crc32Loction - 10  needs set to 45  
+                    // _crc32Loction - 10  needs set to 45
                     zipFs.Seek((long)_crc32Location - 10, SeekOrigin.Begin);
                     ushort versionNeededToExtract = 45;
                     bw.Write(versionNeededToExtract);
@@ -1892,7 +1894,7 @@ namespace Compress.ZipFile
                 zipFs.Seek(posNow, SeekOrigin.Begin);
             }
 
-            public static void LocalFileAddDirectory(Stream zipFs)
+            public static void LocalFileAddZeroLengthFile(Stream zipFs)
             {
                 zipFs.WriteByte(03);
                 zipFs.WriteByte(00);

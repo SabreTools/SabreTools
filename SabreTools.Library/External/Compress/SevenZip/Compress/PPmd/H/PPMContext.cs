@@ -305,7 +305,7 @@ namespace Compress.SevenZip.Compress.PPmd.H
         //		byte[] bytes = model.getSubAlloc().getHeap();
         //		int p1 = state1.Address;
         //		int p2 = state2.Address;
-        //		
+        //
         //		for (int i = 0; i < StatePtr.size; i++) {
         //			byte temp = bytes[p1+i];
         //			bytes[p1+i] = bytes[p2+i];
