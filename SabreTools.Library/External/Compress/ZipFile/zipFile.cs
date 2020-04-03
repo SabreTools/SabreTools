@@ -1040,7 +1040,7 @@ namespace Compress.ZipFile
             return true;
         }
 
-        private static int TrrntZipStringCompare(string string1, string string2)
+        public static int TrrntZipStringCompare(string string1, string string2)
         {
             char[] bytes1 = string1.ToCharArray();
             char[] bytes2 = string2.ToCharArray();

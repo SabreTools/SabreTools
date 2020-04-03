@@ -282,7 +282,7 @@ namespace RVIO
             if (!Win32Native.MoveFile(fullsourceDirName, fulldestDirName))
             {
                 int hr = Marshal.GetLastWin32Error();
-                if (hr == Win32Native.ERROR_FILE_NOT_FOUND) // Source dir not found 
+                if (hr == Win32Native.ERROR_FILE_NOT_FOUND) // Source dir not found
                 {
                     throw new Exception("ERROR_PATH_NOT_FOUND " + fullsourceDirName);
                 }
@@ -363,7 +363,7 @@ namespace RVIO
             bool r = Win32Native.CopyFile(fullSourceFileName, fullDestFileName, !overwrite);
             if (!r)
             {
-                // Save Win32 error because subsequent checks will overwrite this HRESULT. 
+                // Save Win32 error because subsequent checks will overwrite this HRESULT.
                 int errorCode = Marshal.GetLastWin32Error();
                 string fileName = destFileName;
 
@@ -371,7 +371,7 @@ namespace RVIO
                 if (errorCode != Win32Native.ERROR_FILE_EXISTS)
                 {
                     // For a number of error codes (sharing violation, path
-                    // not found, etc) we don't know if the problem was with 
+                    // not found, etc) we don't know if the problem was with
                     // the source or dest file.  Try reading the source file.
                     using (SafeFileHandle handle = Win32Native.UnsafeCreateFile(fullSourceFileName, FileStream.GENERIC_READ, FileShare.Read, null, FileMode.Open, 0, IntPtr.Zero))
                     {
@@ -416,7 +416,7 @@ namespace RVIO
                 throw new Exception(GetErrorCode(hr), new Exception("ERROR_MOVING_FILE. (" + fullSourceFileName + " to " + fullDestFileName + ")"));
             }
         }
-        
+
         public static void Delete(string path)
         {
             if (unix.IsUnix)
@@ -443,6 +443,8 @@ namespace RVIO
             {
                 case 5: return "ERROR_ACCESS_DENIED: Access is denied.";
                 case 32: return "ERROR_FILE_IN_USE: The file is in use by another process.";
+                case 39: return "ERROR_HANDLE_DISK_FULL: The disk is full.";
+                case 112: return "ERROR_DISK_FULL: There is not enough space on the disk.";
                 case 123: return "ERROR_INVALID_NAME: The filename, directory name, or volume label syntax is incorrect.";
                 case 183: return "ERROR_ALREADY_EXISTS: Cannot create a file when that file already exists.";
             }
@@ -464,7 +466,7 @@ namespace RVIO
                     return false;
                 }
             }
-            
+
             string fullPath = NameFix.AddLongPathPrefix(path);
             return Win32Native.SetFileAttributes(fullPath, (int)fileAttributes);
         }
