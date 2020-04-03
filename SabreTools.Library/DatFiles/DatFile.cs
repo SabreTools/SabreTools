@@ -4094,9 +4094,6 @@ namespace SabreTools.Library.DatFiles
         private bool RebuildIndividualFile(DatItem datItem, string file, string outDir, bool date,
             bool inverse, OutputFormat outputFormat, bool romba, bool updateDat, bool? isZip, string headerToCheckAgainst)
         {
-            // Set the output value
-            bool rebuilt = true;
-
             // If the DatItem is a Disk, force rebuilding to a folder except if TGZ
             if (datItem.ItemType == ItemType.Disk && outputFormat != OutputFormat.TorrentGzip)
             {
@@ -4152,14 +4149,12 @@ namespace SabreTools.Library.DatFiles
                     try
                     {
                         File.Copy(file, outDir);
-                        rebuilt &= true;
+                        return true;
                     }
                     catch
                     {
-                        rebuilt = false;
+                        return false;
                     }
-
-                    return rebuilt;
                 }
 
                 // Get a generic stream for the file
@@ -4192,7 +4187,9 @@ namespace SabreTools.Library.DatFiles
                     fileStream.Seek(0, SeekOrigin.Begin);
 
                 Globals.Logger.User("Matches found for '{0}', rebuilding accordingly...", Path.GetFileName(datItem.Name));
-                rebuilt = true;
+                
+                // Set the initial output value
+                bool rebuilt = true;
 
                 // Now loop through the list and rebuild accordingly
                 foreach (DatItem item in dupes)
@@ -4237,14 +4234,12 @@ namespace SabreTools.Library.DatFiles
                     try
                     {
                         File.Copy(file, outDir);
-                        rebuilt &= true;
+                        return true;
                     }
                     catch
                     {
-                        rebuilt = false;
+                        return false;
                     }
-
-                    return rebuilt;
                 }
 
                 // Get a generic stream for the file
