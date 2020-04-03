@@ -4064,7 +4064,7 @@ namespace SabreTools.Library.DatFiles
                     foreach (BaseFile entry in entries)
                     {
                         DatItem datItem = Utilities.GetDatItem(entry);
-                        usedInternally &= RebuildIndividualFile(datItem, file, outDir, date, inverse, outputFormat,
+                        usedInternally |= RebuildIndividualFile(datItem, file, outDir, date, inverse, outputFormat,
                             romba, updateDat, !isTorrentGzip /* isZip */, headerToCheckAgainst);
                     }
                 }
