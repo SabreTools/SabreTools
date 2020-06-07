@@ -227,13 +227,9 @@ namespace SabreTools.Library.Help
 
             // If we have a midpoint set, check to see if the string needs padding
             if (midpoint > 0 && output.Length < midpoint)
-            {
                 output += CreatePadding(midpoint - output.Length);
-            }
             else
-            {
                 output += " ";
-            }
 
             // Append the description
             output += this.Description;
@@ -315,6 +311,7 @@ namespace SabreTools.Library.Help
             {
                 blank += " ";
             }
+
             return blank;
         }
 
@@ -370,13 +367,9 @@ namespace SabreTools.Library.Help
 
             // If we have a midpoint set, check to see if the string needs padding
             if (midpoint > 0 && output.Length < midpointAdjusted)
-            {
                 output += CreatePadding(midpointAdjusted - output.Length);
-            }
             else
-            {
                 output += " ";
-            }
 
             // Append the description
             output += this.Description;
@@ -475,66 +468,64 @@ namespace SabreTools.Library.Help
 
                         // If we've already found this feature before
                         if (_foundOnce && !ignore)
-                        {
                             valid = false;
-                        }
 
                         _foundOnce = true;
                     }
+
                     break;
+
                 // If we have an Int32, try to parse it if at all possible
                 case FeatureType.Int32:
                     valid = input.Contains("=") && this.Flags.Contains(input.Split('=')[0]);
                     if (valid)
                     {
                         if (!Int32.TryParse(input.Split('=')[1], out int value))
-                        {
                             value = Int32.MinValue;
-                        }
+
                         _valueInt32 = value;
 
                         // If we've already found this feature before
                         if (_foundOnce && !ignore)
-                        {
                             valid = false;
-                        }
 
                         _foundOnce = true;
                     }
+
                     break;
+
                 // If we have an Int32, try to parse it if at all possible
                 case FeatureType.Int64:
                     valid = input.Contains("=") && this.Flags.Contains(input.Split('=')[0]);
                     if (valid)
                     {
                         if (!Int64.TryParse(input.Split('=')[1], out long value))
-                        {
                             value = Int64.MinValue;
-                        }
+
                         _valueInt64 = value;
 
                         // If we've already found this feature before
                         if (_foundOnce && !ignore)
-                        {
                             valid = false;
-                        }
 
                         _foundOnce = true;
                     }
+
                     break;
+
                 // If we have an input, make sure it has an equals sign in it
                 case FeatureType.List:
                     valid = input.Contains("=") && this.Flags.Contains(input.Split('=')[0]);
                     if (valid)
                     {
                         if (_valueList == null)
-                        {
                             _valueList = new List<string>();
-                        }
 
                         _valueList.Add(input.Split('=')[1]);
                     }
+
                     break;
+
                 case FeatureType.String:
                     valid = input.Contains("=") && this.Flags.Contains(input.Split('=')[0]);
                     if (valid)
@@ -543,12 +534,11 @@ namespace SabreTools.Library.Help
 
                         // If we've already found this feature before
                         if (_foundOnce && !ignore)
-                        {
                             valid = false;
-                        }
 
                         _foundOnce = true;
                     }
+
                     break;
             }
 
@@ -561,17 +551,13 @@ namespace SabreTools.Library.Help
 
                     // If we've found a valid feature, we break out
                     if (valid)
-                    {
                         break;
-                    }
                 }
             }
 
             // If we're not valid at this point, we want to check if this flag is a file or a folder
             if (!valid)
-            {
                 valid = File.Exists(input) || Directory.Exists(input);
-            }
 
             return valid;
         }

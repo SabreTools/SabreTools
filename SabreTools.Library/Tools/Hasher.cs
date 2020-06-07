@@ -9,6 +9,9 @@ using SabreTools.Library.Data;
 
 namespace SabreTools.Library.Tools
 {
+    /// <summary>
+    /// Async hashing class wraper
+    /// </summary>
     public class Hasher
     {
         public Hash HashType { get; private set; }
@@ -64,6 +67,9 @@ namespace SabreTools.Library.Tools
             _hasher.Dispose();
         }
 
+        /// <summary>
+        /// Process a buffer of some length with the internal hash algorithm
+        /// </summary>
         public async Task Process(byte[] buffer, int size)
         {
             switch (HashType)
@@ -86,6 +92,9 @@ namespace SabreTools.Library.Tools
             }
         }
 
+        /// <summary>
+        /// Finalize the internal hash algorigthm
+        /// </summary>
         public async Task Finalize()
         {
             byte[] emptyBuffer = new byte[0];
@@ -108,6 +117,9 @@ namespace SabreTools.Library.Tools
             }
         }
 
+        /// <summary>
+        /// Get internal hash as a byte array
+        /// </summary>
         public byte[] GetHash()
         {
             switch (HashType)

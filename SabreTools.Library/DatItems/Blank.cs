@@ -69,12 +69,10 @@ namespace SabreTools.Library.DatItems
         {
             // If we don't have a blank, return false
             if (this.ItemType != other.ItemType)
-            {
                 return false;
-            }
 
-            // Otherwise, treat it as a
-            Blank newOther = (Blank)other;
+            // Otherwise, treat it as a Blank
+            Blank newOther = other as Blank;
 
             // If the archive information matches
             return (_machine == newOther._machine);

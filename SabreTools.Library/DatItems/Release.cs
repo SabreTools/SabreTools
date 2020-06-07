@@ -102,12 +102,10 @@ namespace SabreTools.Library.DatItems
         {
             // If we don't have a release return false
             if (this.ItemType != other.ItemType)
-            {
                 return false;
-            }
 
-            // Otherwise, treat it as a reease
-            Release newOther = (Release)other;
+            // Otherwise, treat it as a Release
+            Release newOther = other as Release;
 
             // If the archive information matches
             return (this.Name == newOther.Name

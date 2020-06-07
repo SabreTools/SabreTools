@@ -114,21 +114,16 @@ namespace SabreTools.Library.Skippers
 
                 // Seek to the beginning offset
                 if (StartOffset == null)
-                {
                     success = false;
-                }
+
                 else if (Math.Abs((long)StartOffset) > input.Length)
-                {
                     success = false;
-                }
+
                 else if (StartOffset > 0)
-                {
                     input.Seek((long)StartOffset, SeekOrigin.Begin);
-                }
+
                 else if (StartOffset < 0)
-                {
                     input.Seek((long)StartOffset, SeekOrigin.End);
-                }
 
                 // Then read and apply the operation as you go
                 if (success)
@@ -154,6 +149,7 @@ namespace SabreTools.Library.Skippers
                                 r <<= s;
                                 buffer[pos] = (byte)r;
                                 break;
+
                             case HeaderSkipOperation.Byteswap:
                                 if (pos % 2 == 1)
                                 {
@@ -164,12 +160,15 @@ namespace SabreTools.Library.Skippers
                                     buffer[pos + 1] = b;
                                 }
                                 break;
+
                             case HeaderSkipOperation.Wordswap:
                                 buffer[3 - pos] = b;
                                 break;
+
                             case HeaderSkipOperation.WordByteswap:
                                 buffer[(pos + 2) % 4] = b;
                                 break;
+
                             case HeaderSkipOperation.None:
                             default:
                                 buffer[pos] = b;
@@ -187,6 +186,7 @@ namespace SabreTools.Library.Skippers
                             buffer = new byte[4];
                         }
                     }
+
                     // If there's anything more in the buffer, write only the left bits
                     for (int i = 0; i < pos; i++)
                     {
@@ -203,15 +203,11 @@ namespace SabreTools.Library.Skippers
             {
                 // If we're not keeping the read stream open, dispose of the binary reader
                 if (!keepReadOpen)
-                {
                     br?.Dispose();
-                }
 
                 // If we're not keeping the write stream open, dispose of the binary reader
                 if (!keepWriteOpen)
-                {
                     bw?.Dispose();
-                }
             }
 
             return success;

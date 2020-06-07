@@ -51,9 +51,7 @@ namespace SabreTools.Library.Reports
             _datFile = datfile;
 
             if (!stream.CanWrite)
-            {
                 throw new ArgumentException(nameof(stream));
-            }
 
             _writer = new StreamWriter(stream);
             _baddumpCol = baddumpCol;

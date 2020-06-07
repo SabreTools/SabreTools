@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using SabreTools.Library.Data;
 using SabreTools.Library.DatFiles;
 using SabreTools.Library.Tools;
+using System.Linq;
 
 #if MONO
 using System.IO;
@@ -601,9 +602,8 @@ namespace SabreTools.Library.DatItems
             try
             {
                 if (this.Name == other.Name)
-                {
                     ret = (this.Equals(other) ? 0 : 1);
-                }
+
                 ret = String.Compare(this.Name, other.Name);
             }
             catch
@@ -632,34 +632,24 @@ namespace SabreTools.Library.DatItems
 
             // If we don't have a duplicate at all, return none
             if (!this.Equals(lastItem))
-            {
                 return output;
-            }
 
             // If the duplicate is external already or should be, set it
             if ((lastItem.DupeType & DupeType.External) != 0 || lastItem.SystemID != this.SystemID || lastItem.SourceID != this.SourceID)
             {
                 if (lastItem.MachineName == this.MachineName && lastItem.Name == this.Name)
-                {
                     output = DupeType.External | DupeType.All;
-                }
                 else
-                {
                     output = DupeType.External | DupeType.Hash;
-                }
             }
 
             // Otherwise, it's considered an internal dupe
             else
             {
                 if (lastItem.MachineName == this.MachineName && lastItem.Name == this.Name)
-                {
                     output = DupeType.Internal | DupeType.All;
-                }
                 else
-                {
                     output = DupeType.Internal | DupeType.Hash;
-                }
             }
 
             return output;
@@ -679,31 +669,18 @@ namespace SabreTools.Library.DatItems
         {
             // Check for an empty rom list first
             if (datdata.Count == 0)
-            {
                 return false;
-            }
 
             // We want to get the proper key for the DatItem
             string key = SortAndGetKey(datdata, sorted);
 
             // If the key doesn't exist, return the empty list
             if (!datdata.Contains(key))
-            {
                 return false;
-            }
 
             // Try to find duplicates
             List<DatItem> roms = datdata[key];
-
-            foreach (DatItem rom in roms)
-            {
-                if (this.Equals(rom))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return roms.Any(r => this.Equals(r));
         }
 
         /// <summary>
@@ -767,9 +744,7 @@ namespace SabreTools.Library.DatItems
         {
             // If we're not already sorted, take care of it
             if (!sorted)
-            {
                 datdata.BucketByBestAvailable();
-            }
 
             // Now that we have the sorted type, we get the proper key
             return Utilities.GetKeyFromDatItem(this, datdata.SortedBy);
@@ -792,9 +767,7 @@ namespace SabreTools.Library.DatItems
         {
             // Check for null or blank roms first
             if (infiles == null || infiles.Count == 0)
-            {
                 return new List<DatItem>();
-            }
 
             // Create output list
             List<DatItem> outfiles = new List<DatItem>();
@@ -805,9 +778,7 @@ namespace SabreTools.Library.DatItems
             {
                 // If we don't have a Rom or a Disk, we skip checking for duplicates
                 if (file.ItemType != ItemType.Rom && file.ItemType != ItemType.Disk)
-                {
                     continue;
-                }
 
                 // If it's a nodump, add and skip
                 if (file.ItemType == ItemType.Rom && ((Rom)file).ItemStatus == ItemStatus.Nodump)
@@ -852,46 +823,46 @@ namespace SabreTools.Library.DatItems
                             ((Rom)saveditem).Size = (((Rom)saveditem).Size == -1 && ((Rom)file).Size != -1
                                 ? ((Rom)file).Size
                                 : ((Rom)saveditem).Size);
-                            ((Rom)saveditem).CRC = (String.IsNullOrWhiteSpace(((Rom)saveditem).CRC) && !String.IsNullOrWhiteSpace(((Rom)file).CRC)
+                            ((Rom)saveditem).CRC = (string.IsNullOrWhiteSpace(((Rom)saveditem).CRC) && !string.IsNullOrWhiteSpace(((Rom)file).CRC)
                                 ? ((Rom)file).CRC
                                 : ((Rom)saveditem).CRC);
-                            ((Rom)saveditem).MD5 = (String.IsNullOrWhiteSpace(((Rom)saveditem).MD5) && !String.IsNullOrWhiteSpace(((Rom)file).MD5)
+                            ((Rom)saveditem).MD5 = (string.IsNullOrWhiteSpace(((Rom)saveditem).MD5) && !string.IsNullOrWhiteSpace(((Rom)file).MD5)
                                 ? ((Rom)file).MD5
                                 : ((Rom)saveditem).MD5);
-                            ((Rom)saveditem).RIPEMD160 = (String.IsNullOrWhiteSpace(((Rom)saveditem).RIPEMD160) && !String.IsNullOrWhiteSpace(((Rom)file).RIPEMD160)
+                            ((Rom)saveditem).RIPEMD160 = (string.IsNullOrWhiteSpace(((Rom)saveditem).RIPEMD160) && !string.IsNullOrWhiteSpace(((Rom)file).RIPEMD160)
                                 ? ((Rom)file).RIPEMD160
                                 : ((Rom)saveditem).RIPEMD160);
-                            ((Rom)saveditem).SHA1 = (String.IsNullOrWhiteSpace(((Rom)saveditem).SHA1) && !String.IsNullOrWhiteSpace(((Rom)file).SHA1)
+                            ((Rom)saveditem).SHA1 = (string.IsNullOrWhiteSpace(((Rom)saveditem).SHA1) && !string.IsNullOrWhiteSpace(((Rom)file).SHA1)
                                 ? ((Rom)file).SHA1
                                 : ((Rom)saveditem).SHA1);
-                            ((Rom)saveditem).SHA256 = (String.IsNullOrWhiteSpace(((Rom)saveditem).SHA256) && !String.IsNullOrWhiteSpace(((Rom)file).SHA256)
+                            ((Rom)saveditem).SHA256 = (string.IsNullOrWhiteSpace(((Rom)saveditem).SHA256) && !string.IsNullOrWhiteSpace(((Rom)file).SHA256)
                                 ? ((Rom)file).SHA256
                                 : ((Rom)saveditem).SHA256);
-                            ((Rom)saveditem).SHA384 = (String.IsNullOrWhiteSpace(((Rom)saveditem).SHA384) && !String.IsNullOrWhiteSpace(((Rom)file).SHA384)
+                            ((Rom)saveditem).SHA384 = (string.IsNullOrWhiteSpace(((Rom)saveditem).SHA384) && !string.IsNullOrWhiteSpace(((Rom)file).SHA384)
                                 ? ((Rom)file).SHA384
                                 : ((Rom)saveditem).SHA384);
-                            ((Rom)saveditem).SHA512 = (String.IsNullOrWhiteSpace(((Rom)saveditem).SHA512) && !String.IsNullOrWhiteSpace(((Rom)file).SHA512)
+                            ((Rom)saveditem).SHA512 = (string.IsNullOrWhiteSpace(((Rom)saveditem).SHA512) && !string.IsNullOrWhiteSpace(((Rom)file).SHA512)
                                 ? ((Rom)file).SHA512
                                 : ((Rom)saveditem).SHA512);
                         }
                         else if (file.ItemType == ItemType.Disk)
                         {
-                            ((Disk)saveditem).MD5 = (String.IsNullOrWhiteSpace(((Disk)saveditem).MD5) && !String.IsNullOrWhiteSpace(((Disk)file).MD5)
+                            ((Disk)saveditem).MD5 = (string.IsNullOrWhiteSpace(((Disk)saveditem).MD5) && !string.IsNullOrWhiteSpace(((Disk)file).MD5)
                                 ? ((Disk)file).MD5
                                 : ((Disk)saveditem).MD5);
-                            ((Disk)saveditem).RIPEMD160 = (String.IsNullOrWhiteSpace(((Disk)saveditem).RIPEMD160) && !String.IsNullOrWhiteSpace(((Disk)file).RIPEMD160)
+                            ((Disk)saveditem).RIPEMD160 = (string.IsNullOrWhiteSpace(((Disk)saveditem).RIPEMD160) && !string.IsNullOrWhiteSpace(((Disk)file).RIPEMD160)
                                 ? ((Disk)file).RIPEMD160
                                 : ((Disk)saveditem).RIPEMD160);
-                            ((Disk)saveditem).SHA1 = (String.IsNullOrWhiteSpace(((Disk)saveditem).SHA1) && !String.IsNullOrWhiteSpace(((Disk)file).SHA1)
+                            ((Disk)saveditem).SHA1 = (string.IsNullOrWhiteSpace(((Disk)saveditem).SHA1) && !string.IsNullOrWhiteSpace(((Disk)file).SHA1)
                                 ? ((Disk)file).SHA1
                                 : ((Disk)saveditem).SHA1);
-                            ((Disk)saveditem).SHA256 = (String.IsNullOrWhiteSpace(((Disk)saveditem).SHA256) && !String.IsNullOrWhiteSpace(((Disk)file).SHA256)
+                            ((Disk)saveditem).SHA256 = (string.IsNullOrWhiteSpace(((Disk)saveditem).SHA256) && !string.IsNullOrWhiteSpace(((Disk)file).SHA256)
                                 ? ((Disk)file).SHA256
                                 : ((Disk)saveditem).SHA256);
-                            ((Disk)saveditem).SHA384 = (String.IsNullOrWhiteSpace(((Disk)saveditem).SHA384) && !String.IsNullOrWhiteSpace(((Disk)file).SHA384)
+                            ((Disk)saveditem).SHA384 = (string.IsNullOrWhiteSpace(((Disk)saveditem).SHA384) && !string.IsNullOrWhiteSpace(((Disk)file).SHA384)
                                 ? ((Disk)file).SHA384
                                 : ((Disk)saveditem).SHA384);
-                            ((Disk)saveditem).SHA512 = (String.IsNullOrWhiteSpace(((Disk)saveditem).SHA512) && !String.IsNullOrWhiteSpace(((Disk)file).SHA512)
+                            ((Disk)saveditem).SHA512 = (string.IsNullOrWhiteSpace(((Disk)saveditem).SHA512) && !string.IsNullOrWhiteSpace(((Disk)file).SHA512)
                                 ? ((Disk)file).SHA512
                                 : ((Disk)saveditem).SHA512);
                         }
@@ -988,9 +959,9 @@ namespace SabreTools.Library.DatItems
                     if (datItem.ItemType == ItemType.Disk)
                     {
                         Disk disk = (Disk)datItem;
-                        disk.Name += "_" + (!String.IsNullOrWhiteSpace(disk.MD5)
+                        disk.Name += "_" + (!string.IsNullOrWhiteSpace(disk.MD5)
                             ? disk.MD5
-                            : !String.IsNullOrWhiteSpace(disk.SHA1)
+                            : !string.IsNullOrWhiteSpace(disk.SHA1)
                                 ? disk.SHA1
                                 : "1");
                         datItem = disk;
@@ -999,11 +970,11 @@ namespace SabreTools.Library.DatItems
                     else if (datItem.ItemType == ItemType.Rom)
                     {
                         Rom rom = (Rom)datItem;
-                        rom.Name += "_" + (!String.IsNullOrWhiteSpace(rom.CRC)
+                        rom.Name += "_" + (!string.IsNullOrWhiteSpace(rom.CRC)
                             ? rom.CRC
-                            : !String.IsNullOrWhiteSpace(rom.MD5)
+                            : !string.IsNullOrWhiteSpace(rom.MD5)
                                 ? rom.MD5
-                                : !String.IsNullOrWhiteSpace(rom.SHA1)
+                                : !string.IsNullOrWhiteSpace(rom.SHA1)
                                     ? rom.SHA1
                                     : "1");
                         datItem = rom;
@@ -1068,6 +1039,7 @@ namespace SabreTools.Library.DatItems
                                     {
                                         return nc.Compare(Path.GetFileName(Utilities.RemovePathUnsafeCharacters(x.Name)), Path.GetFileName(Utilities.RemovePathUnsafeCharacters(y.Name)));
                                     }
+
                                     return nc.Compare(Path.GetDirectoryName(Utilities.RemovePathUnsafeCharacters(x.Name)), Path.GetDirectoryName(Utilities.RemovePathUnsafeCharacters(y.Name)));
                                 }
                                 else if ((x.ItemType == ItemType.Rom || x.ItemType == ItemType.Disk) && (y.ItemType != ItemType.Rom && y.ItemType != ItemType.Disk))
@@ -1084,13 +1056,17 @@ namespace SabreTools.Library.DatItems
                                     {
                                         return nc.Compare(Path.GetFileName(x.Name), Path.GetFileName(y.Name));
                                     }
+
                                     return nc.Compare(Path.GetDirectoryName(x.Name), Path.GetDirectoryName(y.Name));
                                 }
                             }
+
                             return nc.Compare(x.MachineName, y.MachineName);
                         }
+
                         return (norename ? nc.Compare(x.MachineName, y.MachineName) : x.SourceID - y.SourceID);
                     }
+
                     return (norename ? nc.Compare(x.MachineName, y.MachineName) : x.SystemID - y.SystemID);
                 }
                 catch (Exception)

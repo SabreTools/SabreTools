@@ -161,9 +161,7 @@ namespace SabreTools.Library.DatFiles
 
                         // If we have a new game, output the beginning of the new item
                         if (lastgame == null || lastgame.ToLowerInvariant() != item.MachineName.ToLowerInvariant())
-                        {
                             WriteDatItem(sw, item, ignoreblanks);
-                        }
 
                         // If we have a "null" game (created by DATFromDir or something similar), log it to file
                         if (item.ItemType == ItemType.Rom
@@ -238,10 +236,7 @@ namespace SabreTools.Library.DatFiles
             try
             {
                 // No game should start with a path separator
-                if (rom.MachineName.StartsWith(Path.DirectorySeparatorChar.ToString()))
-                {
-                    rom.MachineName = rom.MachineName.Substring(1);
-                }
+                rom.MachineName = rom.MachineName.TrimStart(Path.DirectorySeparatorChar);
 
                 string state = (!ExcludeFields[(int)Field.MachineName] ? rom.MachineName : "") + ";"
                             + (!ExcludeFields[(int)Field.Description] ? rom.MachineDescription : "") + ";"

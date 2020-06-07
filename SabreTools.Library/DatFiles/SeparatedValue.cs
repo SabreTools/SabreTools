@@ -81,85 +81,103 @@ namespace SabreTools.Library.DatFiles
                             case "file name":
                                 columns.Add("DatFile.FileName");
                                 break;
+
                             case "internal name":
                                 columns.Add("DatFile.Name");
                                 break;
+
                             case "description":
                             case "dat description":
                                 columns.Add("DatFile.Description");
                                 break;
+
                             case "game name":
                             case "game":
                             case "machine":
                                 columns.Add("Machine.Name");
                                 break;
+
                             case "game description":
                                 columns.Add("Description");
                                 break;
+
                             case "type":
                                 columns.Add("DatItem.Type");
                                 break;
+
                             case "rom":
                             case "romname":
                             case "rom name":
                             case "name":
                                 columns.Add("Rom.Name");
                                 break;
+
                             case "disk":
                             case "diskname":
                             case "disk name":
                                 columns.Add("Disk.Name");
                                 break;
+
                             case "size":
                                 columns.Add("DatItem.Size");
                                 break;
+
                             case "crc":
                             case "crc hash":
                                 columns.Add("DatItem.CRC");
                                 break;
+
                             case "md5":
                             case "md5 hash":
                                 columns.Add("DatItem.MD5");
                                 break;
+
                             case "ripemd":
                             case "ripemd160":
                             case "ripemd hash":
                             case "ripemd160 hash":
                                 columns.Add("DatItem.RIPEMD160");
                                 break;
+
                             case "sha1":
                             case "sha-1":
                             case "sha1 hash":
                             case "sha-1 hash":
                                 columns.Add("DatItem.SHA1");
                                 break;
+
                             case "sha256":
                             case "sha-256":
                             case "sha256 hash":
                             case "sha-256 hash":
                                 columns.Add("DatItem.SHA256");
                                 break;
+
                             case "sha384":
                             case "sha-384":
                             case "sha384 hash":
                             case "sha-384 hash":
                                 columns.Add("DatItem.SHA384");
                                 break;
+
                             case "sha512":
                             case "sha-512":
                             case "sha512 hash":
                             case "sha-512 hash":
                                 columns.Add("DatItem.SHA512");
                                 break;
+
                             case "nodump":
                             case "no dump":
                             case "status":
                             case "item status":
                                 columns.Add("DatItem.Nodump");
                                 break;
+
                             case "date":
                                 columns.Add("DatItem.Date");
                                 break;
+
                             default:
                                 columns.Add("INVALID");
                                 break;
@@ -193,57 +211,72 @@ namespace SabreTools.Library.DatFiles
                     switch (columns[i])
                     {
                         case "DatFile.FileName":
-                            FileName = (String.IsNullOrWhiteSpace(FileName) ? value : FileName);
+                            FileName = (string.IsNullOrWhiteSpace(FileName) ? value : FileName);
                             break;
+
                         case "DatFile.Name":
-                            Name = (String.IsNullOrWhiteSpace(Name) ? value : Name);
+                            Name = (string.IsNullOrWhiteSpace(Name) ? value : Name);
                             break;
+
                         case "DatFile.Description":
-                            Description = (String.IsNullOrWhiteSpace(Description) ? value : Description);
+                            Description = (string.IsNullOrWhiteSpace(Description) ? value : Description);
                             break;
+
                         case "Machine.Name":
                             machineName = value;
                             break;
+
                         case "Description":
                             machineDesc = value;
                             break;
+
                         case "DatItem.Type":
                             itemType = Utilities.GetItemType(value) ?? ItemType.Rom;
                             break;
+
                         case "Rom.Name":
                         case "Disk.Name":
-                            name = String.IsNullOrWhiteSpace(value) ? name : value;
+                            name = string.IsNullOrWhiteSpace(value) ? name : value;
                             break;
+
                         case "DatItem.Size":
                             if (!Int64.TryParse(value, out size))
-                            {
                                 size = -1;
-                            }
+
                             break;
+
                         case "DatItem.CRC":
                             crc = Utilities.CleanHashData(value, Constants.CRCLength);
                             break;
+
                         case "DatItem.MD5":
                             md5 = Utilities.CleanHashData(value, Constants.MD5Length);
                             break;
+
                         case "DatItem.RIPEMD160":
                             ripemd160 = Utilities.CleanHashData(value, Constants.RIPEMD160Length);
                             break;
+
                         case "DatItem.SHA1":
                             sha1 = Utilities.CleanHashData(value, Constants.SHA1Length);
                             break;
+
                         case "DatItem.SHA256":
                             sha256 = Utilities.CleanHashData(value, Constants.SHA256Length);
                             break;
+
                         case "DatItem.SHA384":
                             sha384 = Utilities.CleanHashData(value, Constants.SHA384Length);
                             break;
+
                         case "DatItem.SHA512":
                             sha512 = Utilities.CleanHashData(value, Constants.SHA512Length);
                             break;
+
                         case "DatItem.Nodump":
                             status = Utilities.GetItemStatus(value);
                             break;
+
                         case "DatItem.Date":
                             date = value;
                             break;
@@ -264,6 +297,7 @@ namespace SabreTools.Library.DatFiles
 
                         ParseAddHelper(archive, clean, remUnicode);
                         break;
+
                     case ItemType.BiosSet:
                         BiosSet biosset = new BiosSet()
                         {
@@ -275,6 +309,7 @@ namespace SabreTools.Library.DatFiles
 
                         ParseAddHelper(biosset, clean, remUnicode);
                         break;
+
                     case ItemType.Disk:
                         Disk disk = new Disk()
                         {
@@ -294,6 +329,7 @@ namespace SabreTools.Library.DatFiles
 
                         ParseAddHelper(disk, clean, remUnicode);
                         break;
+
                     case ItemType.Release:
                         Release release = new Release()
                         {
@@ -305,6 +341,7 @@ namespace SabreTools.Library.DatFiles
 
                         ParseAddHelper(release, clean, remUnicode);
                         break;
+
                     case ItemType.Rom:
                         Rom rom = new Rom()
                         {
@@ -327,6 +364,7 @@ namespace SabreTools.Library.DatFiles
 
                         ParseAddHelper(rom, clean, remUnicode);
                         break;
+
                     case ItemType.Sample:
                         Sample sample = new Sample()
                         {
@@ -478,9 +516,7 @@ namespace SabreTools.Library.DatFiles
 
                 // Separated values should only output Rom and Disk
                 if (rom.ItemType != ItemType.Disk && rom.ItemType != ItemType.Rom)
-                {
                     return true;
-                }
 
                 if (rom.ItemType == ItemType.Rom)
                 {

@@ -69,12 +69,10 @@ namespace SabreTools.Library.DatItems
         {
             // If we don't have an archive, return false
             if (this.ItemType != other.ItemType)
-            {
                 return false;
-            }
 
             // Otherwise, treat it as an archive
-            Archive newOther = (Archive)other;
+            Archive newOther = other as Archive;
 
             // If the archive information matches
             return (this.Name == newOther.Name);

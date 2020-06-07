@@ -294,9 +294,7 @@ namespace SabreTools.Library.Help
 
             // First determine if the current feature is enabled
             if (feature.IsEnabled())
-            {
                 enabled.Add(key, feature);
-            }
 
             // Now loop through the subfeatures recursively
             foreach (KeyValuePair<string, Feature> sub in feature.Features)
@@ -305,9 +303,8 @@ namespace SabreTools.Library.Help
                 foreach (KeyValuePair<string, Feature> tempfeat in temp)
                 {
                     if (!enabled.ContainsKey(tempfeat.Key))
-                    {
                         enabled.Add(tempfeat.Key, null);
-                    }
+
                     enabled[tempfeat.Key] = tempfeat.Value;
                 }
             }
@@ -337,6 +334,7 @@ namespace SabreTools.Library.Help
                     Pause();
                 }
             }
+
             Pause();
         }
 

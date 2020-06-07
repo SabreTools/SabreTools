@@ -264,8 +264,8 @@ namespace SabreTools.Library.DatItems
             if (this.ItemType != other.ItemType)
                 return dupefound;
 
-            // Otherwise, treat it as a rom
-            Disk newOther = (Disk)other;
+            // Otherwise, treat it as a Disk
+            Disk newOther = other as Disk;
 
             // If all hashes are empty but they're both nodump and the names match, then they're dupes
             if ((this.ItemStatus == ItemStatus.Nodump && newOther.ItemStatus == ItemStatus.Nodump)

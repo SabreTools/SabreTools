@@ -352,7 +352,7 @@ namespace SabreTools.Library.FileTypes
                 {
                     // Get temporary date-time if possible
                     DateTime? usableDate = null;
-                    if (date && !String.IsNullOrWhiteSpace(rom.Date) && DateTime.TryParse(rom.Date.Replace('\\', '/'), out DateTime dt))
+                    if (date && !string.IsNullOrWhiteSpace(rom.Date) && DateTime.TryParse(rom.Date.Replace('\\', '/'), out DateTime dt))
                     {
                         usableDate = dt;
                     }
@@ -405,7 +405,7 @@ namespace SabreTools.Library.FileTypes
 
                         // Get temporary date-time if possible
                         DateTime? usableDate = null;
-                        if (date && !String.IsNullOrWhiteSpace(rom.Date) && DateTime.TryParse(rom.Date.Replace('\\', '/'), out DateTime dt))
+                        if (date && !string.IsNullOrWhiteSpace(rom.Date) && DateTime.TryParse(rom.Date.Replace('\\', '/'), out DateTime dt))
                         {
                             usableDate = dt;
                         }
@@ -531,7 +531,7 @@ namespace SabreTools.Library.FileTypes
 
                         // Get temporary date-time if possible
                         DateTime? usableDate = null;
-                        if (date && !String.IsNullOrWhiteSpace(roms[index].Date) && DateTime.TryParse(roms[index].Date.Replace('\\', '/'), out DateTime dt))
+                        if (date && !string.IsNullOrWhiteSpace(roms[index].Date) && DateTime.TryParse(roms[index].Date.Replace('\\', '/'), out DateTime dt))
                         {
                             usableDate = dt;
                         }
@@ -591,7 +591,7 @@ namespace SabreTools.Library.FileTypes
                         {
                             // Get temporary date-time if possible
                             DateTime? usableDate = null;
-                            if (date && !String.IsNullOrWhiteSpace(roms[-index - 1].Date) && DateTime.TryParse(roms[-index - 1].Date.Replace('\\', '/'), out DateTime dt))
+                            if (date && !string.IsNullOrWhiteSpace(roms[-index - 1].Date) && DateTime.TryParse(roms[-index - 1].Date.Replace('\\', '/'), out DateTime dt))
                             {
                                 usableDate = dt;
                             }

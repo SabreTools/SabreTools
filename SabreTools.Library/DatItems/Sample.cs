@@ -69,12 +69,10 @@ namespace SabreTools.Library.DatItems
         {
             // If we don't have a sample, return false
             if (this.ItemType != other.ItemType)
-            {
                 return false;
-            }
 
-            // Otherwise, treat it as a sample
-            Sample newOther = (Sample)other;
+            // Otherwise, treat it as a Sample
+            Sample newOther = other as Sample;
 
             // If the archive information matches
             return (this.Name == newOther.Name);

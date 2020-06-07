@@ -112,15 +112,11 @@ namespace SabreTools.Library.DatFiles
 
                         // If we have a different game and we're not at the start of the list, output the end of last item
                         if (lastgame != null && lastgame.ToLowerInvariant() != rom.MachineName.ToLowerInvariant())
-                        {
                              WriteEndGame(sw, rom);
-                        }
 
                         // If we have a new game, output the beginning of the new item
                         if (lastgame == null || lastgame.ToLowerInvariant() != rom.MachineName.ToLowerInvariant())
-                        {
                             WriteStartGame(sw, rom);
-                        }
 
                         // If we have a "null" game (created by DATFromDir or something similar), log it to file
                         if (rom.ItemType == ItemType.Rom
@@ -207,10 +203,7 @@ namespace SabreTools.Library.DatFiles
             try
             {
                 // No game should start with a path separator
-                if (rom.MachineName.StartsWith(Path.DirectorySeparatorChar.ToString()))
-                {
-                    rom.MachineName = rom.MachineName.Substring(1);
-                }
+                rom.MachineName = rom.MachineName.TrimStart(Path.DirectorySeparatorChar);
 
                 string state = "game (\n\tname \"" + (!ExcludeFields[(int)Field.MachineName] ? rom.MachineName + ".zip" : "") + "\"\n";
 
@@ -236,7 +229,7 @@ namespace SabreTools.Library.DatFiles
         {
             try
             {
-                string state = (!ExcludeFields[(int)Field.SampleOf] && String.IsNullOrWhiteSpace(rom.SampleOf) ? "" : "\tsampleof \"" + rom.SampleOf + "\"\n") + ")\n";
+                string state = (!ExcludeFields[(int)Field.SampleOf] && string.IsNullOrWhiteSpace(rom.SampleOf) ? "" : "\tsampleof \"" + rom.SampleOf + "\"\n") + ")\n";
 
                 sw.Write(state);
                 sw.Flush();
@@ -286,8 +279,8 @@ namespace SabreTools.Library.DatFiles
                     case ItemType.Rom:
                         state += "\tfile ( name " + (!ExcludeFields[(int)Field.Name] ? ((Rom)rom).Name : "")
                             + (!ExcludeFields[(int)Field.Size] && ((Rom)rom).Size != -1 ? " size " + ((Rom)rom).Size : "")
-                            + (!ExcludeFields[(int)Field.Date] && !String.IsNullOrWhiteSpace(((Rom)rom).Date) ? " date " + ((Rom)rom).Date : "")
-                            + (!ExcludeFields[(int)Field.CRC] && !String.IsNullOrWhiteSpace(((Rom)rom).CRC) ? " crc " + ((Rom)rom).CRC.ToLowerInvariant() : "")
+                            + (!ExcludeFields[(int)Field.Date] && !string.IsNullOrWhiteSpace(((Rom)rom).Date) ? " date " + ((Rom)rom).Date : "")
+                            + (!ExcludeFields[(int)Field.CRC] && !string.IsNullOrWhiteSpace(((Rom)rom).CRC) ? " crc " + ((Rom)rom).CRC.ToLowerInvariant() : "")
                             + " )\n";
                         break;
                 }

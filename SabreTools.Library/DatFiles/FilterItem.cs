@@ -155,7 +155,7 @@ namespace SabreTools.Library.DatFiles
                 {
                     string needleString = needle as string;
                     string strawString = straw as string;
-                    if (!String.IsNullOrWhiteSpace(strawString) && needleString != null)
+                    if (!string.IsNullOrWhiteSpace(strawString) && needleString != null)
                     {
                         string regexStraw = strawString;
 

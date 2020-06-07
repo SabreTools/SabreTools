@@ -39,7 +39,9 @@ namespace SabreTools
         /// <param name="copyFiles">True if files should be copied to the temp directory before hashing, false otherwise</param>
         /// /* Filtering info */
         /// <param name="filter">Filter object to be passed to the DatItem level</param>
-        private static void InitDatFromDir(List<string> inputs,
+        private static void InitDatFromDir(
+            List<string> inputs,
+
             /* Normal DAT header info */
             DatHeader datHeader,
 
@@ -78,13 +80,10 @@ namespace SabreTools
                     bool success = datdata.PopulateFromDir(basePath, omitFromScan, removeDateFromAutomaticName, archivesAsFiles,
                         skipFileType, addBlankFilesForEmptyFolder, addFileDates, tempDir, copyFiles, datHeader.Header, chdsAsFiles, filter);
 
-                    // If it was a success, write the DAT out
                     if (success)
                     {
                         datdata.Write(outDir);
                     }
-
-                    // Otherwise, show the help
                     else
                     {
                         Console.WriteLine();
@@ -178,6 +177,10 @@ namespace SabreTools
             // Get the archive scanning level
             ArchiveScanLevel asl = Utilities.GetArchiveScanLevelFromNumbers(sevenzip, gz, rar, zip);
 
+            // If we have TorrentGzip output and the romba flag, update
+            if (romba && outputFormat == OutputFormat.TorrentGzip)
+                outputFormat = OutputFormat.TorrentGzipRomba;
+
             // Get a list of files from the input datfiles
             datfiles = Utilities.GetOnlyFilesFromInputs(datfiles);
 
@@ -191,15 +194,9 @@ namespace SabreTools
 
                     // If we have the depot flag, respect it
                     if (depot)
-                    {
-                        datdata.RebuildDepot(inputs, Path.Combine(outDir, datdata.FileName), date, delete, inverse, outputFormat, romba,
-                        updateDat, headerToCheckAgainst);
-                    }
+                        datdata.RebuildDepot(inputs, Path.Combine(outDir, datdata.FileName), date, delete, inverse, outputFormat, updateDat, headerToCheckAgainst);
                     else
-                    {
-                        datdata.RebuildGeneric(inputs, Path.Combine(outDir, datdata.FileName), quickScan, date, delete, inverse, outputFormat, romba, asl,
-                        updateDat, headerToCheckAgainst, chdsAsFiles);
-                    }
+                        datdata.RebuildGeneric(inputs, Path.Combine(outDir, datdata.FileName), quickScan, date, delete, inverse, outputFormat, asl, updateDat, headerToCheckAgainst, chdsAsFiles);
                 }
             }
             // Otherwise, process all DATs into the same output
@@ -218,15 +215,9 @@ namespace SabreTools
 
                 // If we have the depot flag, respect it
                 if (depot)
-                {
-                    datdata.RebuildDepot(inputs, outDir, date, delete, inverse, outputFormat, romba,
-                    updateDat, headerToCheckAgainst);
-                }
+                    datdata.RebuildDepot(inputs, outDir, date, delete, inverse, outputFormat, updateDat, headerToCheckAgainst);
                 else
-                {
-                    datdata.RebuildGeneric(inputs, outDir, quickScan, date, delete, inverse, outputFormat, romba, asl,
-                    updateDat, headerToCheckAgainst, chdsAsFiles);
-                }
+                    datdata.RebuildGeneric(inputs, outDir, quickScan, date, delete, inverse, outputFormat, asl, updateDat, headerToCheckAgainst, chdsAsFiles);
             }
         }
 
@@ -330,10 +321,10 @@ namespace SabreTools
             bool onlySame)
         {
             // Normalize the extensions
-            datHeader.AddExtension = (String.IsNullOrWhiteSpace(datHeader.AddExtension) || datHeader.AddExtension.StartsWith(".")
+            datHeader.AddExtension = (string.IsNullOrWhiteSpace(datHeader.AddExtension) || datHeader.AddExtension.StartsWith(".")
                 ? datHeader.AddExtension
                 : "." + datHeader.AddExtension);
-            datHeader.ReplaceExtension = (String.IsNullOrWhiteSpace(datHeader.ReplaceExtension) || datHeader.ReplaceExtension.StartsWith(".")
+            datHeader.ReplaceExtension = (string.IsNullOrWhiteSpace(datHeader.ReplaceExtension) || datHeader.ReplaceExtension.StartsWith(".")
                 ? datHeader.ReplaceExtension
                 : "." + datHeader.ReplaceExtension);
 
@@ -341,34 +332,31 @@ namespace SabreTools
             if (updateMode != 0)
             {
                 // Get the values that will be used
-                if (String.IsNullOrWhiteSpace(datHeader.Date))
-                {
+                if (string.IsNullOrWhiteSpace(datHeader.Date))
                     datHeader.Date = DateTime.Now.ToString("yyyy-MM-dd");
-                }
-                if (String.IsNullOrWhiteSpace(datHeader.Name))
+
+                if (string.IsNullOrWhiteSpace(datHeader.Name))
                 {
                     datHeader.Name = (updateMode != 0 ? "DiffDAT" : "MergeDAT")
                         + (datHeader.Type == "SuperDAT" ? "-SuperDAT" : "")
                         + (datHeader.DedupeRoms != DedupeType.None ? "-deduped" : "");
                 }
-                if (String.IsNullOrWhiteSpace(datHeader.Description))
+
+                if (string.IsNullOrWhiteSpace(datHeader.Description))
                 {
                     datHeader.Description = (updateMode != 0 ? "DiffDAT" : "MergeDAT")
                         + (datHeader.Type == "SuperDAT" ? "-SuperDAT" : "")
                         + (datHeader.DedupeRoms != DedupeType.None ? " - deduped" : "");
+
                     if (!bare)
-                    {
                         datHeader.Description += " (" + datHeader.Date + ")";
-                    }
                 }
-                if (String.IsNullOrWhiteSpace(datHeader.Category) && updateMode != 0)
-                {
+
+                if (string.IsNullOrWhiteSpace(datHeader.Category) && updateMode != 0)
                     datHeader.Category = "DiffDAT";
-                }
-                if (String.IsNullOrWhiteSpace(datHeader.Author))
-                {
+
+                if (string.IsNullOrWhiteSpace(datHeader.Author))
                     datHeader.Author = "SabreTools";
-                }
             }
 
             // If no update fields are set, default to Names
@@ -407,9 +395,6 @@ namespace SabreTools
             bool individual,
             Filter filter)
         {
-            // Get the archive scanning level
-            ArchiveScanLevel asl = Utilities.GetArchiveScanLevelFromNumbers(1, 1, 1, 1);
-
             // Get a list of files from the input datfiles
             datfiles = Utilities.GetOnlyFilesFromInputs(datfiles);
 
@@ -423,13 +408,9 @@ namespace SabreTools
 
                     // If we have the depot flag, respect it
                     if (depot)
-                    {
                         datdata.VerifyDepot(inputs, headerToCheckAgainst);
-                    }
                     else
-                    {
                         datdata.VerifyGeneric(inputs, hashOnly, quickScan, headerToCheckAgainst, chdsAsFiles, filter);
-                    }
                 }
             }
             // Otherwise, process all DATs into the same output
@@ -448,13 +429,9 @@ namespace SabreTools
 
                 // If we have the depot flag, respect it
                 if (depot)
-                {
                     datdata.VerifyDepot(inputs, headerToCheckAgainst);
-                }
                 else
-                {
                     datdata.VerifyGeneric(inputs, hashOnly, quickScan, headerToCheckAgainst, chdsAsFiles, filter);
-                }
             }
         }
 

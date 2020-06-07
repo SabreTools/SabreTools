@@ -68,9 +68,7 @@ namespace SabreTools.Library.Tools
 
             // Make sure the file exists
             if (!File.Exists(db))
-            {
                 SqliteConnection.CreateFile(db);
-            }
 
             // Open the database connection
             SqliteConnection dbc = new SqliteConnection(connectionString);

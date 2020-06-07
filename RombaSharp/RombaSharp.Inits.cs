@@ -56,9 +56,7 @@ namespace RombaSharp
             foreach (string input in inputs)
             {
                 if (Directory.Exists(input))
-                {
                     onlyDirs.Add(Path.GetFullPath(input));
-                }
             }
 
             // Then process all of the input directories into an internal DAT
@@ -102,26 +100,21 @@ namespace RombaSharp
                         if (sldr.HasRows)
                         {
                             // Add to the queries
-                            if (!String.IsNullOrWhiteSpace(rom.CRC))
-                            {
+                            if (!string.IsNullOrWhiteSpace(rom.CRC))
                                 crcquery += " (\"" + rom.CRC + "\"),";
-                            }
-                            if (!String.IsNullOrWhiteSpace(rom.MD5))
-                            {
+
+                            if (!string.IsNullOrWhiteSpace(rom.MD5))
                                 md5query += " (\"" + rom.MD5 + "\"),";
-                            }
-                            if (!String.IsNullOrWhiteSpace(rom.SHA1))
+                            
+                            if (!string.IsNullOrWhiteSpace(rom.SHA1))
                             {
                                 sha1query += " (\"" + rom.SHA1 + "\", \"" + _depots.Keys.ToList()[0] + "\"),";
 
-                                if (!String.IsNullOrWhiteSpace(rom.CRC))
-                                {
+                                if (!string.IsNullOrWhiteSpace(rom.CRC))
                                     crcsha1query += " (\"" + rom.CRC + "\", \"" + rom.SHA1 + "\"),";
-                                }
-                                if (!String.IsNullOrWhiteSpace(rom.MD5))
-                                {
+
+                                if (!string.IsNullOrWhiteSpace(rom.MD5))
                                     md5sha1query += " (\"" + rom.MD5 + "\", \"" + rom.SHA1 + "\"),";
-                                }
                             }
 
                             // Add to the Dat
@@ -134,26 +127,21 @@ namespace RombaSharp
                         // Add to the queries
                         if (!noDb)
                         {
-                            if (!String.IsNullOrWhiteSpace(rom.CRC))
-                            {
+                            if (!string.IsNullOrWhiteSpace(rom.CRC))
                                 crcquery += " (\"" + rom.CRC + "\"),";
-                            }
-                            if (!String.IsNullOrWhiteSpace(rom.MD5))
-                            {
+
+                            if (!string.IsNullOrWhiteSpace(rom.MD5))
                                 md5query += " (\"" + rom.MD5 + "\"),";
-                            }
-                            if (!String.IsNullOrWhiteSpace(rom.SHA1))
+
+                            if (!string.IsNullOrWhiteSpace(rom.SHA1))
                             {
                                 sha1query += " (\"" + rom.SHA1 + "\", \"" + _depots.Keys.ToList()[0] + "\"),";
 
-                                if (!String.IsNullOrWhiteSpace(rom.CRC))
-                                {
+                                if (!string.IsNullOrWhiteSpace(rom.CRC))
                                     crcsha1query += " (\"" + rom.CRC + "\", \"" + rom.SHA1 + "\"),";
-                                }
-                                if (!String.IsNullOrWhiteSpace(rom.MD5))
-                                {
+
+                                if (!string.IsNullOrWhiteSpace(rom.MD5))
                                     md5sha1query += " (\"" + rom.MD5 + "\", \"" + rom.SHA1 + "\"),";
-                                }
                             }
                         }
 
@@ -170,24 +158,28 @@ namespace RombaSharp
                 slc.ExecuteNonQuery();
                 slc.Dispose();
             }
+
             if (md5query != "INSERT OR IGNORE INTO md5 (md5) VALUES")
             {
                 SqliteCommand slc = new SqliteCommand(md5query.TrimEnd(','), dbc);
                 slc.ExecuteNonQuery();
                 slc.Dispose();
             }
+
             if (sha1query != "INSERT OR IGNORE INTO sha1 (sha1, depot) VALUES")
             {
                 SqliteCommand slc = new SqliteCommand(sha1query.TrimEnd(','), dbc);
                 slc.ExecuteNonQuery();
                 slc.Dispose();
             }
+
             if (crcsha1query != "INSERT OR IGNORE INTO crcsha1 (crc, sha1) VALUES")
             {
                 SqliteCommand slc = new SqliteCommand(crcsha1query.TrimEnd(','), dbc);
                 slc.ExecuteNonQuery();
                 slc.Dispose();
             }
+
             if (md5sha1query != "INSERT OR IGNORE INTO md5sha1 (md5, sha1) VALUES")
             {
                 SqliteCommand slc = new SqliteCommand(md5sha1query.TrimEnd(','), dbc);
@@ -198,7 +190,7 @@ namespace RombaSharp
             // Create the sorting object to use and rebuild the needed files
             ArchiveScanLevel asl = Utilities.GetArchiveScanLevelFromNumbers(include7Zips, includeGZips, 2, includeZips);
             need.RebuildGeneric(onlyDirs, _depots.Keys.ToList()[0], false /*quickScan*/, false /*date*/,
-                false /*delete*/, false /*inverse*/, OutputFormat.TorrentGzip, true /*romba*/, asl, false /*updateDat*/,
+                false /*delete*/, false /*inverse*/, OutputFormat.TorrentGzipRomba, asl, false /*updateDat*/,
                 null /*headerToCheckAgainst*/, true /* chdsAsFiles */);
         }
 
@@ -223,10 +215,8 @@ namespace RombaSharp
             Dictionary<string, string> foundDats = GetValidDats(inputs);
 
             // Ensure the output directory is set
-            if (String.IsNullOrWhiteSpace(outdat))
-            {
+            if (string.IsNullOrWhiteSpace(outdat))
                 outdat = "out";
-            }
 
             // Now that we have the dictionary, we can loop through and output to a new folder for each
             foreach (string key in foundDats.Keys)
@@ -245,7 +235,7 @@ namespace RombaSharp
                 // Now scan all of those depots and rebuild
                 ArchiveScanLevel asl = Utilities.GetArchiveScanLevelFromNumbers(1, 1, 1, 1);
                 datFile.RebuildDepot(onlineDepots, outputFolder, false /*date*/,
-                    false /*delete*/, false /*inverse*/, (copy ? OutputFormat.TorrentGzip : OutputFormat.TorrentZip), copy,
+                    false /*delete*/, false /*inverse*/, (copy ? OutputFormat.TorrentGzipRomba : OutputFormat.TorrentZip),
                     false /*updateDat*/, null /*headerToCheckAgainst*/);
             }
         }
@@ -332,6 +322,7 @@ namespace RombaSharp
                 Globals.Logger.Error("File '{0}' does not exist!", old);
                 return;
             }
+
             if (!File.Exists(newdat))
             {
                 Globals.Logger.Error("File '{0}' does not exist!", newdat);
@@ -383,7 +374,7 @@ namespace RombaSharp
             // Create the encapsulating datfile
             DatFile datfile = new DatFile()
             {
-                Name = (String.IsNullOrWhiteSpace(name) ? "untitled" : name),
+                Name = (string.IsNullOrWhiteSpace(name) ? "untitled" : name),
                 Description = description,
             };
 
@@ -414,6 +405,7 @@ namespace RombaSharp
                 Globals.Logger.Error("File '{0}' does not exist!", old);
                 return;
             }
+
             if (!File.Exists(newdat))
             {
                 Globals.Logger.Error("File '{0}' does not exist!", newdat);
@@ -546,26 +538,21 @@ namespace RombaSharp
                     string[] hashes = line.Split(',');
 
                     // Loop through the parsed entries
-                    if (!String.IsNullOrWhiteSpace(hashes[0]))
-                    {
+                    if (!string.IsNullOrWhiteSpace(hashes[0]))
                         crcquery += " (\"" + hashes[0] + "\"),";
-                    }
-                    if (!String.IsNullOrWhiteSpace(hashes[1]))
-                    {
+
+                    if (!string.IsNullOrWhiteSpace(hashes[1]))
                         md5query += " (\"" + hashes[1] + "\"),";
-                    }
-                    if (!String.IsNullOrWhiteSpace(hashes[2]))
+
+                    if (!string.IsNullOrWhiteSpace(hashes[2]))
                     {
                         sha1query += " (\"" + hashes[2] + "\"),";
 
-                        if (!String.IsNullOrWhiteSpace(hashes[0]))
-                        {
+                        if (!string.IsNullOrWhiteSpace(hashes[0]))
                             crcsha1query += " (\"" + hashes[0] + "\", \"" + hashes[2] + "\"),";
-                        }
-                        if (!String.IsNullOrWhiteSpace(hashes[1]))
-                        {
+
+                        if (!string.IsNullOrWhiteSpace(hashes[1]))
                             md5sha1query += " (\"" + hashes[1] + "\", \"" + hashes[2] + "\"),";
-                        }
                     }
                 }
 
@@ -575,21 +562,25 @@ namespace RombaSharp
                     slc = new SqliteCommand(crcquery.TrimEnd(','), dbc);
                     slc.ExecuteNonQuery();
                 }
+
                 if (md5query != "INSERT OR IGNORE INTO md5 (md5) VALUES")
                 {
                     slc = new SqliteCommand(md5query.TrimEnd(','), dbc);
                     slc.ExecuteNonQuery();
                 }
+
                 if (sha1query != "INSERT OR IGNORE INTO sha1 (sha1) VALUES")
                 {
                     slc = new SqliteCommand(sha1query.TrimEnd(','), dbc);
                     slc.ExecuteNonQuery();
                 }
+
                 if (crcsha1query != "INSERT OR IGNORE INTO crcsha1 (crc, sha1) VALUES")
                 {
                     slc = new SqliteCommand(crcsha1query.TrimEnd(','), dbc);
                     slc.ExecuteNonQuery();
                 }
+
                 if (md5sha1query != "INSERT OR IGNORE INTO md5sha1 (md5, sha1) VALUES")
                 {
                     slc = new SqliteCommand(md5sha1query.TrimEnd(','), dbc);
@@ -627,7 +618,7 @@ namespace RombaSharp
                 if (input.Length == Constants.CRCLength)
                 {
                     temp = Utilities.CleanHashData(input, Constants.CRCLength);
-                    if (!String.IsNullOrWhiteSpace(temp))
+                    if (!string.IsNullOrWhiteSpace(temp))
                     {
                         crc.Add(temp);
                     }
@@ -635,7 +626,7 @@ namespace RombaSharp
                 else if (input.Length == Constants.MD5Length)
                 {
                     temp = Utilities.CleanHashData(input, Constants.MD5Length);
-                    if (!String.IsNullOrWhiteSpace(temp))
+                    if (!string.IsNullOrWhiteSpace(temp))
                     {
                         md5.Add(temp);
                     }
@@ -643,7 +634,7 @@ namespace RombaSharp
                 else if (input.Length == Constants.SHA1Length)
                 {
                     temp = Utilities.CleanHashData(input, Constants.SHA1Length);
-                    if (!String.IsNullOrWhiteSpace(temp))
+                    if (!string.IsNullOrWhiteSpace(temp))
                     {
                         sha1.Add(temp);
                     }
@@ -768,16 +759,19 @@ namespace RombaSharp
                 {
                     
                 }
+
                 // If we are copying all that is possible but we don't care to scan first
                 else if (!onlyNeeded && skipInitialscan)
                 {
 
                 }
+
                 // If we are copying only what is needed but we want to scan first
                 else if (onlyNeeded && !skipInitialscan)
                 {
 
                 }
+
                 // If we are copying only what is needed but we don't care to scan first
                 else if (onlyNeeded && skipInitialscan)
                 {
@@ -868,7 +862,7 @@ namespace RombaSharp
             string missingSha1s)
         {
             // Make sure the db is set
-            if (String.IsNullOrWhiteSpace(_db))
+            if (string.IsNullOrWhiteSpace(_db))
             {
                 _db = "db.sqlite";
                 _connectionString = "Data Source=" + _db + ";Version = 3;";
@@ -876,23 +870,17 @@ namespace RombaSharp
 
             // Make sure the file exists
             if (!File.Exists(_db))
-            {
                 DatabaseTools.EnsureDatabase(_dbSchema, _db, _connectionString);
-            }
 
             // Make sure the dats dir is set
-            if (String.IsNullOrWhiteSpace(_dats))
-            {
+            if (string.IsNullOrWhiteSpace(_dats))
                 _dats = "dats";
-            }
 
             _dats = Path.Combine(Globals.ExeDir, _dats);
 
             // Make sure the folder exists
             if (!Directory.Exists(_dats))
-            {
                 Directory.CreateDirectory(_dats);
-            }
 
             // First get a list of SHA-1's from the input DATs
             DatFile datroot = new DatFile { Type = "SuperDAT", };
@@ -1038,26 +1026,21 @@ namespace RombaSharp
                         }
                         else if (!dupehashes.Contains(rom.SHA1))
                         {
-                            if (!String.IsNullOrWhiteSpace(rom.CRC))
-                            {
+                            if (!string.IsNullOrWhiteSpace(rom.CRC))
                                 crcquery += " (\"" + rom.CRC + "\"),";
-                            }
-                            if (!String.IsNullOrWhiteSpace(rom.MD5))
-                            {
+
+                            if (!string.IsNullOrWhiteSpace(rom.MD5))
                                 md5query += " (\"" + rom.MD5 + "\"),";
-                            }
-                            if (!String.IsNullOrWhiteSpace(rom.SHA1))
+
+                            if (!string.IsNullOrWhiteSpace(rom.SHA1))
                             {
                                 sha1query += " (\"" + rom.SHA1 + "\", \"" + depotname + "\"),";
 
-                                if (!String.IsNullOrWhiteSpace(rom.CRC))
-                                {
+                                if (!string.IsNullOrWhiteSpace(rom.CRC))
                                     crcsha1query += " (\"" + rom.CRC + "\", \"" + rom.SHA1 + "\"),";
-                                }
-                                if (!String.IsNullOrWhiteSpace(rom.MD5))
-                                {
+
+                                if (!string.IsNullOrWhiteSpace(rom.MD5))
                                     md5sha1query += " (\"" + rom.MD5 + "\", \"" + rom.SHA1 + "\"),";
-                                }
                             }
                         }
                     }
@@ -1069,21 +1052,25 @@ namespace RombaSharp
                     slc = new SqliteCommand(crcquery.TrimEnd(','), dbc);
                     slc.ExecuteNonQuery();
                 }
+
                 if (md5query != "INSERT OR IGNORE INTO md5 (md5) VALUES")
                 {
                     slc = new SqliteCommand(md5query.TrimEnd(','), dbc);
                     slc.ExecuteNonQuery();
                 }
+
                 if (sha1query != "INSERT OR IGNORE INTO sha1 (sha1, depot) VALUES")
                 {
                     slc = new SqliteCommand(sha1query.TrimEnd(','), dbc);
                     slc.ExecuteNonQuery();
                 }
+
                 if (crcsha1query != "INSERT OR IGNORE INTO crcsha1 (crc, sha1) VALUES")
                 {
                     slc = new SqliteCommand(crcsha1query.TrimEnd(','), dbc);
                     slc.ExecuteNonQuery();
                 }
+
                 if (md5sha1query != "INSERT OR IGNORE INTO md5sha1 (md5, sha1) VALUES")
                 {
                     slc = new SqliteCommand(md5sha1query.TrimEnd(','), dbc);

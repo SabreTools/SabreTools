@@ -72,7 +72,7 @@ namespace SabreTools.Library.DatFiles
                 string line = sr.ReadLine().Trim();
 
                 // If we have a blank line, we just skip it
-                if (String.IsNullOrWhiteSpace(line))
+                if (string.IsNullOrWhiteSpace(line))
                 {
                     continue;
                 }
@@ -104,15 +104,11 @@ namespace SabreTools.Library.DatFiles
 
                     // If the line doesn't have the 4 spaces of padding, check for 3
                     if (split.Length == 1)
-                    {
                         split = line.Split(new string[] { "   " }, StringSplitOptions.RemoveEmptyEntries);
-                    }
 
                     // If the split is still unsuccessful, log it and skip
                     if (split.Length == 1)
-                    {
                         Globals.Logger.Warning("Possibly malformed line: '{0}'", line);
-                    }
 
                     romname = split[0];
                     line = line.Substring(romname.Length);
@@ -153,9 +149,7 @@ namespace SabreTools.Library.DatFiles
                     else if (split.Length == 3)
                     {
                         if (!Int64.TryParse(split[0], out long size))
-                        {
                             size = 0;
-                        }
 
                         Rom rom = new Rom()
                         {
@@ -188,9 +182,7 @@ namespace SabreTools.Library.DatFiles
                     else if (split.Length == 5 && line.EndsWith("BAD_DUMP"))
                     {
                         if (!Int64.TryParse(split[0], out long size))
-                        {
                             size = 0;
-                        }
 
                         Rom rom = new Rom()
                         {
@@ -210,9 +202,7 @@ namespace SabreTools.Library.DatFiles
                     else if (split.Length == 5 && line.EndsWith("NO GOOD DUMP KNOWN"))
                     {
                         if (!Int64.TryParse(split[0], out long size))
-                        {
                             size = 0;
-                        }
 
                         Rom rom = new Rom()
                         {
@@ -285,15 +275,11 @@ namespace SabreTools.Library.DatFiles
 
                         // If we have a different game and we're not at the start of the list, output the end of last item
                         if (lastgame != null && lastgame.ToLowerInvariant() != rom.MachineName.ToLowerInvariant())
-                        {
                             WriteEndGame(sw);
-                        }
 
                         // If we have a new game, output the beginning of the new item
                         if (lastgame == null || lastgame.ToLowerInvariant() != rom.MachineName.ToLowerInvariant())
-                        {
                             WriteStartGame(sw, rom);
-                        }
 
                         // If we have a "null" game (created by DATFromDir or something similar), log it to file
                         if (rom.ItemType == ItemType.Rom
@@ -344,10 +330,7 @@ namespace SabreTools.Library.DatFiles
             try
             {
                 // No game should start with a path separator
-                if (rom.MachineName.StartsWith(Path.DirectorySeparatorChar.ToString()))
-                {
-                    rom.MachineName = rom.MachineName.Substring(1);
-                }
+                rom.MachineName = rom.MachineName.TrimStart(Path.DirectorySeparatorChar);
 
                 string state = "ROMs required for driver \"" + (!ExcludeFields[(int)Field.MachineName] ? rom.MachineName : "") + "\".\n" +
                             "Name                                   Size Checksum\n";
@@ -422,61 +405,42 @@ namespace SabreTools.Library.DatFiles
                     case ItemType.Disk:
                         // The name is padded out to a particular length
                         if (rom.Name.Length < 43)
-                        {
                             state += rom.Name.PadRight(43, ' ');
-                        }
                         else
-                        {
                             state += rom.Name + "          ";
-                        }
 
                         // If we have a baddump, put the first indicator
                         if (!ExcludeFields[(int)Field.Status] && ((Disk)rom).ItemStatus == ItemStatus.BadDump)
-                        {
                             state += " BAD";
-                        }
 
                         // If we have a nodump, write out the indicator
                         if (!ExcludeFields[(int)Field.Status] && ((Disk)rom).ItemStatus == ItemStatus.Nodump)
-                        {
                             state += " NO GOOD DUMP KNOWN";
-                        }
+
                         // Otherwise, write out the SHA-1 hash
                         else if (!ExcludeFields[(int)Field.SHA1])
-                        {
                             state += " SHA1(" + ((Disk)rom).SHA1 + ")";
-                        }
 
                         // If we have a baddump, put the second indicator
                         if (!ExcludeFields[(int)Field.Status] && ((Disk)rom).ItemStatus == ItemStatus.BadDump)
-                        {
                             state += " BAD_DUMP";
-                        }
 
                         state += "\n";
                         break;
                     case ItemType.Rom:
                         // The name is padded out to a particular length
                         if (rom.Name.Length < 40)
-                        {
                             state += rom.Name.PadRight(43 - (((Rom)rom).Size.ToString().Length), ' ');
-                        }
                         else
-                        {
                             state += rom.Name + "          ";
-                        }
 
                         // If we don't have a nodump, write out the size
                         if (((Rom)rom).ItemStatus != ItemStatus.Nodump)
-                        {
                             state += ((Rom)rom).Size;
-                        }
 
                         // If we have a baddump, put the first indicator
                         if (!ExcludeFields[(int)Field.Status] && ((Rom)rom).ItemStatus == ItemStatus.BadDump)
-                        {
                             state += " BAD";
-                        }
 
                         // If we have a nodump, write out the indicator
                         if (!ExcludeFields[(int)Field.Status] && ((Rom)rom).ItemStatus == ItemStatus.Nodump)
@@ -492,9 +456,7 @@ namespace SabreTools.Library.DatFiles
 
                         // If we have a baddump, put the second indicator
                         if (!ExcludeFields[(int)Field.Status] && ((Rom)rom).ItemStatus == ItemStatus.BadDump)
-                        {
                             state += " BAD_DUMP";
-                        }
 
                         state += "\n";
                         break;

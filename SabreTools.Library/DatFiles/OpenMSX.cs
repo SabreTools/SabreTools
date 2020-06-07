@@ -62,9 +62,7 @@ namespace SabreTools.Library.DatFiles
 
             // If we got a null reader, just return
             if (xtr == null)
-            {
                 return;
-            }
 
             // Otherwise, read the file to the end
             try
@@ -82,11 +80,12 @@ namespace SabreTools.Library.DatFiles
                     switch (xtr.Name)
                     {
                         case "softwaredb":
-                            Name = (String.IsNullOrWhiteSpace(Name) ? "openMSX Software List" : Name);
-                            Description = (String.IsNullOrWhiteSpace(Description) ? Name : Name);
+                            Name = (string.IsNullOrWhiteSpace(Name) ? "openMSX Software List" : Name);
+                            Description = (string.IsNullOrWhiteSpace(Description) ? Name : Name);
                             // string timestamp = xtr.GetAttribute("timestamp"); // CDATA
                             xtr.Read();
                             break;
+
                         // We want to process the entire subtree of the software
                         case "software":
                             ReadSoftware(xtr.ReadSubtree(), filename, sysid, srcid, keep, clean, remUnicode);
@@ -94,6 +93,7 @@ namespace SabreTools.Library.DatFiles
                             // Skip the software now that we've processed it
                             xtr.Skip();
                             break;
+
                         default:
                             xtr.Read();
                             break;
@@ -136,9 +136,7 @@ namespace SabreTools.Library.DatFiles
         {
             // If we have an empty machine, skip it
             if (reader == null)
-            {
                 return;
-            }
 
             // Otherwise, add what is possible
             reader.MoveToContent();
@@ -164,24 +162,30 @@ namespace SabreTools.Library.DatFiles
                     case "title":
                         machine.Name = reader.ReadElementContentAsString();
                         break;
+
                     case "genmsxid":
                         // string id = reader.ReadElementContentAsString();
                         reader.Read();
                         break;
+
                     case "system":
                         // string system = reader.ReadElementContentAsString();
                         reader.Read();
                         break;
+
                     case "company":
                         machine.Manufacturer = reader.ReadElementContentAsString();
                         break;
+
                     case "year":
                         machine.Year = reader.ReadElementContentAsString();
                         break;
+
                     case "country":
                         // string country = reader.ReadElementContentAsString();
                         reader.Read();
                         break;
+
                     case "dump":
                         containsItems = ReadDump(reader.ReadSubtree(), machine, diskno, filename, sysid, srcid, keep, clean, remUnicode);
                         diskno++;
@@ -189,6 +193,7 @@ namespace SabreTools.Library.DatFiles
                         // Skip the dump now that we've processed it
                         reader.Skip();
                         break;
+
                     default:
                         reader.Read();
                         break;
@@ -258,23 +263,27 @@ namespace SabreTools.Library.DatFiles
                         // Skip the rom now that we've processed it
                         reader.Skip();
                         break;
+
                     case "megarom":
                         containsItems = ReadMegaRom(reader.ReadSubtree(), machine, diskno, filename, sysid, srcid, keep, clean, remUnicode);
 
                         // Skip the megarom now that we've processed it
                         reader.Skip();
                         break;
+
                     case "sccpluscart":
                         containsItems = ReadSccPlusCart(reader.ReadSubtree(), machine, diskno, filename, sysid, srcid, keep, clean, remUnicode);
 
                         // Skip the sccpluscart now that we've processed it
                         reader.Skip();
                         break;
+
                     case "original":
                         // bool value = Utilities.GetYesNo(reader.GetAttribute("value");
                         // string original = reader.ReadElementContentAsString();
                         reader.Read();
                         break;
+
                     default:
                         reader.Read();
                         break;
@@ -330,15 +339,19 @@ namespace SabreTools.Library.DatFiles
                         containsItems = true;
                         hash = reader.ReadElementContentAsString();
                         break;
+
                     case "start":
                         offset = reader.ReadElementContentAsString();
                         break;
+
                     case "type":
                         type = reader.ReadElementContentAsString();
                         break;
+
                     case "remark":
                         remark = reader.ReadElementContentAsString();
                         break;
+
                     default:
                         reader.Read();
                         break;
@@ -348,7 +361,7 @@ namespace SabreTools.Library.DatFiles
             // Create and add the new rom
             Rom rom = new Rom
             {
-                Name = machine.Name + "_" + diskno + (!String.IsNullOrWhiteSpace(remark) ? " " + remark : ""),
+                Name = machine.Name + "_" + diskno + (!string.IsNullOrWhiteSpace(remark) ? " " + remark : ""),
                 Offset = offset,
                 Size = -1,
                 SHA1 = Utilities.CleanHashData(hash, Constants.SHA1Length),
@@ -406,15 +419,19 @@ namespace SabreTools.Library.DatFiles
                         containsItems = true;
                         hash = reader.ReadElementContentAsString();
                         break;
+
                     case "start":
                         offset = reader.ReadElementContentAsString();
                         break;
+
                     case "type":
                         type = reader.ReadElementContentAsString();
                         break;
+
                     case "remark":
                         remark = reader.ReadElementContentAsString();
                         break;
+
                     default:
                         reader.Read();
                         break;
@@ -424,7 +441,7 @@ namespace SabreTools.Library.DatFiles
             // Create and add the new rom
             Rom rom = new Rom
             {
-                Name = machine.Name + "_" + diskno + (!String.IsNullOrWhiteSpace(remark) ? " " + remark : ""),
+                Name = machine.Name + "_" + diskno + (!string.IsNullOrWhiteSpace(remark) ? " " + remark : ""),
                 Offset = offset,
                 Size = -1,
                 SHA1 = Utilities.CleanHashData(hash, Constants.SHA1Length),
@@ -481,13 +498,16 @@ namespace SabreTools.Library.DatFiles
                     case "boot":
                         boot = reader.ReadElementContentAsString();
                         break;
+
                     case "hash":
                         containsItems = true;
                         hash = reader.ReadElementContentAsString();
                         break;
+
                     case "remark":
                         remark = reader.ReadElementContentAsString();
                         break;
+
                     default:
                         reader.Read();
                         break;
@@ -497,7 +517,7 @@ namespace SabreTools.Library.DatFiles
             // Create and add the new rom
             Rom rom = new Rom
             {
-                Name = machine.Name + "_" + diskno + (!String.IsNullOrWhiteSpace(remark) ? " " + remark : ""),
+                Name = machine.Name + "_" + diskno + (!string.IsNullOrWhiteSpace(remark) ? " " + remark : ""),
                 Size = -1,
                 SHA1 = Utilities.CleanHashData(hash, Constants.SHA1Length),
             };
@@ -560,15 +580,11 @@ namespace SabreTools.Library.DatFiles
 
                         // If we have a different game and we're not at the start of the list, output the end of last item
                         if (lastgame != null && lastgame.ToLowerInvariant() != rom.MachineName.ToLowerInvariant())
-                        {
                             WriteEndGame(sw);
-                        }
 
                         // If we have a new game, output the beginning of the new item
                         if (lastgame == null || lastgame.ToLowerInvariant() != rom.MachineName.ToLowerInvariant())
-                        {
                             WriteStartGame(sw, rom);
-                        }
 
                         // If we have a "null" game (created by DATFromDir or something similar), log it to file
                         if (rom.ItemType == ItemType.Rom
@@ -655,10 +671,7 @@ Generation MSXIDs by www.generation-msx.nl
             try
             {
                 // No game should start with a path separator
-                if (rom.MachineName.StartsWith(Path.DirectorySeparatorChar.ToString()))
-                {
-                    rom.MachineName = rom.MachineName.Substring(1);
-                }
+                rom.MachineName = rom.MachineName.TrimStart(Path.DirectorySeparatorChar);
 
                 string state = "<software>\n"
                             + "\t<title>" + (!ExcludeFields[(int)Field.MachineName] ? WebUtility.HtmlEncode(rom.MachineName) : "") + "</title>\n"
@@ -731,22 +744,27 @@ Generation MSXIDs by www.generation-msx.nl
                 {
                     case ItemType.Archive:
                         break;
+
                     case ItemType.BiosSet:
                         break;
+
                     case ItemType.Disk:
                         break;
+
                     case ItemType.Release:
                         break;
+
                     case ItemType.Rom: // Currently this encapsulates rom, megarom, and sccpluscart
                         state += "\t\t<dump>"
                             // + "<original value=\"true\">GoodMSX</original>"
                             + "<rom>"
-                            + (!ExcludeFields[(int)Field.Offset] && !String.IsNullOrWhiteSpace(((Rom)rom).Offset) ? "<start>" + ((Rom)rom).Offset + "</start>" : "")
+                            + (!ExcludeFields[(int)Field.Offset] && !string.IsNullOrWhiteSpace(((Rom)rom).Offset) ? "<start>" + ((Rom)rom).Offset + "</start>" : "")
                             // + "<type>Normal</type>"
                             + "<hash>" + (!ExcludeFields[(int)Field.SHA1] ? ((Rom)rom).SHA1 : "") + "</hash>"
                             // + "<remark></remark>"
                             + "</rom></dump>\n";
                             break;
+
                     case ItemType.Sample:
                         break;
                 }

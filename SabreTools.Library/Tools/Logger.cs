@@ -62,9 +62,7 @@ namespace SabreTools.Library.Tools
             _filter = filter;
 
             if (!Directory.Exists(_basepath))
-            {
                 Directory.CreateDirectory(_basepath);
-            }
 
             Start();
         }
@@ -77,9 +75,7 @@ namespace SabreTools.Library.Tools
         {
             _start = DateTime.Now;
             if (!_tofile)
-            {
                 return true;
-            }
 
             try
             {
@@ -108,26 +104,19 @@ namespace SabreTools.Library.Tools
             if (!suppress)
             {
                 if (_warnings)
-                {
                     Console.WriteLine("There were warnings in the last run! Check the log for more details");
-                }
+
                 if (_errors)
-                {
                     Console.WriteLine("There were errors in the last run! Check the log for more details");
-                }
 
                 TimeSpan span = DateTime.Now.Subtract(_start);
 
                 // Special case for multi-day runs
                 string total = "";
                 if (span >= TimeSpan.FromDays(1))
-                {
                     total = span.ToString(@"d\:hh\:mm\:ss");
-                }
                 else
-                {
                     total = span.ToString(@"hh\:mm\:ss");
-                }
 
                 if (!_tofile)
                 {
@@ -173,15 +162,11 @@ namespace SabreTools.Library.Tools
         {
             // If the log level is less than the filter level, we skip it but claim we didn't
             if (loglevel < _filter)
-            {
                 return true;
-            }
 
             // USER and ERROR writes to console
             if (loglevel == LogLevel.USER || loglevel == LogLevel.ERROR)
-            {
                 Console.WriteLine((loglevel == LogLevel.ERROR && appendPrefix ? loglevel.ToString() + " " : "") + output);
-            }
 
             // If we're writing to file, use the existing stream
             if (_tofile)

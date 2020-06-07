@@ -184,8 +184,7 @@ namespace SabreTools.Library.DatFiles
             try
             {
                 // No game should start with a path separator
-                if (rom.MachineName.StartsWith(Path.DirectorySeparatorChar.ToString()))
-                    rom.MachineName = rom.MachineName.Substring(1);
+                rom.MachineName = rom.MachineName.TrimStart(Path.DirectorySeparatorChar);
 
                 // If the DatItem isn't a rom, we don't output it
                 if (rom.ItemType != ItemType.Rom)

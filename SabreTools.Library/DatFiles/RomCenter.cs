@@ -67,52 +67,61 @@ namespace SabreTools.Library.DatFiles
                 {
                     blocktype = "credits";
                 }
+
                 // If the line is the start of the dat section
                 else if (line.ToLowerInvariant().StartsWith("[dat]"))
                 {
                     blocktype = "dat";
                 }
+
                 // If the line is the start of the emulator section
                 else if (line.ToLowerInvariant().StartsWith("[emulator]"))
                 {
                     blocktype = "emulator";
                 }
+
                 // If the line is the start of the game section
                 else if (line.ToLowerInvariant().StartsWith("[games]"))
                 {
                     blocktype = "games";
                 }
+
                 // Otherwise, it's not a section and it's data, so get out all data
                 else
                 {
                     // If we have an author
                     if (line.ToLowerInvariant().StartsWith("author="))
                     {
-                        Author = (String.IsNullOrWhiteSpace(Author) ? line.Split('=')[1] : Author);
+                        Author = (string.IsNullOrWhiteSpace(Author) ? line.Split('=')[1] : Author);
                     }
+
                     // If we have one of the three version tags
                     else if (line.ToLowerInvariant().StartsWith("version="))
                     {
                         switch (blocktype)
                         {
                             case "credits":
-                                Version = (String.IsNullOrWhiteSpace(Version) ? line.Split('=')[1] : Version);
+                                Version = (string.IsNullOrWhiteSpace(Version) ? line.Split('=')[1] : Version);
                                 break;
+
                             case "emulator":
-                                Description = (String.IsNullOrWhiteSpace(Description) ? line.Split('=')[1] : Description);
+                                Description = (string.IsNullOrWhiteSpace(Description) ? line.Split('=')[1] : Description);
                                 break;
                         }
                     }
+
                     // If we have a URL
                     else if (line.ToLowerInvariant().StartsWith("url="))
                     {
-                        Url = (String.IsNullOrWhiteSpace(Url) ? line.Split('=')[1] : Url);
+                        Url = (string.IsNullOrWhiteSpace(Url) ? line.Split('=')[1] : Url);
                     }
+
                     // If we have a comment
                     else if (line.ToLowerInvariant().StartsWith("comment="))
                     {
-                        Comment = (String.IsNullOrWhiteSpace(Comment) ? line.Split('=')[1] : Comment);
+                        Comment = (string.IsNullOrWhiteSpace(Comment) ? line.Split('=')[1] : Comment);
                     }
+
                     // If we have the split flag
                     else if (line.ToLowerInvariant().StartsWith("split="))
                     {
@@ -124,6 +133,7 @@ namespace SabreTools.Library.DatFiles
                             }
                         }
                     }
+
                     // If we have the merge tag
                     else if (line.ToLowerInvariant().StartsWith("merge="))
                     {
@@ -135,11 +145,13 @@ namespace SabreTools.Library.DatFiles
                             }
                         }
                     }
+
                     // If we have the refname tag
                     else if (line.ToLowerInvariant().StartsWith("refname="))
                     {
-                        Name = (String.IsNullOrWhiteSpace(Name) ? line.Split('=')[1] : Name);
+                        Name = (string.IsNullOrWhiteSpace(Name) ? line.Split('=')[1] : Name);
                     }
+
                     // If we have a rom
                     else if (line.StartsWith("¬"))
                     {
@@ -345,20 +357,20 @@ namespace SabreTools.Library.DatFiles
 
                 if (rom.ItemType == ItemType.Rom)
                 {
-                    state += "¬" + (!ExcludeFields[(int)Field.CloneOf] && String.IsNullOrWhiteSpace(rom.CloneOf) ? WebUtility.HtmlEncode(rom.CloneOf) : "") +
-                    "¬" + (!ExcludeFields[(int)Field.CloneOf] && String.IsNullOrWhiteSpace(rom.CloneOf) ? WebUtility.HtmlEncode(rom.CloneOf) : "") +
+                    state += "¬" + (!ExcludeFields[(int)Field.CloneOf] && string.IsNullOrWhiteSpace(rom.CloneOf) ? WebUtility.HtmlEncode(rom.CloneOf) : "") +
+                    "¬" + (!ExcludeFields[(int)Field.CloneOf] && string.IsNullOrWhiteSpace(rom.CloneOf) ? WebUtility.HtmlEncode(rom.CloneOf) : "") +
                     "¬" + (!ExcludeFields[(int)Field.MachineName] ? WebUtility.HtmlEncode(rom.MachineName) : "") +
-                    "¬" + (!ExcludeFields[(int)Field.Description] ? WebUtility.HtmlEncode((String.IsNullOrWhiteSpace(rom.MachineDescription) ? rom.MachineName : rom.MachineDescription)) : "") +
+                    "¬" + (!ExcludeFields[(int)Field.Description] ? WebUtility.HtmlEncode((string.IsNullOrWhiteSpace(rom.MachineDescription) ? rom.MachineName : rom.MachineDescription)) : "") +
                     "¬" + (!ExcludeFields[(int)Field.Name] ? WebUtility.HtmlEncode(rom.Name) : "") +
                     "¬" + (!ExcludeFields[(int)Field.CRC] ? ((Rom)rom).CRC.ToLowerInvariant() : "") +
                     "¬" + (!ExcludeFields[(int)Field.Size] && ((Rom)rom).Size != -1 ? ((Rom)rom).Size.ToString() : "") + "¬¬¬\n";
                 }
                 else if (rom.ItemType == ItemType.Disk)
                 {
-                    state += "¬" + (!ExcludeFields[(int)Field.CloneOf] && String.IsNullOrWhiteSpace(rom.CloneOf) ? WebUtility.HtmlEncode(rom.CloneOf) : "") +
-                    "¬" + (!ExcludeFields[(int)Field.CloneOf] && String.IsNullOrWhiteSpace(rom.CloneOf) ? WebUtility.HtmlEncode(rom.CloneOf) : "") +
+                    state += "¬" + (!ExcludeFields[(int)Field.CloneOf] && string.IsNullOrWhiteSpace(rom.CloneOf) ? WebUtility.HtmlEncode(rom.CloneOf) : "") +
+                    "¬" + (!ExcludeFields[(int)Field.CloneOf] && string.IsNullOrWhiteSpace(rom.CloneOf) ? WebUtility.HtmlEncode(rom.CloneOf) : "") +
                     "¬" + (!ExcludeFields[(int)Field.MachineName] ? WebUtility.HtmlEncode(rom.MachineName) : "") +
-                    "¬" + (!ExcludeFields[(int)Field.Description] ? WebUtility.HtmlEncode((String.IsNullOrWhiteSpace(rom.MachineDescription) ? rom.MachineName : rom.MachineDescription)) : "") +
+                    "¬" + (!ExcludeFields[(int)Field.Description] ? WebUtility.HtmlEncode((string.IsNullOrWhiteSpace(rom.MachineDescription) ? rom.MachineName : rom.MachineDescription)) : "") +
                     "¬" + (!ExcludeFields[(int)Field.Name] ? WebUtility.HtmlEncode(rom.Name) : "") +
                     "¬¬¬¬¬\n";
                 }

@@ -65,9 +65,7 @@ namespace SabreTools.Library.DatFiles
 
             // If we got a null reader, just return
             if (xtr == null)
-            {
                 return;
-            }
 
             // Otherwise, read the file to the end
             try
@@ -101,9 +99,7 @@ namespace SabreTools.Library.DatFiles
                         {
                             parent.RemoveAt(parent.Count - 1);
                             if (keep && parentcount > 1)
-                            {
-                                Type = (String.IsNullOrWhiteSpace(Type) ? "SuperDAT" : Type);
-                            }
+                                Type = (string.IsNullOrWhiteSpace(Type) ? "SuperDAT" : Type);
                         }
                     }
 
@@ -123,6 +119,7 @@ namespace SabreTools.Library.DatFiles
                             // Skip the header node now that we've processed it
                             xtr.Skip();
                             break;
+
                         case "dir":
                         case "directory":
                             empty = ReadDirectory(xtr.ReadSubtree(), parent, filename, sysid, srcid, keep, clean, remUnicode);
@@ -158,9 +155,7 @@ namespace SabreTools.Library.DatFiles
 
             // If there's no subtree to the header, skip it
             if (reader == null)
-            {
                 return;
-            }
 
             // Otherwise, read what we can from the header
             while (!reader.EOF)
@@ -178,50 +173,59 @@ namespace SabreTools.Library.DatFiles
                 {
                     case "name":
                         content = reader.ReadElementContentAsString(); ;
-                        Name = (String.IsNullOrWhiteSpace(Name) ? content : Name);
+                        Name = (string.IsNullOrWhiteSpace(Name) ? content : Name);
                         superdat = superdat || content.Contains(" - SuperDAT");
                         if (keep && superdat)
                         {
-                            Type = (String.IsNullOrWhiteSpace(Type) ? "SuperDAT" : Type);
+                            Type = (string.IsNullOrWhiteSpace(Type) ? "SuperDAT" : Type);
                         }
                         break;
+
                     case "description":
                         content = reader.ReadElementContentAsString();
-                        Description = (String.IsNullOrWhiteSpace(Description) ? content : Description);
+                        Description = (string.IsNullOrWhiteSpace(Description) ? content : Description);
                         break;
+
                     case "rootdir":
                         content = reader.ReadElementContentAsString();
-                        RootDir = (String.IsNullOrWhiteSpace(RootDir) ? content : RootDir);
+                        RootDir = (string.IsNullOrWhiteSpace(RootDir) ? content : RootDir);
                         break;
+
                     case "category":
                         content = reader.ReadElementContentAsString();
-                        Category = (String.IsNullOrWhiteSpace(Category) ? content : Category);
+                        Category = (string.IsNullOrWhiteSpace(Category) ? content : Category);
                         break;
+
                     case "version":
                         content = reader.ReadElementContentAsString();
-                        Version = (String.IsNullOrWhiteSpace(Version) ? content : Version);
+                        Version = (string.IsNullOrWhiteSpace(Version) ? content : Version);
                         break;
+
                     case "date":
                         content = reader.ReadElementContentAsString();
-                        Date = (String.IsNullOrWhiteSpace(Date) ? content.Replace(".", "/") : Date);
+                        Date = (string.IsNullOrWhiteSpace(Date) ? content.Replace(".", "/") : Date);
                         break;
+
                     case "author":
                         content = reader.ReadElementContentAsString();
-                        Author = (String.IsNullOrWhiteSpace(Author) ? content : Author);
-                        Email = (String.IsNullOrWhiteSpace(Email) ?	reader.GetAttribute("email") : Email);
-                        Homepage = (String.IsNullOrWhiteSpace(Homepage) ? reader.GetAttribute("homepage") : Homepage);
-                        Url = (String.IsNullOrWhiteSpace(Url) ? reader.GetAttribute("url") : Url);
+                        Author = (string.IsNullOrWhiteSpace(Author) ? content : Author);
+                        Email = (string.IsNullOrWhiteSpace(Email) ?	reader.GetAttribute("email") : Email);
+                        Homepage = (string.IsNullOrWhiteSpace(Homepage) ? reader.GetAttribute("homepage") : Homepage);
+                        Url = (string.IsNullOrWhiteSpace(Url) ? reader.GetAttribute("url") : Url);
                         break;
+
                     case "comment":
                         content = reader.ReadElementContentAsString();
-                        Comment = (String.IsNullOrWhiteSpace(Comment) ? content : Comment);
+                        Comment = (string.IsNullOrWhiteSpace(Comment) ? content : Comment);
                         break;
+
                     case "flags":
                         ReadFlags(reader.ReadSubtree(), superdat);
 
                         // Skip the flags node now that we've processed it
                         reader.Skip();
                         break;
+
                     default:
                         reader.Read();
                         break;
@@ -261,15 +265,11 @@ namespace SabreTools.Library.DatFiles
 
             // If there's no subtree to the header, skip it
             if (reader == null)
-            {
                 return empty;
-            }
 
             string foldername = (reader.GetAttribute("name") ?? "");
-            if (!String.IsNullOrWhiteSpace(foldername))
-            {
+            if (!string.IsNullOrWhiteSpace(foldername))
                 parent.Add(foldername);
-            }
 
             // Otherwise, read what we can from the directory
             while (!reader.EOF)
@@ -300,9 +300,7 @@ namespace SabreTools.Library.DatFiles
                     {
                         parent.RemoveAt(parent.Count - 1);
                         if (keep && parentcount > 1)
-                        {
-                            Type = (String.IsNullOrWhiteSpace(Type) ? "SuperDAT" : Type);
-                        }
+                            Type = (string.IsNullOrWhiteSpace(Type) ? "SuperDAT" : Type);
                     }
                 }
 
@@ -325,6 +323,7 @@ namespace SabreTools.Library.DatFiles
                         // Skip the directory node now that we've processed it
                         reader.Read();
                         break;
+
                     case "file":
                         empty = false;
 
@@ -387,6 +386,7 @@ namespace SabreTools.Library.DatFiles
                                     SourceID = srcid,
                                 };
                                 break;
+
                             case "biosset":
                                 datItem = new BiosSet
                                 {
@@ -399,6 +399,7 @@ namespace SabreTools.Library.DatFiles
                                     SourceID = srcid,
                                 };
                                 break;
+
                             case "disk":
                                 datItem = new Disk
                                 {
@@ -416,6 +417,7 @@ namespace SabreTools.Library.DatFiles
                                     SourceID = srcid,
                                 };
                                 break;
+
                             case "release":
                                 datItem = new Release
                                 {
@@ -430,6 +432,7 @@ namespace SabreTools.Library.DatFiles
                                     SourceID = srcid,
                                 };
                                 break;
+
                             case "rom":
                                 datItem = new Rom
                                 {
@@ -450,6 +453,7 @@ namespace SabreTools.Library.DatFiles
                                     SourceID = srcid,
                                 };
                                 break;
+
                             case "sample":
                                 datItem = new Sample
                                 {
@@ -460,6 +464,7 @@ namespace SabreTools.Library.DatFiles
                                     SourceID = srcid,
                                 };
                                 break;
+
                             default:
                                 // By default, create a new Blank, just in case
                                 datItem = new Blank();
@@ -491,9 +496,7 @@ namespace SabreTools.Library.DatFiles
 
             // If we somehow have a null flag section, skip it
             if (reader == null)
-            {
                 return;
-            }
 
             while (!reader.EOF)
             {
@@ -513,21 +516,24 @@ namespace SabreTools.Library.DatFiles
                             switch (reader.GetAttribute("name").ToLowerInvariant())
                             {
                                 case "type":
-                                    Type = (String.IsNullOrWhiteSpace(Type) ? content : Type);
+                                    Type = (string.IsNullOrWhiteSpace(Type) ? content : Type);
                                     superdat = superdat || content.Contains("SuperDAT");
                                     break;
+
                                 case "forcemerging":
                                     if (ForceMerging == ForceMerging.None)
                                     {
                                         ForceMerging = Utilities.GetForceMerging(content);
                                     }
                                     break;
+
                                 case "forcenodump":
                                     if (ForceNodump == ForceNodump.None)
                                     {
                                         ForceNodump = Utilities.GetForceNodump(content);
                                     }
                                     break;
+
                                 case "forcepacking":
                                     if (ForcePacking == ForcePacking.None)
                                     {
@@ -536,8 +542,10 @@ namespace SabreTools.Library.DatFiles
                                     break;
                             }
                         }
+
                         reader.Read();
                         break;
+
                     default:
                         reader.Read();
                         break;
@@ -602,15 +610,11 @@ namespace SabreTools.Library.DatFiles
 
                         // If we have a different game and we're not at the start of the list, output the end of last item
                         if (lastgame != null && lastgame.ToLowerInvariant() != rom.MachineName.ToLowerInvariant())
-                        {
                             depth = WriteEndGame(sw, splitpath, newsplit, depth, out last);
-                        }
 
                         // If we have a new game, output the beginning of the new item
                         if (lastgame == null || lastgame.ToLowerInvariant() != rom.MachineName.ToLowerInvariant())
-                        {
                             depth = WriteStartGame(sw, rom, newsplit, lastgame, depth, last);
-                        }
 
                         // If we have a "null" game (created by DATFromDir or something similar), log it to file
                         if (rom.ItemType == ItemType.Rom
@@ -664,15 +668,15 @@ namespace SabreTools.Library.DatFiles
                             "\t<header>\n" +
                             "\t\t<name>" + WebUtility.HtmlEncode(Name) + "</name>\n" +
                             "\t\t<description>" + WebUtility.HtmlEncode(Description) + "</description>\n" +
-                            (!String.IsNullOrWhiteSpace(RootDir) ? "\t\t<rootdir>" + WebUtility.HtmlEncode(RootDir) + "</rootdir>\n" : "") +
-                            (!String.IsNullOrWhiteSpace(Category) ? "\t\t<category>" + WebUtility.HtmlEncode(Category) + "</category>\n" : "") +
+                            (!string.IsNullOrWhiteSpace(RootDir) ? "\t\t<rootdir>" + WebUtility.HtmlEncode(RootDir) + "</rootdir>\n" : "") +
+                            (!string.IsNullOrWhiteSpace(Category) ? "\t\t<category>" + WebUtility.HtmlEncode(Category) + "</category>\n" : "") +
                             "\t\t<version>" + WebUtility.HtmlEncode(Version) + "</version>\n" +
-                            (!String.IsNullOrWhiteSpace(Date) ? "\t\t<date>" + WebUtility.HtmlEncode(Date) + "</date>\n" : "") +
+                            (!string.IsNullOrWhiteSpace(Date) ? "\t\t<date>" + WebUtility.HtmlEncode(Date) + "</date>\n" : "") +
                             "\t\t<author>" + WebUtility.HtmlEncode(Author) + "</author>\n" +
-                            (!String.IsNullOrWhiteSpace(Comment) ? "\t\t<comment>" + WebUtility.HtmlEncode(Comment) + "</comment>\n" : "") +
-                            (!String.IsNullOrWhiteSpace(Type) || ForcePacking != ForcePacking.None || ForceMerging != ForceMerging.None || ForceNodump != ForceNodump.None ?
+                            (!string.IsNullOrWhiteSpace(Comment) ? "\t\t<comment>" + WebUtility.HtmlEncode(Comment) + "</comment>\n" : "") +
+                            (!string.IsNullOrWhiteSpace(Type) || ForcePacking != ForcePacking.None || ForceMerging != ForceMerging.None || ForceNodump != ForceNodump.None ?
                                 "\t\t<flags>\n" +
-                                    (!String.IsNullOrWhiteSpace(Type) ? "\t\t\t<flag name=\"type\" value=\"" + WebUtility.HtmlEncode(Type) + "\"/>\n" : "") +
+                                    (!string.IsNullOrWhiteSpace(Type) ? "\t\t\t<flag name=\"type\" value=\"" + WebUtility.HtmlEncode(Type) + "\"/>\n" : "") +
                                     (ForcePacking == ForcePacking.Unzip ? "\t\t\t<flag name=\"forcepacking\" value=\"unzip\"/>\n" : "") +
                                     (ForcePacking == ForcePacking.Zip ? "\t\t\t<flag name=\"forcepacking\" value=\"zip\"/>\n" : "") +
                                     (ForceMerging == ForceMerging.Full ? "\t\t\t<flag name=\"forcemerging\" value=\"full\"/>\n" : "") +
@@ -715,10 +719,7 @@ namespace SabreTools.Library.DatFiles
             try
             {
                 // No game should start with a path separator
-                if (rom.MachineName.StartsWith(Path.DirectorySeparatorChar.ToString()))
-                {
-                    rom.MachineName = rom.MachineName.Substring(1);
-                }
+                rom.MachineName = rom.MachineName.TrimStart(Path.DirectorySeparatorChar);
 
                 string state = "";
                 for (int i = (last == -1 ? 0 : last); i < newsplit.Count; i++)
@@ -727,9 +728,11 @@ namespace SabreTools.Library.DatFiles
                     {
                         state += "\t";
                     }
+
                     state += "<directory name=\"" + (!ExcludeFields[(int)Field.MachineName] ? WebUtility.HtmlEncode(newsplit[i]) : "") + "\" description=\"" +
                     WebUtility.HtmlEncode(newsplit[i]) + "\">\n";
                 }
+
                 depth = depth - (last == -1 ? 0 : last) + newsplit.Count;
 
                 sw.Write(state);
@@ -769,9 +772,7 @@ namespace SabreTools.Library.DatFiles
 
                         // If we find a difference, break
                         if (newsplit[i] != splitpath[i])
-                        {
                             break;
-                        }
                     }
 
                     // Now that we have the last known position, take down all open folders
@@ -782,6 +783,7 @@ namespace SabreTools.Library.DatFiles
                         {
                             state += "\t";
                         }
+
                         state += "</directory>\n";
                     }
 
@@ -830,6 +832,7 @@ namespace SabreTools.Library.DatFiles
                 {
                     prefix += "\t";
                 }
+
                 state += prefix;
 
                 switch (rom.ItemType)
@@ -838,53 +841,58 @@ namespace SabreTools.Library.DatFiles
                         state += "<file type=\"archive\" name=\"" + (!ExcludeFields[(int)Field.Name] ? WebUtility.HtmlEncode(rom.Name) : "") + "\""
                             + "/>\n";
                         break;
+
                     case ItemType.BiosSet:
                         state += "<file type=\"biosset\" name\"" + (!ExcludeFields[(int)Field.Name] ? WebUtility.HtmlEncode(rom.Name) : "") + "\""
-                            + (!ExcludeFields[(int)Field.BiosDescription] && !String.IsNullOrWhiteSpace(((BiosSet)rom).Description) ? " description=\"" + WebUtility.HtmlEncode(((BiosSet)rom).Description) + "\"" : "")
+                            + (!ExcludeFields[(int)Field.BiosDescription] && !string.IsNullOrWhiteSpace(((BiosSet)rom).Description) ? " description=\"" + WebUtility.HtmlEncode(((BiosSet)rom).Description) + "\"" : "")
                             + (!ExcludeFields[(int)Field.Default] && ((BiosSet)rom).Default != null
                                 ? ((BiosSet)rom).Default.ToString().ToLowerInvariant()
                                 : "")
                             + "/>\n";
                         break;
+
                     case ItemType.Disk:
                         state += "<file type=\"disk\" name=\"" + (!ExcludeFields[(int)Field.Name] ? WebUtility.HtmlEncode(rom.Name) : "") + "\""
-                            + (!ExcludeFields[(int)Field.MD5] && !String.IsNullOrWhiteSpace(((Disk)rom).MD5) ? " md5=\"" + ((Disk)rom).MD5.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.RIPEMD160] && !String.IsNullOrWhiteSpace(((Disk)rom).RIPEMD160) ? " ripemd160=\"" + ((Disk)rom).RIPEMD160.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.SHA1] && !String.IsNullOrWhiteSpace(((Disk)rom).SHA1) ? " sha1=\"" + ((Disk)rom).SHA1.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.SHA256] && !String.IsNullOrWhiteSpace(((Disk)rom).SHA256) ? " sha256=\"" + ((Disk)rom).SHA256.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.SHA384] && !String.IsNullOrWhiteSpace(((Disk)rom).SHA384) ? " sha384=\"" + ((Disk)rom).SHA384.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.SHA512] && !String.IsNullOrWhiteSpace(((Disk)rom).SHA512) ? " sha512=\"" + ((Disk)rom).SHA512.ToLowerInvariant() + "\"" : "")
+                            + (!ExcludeFields[(int)Field.MD5] && !string.IsNullOrWhiteSpace(((Disk)rom).MD5) ? " md5=\"" + ((Disk)rom).MD5.ToLowerInvariant() + "\"" : "")
+                            + (!ExcludeFields[(int)Field.RIPEMD160] && !string.IsNullOrWhiteSpace(((Disk)rom).RIPEMD160) ? " ripemd160=\"" + ((Disk)rom).RIPEMD160.ToLowerInvariant() + "\"" : "")
+                            + (!ExcludeFields[(int)Field.SHA1] && !string.IsNullOrWhiteSpace(((Disk)rom).SHA1) ? " sha1=\"" + ((Disk)rom).SHA1.ToLowerInvariant() + "\"" : "")
+                            + (!ExcludeFields[(int)Field.SHA256] && !string.IsNullOrWhiteSpace(((Disk)rom).SHA256) ? " sha256=\"" + ((Disk)rom).SHA256.ToLowerInvariant() + "\"" : "")
+                            + (!ExcludeFields[(int)Field.SHA384] && !string.IsNullOrWhiteSpace(((Disk)rom).SHA384) ? " sha384=\"" + ((Disk)rom).SHA384.ToLowerInvariant() + "\"" : "")
+                            + (!ExcludeFields[(int)Field.SHA512] && !string.IsNullOrWhiteSpace(((Disk)rom).SHA512) ? " sha512=\"" + ((Disk)rom).SHA512.ToLowerInvariant() + "\"" : "")
                             + (!ExcludeFields[(int)Field.Status] && ((Disk)rom).ItemStatus != ItemStatus.None ? prefix + "/>\n" + prefix + "\t<flags>\n" +
                                 prefix + "\t\t<flag name=\"status\" value=\"" + ((Disk)rom).ItemStatus.ToString().ToLowerInvariant() + "\"/>\n" +
                                 prefix + "\t</flags>\n" +
                                 prefix + "</file>\n" : "/>\n");
                         break;
+
                     case ItemType.Release:
                         state += "<file type=\"release\" name\"" + (!ExcludeFields[(int)Field.Name] ? WebUtility.HtmlEncode(rom.Name) : "") + "\""
-                            + (!ExcludeFields[(int)Field.Region] && !String.IsNullOrWhiteSpace(((Release)rom).Region) ? " region=\"" + WebUtility.HtmlEncode(((Release)rom).Region) + "\"" : "")
-                            + (!ExcludeFields[(int)Field.Language] && !String.IsNullOrWhiteSpace(((Release)rom).Language) ? " language=\"" + WebUtility.HtmlEncode(((Release)rom).Language) + "\"" : "")
-                            + (!ExcludeFields[(int)Field.Date] && !String.IsNullOrWhiteSpace(((Release)rom).Date) ? " date=\"" + WebUtility.HtmlEncode(((Release)rom).Date) + "\"" : "")
+                            + (!ExcludeFields[(int)Field.Region] && !string.IsNullOrWhiteSpace(((Release)rom).Region) ? " region=\"" + WebUtility.HtmlEncode(((Release)rom).Region) + "\"" : "")
+                            + (!ExcludeFields[(int)Field.Language] && !string.IsNullOrWhiteSpace(((Release)rom).Language) ? " language=\"" + WebUtility.HtmlEncode(((Release)rom).Language) + "\"" : "")
+                            + (!ExcludeFields[(int)Field.Date] && !string.IsNullOrWhiteSpace(((Release)rom).Date) ? " date=\"" + WebUtility.HtmlEncode(((Release)rom).Date) + "\"" : "")
                             + (!ExcludeFields[(int)Field.Default] && ((Release)rom).Default != null
                                 ? ((Release)rom).Default.ToString().ToLowerInvariant()
                                 : "")
                             + "/>\n";
                         break;
+
                     case ItemType.Rom:
                         state += "<file type=\"rom\" name=\"" + (!ExcludeFields[(int)Field.Name] ? WebUtility.HtmlEncode(rom.Name) : "") + "\""
                             + (!ExcludeFields[(int)Field.Size] && ((Rom)rom).Size != -1 ? " size=\"" + ((Rom)rom).Size + "\"" : "")
-                            + (!ExcludeFields[(int)Field.CRC] && !String.IsNullOrWhiteSpace(((Rom)rom).CRC) ? " crc=\"" + ((Rom)rom).CRC.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.MD5] && !String.IsNullOrWhiteSpace(((Rom)rom).MD5) ? " md5=\"" + ((Rom)rom).MD5.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.RIPEMD160] && !String.IsNullOrWhiteSpace(((Rom)rom).RIPEMD160) ? " ripemd160=\"" + ((Rom)rom).RIPEMD160.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.SHA1] && !String.IsNullOrWhiteSpace(((Rom)rom).SHA1) ? " sha1=\"" + ((Rom)rom).SHA1.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.SHA256] && !String.IsNullOrWhiteSpace(((Rom)rom).SHA256) ? " sha256=\"" + ((Rom)rom).SHA256.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.SHA384] && !String.IsNullOrWhiteSpace(((Rom)rom).SHA384) ? " sha384=\"" + ((Rom)rom).SHA384.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.SHA512] && !String.IsNullOrWhiteSpace(((Rom)rom).SHA512) ? " sha512=\"" + ((Rom)rom).SHA512.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.Date] && !String.IsNullOrWhiteSpace(((Rom)rom).Date) ? " date=\"" + ((Rom)rom).Date + "\"" : "")
+                            + (!ExcludeFields[(int)Field.CRC] && !string.IsNullOrWhiteSpace(((Rom)rom).CRC) ? " crc=\"" + ((Rom)rom).CRC.ToLowerInvariant() + "\"" : "")
+                            + (!ExcludeFields[(int)Field.MD5] && !string.IsNullOrWhiteSpace(((Rom)rom).MD5) ? " md5=\"" + ((Rom)rom).MD5.ToLowerInvariant() + "\"" : "")
+                            + (!ExcludeFields[(int)Field.RIPEMD160] && !string.IsNullOrWhiteSpace(((Rom)rom).RIPEMD160) ? " ripemd160=\"" + ((Rom)rom).RIPEMD160.ToLowerInvariant() + "\"" : "")
+                            + (!ExcludeFields[(int)Field.SHA1] && !string.IsNullOrWhiteSpace(((Rom)rom).SHA1) ? " sha1=\"" + ((Rom)rom).SHA1.ToLowerInvariant() + "\"" : "")
+                            + (!ExcludeFields[(int)Field.SHA256] && !string.IsNullOrWhiteSpace(((Rom)rom).SHA256) ? " sha256=\"" + ((Rom)rom).SHA256.ToLowerInvariant() + "\"" : "")
+                            + (!ExcludeFields[(int)Field.SHA384] && !string.IsNullOrWhiteSpace(((Rom)rom).SHA384) ? " sha384=\"" + ((Rom)rom).SHA384.ToLowerInvariant() + "\"" : "")
+                            + (!ExcludeFields[(int)Field.SHA512] && !string.IsNullOrWhiteSpace(((Rom)rom).SHA512) ? " sha512=\"" + ((Rom)rom).SHA512.ToLowerInvariant() + "\"" : "")
+                            + (!ExcludeFields[(int)Field.Date] && !string.IsNullOrWhiteSpace(((Rom)rom).Date) ? " date=\"" + ((Rom)rom).Date + "\"" : "")
                             + (!ExcludeFields[(int)Field.Status] && ((Rom)rom).ItemStatus != ItemStatus.None ? prefix + "/>\n" + prefix + "\t<flags>\n" +
                                 prefix + "\t\t<flag name=\"status\" value=\"" + ((Rom)rom).ItemStatus.ToString().ToLowerInvariant() + "\"/>\n" +
                                 prefix + "\t</flags>\n" +
                                 prefix + "</file>\n" : "/>\n");
                         break;
+
                     case ItemType.Sample:
                         state += "<file type=\"sample\" name=\"" + (!ExcludeFields[(int)Field.Name] ? WebUtility.HtmlEncode(rom.Name) : "") + "\""
                             + "/>\n";
@@ -921,8 +929,10 @@ namespace SabreTools.Library.DatFiles
                     {
                         footer += "\t";
                     }
+
                     footer += "</directory>\n";
                 }
+
                 footer += "\t</data>\n</datafile>\n";
 
                 // Write the footer out

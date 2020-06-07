@@ -128,19 +128,20 @@
     public enum OutputFormat
     {
         // Currently implemented
-        Folder =        0,
-        TorrentZip =    1,
-        TorrentGzip =   2,
-        TapeArchive =   5,
+        Folder,
+        TorrentZip,
+        TorrentGzip,
+        TorrentGzipRomba,
+        TapeArchive,
 
         // Currently unimplemented fully
-        Torrent7Zip =   3,
-        TorrentRar =    4,
-        TorrentXZ =     6,
-        TorrentLRZip =  7,
-        TorrentLZ4 =    8,
-        TorrentZstd =   9,
-        TorrentZPAQ =   10,
+        Torrent7Zip,
+        TorrentRar,
+        TorrentXZ,
+        TorrentLRZip,
+        TorrentLZ4,
+        TorrentZstd,
+        TorrentZPAQ,
     }
 
     /// <summary>

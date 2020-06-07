@@ -155,34 +155,28 @@ namespace SabreTools.Library.DatItems
             this.Name = name;
             this.ItemType = ItemType.Rom;
             this.Size = -1;
+
             if ((omitFromScan & Hash.CRC) == 0)
-            {
                 _crc = null;
-            }
+
             if ((omitFromScan & Hash.MD5) == 0)
-            {
                 _md5 = null;
-            }
+
             if ((omitFromScan & Hash.RIPEMD160) == 0)
-            {
                 _ripemd160 = null;
-            }
+
             if ((omitFromScan & Hash.SHA1) == 0)
-            {
                 _sha1 = null;
-            }
+
             if ((omitFromScan & Hash.SHA256) == 0)
-            {
                 _sha256 = null;
-            }
+
             if ((omitFromScan & Hash.SHA384) == 0)
-            {
                 _sha384 = null;
-            }
+
             if ((omitFromScan & Hash.SHA512) == 0)
-            {
                 _sha512 = null;
-            }
+
             this.ItemStatus = ItemStatus.None;
 
             _machine = new Machine
@@ -278,12 +272,10 @@ namespace SabreTools.Library.DatItems
 
             // If we don't have a rom, return false
             if (this.ItemType != other.ItemType)
-            {
                 return dupefound;
-            }
 
-            // Otherwise, treat it as a rom
-            Rom newOther = (Rom)other;
+            // Otherwise, treat it as a Rom
+            Rom newOther = other as Rom;
 
             // If all hashes are empty but they're both nodump and the names match, then they're dupes
             if ((this.ItemStatus == ItemStatus.Nodump && newOther.ItemStatus == ItemStatus.Nodump)

@@ -94,18 +94,14 @@ namespace SabreTools.Library.Skippers
             XmlReader xtr = Utilities.GetXmlTextReader(filename);
 
             if (xtr == null)
-            {
                 return;
-            }
 
             bool valid = false;
             xtr.MoveToContent();
             while (!xtr.EOF)
             {
                 if (xtr.NodeType != XmlNodeType.Element)
-                {
                     xtr.Read();
-                }
 
                 switch (xtr.Name.ToLowerInvariant())
                 {
@@ -113,15 +109,19 @@ namespace SabreTools.Library.Skippers
                         valid = true;
                         xtr.Read();
                         break;
+
                     case "name":
                         Name = xtr.ReadElementContentAsString();
                         break;
+
                     case "author":
                         Author = xtr.ReadElementContentAsString();
                         break;
+
                     case "version":
                         Version = xtr.ReadElementContentAsString();
                         break;
+
                     case "rule":
                         // Get the information from the rule first
                         SkipperRule rule = new SkipperRule
@@ -145,6 +145,7 @@ namespace SabreTools.Library.Skippers
                                 rule.StartOffset = Convert.ToInt64(offset, 16);
                             }
                         }
+
                         if (xtr.GetAttribute("end_offset") != null)
                         {
                             string offset = xtr.GetAttribute("end_offset");
@@ -157,6 +158,7 @@ namespace SabreTools.Library.Skippers
                                 rule.EndOffset = Convert.ToInt64(offset, 16);
                             }
                         }
+
                         if (xtr.GetAttribute("operation") != null)
                         {
                             string operation = xtr.GetAttribute("operation");
@@ -182,9 +184,7 @@ namespace SabreTools.Library.Skippers
                             while (!subreader.EOF)
                             {
                                 if (subreader.NodeType != XmlNodeType.Element)
-                                {
                                     subreader.Read();
-                                }
 
                                 // Get the test type
                                 SkipperTest test = new SkipperTest
@@ -201,18 +201,23 @@ namespace SabreTools.Library.Skippers
                                     case "data":
                                         test.Type = HeaderSkipTest.Data;
                                         break;
+
                                     case "or":
                                         test.Type = HeaderSkipTest.Or;
                                         break;
+
                                     case "xor":
                                         test.Type = HeaderSkipTest.Xor;
                                         break;
+
                                     case "and":
                                         test.Type = HeaderSkipTest.And;
                                         break;
+
                                     case "file":
                                         test.Type = HeaderSkipTest.File;
                                         break;
+
                                     default:
                                         subreader.Read();
                                         break;
@@ -231,6 +236,7 @@ namespace SabreTools.Library.Skippers
                                         test.Offset = Convert.ToInt64(offset, 16);
                                     }
                                 }
+
                                 if (subreader.GetAttribute("value") != null)
                                 {
                                     string value = subreader.GetAttribute("value");
@@ -243,6 +249,7 @@ namespace SabreTools.Library.Skippers
                                         test.Value[index] = byte.Parse(byteValue, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
                                     }
                                 }
+
                                 if (subreader.GetAttribute("result") != null)
                                 {
                                     string result = subreader.GetAttribute("result");
@@ -257,6 +264,7 @@ namespace SabreTools.Library.Skippers
                                             break;
                                     }
                                 }
+
                                 if (subreader.GetAttribute("mask") != null)
                                 {
                                     string mask = subreader.GetAttribute("mask");
@@ -269,6 +277,7 @@ namespace SabreTools.Library.Skippers
                                         test.Mask[index] = byte.Parse(byteValue, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
                                     }
                                 }
+
                                 if (subreader.GetAttribute("size") != null)
                                 {
                                     string size = subreader.GetAttribute("size");
@@ -281,6 +290,7 @@ namespace SabreTools.Library.Skippers
                                         test.Size = Convert.ToInt64(size, 16);
                                     }
                                 }
+
                                 if (subreader.GetAttribute("operator") != null)
                                 {
                                     string oper = subreader.GetAttribute("operator");
@@ -340,9 +350,7 @@ namespace SabreTools.Library.Skippers
         private static void PopulateSkippers()
         {
             if (_list == null)
-            {
                 _list = new List<Skipper>();
-            }
 
             foreach (string skipperFile in Directory.EnumerateFiles(LocalPath, "*", SearchOption.AllDirectories))
             {
@@ -383,9 +391,7 @@ namespace SabreTools.Library.Skippers
 
             // If we have a null skipper name, we return since we're not matching skippers
             if (skipperName == null)
-            {
                 return skipperRule;
-            }
 
             // Loop through and find a Skipper that has the right name
             Globals.Logger.Verbose("Beginning search for matching header skip rules");
@@ -395,9 +401,9 @@ namespace SabreTools.Library.Skippers
             foreach (Skipper skipper in tempList)
             {
                 // If we're searching for the skipper OR we have a match to an inputted one
-                if (String.IsNullOrWhiteSpace(skipperName)
-                    || (!String.IsNullOrWhiteSpace(skipper.Name) && skipperName.ToLowerInvariant() == skipper.Name.ToLowerInvariant())
-                    || (!String.IsNullOrWhiteSpace(skipper.Name) && skipperName.ToLowerInvariant() == skipper.SourceFile.ToLowerInvariant()))
+                if (string.IsNullOrWhiteSpace(skipperName)
+                    || (!string.IsNullOrWhiteSpace(skipper.Name) && skipperName.ToLowerInvariant() == skipper.Name.ToLowerInvariant())
+                    || (!string.IsNullOrWhiteSpace(skipper.Name) && skipperName.ToLowerInvariant() == skipper.SourceFile.ToLowerInvariant()))
                 {
                     // Loop through the rules until one is found that works
                     BinaryReader br = new BinaryReader(input);
@@ -417,17 +423,11 @@ namespace SabreTools.Library.Skippers
                                 case HeaderSkipTest.Data:
                                     // First seek to the correct position
                                     if (test.Offset == null)
-                                    {
                                         input.Seek(0, SeekOrigin.End);
-                                    }
                                     else if (test.Offset > 0 && test.Offset <= input.Length)
-                                    {
                                         input.Seek((long)test.Offset, SeekOrigin.Begin);
-                                    }
                                     else if (test.Offset < 0 && Math.Abs((long)test.Offset) <= input.Length)
-                                    {
                                         input.Seek((long)test.Offset, SeekOrigin.End);
-                                    }
 
                                     // Then read and compare bytewise
                                     result = true;
@@ -451,22 +451,17 @@ namespace SabreTools.Library.Skippers
                                     // Return if the expected and actual results match
                                     success &= (result == test.Result);
                                     break;
+
                                 case HeaderSkipTest.Or:
                                 case HeaderSkipTest.Xor:
                                 case HeaderSkipTest.And:
                                     // First seek to the correct position
                                     if (test.Offset == null)
-                                    {
                                         input.Seek(0, SeekOrigin.End);
-                                    }
                                     else if (test.Offset > 0 && test.Offset <= input.Length)
-                                    {
                                         input.Seek((long)test.Offset, SeekOrigin.Begin);
-                                    }
                                     else if (test.Offset < 0 && Math.Abs((long)test.Offset) <= input.Length)
-                                    {
                                         input.Seek((long)test.Offset, SeekOrigin.End);
-                                    }
 
                                     result = true;
                                     try
@@ -499,6 +494,7 @@ namespace SabreTools.Library.Skippers
                                     // Return if the expected and actual results match
                                     success &= (result == test.Result);
                                     break;
+
                                 case HeaderSkipTest.File:
                                     // First get the file size from stream
                                     long size = input.Length;
@@ -534,9 +530,7 @@ namespace SabreTools.Library.Skippers
                         {
                             // If we're not keeping the stream open, dispose of the binary reader
                             if (!keepOpen)
-                            {
                                 input.Dispose();
-                            }
 
                             Globals.Logger.User(" Matching rule found!");
                             return rule;
@@ -547,15 +541,11 @@ namespace SabreTools.Library.Skippers
 
             // If we're not keeping the stream open, dispose of the binary reader
             if (!keepOpen)
-            {
                 input.Dispose();
-            }
 
             // If we have a blank rule, inform the user
             if (skipperRule.Tests == null)
-            {
                 Globals.Logger.Verbose("No matching rule found!");
-            }
 
             return skipperRule;
         }

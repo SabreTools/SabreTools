@@ -62,9 +62,7 @@ namespace SabreTools.Library.DatFiles
 
             // If we got a null reader, just return
             if (xtr == null)
-            {
                 return;
-            }
 
             // Otherwise, read the file to the end
             try
@@ -82,19 +80,21 @@ namespace SabreTools.Library.DatFiles
                     switch (xtr.Name)
                     {
                         case "mame":
-                            Name = (String.IsNullOrWhiteSpace(Name) ? xtr.GetAttribute("build") : Name);
-                            Description = (String.IsNullOrWhiteSpace(Description) ? Name : Name);
+                            Name = (string.IsNullOrWhiteSpace(Name) ? xtr.GetAttribute("build") : Name);
+                            Description = (string.IsNullOrWhiteSpace(Description) ? Name : Name);
                             // string mame_debug = xtr.GetAttribute("debug"); // (yes|no) "no"
                             // string mame_mameconfig = xtr.GetAttribute("mameconfig"); CDATA
                             xtr.Read();
                             break;
+
                         // Handle M1 DATs since they're 99% the same as a SL DAT
                         case "m1":
-                            Name = (String.IsNullOrWhiteSpace(Name) ? "M1" : Name);
-                            Description = (String.IsNullOrWhiteSpace(Description) ? "M1" : Description);
-                            Version = (String.IsNullOrWhiteSpace(Version) ? xtr.GetAttribute("version") ?? "" : Version);
+                            Name = (string.IsNullOrWhiteSpace(Name) ? "M1" : Name);
+                            Description = (string.IsNullOrWhiteSpace(Description) ? "M1" : Description);
+                            Version = (string.IsNullOrWhiteSpace(Version) ? xtr.GetAttribute("version") ?? "" : Version);
                             xtr.Read();
                             break;
+
                         // We want to process the entire subtree of the machine
                         case "game": // Some older DATs still use "game"
                         case "machine":
@@ -145,9 +145,7 @@ namespace SabreTools.Library.DatFiles
         {
             // If we have an empty machine, skip it
             if (reader == null)
-            {
                 return;
-            }
 
             // Otherwise, add what is possible
             reader.MoveToContent();
@@ -159,17 +157,13 @@ namespace SabreTools.Library.DatFiles
             // Create a new machine
             MachineType machineType = MachineType.NULL;
             if (Utilities.GetYesNo(reader.GetAttribute("isbios")) == true)
-            {
                 machineType |= MachineType.Bios;
-            }
+
             if (Utilities.GetYesNo(reader.GetAttribute("isdevice")) == true)
-            {
                 machineType |= MachineType.Device;
-            }
+
             if (Utilities.GetYesNo(reader.GetAttribute("ismechanical")) == true)
-            {
                 machineType |= MachineType.Mechanical;
-            }
 
             Machine machine = new Machine
             {
@@ -204,12 +198,15 @@ namespace SabreTools.Library.DatFiles
                     case "description":
                         machine.Description = reader.ReadElementContentAsString();
                         break;
+
                     case "year":
                         machine.Year = reader.ReadElementContentAsString();
                         break;
+
                     case "manufacturer":
                         machine.Manufacturer = reader.ReadElementContentAsString();
                         break;
+
                     case "biosset":
                         containsItems = true;
 
@@ -231,6 +228,7 @@ namespace SabreTools.Library.DatFiles
 
                         reader.Read();
                         break;
+
                     case "rom":
                         containsItems = true;
 
@@ -264,6 +262,7 @@ namespace SabreTools.Library.DatFiles
 
                         reader.Read();
                         break;
+
                     case "disk":
                         containsItems = true;
 
@@ -295,15 +294,15 @@ namespace SabreTools.Library.DatFiles
 
                         reader.Read();
                         break;
+
                     case "device_ref":
                         string device_ref_name = reader.GetAttribute("name");
                         if (!machine.Devices.Contains(device_ref_name))
-                        {
                             machine.Devices.Add(device_ref_name);
-                        }
 
                         reader.Read();
                         break;
+
                     case "sample":
                         containsItems = true;
 
@@ -323,6 +322,7 @@ namespace SabreTools.Library.DatFiles
 
                         reader.Read();
                         break;
+
                     case "chip":
                         // string chip_name = reader.GetAttribute("name");
                         // string chip_tag = reader.GetAttribute("tag");
@@ -331,6 +331,7 @@ namespace SabreTools.Library.DatFiles
 
                         reader.Read();
                         break;
+
                     case "display":
                         // string display_tag = reader.GetAttribute("tag");
                         // string display_type = reader.GetAttribute("type"); // (raster|vector|lcd|svg|unknown)
@@ -349,11 +350,13 @@ namespace SabreTools.Library.DatFiles
 
                         reader.Read();
                         break;
+
                     case "sound":
                         // string sound_channels = reader.GetAttribute("channels");
 
                         reader.Read();
                         break;
+
                     case "condition":
                         // string condition_tag = reader.GetAttribute("tag");
                         // string condition_mask = reader.GetAttribute("mask");
@@ -362,6 +365,7 @@ namespace SabreTools.Library.DatFiles
 
                         reader.Read();
                         break;
+
                     case "input":
                         // bool? input_service = Utilities.GetYesNo(reader.GetAttribute("service"));
                         // bool? input_tilt = Utilities.GetYesNo(reader.GetAttribute("tilt"));
@@ -384,6 +388,7 @@ namespace SabreTools.Library.DatFiles
 
                         reader.Skip();
                         break;
+
                     case "dipswitch":
                         // string dipswitch_name = reader.GetAttribute("name");
                         // string dipswitch_tag = reader.GetAttribute("tag");
@@ -401,6 +406,7 @@ namespace SabreTools.Library.DatFiles
 
                         reader.Skip();
                         break;
+
                     case "configuration":
                         // string configuration_name = reader.GetAttribute("name");
                         // string configuration_tag = reader.GetAttribute("tag");
@@ -418,6 +424,7 @@ namespace SabreTools.Library.DatFiles
 
                         reader.Skip();
                         break;
+
                     case "port":
                         // string port_tag = reader.GetAttribute("tag");
 
@@ -426,6 +433,7 @@ namespace SabreTools.Library.DatFiles
 
                         reader.Skip();
                         break;
+
                     case "adjuster":
                         // string adjuster_name = reader.GetAttribute("name");
                         // bool? adjuster_default = Utilities.GetYesNo(reader.GetAttribute("default"));
@@ -446,6 +454,7 @@ namespace SabreTools.Library.DatFiles
 
                         reader.Read();
                         break;
+
                     case "feature":
                         // string feature_type = reader.GetAttribute("type"); // (protection|palette|graphics|sound|controls|keyboard|mouse|microphone|camera|disk|printer|lan|wan|timing)
                         // string feature_status = reader.GetAttribute("status"); // (unemulated|imperfect)
@@ -469,6 +478,7 @@ namespace SabreTools.Library.DatFiles
 
                         reader.Skip();
                         break;
+
                     case "slot":
                         // string slot_name = reader.GetAttribute("name");
                         ReadSlot(reader.ReadSubtree(), machine);
@@ -476,6 +486,7 @@ namespace SabreTools.Library.DatFiles
                         // Skip the slot now that we've processed it
                         reader.Skip();
                         break;
+
                     case "softwarelist":
                         // string softwarelist_name = reader.GetAttribute("name");
                         // string softwarelist_status = reader.GetAttribute("status"); // (original|compatible)
@@ -483,11 +494,13 @@ namespace SabreTools.Library.DatFiles
 
                         reader.Read();
                         break;
+
                     case "ramoption":
                         // string ramoption_default = reader.GetAttribute("default");
 
                         reader.Read();
                         break;
+
                     default:
                         reader.Read();
                         break;
@@ -519,9 +532,7 @@ namespace SabreTools.Library.DatFiles
         {
             // If we have an empty machine, skip it
             if (reader == null)
-            {
                 return;
-            }
 
             // Otherwise, add what is possible
             reader.MoveToContent();
@@ -548,6 +559,7 @@ namespace SabreTools.Library.DatFiles
                         // bool? slotoption_default = Utilities.GetYesNo(reader.GetAttribute("default"));
                         reader.Read();
                         break;
+
                     default:
                         reader.Read();
                         break;
@@ -607,15 +619,11 @@ namespace SabreTools.Library.DatFiles
 
                         // If we have a different game and we're not at the start of the list, output the end of last item
                         if (lastgame != null && lastgame.ToLowerInvariant() != rom.MachineName.ToLowerInvariant())
-                        {
                             WriteEndGame(sw);
-                        }
 
                         // If we have a new game, output the beginning of the new item
                         if (lastgame == null || lastgame.ToLowerInvariant() != rom.MachineName.ToLowerInvariant())
-                        {
                             WriteStartGame(sw, rom);
-                        }
 
                         // If we have a "null" game (created by DATFromDir or something similar), log it to file
                         if (rom.ItemType == ItemType.Rom
@@ -691,10 +699,7 @@ namespace SabreTools.Library.DatFiles
             try
             {
                 // No game should start with a path separator
-                if (rom.MachineName.StartsWith(Path.DirectorySeparatorChar.ToString()))
-                {
-                    rom.MachineName = rom.MachineName.Substring(1);
-                }
+                rom.MachineName = rom.MachineName.TrimStart(Path.DirectorySeparatorChar);
 
                 string state = "\t<machine name=\"" + (!ExcludeFields[(int)Field.MachineName] ? WebUtility.HtmlEncode(rom.MachineName) : "") + "\""
                             + (!ExcludeFields[(int)Field.SourceFile] && rom.SourceFile != null ? " sourcefile=\"" + rom.SourceFile + "\"" : "")
@@ -704,13 +709,13 @@ namespace SabreTools.Library.DatFiles
                             + (!ExcludeFields[(int)Field.Runnable] && rom.Runnable == true
                                 ? " runnable=\"yes\""
                                 : (!ExcludeFields[(int)Field.Runnable] && rom.Runnable == false ? " runnable=\"no\"" : ""))
-                            + (!ExcludeFields[(int)Field.CloneOf] && String.IsNullOrWhiteSpace(rom.CloneOf) || (rom.MachineName.ToLowerInvariant() == rom.CloneOf.ToLowerInvariant())
+                            + (!ExcludeFields[(int)Field.CloneOf] && string.IsNullOrWhiteSpace(rom.CloneOf) || (rom.MachineName.ToLowerInvariant() == rom.CloneOf.ToLowerInvariant())
                                 ? ""
                                 : " cloneof=\"" + WebUtility.HtmlEncode(rom.CloneOf) + "\"")
-                            + (!ExcludeFields[(int)Field.RomOf] && String.IsNullOrWhiteSpace(rom.RomOf) || (rom.MachineName.ToLowerInvariant() == rom.RomOf.ToLowerInvariant())
+                            + (!ExcludeFields[(int)Field.RomOf] && string.IsNullOrWhiteSpace(rom.RomOf) || (rom.MachineName.ToLowerInvariant() == rom.RomOf.ToLowerInvariant())
                                 ? ""
                                 : " romof=\"" + WebUtility.HtmlEncode(rom.RomOf) + "\"")
-                            + (!ExcludeFields[(int)Field.SampleOf] && String.IsNullOrWhiteSpace(rom.SampleOf) || (rom.MachineName.ToLowerInvariant() == rom.SampleOf.ToLowerInvariant())
+                            + (!ExcludeFields[(int)Field.SampleOf] && string.IsNullOrWhiteSpace(rom.SampleOf) || (rom.MachineName.ToLowerInvariant() == rom.SampleOf.ToLowerInvariant())
                                 ? ""
                                 : " sampleof=\"" + WebUtility.HtmlEncode(rom.SampleOf) + "\"")
                             + ">\n"
@@ -791,7 +796,7 @@ namespace SabreTools.Library.DatFiles
                         break;
                     case ItemType.BiosSet: // TODO: Separate out MachineDescription from Description
                         state += "\t\t<biosset name\"" + (!ExcludeFields[(int)Field.Name] ? WebUtility.HtmlEncode(rom.Name) : "") + "\""
-                            + (!ExcludeFields[(int)Field.BiosDescription] && !String.IsNullOrWhiteSpace(((BiosSet)rom).Description) ? " description=\"" + WebUtility.HtmlEncode(((BiosSet)rom).Description) + "\"" : "")
+                            + (!ExcludeFields[(int)Field.BiosDescription] && !string.IsNullOrWhiteSpace(((BiosSet)rom).Description) ? " description=\"" + WebUtility.HtmlEncode(((BiosSet)rom).Description) + "\"" : "")
                             + (!ExcludeFields[(int)Field.Default] && ((BiosSet)rom).Default != null
                                 ? ((BiosSet)rom).Default.ToString().ToLowerInvariant()
                                 : "")
@@ -799,15 +804,15 @@ namespace SabreTools.Library.DatFiles
                         break;
                     case ItemType.Disk:
                         state += "\t\t<disk name=\"" + (!ExcludeFields[(int)Field.Name] ? WebUtility.HtmlEncode(rom.Name) : "") + "\""
-                            + (!ExcludeFields[(int)Field.MD5] && !String.IsNullOrWhiteSpace(((Disk)rom).MD5) ? " md5=\"" + ((Disk)rom).MD5.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.RIPEMD160] && !String.IsNullOrWhiteSpace(((Disk)rom).RIPEMD160) ? " ripemd160=\"" + ((Disk)rom).RIPEMD160.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.SHA1] && !String.IsNullOrWhiteSpace(((Disk)rom).SHA1) ? " sha1=\"" + ((Disk)rom).SHA1.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.SHA256] && !String.IsNullOrWhiteSpace(((Disk)rom).SHA256) ? " sha256=\"" + ((Disk)rom).SHA256.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.SHA384] && !String.IsNullOrWhiteSpace(((Disk)rom).SHA384) ? " sha384=\"" + ((Disk)rom).SHA384.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.SHA512] && !String.IsNullOrWhiteSpace(((Disk)rom).SHA512) ? " sha512=\"" + ((Disk)rom).SHA512.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.Merge] && !String.IsNullOrWhiteSpace(((Disk)rom).MergeTag) ? " merge=\"" + ((Disk)rom).MergeTag + "\"" : "")
-                            + (!ExcludeFields[(int)Field.Region] && !String.IsNullOrWhiteSpace(((Disk)rom).Region) ? " region=\"" + ((Disk)rom).Region + "\"" : "")
-                            + (!ExcludeFields[(int)Field.Index] && !String.IsNullOrWhiteSpace(((Disk)rom).Index) ? " index=\"" + ((Disk)rom).Index + "\"" : "")
+                            + (!ExcludeFields[(int)Field.MD5] && !string.IsNullOrWhiteSpace(((Disk)rom).MD5) ? " md5=\"" + ((Disk)rom).MD5.ToLowerInvariant() + "\"" : "")
+                            + (!ExcludeFields[(int)Field.RIPEMD160] && !string.IsNullOrWhiteSpace(((Disk)rom).RIPEMD160) ? " ripemd160=\"" + ((Disk)rom).RIPEMD160.ToLowerInvariant() + "\"" : "")
+                            + (!ExcludeFields[(int)Field.SHA1] && !string.IsNullOrWhiteSpace(((Disk)rom).SHA1) ? " sha1=\"" + ((Disk)rom).SHA1.ToLowerInvariant() + "\"" : "")
+                            + (!ExcludeFields[(int)Field.SHA256] && !string.IsNullOrWhiteSpace(((Disk)rom).SHA256) ? " sha256=\"" + ((Disk)rom).SHA256.ToLowerInvariant() + "\"" : "")
+                            + (!ExcludeFields[(int)Field.SHA384] && !string.IsNullOrWhiteSpace(((Disk)rom).SHA384) ? " sha384=\"" + ((Disk)rom).SHA384.ToLowerInvariant() + "\"" : "")
+                            + (!ExcludeFields[(int)Field.SHA512] && !string.IsNullOrWhiteSpace(((Disk)rom).SHA512) ? " sha512=\"" + ((Disk)rom).SHA512.ToLowerInvariant() + "\"" : "")
+                            + (!ExcludeFields[(int)Field.Merge] && !string.IsNullOrWhiteSpace(((Disk)rom).MergeTag) ? " merge=\"" + ((Disk)rom).MergeTag + "\"" : "")
+                            + (!ExcludeFields[(int)Field.Region] && !string.IsNullOrWhiteSpace(((Disk)rom).Region) ? " region=\"" + ((Disk)rom).Region + "\"" : "")
+                            + (!ExcludeFields[(int)Field.Index] && !string.IsNullOrWhiteSpace(((Disk)rom).Index) ? " index=\"" + ((Disk)rom).Index + "\"" : "")
                             + (!ExcludeFields[(int)Field.Writable] && ((Disk)rom).Writable != null ? " writable=\"" + (((Disk)rom).Writable == true ? "yes" : "no") + "\"" : "")
                             + (!ExcludeFields[(int)Field.Status] && ((Disk)rom).ItemStatus != ItemStatus.None ? " status=\"" + ((Disk)rom).ItemStatus.ToString().ToLowerInvariant() + "\"" : "")
                             + (!ExcludeFields[(int)Field.Optional] && ((Disk)rom).Optional != null ? " optional=\"" + (((Disk)rom).Optional == true ? "yes" : "no") + "\"" : "")
@@ -819,17 +824,17 @@ namespace SabreTools.Library.DatFiles
                     case ItemType.Rom:
                         state += "\t\t<rom name=\"" + (!ExcludeFields[(int)Field.Name] ? WebUtility.HtmlEncode(rom.Name) : "") + "\""
                             + (!ExcludeFields[(int)Field.Size] && ((Rom)rom).Size != -1 ? " size=\"" + ((Rom)rom).Size + "\"" : "")
-                            + (!ExcludeFields[(int)Field.CRC] && !String.IsNullOrWhiteSpace(((Rom)rom).CRC) ? " crc=\"" + ((Rom)rom).CRC.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.MD5] && !String.IsNullOrWhiteSpace(((Rom)rom).MD5) ? " md5=\"" + ((Rom)rom).MD5.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.RIPEMD160] && !String.IsNullOrWhiteSpace(((Rom)rom).RIPEMD160) ? " ripemd160=\"" + ((Rom)rom).RIPEMD160.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.SHA1] && !String.IsNullOrWhiteSpace(((Rom)rom).SHA1) ? " sha1=\"" + ((Rom)rom).SHA1.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.SHA256] && !String.IsNullOrWhiteSpace(((Rom)rom).SHA256) ? " sha256=\"" + ((Rom)rom).SHA256.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.SHA384] && !String.IsNullOrWhiteSpace(((Rom)rom).SHA384) ? " sha384=\"" + ((Rom)rom).SHA384.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.SHA512] && !String.IsNullOrWhiteSpace(((Rom)rom).SHA512) ? " sha512=\"" + ((Rom)rom).SHA512.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.Bios] && !String.IsNullOrWhiteSpace(((Rom)rom).Bios) ? " bios=\"" + ((Rom)rom).Bios + "\"" : "")
-                            + (!ExcludeFields[(int)Field.Merge] && !String.IsNullOrWhiteSpace(((Rom)rom).MergeTag) ? " merge=\"" + ((Rom)rom).MergeTag + "\"" : "")
-                            + (!ExcludeFields[(int)Field.Region] && !String.IsNullOrWhiteSpace(((Rom)rom).Region) ? " region=\"" + ((Rom)rom).Region + "\"" : "")
-                            + (!ExcludeFields[(int)Field.Offset] && !String.IsNullOrWhiteSpace(((Rom)rom).Offset) ? " offset=\"" + ((Rom)rom).Offset + "\"" : "")
+                            + (!ExcludeFields[(int)Field.CRC] && !string.IsNullOrWhiteSpace(((Rom)rom).CRC) ? " crc=\"" + ((Rom)rom).CRC.ToLowerInvariant() + "\"" : "")
+                            + (!ExcludeFields[(int)Field.MD5] && !string.IsNullOrWhiteSpace(((Rom)rom).MD5) ? " md5=\"" + ((Rom)rom).MD5.ToLowerInvariant() + "\"" : "")
+                            + (!ExcludeFields[(int)Field.RIPEMD160] && !string.IsNullOrWhiteSpace(((Rom)rom).RIPEMD160) ? " ripemd160=\"" + ((Rom)rom).RIPEMD160.ToLowerInvariant() + "\"" : "")
+                            + (!ExcludeFields[(int)Field.SHA1] && !string.IsNullOrWhiteSpace(((Rom)rom).SHA1) ? " sha1=\"" + ((Rom)rom).SHA1.ToLowerInvariant() + "\"" : "")
+                            + (!ExcludeFields[(int)Field.SHA256] && !string.IsNullOrWhiteSpace(((Rom)rom).SHA256) ? " sha256=\"" + ((Rom)rom).SHA256.ToLowerInvariant() + "\"" : "")
+                            + (!ExcludeFields[(int)Field.SHA384] && !string.IsNullOrWhiteSpace(((Rom)rom).SHA384) ? " sha384=\"" + ((Rom)rom).SHA384.ToLowerInvariant() + "\"" : "")
+                            + (!ExcludeFields[(int)Field.SHA512] && !string.IsNullOrWhiteSpace(((Rom)rom).SHA512) ? " sha512=\"" + ((Rom)rom).SHA512.ToLowerInvariant() + "\"" : "")
+                            + (!ExcludeFields[(int)Field.Bios] && !string.IsNullOrWhiteSpace(((Rom)rom).Bios) ? " bios=\"" + ((Rom)rom).Bios + "\"" : "")
+                            + (!ExcludeFields[(int)Field.Merge] && !string.IsNullOrWhiteSpace(((Rom)rom).MergeTag) ? " merge=\"" + ((Rom)rom).MergeTag + "\"" : "")
+                            + (!ExcludeFields[(int)Field.Region] && !string.IsNullOrWhiteSpace(((Rom)rom).Region) ? " region=\"" + ((Rom)rom).Region + "\"" : "")
+                            + (!ExcludeFields[(int)Field.Offset] && !string.IsNullOrWhiteSpace(((Rom)rom).Offset) ? " offset=\"" + ((Rom)rom).Offset + "\"" : "")
                             + (!ExcludeFields[(int)Field.Status] && ((Rom)rom).ItemStatus != ItemStatus.None ? " status=\"" + ((Rom)rom).ItemStatus.ToString().ToLowerInvariant() + "\"" : "")
                             + (!ExcludeFields[(int)Field.Optional] && ((Rom)rom).Optional != null ? " optional=\"" + (((Rom)rom).Optional == true ? "yes" : "no") + "\"" : "")
                             + "/>\n";

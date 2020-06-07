@@ -86,12 +86,10 @@ namespace SabreTools.Library.DatItems
         {
             // If we don't have a biosset, return false
             if (this.ItemType != other.ItemType)
-            {
                 return false;
-            }
 
             // Otherwise, treat it as a biosset
-            BiosSet newOther = (BiosSet)other;
+            BiosSet newOther = other as BiosSet;
 
             // If the archive information matches
             return (this.Name == newOther.Name && this.Description == newOther.Description && this.Default == newOther.Default);

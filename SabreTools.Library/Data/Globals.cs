@@ -31,9 +31,8 @@ namespace SabreTools.Library.Data
             get
             {
                 if (_logger == null)
-                {
                     _logger = new Logger();
-                }
+
                 return _logger;
             }
             set { _logger = value; }

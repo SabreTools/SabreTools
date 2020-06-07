@@ -61,9 +61,7 @@ namespace SabreTools.Library.DatFiles
 
             // If we got a null reader, just return
             if (xtr == null)
-            {
                 return;
-            }
 
             // Otherwise, read the file to the end
             try
@@ -86,12 +84,14 @@ namespace SabreTools.Library.DatFiles
                             // Skip the configuration node now that we've processed it
                             xtr.Skip();
                             break;
+
                         case "games":
                             ReadGames(xtr.ReadSubtree(), keep, clean, remUnicode);
 
                             // Skip the games node now that we've processed it
                             xtr.Skip();
                             break;
+
                         default:
                             xtr.Read();
                             break;
@@ -120,9 +120,7 @@ namespace SabreTools.Library.DatFiles
 
             // If there's no subtree to the configuration, skip it
             if (reader == null)
-            {
                 return;
-            }
 
             // Otherwise, add what is possible
             reader.MoveToContent();
@@ -143,58 +141,68 @@ namespace SabreTools.Library.DatFiles
                 {
                     case "datname":
                         content = reader.ReadElementContentAsString();
-                        Name = (String.IsNullOrWhiteSpace(Name) ? content : Name);
+                        Name = (string.IsNullOrWhiteSpace(Name) ? content : Name);
                         superdat = superdat || content.Contains(" - SuperDAT");
                         if (keep && superdat)
                         {
-                            Type = (String.IsNullOrWhiteSpace(Type) ? "SuperDAT" : Type);
+                            Type = (string.IsNullOrWhiteSpace(Type) ? "SuperDAT" : Type);
                         }
                         break;
+
                     case "datversion":
                         content = reader.ReadElementContentAsString();
-                        Version = (String.IsNullOrWhiteSpace(Version) ? content : Version);
+                        Version = (string.IsNullOrWhiteSpace(Version) ? content : Version);
                         break;
+
                     case "system":
                         content = reader.ReadElementContentAsString();
                         // string system = content;
                         break;
+
                     case "screenshotswidth":
                         content = reader.ReadElementContentAsString();
                         // string screenshotsWidth = content; // Int32?
                         break;
+
                     case "screenshotsheight":
                         content = reader.ReadElementContentAsString();
                         // string screenshotsHeight = content; // Int32?
                         break;
+
                     case "infos":
                         ReadInfos(reader.ReadSubtree());
 
                         // Skip the infos node now that we've processed it
                         reader.Skip();
                         break;
+
                     case "canopen":
                         ReadCanOpen(reader.ReadSubtree());
 
                         // Skip the canopen node now that we've processed it
                         reader.Skip();
                         break;
+
                     case "newdat":
                         ReadNewDat(reader.ReadSubtree());
 
                         // Skip the newdat node now that we've processed it
                         reader.Skip();
                         break;
+
                     case "search":
                         ReadSearch(reader.ReadSubtree());
 
                         // Skip the search node now that we've processed it
                         reader.Skip();
                         break;
+
                     case "romtitle":
                         content = reader.ReadElementContentAsString();
                         // string romtitle = content;
 
                         break;
+
                     default:
                         reader.Read();
                         break;
@@ -210,9 +218,7 @@ namespace SabreTools.Library.DatFiles
         {
             // If there's no subtree to the configuration, skip it
             if (reader == null)
-            {
                 return;
-            }
 
             // Otherwise, add what is possible
             reader.MoveToContent();
@@ -236,78 +242,91 @@ namespace SabreTools.Library.DatFiles
                         // string title_default = reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
+
                     case "location":
                         // string location_visible = reader.GetAttribute("visible"); // (true|false)
                         // string location_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
                         // string location_default = reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
+
                     case "publisher":
                         // string publisher_visible = reader.GetAttribute("visible"); // (true|false)
                         // string publisher_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
                         // string publisher_default = reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
+
                     case "sourcerom":
                         // string sourceRom_visible = reader.GetAttribute("visible"); // (true|false)
                         // string sourceRom_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
                         // string sourceRom_default = reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
+
                     case "savetype":
                         // string saveType_visible = reader.GetAttribute("visible"); // (true|false)
                         // string saveType_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
                         // string saveType_default = reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
+
                     case "romsize":
                         // string romSize_visible = reader.GetAttribute("visible"); // (true|false)
                         // string romSize_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
                         // string romSize_default = reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
+
                     case "releasenumber":
                         // string releaseNumber_visible = reader.GetAttribute("visible"); // (true|false)
                         // string releaseNumber_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
                         // string releaseNumber_default = reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
+
                     case "languagenumber":
                         // string languageNumber_visible = reader.GetAttribute("visible"); // (true|false)
                         // string languageNumber_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
                         // string languageNumber_default = reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
+
                     case "comment":
                         // string comment_visible = reader.GetAttribute("visible"); // (true|false)
                         // string comment_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
                         // string comment_default = reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
+
                     case "romcrc":
                         // string romCRC_visible = reader.GetAttribute("visible"); // (true|false)
                         // string romCRC_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
                         // string romCRC_default = reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
+
                     case "im1crc":
                         // string im1CRC_visible = reader.GetAttribute("visible"); // (true|false)
                         // string im1CRC_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
                         // string im1CRC_default = reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
+
                     case "im2crc":
                         // string im2CRC_visible = reader.GetAttribute("visible"); // (true|false)
                         // string im2CRC_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
                         // string im2CRC_default = reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
+
                     case "languages":
                         // string languages_visible = reader.GetAttribute("visible"); // (true|false)
                         // string languages_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
                         // string languages_default = reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
+
                     default:
                         reader.Read();
                         break;
@@ -326,9 +345,7 @@ namespace SabreTools.Library.DatFiles
 
             // If there's no subtree to the configuration, skip it
             if (reader == null)
-            {
                 return;
-            }
 
             // Otherwise, add what is possible
             reader.MoveToContent();
@@ -349,6 +366,7 @@ namespace SabreTools.Library.DatFiles
                     case "extension":
                         extensions.Add(reader.ReadElementContentAsString());
                         break;
+
                     default:
                         reader.Read();
                         break;
@@ -364,9 +382,7 @@ namespace SabreTools.Library.DatFiles
         {
             // If there's no subtree to the configuration, skip it
             if (reader == null)
-            {
                 return;
-            }
 
             // Otherwise, add what is possible
             reader.MoveToContent();
@@ -387,17 +403,20 @@ namespace SabreTools.Library.DatFiles
                 {
                     case "datversionurl":
                         content = reader.ReadElementContentAsString();
-                        Url = (String.IsNullOrWhiteSpace(Name) ? content : Url);
+                        Url = (string.IsNullOrWhiteSpace(Name) ? content : Url);
                         break;
+
                     case "daturl":
                         // string fileName = reader.GetAttribute("fileName");
                         content = reader.ReadElementContentAsString();
                         // string url = content;
                         break;
+
                     case "imurl":
                         content = reader.ReadElementContentAsString();
                         // string url = content;
                         break;
+
                     default:
                         reader.Read();
                         break;
@@ -413,9 +432,7 @@ namespace SabreTools.Library.DatFiles
         {
             // If there's no subtree to the configuration, skip it
             if (reader == null)
-            {
                 return;
-            }
 
             // Otherwise, add what is possible
             reader.MoveToContent();
@@ -444,6 +461,7 @@ namespace SabreTools.Library.DatFiles
                         // Skip the to node now that we've processed it
                         reader.Skip();
                         break;
+
                     default:
                         reader.Read();
                         break;
@@ -459,9 +477,7 @@ namespace SabreTools.Library.DatFiles
         {
             // If there's no subtree to the configuration, skip it
             if (reader == null)
-            {
                 return;
-            }
 
             // Otherwise, add what is possible
             reader.MoveToContent();
@@ -486,6 +502,7 @@ namespace SabreTools.Library.DatFiles
                         content = reader.ReadElementContentAsString();
                         // string findValue = content;
                         break;
+
                     default:
                         reader.Read();
                         break;
@@ -509,9 +526,7 @@ namespace SabreTools.Library.DatFiles
         {
             // If there's no subtree to the configuration, skip it
             if (reader == null)
-            {
                 return;
-            }
 
             // Otherwise, add what is possible
             reader.MoveToContent();
@@ -535,6 +550,7 @@ namespace SabreTools.Library.DatFiles
                         // Skip the game node now that we've processed it
                         reader.Skip();
                         break;
+
                     default:
                         reader.Read();
                         break;
@@ -564,9 +580,7 @@ namespace SabreTools.Library.DatFiles
 
             // If there's no subtree to the configuration, skip it
             if (reader == null)
-            {
                 return;
-            }
 
             // Otherwise, add what is possible
             reader.MoveToContent();
@@ -588,76 +602,74 @@ namespace SabreTools.Library.DatFiles
                     case "imagenumber":
                         content = reader.ReadElementContentAsString();
                         // string imageNumber = content;
-
                         break;
+
                     case "releasenumber":
                         releaseNumber = reader.ReadElementContentAsString();
-
                         break;
+
                     case "title":
                         content = reader.ReadElementContentAsString();
                         machine.Name = content;
-
                         break;
+
                     case "savetype":
                         content = reader.ReadElementContentAsString();
                         // string saveType = content;
-
                         break;
+
                     case "romsize":
                         if (!Int64.TryParse(reader.ReadElementContentAsString(), out size))
-                        {
                             size = -1;
-                        }
 
                         break;
+
                     case "publisher":
                         publisher = reader.ReadElementContentAsString();
-
                         break;
+
                     case "location":
                         content = reader.ReadElementContentAsString();
                         // string location = content;
-
                         break;
+
                     case "sourcerom":
                         content = reader.ReadElementContentAsString();
                         // string sourceRom = content;
-
                         break;
+
                     case "language":
                         content = reader.ReadElementContentAsString();
                         // string language = content;
-
                         break;
+
                     case "files":
                         roms = ReadFiles(reader.ReadSubtree(), releaseNumber, machine.Name, keep, clean, remUnicode);
-
                         // Skip the files node now that we've processed it
                         reader.Skip();
                         break;
+
                     case "im1crc":
                         content = reader.ReadElementContentAsString();
                         // string im1crc = content;
-
                         break;
+
                     case "im2crc":
                         content = reader.ReadElementContentAsString();
                         // string im2crc = content;
-
                         break;
+
                     case "comment":
                         machine.Comment = reader.ReadElementContentAsString();
-
                         break;
+
                     case "duplicateid":
                         duplicateid = reader.ReadElementContentAsString();
                         if (duplicateid != "0")
-                        {
                             machine.CloneOf = duplicateid;
-                        }
 
                         break;
+
                     default:
                         reader.Read();
                         break;
@@ -700,9 +712,7 @@ namespace SabreTools.Library.DatFiles
 
             // If there's no subtree to the configuration, skip it
             if (reader == null)
-            {
                 return roms;
-            }
 
             // Otherwise, add what is possible
             reader.MoveToContent();
@@ -726,6 +736,7 @@ namespace SabreTools.Library.DatFiles
                                 reader.GetAttribute("extension") ?? "",
                                 reader.ReadElementContentAsString().ToLowerInvariant()));
                         break;
+
                     default:
                         reader.Read();
                         break;
@@ -799,9 +810,7 @@ namespace SabreTools.Library.DatFiles
 
                         // If we have a different game and we're not at the start of the list, output the end of last item
                         if (lastgame != null && lastgame.ToLowerInvariant() != rom.MachineName.ToLowerInvariant())
-                        {
                             WriteEndGame(sw);
-                        }
 
                         // If we have a "null" game (created by DATFromDir or something similar), log it to file
                         if (rom.ItemType == ItemType.Rom
@@ -964,9 +973,7 @@ namespace SabreTools.Library.DatFiles
                             + "\t\t\t<saveType>None</saveType>\n";
 
                 if (rom.ItemType == ItemType.Rom)
-                {
                     state += "\t\t\t<romSize>" + (!ExcludeFields[(int)Field.Size] ? ((Rom)rom).Size.ToString() : "") + "</romSize>\n";
-                }
 
                 state += "\t\t\t<publisher>None</publisher>\n"
                     + "\t\t\t<location>0</location>\n"
