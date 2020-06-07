@@ -66,7 +66,7 @@ namespace SabreTools.Library.DatFiles
             Encoding enc = Utilities.GetEncoding(filename);
             StreamReader sr = new StreamReader(Utilities.TryOpenRead(filename), enc);
 
-            string gamename = "";
+            string gamename = string.Empty;
             while (!sr.EndOfStream)
             {
                 string line = sr.ReadLine().Trim();
@@ -86,7 +86,7 @@ namespace SabreTools.Library.DatFiles
                 // If we have the beginning of a game, set the name of the game
                 else if (line.StartsWith("ROMs required for"))
                 {
-                    gamename = Regex.Match(line, @"^ROMs required for \S*? ""(.*?)""\.").Groups[1].Value;
+                    gamename = Regex.Match(line, @"^ROMs required for \S*? string.Empty(.*?)string.Empty\.").Groups[1].Value;
                 }
 
                 // If we have a machine with no required roms (usually internal devices), skip it
@@ -99,7 +99,7 @@ namespace SabreTools.Library.DatFiles
                 else
                 {
                     // First, we preprocess the line so that the rom name is consistently correct
-                    string romname = "";
+                    string romname = string.Empty;
                     string[] split = line.Split(new string[] { "    " }, StringSplitOptions.RemoveEmptyEntries);
 
                     // If the line doesn't have the 4 spaces of padding, check for 3
@@ -332,7 +332,7 @@ namespace SabreTools.Library.DatFiles
                 // No game should start with a path separator
                 rom.MachineName = rom.MachineName.TrimStart(Path.DirectorySeparatorChar);
 
-                string state = "ROMs required for driver \"" + (!ExcludeFields[(int)Field.MachineName] ? rom.MachineName : "") + "\".\n" +
+                string state = "ROMs required for driver \"" + (!ExcludeFields[(int)Field.MachineName] ? rom.MachineName : string.Empty) + "\".\n" +
                             "Name                                   Size Checksum\n";
 
                 sw.Write(state);
@@ -389,7 +389,7 @@ namespace SabreTools.Library.DatFiles
 
             try
             {
-                string state = "";
+                string state = string.Empty;
 
                 // Pre-process the item name
                 ProcessItemName(rom, true);
@@ -450,8 +450,8 @@ namespace SabreTools.Library.DatFiles
                         // Otherwise, write out the CRC and SHA-1 hashes
                         else
                         {
-                            state += (!ExcludeFields[(int)Field.CRC] ? " CRC(" + ((Rom)rom).CRC + ")" : "");
-                            state += (!ExcludeFields[(int)Field.SHA1] ? " SHA1(" + ((Rom)rom).SHA1 + ")" : "");
+                            state += (!ExcludeFields[(int)Field.CRC] ? " CRC(" + ((Rom)rom).CRC + ")" : string.Empty);
+                            state += (!ExcludeFields[(int)Field.SHA1] ? " SHA1(" + ((Rom)rom).SHA1 + ")" : string.Empty);
                         }
 
                         // If we have a baddump, put the second indicator

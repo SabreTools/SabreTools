@@ -38,11 +38,11 @@ namespace SabreTools.Library.DatItems
         /// </summary>
         public Release()
         {
-            this.Name = "";
+            this.Name = string.Empty;
             this.ItemType = ItemType.Release;
-            this.Region = "";
-            this.Language = "";
-            this.Date = "";
+            this.Region = string.Empty;
+            this.Language = string.Empty;
+            this.Date = string.Empty;
             this.Default = null;
         }
 

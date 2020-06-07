@@ -63,8 +63,8 @@ namespace SabreTools.Library.Reports
                         + "<td align=\"right\">" + _datFile.RIPEMD160Count + "</td>"
                         + "<td align=\"right\">" + _datFile.SHA1Count + "</td>"
                         + "<td align=\"right\">" + _datFile.SHA256Count + "</td>"
-                        + (_baddumpCol ? "<td align=\"right\">" + _datFile.BaddumpCount + "</td>" : "")
-                        + (_nodumpCol ? "<td align=\"right\">" + _datFile.NodumpCount + "</td>" : "")
+                        + (_baddumpCol ? "<td align=\"right\">" + _datFile.BaddumpCount + "</td>" : string.Empty)
+                        + (_nodumpCol ? "<td align=\"right\">" + _datFile.NodumpCount + "</td>" : string.Empty)
                         + "</tr>\n";
             _writer.Write(line);
             _writer.Flush();
@@ -93,7 +93,7 @@ namespace SabreTools.Library.Reports
     </header>
     <body>
         <h2>DAT Statistics Report (" + DateTime.Now.ToShortDateString() + @")</h2>
-        <table border=""1"" cellpadding=""5"" cellspacing=""0"">
+        <table border=string.Empty1string.Empty cellpadding=string.Empty5string.Empty cellspacing=string.Empty0string.Empty>
 ");
             _writer.Flush();
 
@@ -106,9 +106,9 @@ namespace SabreTools.Library.Reports
         /// </summary>
         public override void WriteMidHeader()
         {
-            _writer.Write(@"			<tr bgcolor=""gray""><th>File Name</th><th align=""right"">Total Size</th><th align=""right"">Games</th><th align=""right"">Roms</th>"
-+ @"<th align=""right"">Disks</th><th align=""right"">&#35; with CRC</th><th align=""right"">&#35; with MD5</th><th align=""right"">&#35; with SHA-1</th><th align=""right"">&#35; with SHA-256</th>"
-+ (_baddumpCol ? "<th class=\".right\">Baddumps</th>" : "") + (_nodumpCol ? "<th class=\".right\">Nodumps</th>" : "") + "</tr>\n");
+            _writer.Write(@"			<tr bgcolor=string.Emptygraystring.Empty><th>File Name</th><th align=string.Emptyrightstring.Empty>Total Size</th><th align=string.Emptyrightstring.Empty>Games</th><th align=string.Emptyrightstring.Empty>Roms</th>"
++ @"<th align=string.Emptyrightstring.Empty>Disks</th><th align=string.Emptyrightstring.Empty>&#35; with CRC</th><th align=string.Emptyrightstring.Empty>&#35; with MD5</th><th align=string.Emptyrightstring.Empty>&#35; with SHA-1</th><th align=string.Emptyrightstring.Empty>&#35; with SHA-256</th>"
++ (_baddumpCol ? "<th class=\".right\">Baddumps</th>" : string.Empty) + (_nodumpCol ? "<th class=\".right\">Nodumps</th>" : string.Empty) + "</tr>\n");
             _writer.Flush();
         }
 

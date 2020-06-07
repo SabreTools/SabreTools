@@ -265,7 +265,7 @@ namespace SabreTools.Library.FileTypes
             inputStream.Seek(0, SeekOrigin.Begin);
 
             // Get the output archive name from the first rebuild rom
-            string archiveFileName = Path.Combine(outDir, Utilities.RemovePathUnsafeCharacters(rom.MachineName) + (rom.MachineName.EndsWith(".xz") ? "" : ".xz"));
+            string archiveFileName = Path.Combine(outDir, Utilities.RemovePathUnsafeCharacters(rom.MachineName) + (rom.MachineName.EndsWith(".xz") ? string.Empty : ".xz"));
 
             // Set internal variables
             SevenZipBase.SetLibraryPath("7za.dll");
@@ -467,7 +467,7 @@ namespace SabreTools.Library.FileTypes
             }
 
             // Get the output archive name from the first rebuild rom
-            string archiveFileName = Path.Combine(outDir, Utilities.RemovePathUnsafeCharacters(roms[0].MachineName) + (roms[0].MachineName.EndsWith(".xz") ? "" : ".xz"));
+            string archiveFileName = Path.Combine(outDir, Utilities.RemovePathUnsafeCharacters(roms[0].MachineName) + (roms[0].MachineName.EndsWith(".xz") ? string.Empty : ".xz"));
 
             // Set internal variables
             SevenZipBase.SetLibraryPath("7za.dll");

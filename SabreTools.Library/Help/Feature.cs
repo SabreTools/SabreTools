@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-
+using System.Linq;
 using SabreTools.Library.Data;
 
 namespace SabreTools.Library.Help
@@ -139,24 +139,7 @@ namespace SabreTools.Library.Help
         /// <returns>True if the flag was found, false otherwise</returns>
         public bool ContainsFlag(string name)
         {
-            bool success = false;
-
-            // Loop through the flags
-            foreach (string flag in this.Flags)
-            {
-                if (flag == name)
-                {
-                    success = true;
-                    break;
-                }
-                else if (flag.TrimStart('-') == name)
-                {
-                    success = true;
-                    break;
-                }
-            }
-
-            return success;
+            return this.Flags.Any(f => f == name || f.TrimStart('-') == name);
         }
 
         /// <summary>
@@ -166,19 +149,7 @@ namespace SabreTools.Library.Help
         /// <returns>True if the flag was found, false otherwise</returns>
         public bool StartsWith(char c)
         {
-            bool success = false;
-
-            // Loop through the flags
-            foreach (string flag in this.Flags)
-            {
-                if (flag.TrimStart('-').ToLowerInvariant()[0] == c)
-                {
-                    success = true;
-                    break;
-                }
-            }
-
-            return success;
+            return this.Flags.Any(f => f.TrimStart('-').ToLowerInvariant()[0] == c);
         }
 
         #endregion
@@ -197,7 +168,7 @@ namespace SabreTools.Library.Help
             List<string> outputList = new List<string>();
 
             // Build the output string first
-            string output = "";
+            string output = string.Empty;
 
             // Add the pre-space first
             output += CreatePadding(pre);
@@ -253,20 +224,20 @@ namespace SabreTools.Library.Help
                     // If we have a newline character, reset the line and continue
                     if (split[i].Contains("\n"))
                     {
-                        string[] subsplit = split[i].Replace("\r", "").Split('\n');
+                        string[] subsplit = split[i].Replace("\r", string.Empty).Split('\n');
                         for (int j = 0; j < subsplit.Length - 1; j++)
                         {
                             // Add the next word only if the total length doesn't go above the width of the screen
                             if (output.Length + subsplit[j].Length < width)
                             {
-                                output += (output.Length == pre + 4 ? "" : " ") + subsplit[j];
+                                output += (output.Length == pre + 4 ? string.Empty : " ") + subsplit[j];
                             }
                             // Otherwise, we want to cache the line to output and create a new blank string
                             else
                             {
                                 outputList.Add(output);
                                 output = CreatePadding(pre + 4);
-                                output += (output.Length == pre + 4 ? "" : " ") + subsplit[j];
+                                output += (output.Length == pre + 4 ? string.Empty : " ") + subsplit[j];
                             }
 
                             outputList.Add(output);
@@ -280,20 +251,20 @@ namespace SabreTools.Library.Help
                     // Add the next word only if the total length doesn't go above the width of the screen
                     if (output.Length + split[i].Length < width)
                     {
-                        output += (output.Length == pre + 4 ? "" : " ") + split[i];
+                        output += (output.Length == pre + 4 ? string.Empty : " ") + split[i];
                     }
                     // Otherwise, we want to cache the line to output and create a new blank string
                     else
                     {
                         outputList.Add(output);
                         output = CreatePadding(pre + 4);
-                        output += (output.Length == pre + 4 ? "" : " ") + split[i];
+                        output += (output.Length == pre + 4 ? string.Empty : " ") + split[i];
                     }
                 }
 
                 // Add the last created output and a blank line for clarity
                 outputList.Add(output);
-                outputList.Add("");
+                outputList.Add(string.Empty);
             }
 
             return outputList;
@@ -306,7 +277,7 @@ namespace SabreTools.Library.Help
         /// <returns>String with requested number of blank spaces</returns>
         private string CreatePadding(int spaces)
         {
-            string blank = "";
+            string blank = string.Empty;
             for (int i = 0; i < spaces; i++)
             {
                 blank += " ";
@@ -328,7 +299,7 @@ namespace SabreTools.Library.Help
             List<string> outputList = new List<string>();
 
             // Build the output string first
-            string output = "";
+            string output = string.Empty;
 
             // Normalize based on the tab level
             int preAdjusted = pre;
@@ -393,20 +364,20 @@ namespace SabreTools.Library.Help
                     // If we have a newline character, reset the line and continue
                     if (split[i].Contains("\n"))
                     {
-                        string[] subsplit = split[i].Replace("\r", "").Split('\n');
+                        string[] subsplit = split[i].Replace("\r", string.Empty).Split('\n');
                         for (int j = 0; j < subsplit.Length - 1; j++)
                         {
                             // Add the next word only if the total length doesn't go above the width of the screen
                             if (output.Length + subsplit[j].Length < width)
                             {
-                                output += (output.Length == preAdjusted + 4 ? "" : " ") + subsplit[j];
+                                output += (output.Length == preAdjusted + 4 ? string.Empty : " ") + subsplit[j];
                             }
                             // Otherwise, we want to cache the line to output and create a new blank string
                             else
                             {
                                 outputList.Add(output);
                                 output = CreatePadding(preAdjusted + 4);
-                                output += (output.Length == preAdjusted + 4 ? "" : " ") + subsplit[j];
+                                output += (output.Length == preAdjusted + 4 ? string.Empty : " ") + subsplit[j];
                             }
 
                             outputList.Add(output);
@@ -420,20 +391,20 @@ namespace SabreTools.Library.Help
                     // Add the next word only if the total length doesn't go above the width of the screen
                     if (output.Length + split[i].Length < width)
                     {
-                        output += (output.Length == preAdjusted + 4 ? "" : " ") + split[i];
+                        output += (output.Length == preAdjusted + 4 ? string.Empty : " ") + split[i];
                     }
                     // Otherwise, we want to cache the line to output and create a new blank string
                     else
                     {
                         outputList.Add(output);
                         output = CreatePadding(preAdjusted + 4);
-                        output += (output.Length == preAdjusted + 4 ? "" : " ") + split[i];
+                        output += (output.Length == preAdjusted + 4 ? string.Empty : " ") + split[i];
                     }
                 }
 
                 // Add the last created output and a blank line for clarity
                 outputList.Add(output);
-                outputList.Add("");
+                outputList.Add(string.Empty);
             }
 
             // Now let's append all subfeatures
@@ -544,16 +515,7 @@ namespace SabreTools.Library.Help
 
             // If we haven't found a valid flag and we're not looking for just this feature, check to see if any of the subfeatures are valid
             if (!valid && !exact)
-            {
-                foreach (string feature in this.Features.Keys)
-                {
-                    valid = this.Features[feature].ValidateInput(input);
-
-                    // If we've found a valid feature, we break out
-                    if (valid)
-                        break;
-                }
-            }
+                valid = this.Features.Keys.Any(k => this.Features[k].ValidateInput(input));
 
             // If we're not valid at this point, we want to check if this flag is a file or a folder
             if (!valid)

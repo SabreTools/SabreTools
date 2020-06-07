@@ -244,14 +244,14 @@ namespace SabreTools.Library.Tools
         {
             // If we have a known blank hash, return blank
             if (string.IsNullOrWhiteSpace(hash) || hash == "-" || hash == "_")
-                return "";
+                return string.Empty;
 
             // Check to see if it's a "hex" hash
-            hash = hash.Trim().Replace("0x", "");
+            hash = hash.Trim().Replace("0x", string.Empty);
 
             // If we have a blank hash now, return blank
             if (string.IsNullOrWhiteSpace(hash))
-                return "";
+                return string.Empty;
 
             // If the hash shorter than the required length, pad it
             if (hash.Length < padding)
@@ -259,7 +259,7 @@ namespace SabreTools.Library.Tools
 
             // If the hash is longer than the required length, it's invalid
             else if (hash.Length > padding)
-                return "";
+                return string.Empty;
 
             // Now normalize the hash
             hash = hash.ToLowerInvariant();
@@ -269,7 +269,7 @@ namespace SabreTools.Library.Tools
             {
                 if ((hash[i] < '0' || hash[i] > '9') && (hash[i] < 'a' || hash[i] > 'f'))
                 {
-                    hash = "";
+                    hash = string.Empty;
                     break;
                 }
             }
@@ -359,14 +359,14 @@ namespace SabreTools.Library.Tools
                     { "Й", "J" }, { "К", "K" }, { "Л", "L" }, { "М", "M" }, { "Н", "N" },
                     { "О", "O" }, { "П", "P" }, { "Р", "R" }, { "С", "S" }, { "Т", "T" },
                     { "У", "U" }, { "Ф", "f" }, { "Х", "Kh" }, { "Ц", "Ts" }, { "Ч", "Ch" },
-                    { "Ш", "Sh" }, { "Щ", "Sch" }, { "Ъ", "" }, { "Ы", "y" }, { "Ь", "" },
+                    { "Ш", "Sh" }, { "Щ", "Sch" }, { "Ъ", string.Empty }, { "Ы", "y" }, { "Ь", string.Empty },
                     { "Э", "e" }, { "Ю", "yu" }, { "Я", "ya" }, { "а", "a" }, { "б", "b" },
                     { "в", "v" }, { "г", "g" }, { "д", "d" }, { "е", "e" }, { "ё", "yo" },
                     { "ж", "zh" }, { "з", "z" }, { "и", "i" }, { "й", "j" }, { "к", "k" },
                     { "л", "l" }, { "м", "m" }, { "н", "n" }, { "о", "o" }, { "п", "p" },
                     { "р", "r" }, { "с", "s" }, { "т", "t" }, { "у", "u" }, { "ф", "f" },
                     { "х", "kh" }, { "ц", "ts" }, { "ч", "ch" }, { "ш", "sh" }, { "щ", "sch" },
-                    { "ъ", "" }, { "ы", "y" }, { "ь", "" }, { "э", "e" }, { "ю", "yu" },
+                    { "ъ", string.Empty }, { "ы", "y" }, { "ь", string.Empty }, { "э", "e" }, { "ю", "yu" },
                     { "я", "ya" },
             };
 
@@ -589,7 +589,7 @@ namespace SabreTools.Library.Tools
         /// <returns>Date as a string, if possible</returns>
         public static string GetDate(string input)
         {
-            string date = "";
+            string date = string.Empty;
             if (input != null)
             {
                 if (DateTime.TryParse(input, out DateTime dateTime))
@@ -1460,7 +1460,7 @@ namespace SabreTools.Library.Tools
 
             // Add unique data from the file
             baseFile.Filename = Path.GetFileName(input);
-            baseFile.Date = (date ? new FileInfo(input).LastWriteTime.ToString("yyyy/MM/dd HH:mm:ss") : "");
+            baseFile.Date = (date ? new FileInfo(input).LastWriteTime.ToString("yyyy/MM/dd HH:mm:ss") : string.Empty);
 
             return baseFile;
         }
@@ -1721,7 +1721,7 @@ namespace SabreTools.Library.Tools
             Globals.Logger.User("\nGetting skipper information for '{0}'", file);
 
             // Get the skipper rule that matches the file, if any
-            SkipperRule rule = Skipper.GetMatchingRule(file, "");
+            SkipperRule rule = Skipper.GetMatchingRule(file, string.Empty);
 
             // If we have an empty rule, return false
             if (rule.Tests == null || rule.Tests.Count == 0 || rule.Operation != HeaderSkipOperation.None)
@@ -1774,7 +1774,7 @@ namespace SabreTools.Library.Tools
                     {
                         try
                         {
-                            outputs.Add(Path.GetFullPath(file) + (appendparent ? "¬" + Path.GetFullPath(input) : ""));
+                            outputs.Add(Path.GetFullPath(file) + (appendparent ? "¬" + Path.GetFullPath(input) : string.Empty));
                         }
                         catch (PathTooLongException)
                         {
@@ -1790,7 +1790,7 @@ namespace SabreTools.Library.Tools
                 {
                     try
                     {
-                        outputs.Add(Path.GetFullPath(input) + (appendparent ? "¬" + Path.GetFullPath(input) : ""));
+                        outputs.Add(Path.GetFullPath(input) + (appendparent ? "¬" + Path.GetFullPath(input) : string.Empty));
                     }
                     catch (PathTooLongException)
                     {
@@ -1824,7 +1824,7 @@ namespace SabreTools.Library.Tools
                     {
                         try
                         {
-                            outputs.Add(Path.GetFullPath(dir) + (appendparent ? "¬" + Path.GetFullPath(input) : ""));
+                            outputs.Add(Path.GetFullPath(dir) + (appendparent ? "¬" + Path.GetFullPath(input) : string.Empty));
                         }
                         catch (PathTooLongException)
                         {
@@ -2522,7 +2522,7 @@ namespace SabreTools.Library.Tools
         public static string GetKeyFromDatItem(DatItem item, SortedBy sortedBy, bool lower = true, bool norename = true)
         {
             // Set the output key as the default blank string
-            string key = "";
+            string key = string.Empty;
 
             // Now determine what the key should be based on the sortedBy value
             switch (sortedBy)
@@ -2532,7 +2532,7 @@ namespace SabreTools.Library.Tools
                     break;
 
                 case SortedBy.Game:
-                    key = (norename ? ""
+                    key = (norename ? string.Empty
                         : item.SystemID.ToString().PadLeft(10, '0')
                             + "-"
                             + item.SourceID.ToString().PadLeft(10, '0') + "-")
@@ -2599,7 +2599,7 @@ namespace SabreTools.Library.Tools
 
             // Double and triple check the key for corner cases
             if (key == null)
-                key = "";
+                key = string.Empty;
 
             return key;
         }
@@ -2840,8 +2840,8 @@ namespace SabreTools.Library.Tools
 
             // Now we get each string, divided up as cleanly as possible
             string[] matches = Regex
-                //.Matches(s, @"([^\s]*""[^""]+""[^\s]*)|[^""]?\w+[^""]?")
-                .Matches(s, @"[^\s""]+|""[^""]*""")
+                //.Matches(s, @"([^\s]*string.Empty[^string.Empty]+string.Empty[^\s]*)|[^string.Empty]?\w+[^string.Empty]?")
+                .Matches(s, @"[^\sstring.Empty]+|string.Empty[^string.Empty]*string.Empty")
                 .Cast<Match>()
                 .Select(m => m.Groups[0].Value)
                 .ToArray();
@@ -3003,7 +3003,7 @@ namespace SabreTools.Library.Tools
                 return null;
 
             if (hexString.Contains("-"))
-                hexString = hexString.Replace("-", "");
+                hexString = hexString.Replace("-", string.Empty);
 
             StringBuilder sb = new StringBuilder();
 
@@ -3028,13 +3028,15 @@ namespace SabreTools.Library.Tools
             if (asciiString == null)
                 return null;
 
-            string hexOutput = "";
+            string hexOutput = string.Empty;
             foreach (char _eachChar in asciiString.ToCharArray())
             {
                 // Get the integral value of the character.
                 int value = Convert.ToInt32(_eachChar);
+
                 // Convert the decimal value to a hexadecimal value in string form.
                 hexOutput += String.Format("{0:X2}", value).Remove(0, 2);
+
                 // to make output as your eg 
                 //  hexOutput +=" "+ String.Format("{0:X}", value);
             }

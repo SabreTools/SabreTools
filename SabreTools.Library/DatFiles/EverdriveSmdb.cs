@@ -191,12 +191,12 @@ namespace SabreTools.Library.DatFiles
                     return true;
 
                 Rom temp = rom as Rom;
-                string state = (!ExcludeFields[(int)Field.SHA256] ? temp.SHA256 : "") + "\t"
-                            + (!ExcludeFields[(int)Field.MachineName] ? temp.MachineName + "/" : "")
+                string state = (!ExcludeFields[(int)Field.SHA256] ? temp.SHA256 : string.Empty) + "\t"
+                            + (!ExcludeFields[(int)Field.MachineName] ? temp.MachineName + "/" : string.Empty)
                             + temp.Name + "\t"
-                            + (!ExcludeFields[(int)Field.SHA1] ? temp.SHA1 : "") + "\t"
-                            + (!ExcludeFields[(int)Field.MD5] ? temp.MD5 : "") + "\t"
-                            + (!ExcludeFields[(int)Field.CRC] ? temp.CRC : "") + "\n";
+                            + (!ExcludeFields[(int)Field.SHA1] ? temp.SHA1 : string.Empty) + "\t"
+                            + (!ExcludeFields[(int)Field.MD5] ? temp.MD5 : string.Empty) + "\t"
+                            + (!ExcludeFields[(int)Field.CRC] ? temp.CRC : string.Empty) + "\n";
 
                 sw.Write(state);
                 sw.Flush();

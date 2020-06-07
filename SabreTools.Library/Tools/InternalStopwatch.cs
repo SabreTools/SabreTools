@@ -17,7 +17,7 @@ namespace SabreTools.Library.Tools
         /// </summary>
         public InternalStopwatch()
         {
-            _subject = "";
+            _subject = string.Empty;
         }
 
         /// <summary>

@@ -185,6 +185,7 @@ namespace SabreTools.Library.FileTypes
                     BaseFile nf = Utilities.GetFileInfo(file, omitFromScan: omitFromScan, date: date);
                     _children.Add(nf);
                 }
+
                 foreach (string dir in Directory.EnumerateDirectories(this.Filename, "*", SearchOption.TopDirectoryOnly))
                 {
                     Folder fl = new Folder(dir);

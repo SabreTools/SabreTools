@@ -112,7 +112,7 @@ namespace SabreTools.Library.Tools
                 TimeSpan span = DateTime.Now.Subtract(_start);
 
                 // Special case for multi-day runs
-                string total = "";
+                string total = string.Empty;
                 if (span >= TimeSpan.FromDays(1))
                     total = span.ToString(@"d\:hh\:mm\:ss");
                 else
@@ -166,7 +166,7 @@ namespace SabreTools.Library.Tools
 
             // USER and ERROR writes to console
             if (loglevel == LogLevel.USER || loglevel == LogLevel.ERROR)
-                Console.WriteLine((loglevel == LogLevel.ERROR && appendPrefix ? loglevel.ToString() + " " : "") + output);
+                Console.WriteLine((loglevel == LogLevel.ERROR && appendPrefix ? loglevel.ToString() + " " : string.Empty) + output);
 
             // If we're writing to file, use the existing stream
             if (_tofile)
@@ -175,7 +175,7 @@ namespace SabreTools.Library.Tools
                 {
                     lock(_lock)
                     {
-                        _log.WriteLine((appendPrefix ? loglevel.ToString() + " - " + DateTime.Now + " - " : "") + output);
+                        _log.WriteLine((appendPrefix ? loglevel.ToString() + " - " + DateTime.Now + " - " : string.Empty) + output);
                     }
                 }
                 catch (Exception ex)

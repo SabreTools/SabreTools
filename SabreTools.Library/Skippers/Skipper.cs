@@ -74,11 +74,11 @@ namespace SabreTools.Library.Skippers
         /// </summary>
         public Skipper()
         {
-            Name = "";
-            Author = "";
-            Version = "";
+            Name = string.Empty;
+            Author = string.Empty;
+            Version = string.Empty;
             Rules = new List<SkipperRule>();
-            SourceFile = "";
+            SourceFile = string.Empty;
         }
 
         /// <summary>

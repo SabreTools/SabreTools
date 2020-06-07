@@ -86,9 +86,7 @@ namespace SabreTools.Library.FileTypes
 
                     // Create the rest of the path, if needed
                     if (!string.IsNullOrWhiteSpace(Path.GetDirectoryName(zf.Filename(i))))
-                    {
                         Directory.CreateDirectory(Path.Combine(outDir, Path.GetDirectoryName(zf.Filename(i))));
-                    }
 
                     // If the entry ends with a directory separator, continue to the next item, if any
                     if (zf.Filename(i).EndsWith(Path.DirectorySeparatorChar.ToString())
@@ -464,7 +462,7 @@ namespace SabreTools.Library.FileTypes
             inputStream.Seek(0, SeekOrigin.Begin);
 
             // Get the output archive name from the first rebuild rom
-            string archiveFileName = Path.Combine(outDir, Utilities.RemovePathUnsafeCharacters(rom.MachineName) + (rom.MachineName.EndsWith(".zip") ? "" : ".zip"));
+            string archiveFileName = Path.Combine(outDir, Utilities.RemovePathUnsafeCharacters(rom.MachineName) + (rom.MachineName.EndsWith(".zip") ? string.Empty : ".zip"));
 
             // Set internal variables
             Stream writeStream = null;
@@ -672,7 +670,7 @@ namespace SabreTools.Library.FileTypes
             }
 
             // Get the output archive name from the first rebuild rom
-            string archiveFileName = Path.Combine(outDir, Utilities.RemovePathUnsafeCharacters(roms[0].MachineName) + (roms[0].MachineName.EndsWith(".zip") ? "" : ".zip"));
+            string archiveFileName = Path.Combine(outDir, Utilities.RemovePathUnsafeCharacters(roms[0].MachineName) + (roms[0].MachineName.EndsWith(".zip") ? string.Empty : ".zip"));
 
             // Set internal variables
             Stream writeStream = null;

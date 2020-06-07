@@ -136,11 +136,11 @@ namespace SabreTools.Library.DatItems
         /// </summary>
         public Rom()
         {
-            this.Name = "";
+            this.Name = string.Empty;
             this.ItemType = ItemType.Rom;
             this.DupeType = 0x00;
             this.ItemStatus = ItemStatus.None;
-            this.Date = "";
+            this.Date = string.Empty;
         }
 
         /// <summary>

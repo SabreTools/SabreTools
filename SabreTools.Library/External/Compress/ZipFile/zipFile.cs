@@ -39,7 +39,7 @@ namespace Compress.ZipFile
 
         private bool _zip64;
 
-        public string ZipFilename => _zipFileInfo != null ? _zipFileInfo.FullName : "";
+        public string ZipFilename => _zipFileInfo != null ? _zipFileInfo.FullName : string.Empty;
 
         public long TimeStamp => _zipFileInfo?.LastWriteTime ?? 0;
 
@@ -923,7 +923,7 @@ namespace Compress.ZipFile
             switch (zS)
             {
                 case ZipReturn.ZipGood:
-                    ret = "";
+                    ret = string.Empty;
                     break;
                 case ZipReturn.ZipFileCountError:
                     ret = "The number of file in the Zip does not mach the number of files in the Zips Centeral Directory";
@@ -990,7 +990,7 @@ namespace Compress.ZipFile
 
         private static string GetString(byte[] byteArr)
         {
-            string s = "";
+            string s = string.Empty;
             foreach (byte by in byteArr)
             {
                 s += (char)by;

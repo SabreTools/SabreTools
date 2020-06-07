@@ -322,7 +322,7 @@ namespace Compress.gZip
 
         public ZipStatus ZipStatus { get; private set; }
 
-        public string ZipFilename => _zipFileInfo != null ? _zipFileInfo.FullName : "";
+        public string ZipFilename => _zipFileInfo != null ? _zipFileInfo.FullName : string.Empty;
 
         public long TimeStamp => _zipFileInfo?.LastWriteTime ?? 0;
 

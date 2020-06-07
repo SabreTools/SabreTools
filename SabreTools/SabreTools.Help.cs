@@ -1958,7 +1958,7 @@ Some special strings that can be used:
                 "SabreTools - Manipulate, convert, and use DAT files",
                 barrier,
                 "Usage: SabreTools [option] [flags] [filename|dirname] ...",
-                ""
+                string.Empty
             };
             Help help = new Help(helpHeader);
 

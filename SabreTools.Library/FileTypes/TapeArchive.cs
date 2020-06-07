@@ -333,7 +333,7 @@ namespace SabreTools.Library.FileTypes
             }
 
             // Get the output archive name from the first rebuild rom
-            string archiveFileName = Path.Combine(outDir, Utilities.RemovePathUnsafeCharacters(rom.MachineName) + (rom.MachineName.EndsWith(".tar") ? "" : ".tar"));
+            string archiveFileName = Path.Combine(outDir, Utilities.RemovePathUnsafeCharacters(rom.MachineName) + (rom.MachineName.EndsWith(".tar") ? string.Empty : ".tar"));
 
             // Set internal variables
             TarArchive oldTarFile = TarArchive.Create();
@@ -495,7 +495,7 @@ namespace SabreTools.Library.FileTypes
             }
 
             // Get the output archive name from the first rebuild rom
-            string archiveFileName = Path.Combine(outDir, Utilities.RemovePathUnsafeCharacters(roms[0].MachineName) + (roms[0].MachineName.EndsWith(".tar") ? "" : ".tar"));
+            string archiveFileName = Path.Combine(outDir, Utilities.RemovePathUnsafeCharacters(roms[0].MachineName) + (roms[0].MachineName.EndsWith(".tar") ? string.Empty : ".tar"));
 
             // Set internal variables
             TarArchive oldTarFile = TarArchive.Create();

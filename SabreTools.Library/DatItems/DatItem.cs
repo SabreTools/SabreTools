@@ -985,7 +985,7 @@ namespace SabreTools.Library.DatItems
                     if (datItem.Name == lastrenamed)
                     {
                         lastrenamed = datItem.Name;
-                        datItem.Name += (lastid == 0 ? "" : "_" + lastid);
+                        datItem.Name += (lastid == 0 ? string.Empty : "_" + lastid);
                         lastid++;
                     }
                     // If we have no conflict, then we want to reset the lastrenamed and id

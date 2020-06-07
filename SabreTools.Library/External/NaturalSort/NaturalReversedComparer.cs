@@ -41,13 +41,13 @@ namespace NaturalSort
 			}
 			if (!table.TryGetValue(x, out string[] x1))
 			{
-				//x1 = Regex.Split(x.Replace(" ", ""), "([0-9]+)");
+				//x1 = Regex.Split(x.Replace(" ", string.Empty), "([0-9]+)");
 				x1 = Regex.Split(x.ToLowerInvariant(), "([0-9]+)").Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
 				table.Add(x, x1);
 			}
 			if (!table.TryGetValue(y, out string[] y1))
 			{
-				//y1 = Regex.Split(y.Replace(" ", ""), "([0-9]+)");
+				//y1 = Regex.Split(y.Replace(" ", string.Empty), "([0-9]+)");
 				y1 = Regex.Split(y.ToLowerInvariant(), "([0-9]+)").Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
 				table.Add(y, y1);
 			}

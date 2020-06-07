@@ -177,8 +177,8 @@ namespace SabreTools.Library.Data
 
    This DTD module is identified by the PUBLIC and SYSTEM identifiers:
 
-   PUBLIC "" -//Logiqx//DTD ROM Management Datafile//EN""
-   SYSTEM ""http://www.logiqx.com/Dats/datafile.dtd""
+   PUBLIC string.Empty -//Logiqx//DTD ROM Management Datafile//ENstring.Empty
+   SYSTEM string.Emptyhttp://www.logiqx.com/Dats/datafile.dtdstring.Empty
 
    $Revision: 1.5 $
    $Date: 2008/10/28 21:39:16 $
@@ -187,7 +187,7 @@ namespace SabreTools.Library.Data
 
 <!ELEMENT datafile(header?, game*, machine*)>
     <!ATTLIST datafile build CDATA #IMPLIED>
-    <!ATTLIST datafile debug (yes|no) ""no"">
+    <!ATTLIST datafile debug (yes|no) string.Emptynostring.Empty>
     <!ELEMENT header(name, description, category?, version, date?, author, email?, homepage?, url?, comment?, clrmamepro?, romcenter?)>
         <!ELEMENT name(#PCDATA)>
         <!ELEMENT description (#PCDATA)>
@@ -201,21 +201,21 @@ namespace SabreTools.Library.Data
         <!ELEMENT comment (#PCDATA)>
         <!ELEMENT clrmamepro EMPTY>
             <!ATTLIST clrmamepro header CDATA #IMPLIED>
-            <!ATTLIST clrmamepro forcemerging (none|split|full) ""split"">
-            <!ATTLIST clrmamepro forcenodump(obsolete|required|ignore) ""obsolete"">
-            <!ATTLIST clrmamepro forcepacking(zip|unzip) ""zip"">
+            <!ATTLIST clrmamepro forcemerging (none|split|full) string.Emptysplitstring.Empty>
+            <!ATTLIST clrmamepro forcenodump(obsolete|required|ignore) string.Emptyobsoletestring.Empty>
+            <!ATTLIST clrmamepro forcepacking(zip|unzip) string.Emptyzipstring.Empty>
         <!ELEMENT romcenter EMPTY>
             <!ATTLIST romcenter plugin CDATA #IMPLIED>
-            <!ATTLIST romcenter rommode (merged|split|unmerged) ""split"">
-            <!ATTLIST romcenter biosmode(merged|split|unmerged) ""split"">
-            <!ATTLIST romcenter samplemode(merged|unmerged) ""merged"">
-            <!ATTLIST romcenter lockrommode(yes|no) ""no"">
-            <!ATTLIST romcenter lockbiosmode(yes|no) ""no"">
-            <!ATTLIST romcenter locksamplemode(yes|no) ""no"">
+            <!ATTLIST romcenter rommode (merged|split|unmerged) string.Emptysplitstring.Empty>
+            <!ATTLIST romcenter biosmode(merged|split|unmerged) string.Emptysplitstring.Empty>
+            <!ATTLIST romcenter samplemode(merged|unmerged) string.Emptymergedstring.Empty>
+            <!ATTLIST romcenter lockrommode(yes|no) string.Emptynostring.Empty>
+            <!ATTLIST romcenter lockbiosmode(yes|no) string.Emptynostring.Empty>
+            <!ATTLIST romcenter locksamplemode(yes|no) string.Emptynostring.Empty>
     <!ELEMENT game(comment*, description, year?, manufacturer?, release*, biosset*, rom*, disk*, sample*, archive*)>
         <!ATTLIST game name CDATA #REQUIRED>
         <!ATTLIST game sourcefile CDATA #IMPLIED>
-        <!ATTLIST game isbios (yes|no) ""no"">
+        <!ATTLIST game isbios (yes|no) string.Emptynostring.Empty>
         <!ATTLIST game cloneof CDATA #IMPLIED>
         <!ATTLIST game romof CDATA #IMPLIED>
         <!ATTLIST game sampleof CDATA #IMPLIED>
@@ -228,11 +228,11 @@ namespace SabreTools.Library.Data
             <!ATTLIST release region CDATA #REQUIRED>
             <!ATTLIST release language CDATA #IMPLIED>
             <!ATTLIST release date CDATA #IMPLIED>
-            <!ATTLIST release default (yes|no) ""no"">
+            <!ATTLIST release default (yes|no) string.Emptynostring.Empty>
         <!ELEMENT biosset EMPTY>
             <!ATTLIST biosset name CDATA #REQUIRED>
             <!ATTLIST biosset description CDATA #REQUIRED>
-            <!ATTLIST biosset default (yes|no) ""no"">
+            <!ATTLIST biosset default (yes|no) string.Emptynostring.Empty>
         <!ELEMENT rom EMPTY>
             <!ATTLIST rom name CDATA #REQUIRED>
             <!ATTLIST rom size CDATA #REQUIRED>
@@ -244,7 +244,7 @@ namespace SabreTools.Library.Data
             <!ATTLIST rom sha384 CDATA #IMPLIED>
             <!ATTLIST rom sha512 CDATA #IMPLIED>
             <!ATTLIST rom merge CDATA #IMPLIED>
-            <!ATTLIST rom status (baddump|nodump|good|verified) ""good"">
+            <!ATTLIST rom status (baddump|nodump|good|verified) string.Emptygoodstring.Empty>
             <!ATTLIST rom date CDATA #IMPLIED>
         <!ELEMENT disk EMPTY>
             <!ATTLIST disk name CDATA #REQUIRED>
@@ -255,7 +255,7 @@ namespace SabreTools.Library.Data
             <!ATTLIST disk sha384 CDATA #IMPLIED>
             <!ATTLIST disk sha512 CDATA #IMPLIED>
             <!ATTLIST disk merge CDATA #IMPLIED>
-            <!ATTLIST disk status (baddump|nodump|good|verified) ""good"">
+            <!ATTLIST disk status (baddump|nodump|good|verified) string.Emptygoodstring.Empty>
         <!ELEMENT sample EMPTY>
             <!ATTLIST sample name CDATA #REQUIRED>
         <!ELEMENT archive EMPTY>
@@ -263,7 +263,7 @@ namespace SabreTools.Library.Data
     <!ELEMENT machine (comment*, description, year?, manufacturer?, release*, biosset*, rom*, disk*, sample*, archive*)>
         <!ATTLIST machine name CDATA #REQUIRED>
         <!ATTLIST machine sourcefile CDATA #IMPLIED>
-        <!ATTLIST machine isbios (yes|no) ""no"">
+        <!ATTLIST machine isbios (yes|no) string.Emptynostring.Empty>
         <!ATTLIST machine cloneof CDATA #IMPLIED>
         <!ATTLIST machine romof CDATA #IMPLIED>
         <!ATTLIST machine sampleof CDATA #IMPLIED>
@@ -272,15 +272,15 @@ namespace SabreTools.Library.Data
 ";
         public const string MAMEDTD = @"<!ELEMENT mame (machine+)>
     <!ATTLIST mame build CDATA #IMPLIED>
-    <!ATTLIST mame debug (yes|no) ""no"">
+    <!ATTLIST mame debug (yes|no) string.Emptynostring.Empty>
     <!ATTLIST mame mameconfig CDATA #REQUIRED>
     <!ELEMENT machine (description, year?, manufacturer?, biosset*, rom*, disk*, device_ref*, sample*, chip*, display*, sound?, input?, dipswitch*, configuration*, port*, adjuster*, driver?, feature*, device*, slot*, softwarelist*, ramoption*)>
         <!ATTLIST machine name CDATA #REQUIRED>
         <!ATTLIST machine sourcefile CDATA #IMPLIED>
-        <!ATTLIST machine isbios (yes|no) ""no"">
-        <!ATTLIST machine isdevice (yes|no) ""no"">
-        <!ATTLIST machine ismechanical (yes|no) ""no"">
-        <!ATTLIST machine runnable (yes|no) ""yes"">
+        <!ATTLIST machine isbios (yes|no) string.Emptynostring.Empty>
+        <!ATTLIST machine isdevice (yes|no) string.Emptynostring.Empty>
+        <!ATTLIST machine ismechanical (yes|no) string.Emptynostring.Empty>
+        <!ATTLIST machine runnable (yes|no) string.Emptyyesstring.Empty>
         <!ATTLIST machine cloneof CDATA #IMPLIED>
         <!ATTLIST machine romof CDATA #IMPLIED>
         <!ATTLIST machine sampleof CDATA #IMPLIED>
@@ -290,7 +290,7 @@ namespace SabreTools.Library.Data
         <!ELEMENT biosset EMPTY>
             <!ATTLIST biosset name CDATA #REQUIRED>
             <!ATTLIST biosset description CDATA #REQUIRED>
-            <!ATTLIST biosset default (yes|no) ""no"">
+            <!ATTLIST biosset default (yes|no) string.Emptynostring.Empty>
         <!ELEMENT rom EMPTY>
             <!ATTLIST rom name CDATA #REQUIRED>
             <!ATTLIST rom bios CDATA #IMPLIED>
@@ -305,8 +305,8 @@ namespace SabreTools.Library.Data
             <!ATTLIST rom merge CDATA #IMPLIED>
             <!ATTLIST rom region CDATA #IMPLIED>
             <!ATTLIST rom offset CDATA #IMPLIED>
-            <!ATTLIST rom status (baddump|nodump|good) ""good"">
-            <!ATTLIST rom optional (yes|no) ""no"">
+            <!ATTLIST rom status (baddump|nodump|good) string.Emptygoodstring.Empty>
+            <!ATTLIST rom optional (yes|no) string.Emptynostring.Empty>
         <!ELEMENT disk EMPTY>
             <!ATTLIST disk name CDATA #REQUIRED>
             <!ATTLIST disk md5 CDATA #IMPLIED>
@@ -318,9 +318,9 @@ namespace SabreTools.Library.Data
             <!ATTLIST disk merge CDATA #IMPLIED>
             <!ATTLIST disk region CDATA #IMPLIED>
             <!ATTLIST disk index CDATA #IMPLIED>
-            <!ATTLIST disk writable (yes|no) ""no"">
-            <!ATTLIST disk status (baddump|nodump|good) ""good"">
-            <!ATTLIST disk optional (yes|no) ""no"">
+            <!ATTLIST disk writable (yes|no) string.Emptynostring.Empty>
+            <!ATTLIST disk status (baddump|nodump|good) string.Emptygoodstring.Empty>
+            <!ATTLIST disk optional (yes|no) string.Emptynostring.Empty>
         <!ELEMENT device_ref EMPTY>
             <!ATTLIST device_ref name CDATA #REQUIRED>
         <!ELEMENT sample EMPTY>
@@ -334,7 +334,7 @@ namespace SabreTools.Library.Data
             <!ATTLIST display tag CDATA #IMPLIED>
             <!ATTLIST display type (raster|vector|lcd|svg|unknown) #REQUIRED>
             <!ATTLIST display rotate (0|90|180|270) #IMPLIED>
-            <!ATTLIST display flipx (yes|no) ""no"">
+            <!ATTLIST display flipx (yes|no) string.Emptynostring.Empty>
             <!ATTLIST display width CDATA #IMPLIED>
             <!ATTLIST display height CDATA #IMPLIED>
             <!ATTLIST display refresh CDATA #REQUIRED>
@@ -353,8 +353,8 @@ namespace SabreTools.Library.Data
             <!ATTLIST condition relation (eq|ne|gt|le|lt|ge) #REQUIRED>
             <!ATTLIST condition value CDATA #REQUIRED>
         <!ELEMENT input (control*)>
-            <!ATTLIST input service (yes|no) ""no"">
-            <!ATTLIST input tilt (yes|no) ""no"">
+            <!ATTLIST input service (yes|no) string.Emptynostring.Empty>
+            <!ATTLIST input tilt (yes|no) string.Emptynostring.Empty>
             <!ATTLIST input players CDATA #REQUIRED>
             <!ATTLIST input coins CDATA #IMPLIED>
             <!ELEMENT control EMPTY>
@@ -366,7 +366,7 @@ namespace SabreTools.Library.Data
                 <!ATTLIST control maximum CDATA #IMPLIED>
                 <!ATTLIST control sensitivity CDATA #IMPLIED>
                 <!ATTLIST control keydelta CDATA #IMPLIED>
-                <!ATTLIST control reverse (yes|no) ""no"">
+                <!ATTLIST control reverse (yes|no) string.Emptynostring.Empty>
                 <!ATTLIST control ways CDATA #IMPLIED>
                 <!ATTLIST control ways2 CDATA #IMPLIED>
                 <!ATTLIST control ways3 CDATA #IMPLIED>
@@ -377,11 +377,11 @@ namespace SabreTools.Library.Data
             <!ELEMENT diplocation EMPTY>
                 <!ATTLIST diplocation name CDATA #REQUIRED>
                 <!ATTLIST diplocation number CDATA #REQUIRED>
-                <!ATTLIST diplocation inverted (yes|no) ""no"">
+                <!ATTLIST diplocation inverted (yes|no) string.Emptynostring.Empty>
             <!ELEMENT dipvalue (condition?)>
                 <!ATTLIST dipvalue name CDATA #REQUIRED>
                 <!ATTLIST dipvalue value CDATA #REQUIRED>
-                <!ATTLIST dipvalue default (yes|no) ""no"">
+                <!ATTLIST dipvalue default (yes|no) string.Emptynostring.Empty>
         <!ELEMENT configuration (condition?, conflocation*, confsetting*)>
             <!ATTLIST configuration name CDATA #REQUIRED>
             <!ATTLIST configuration tag CDATA #REQUIRED>
@@ -389,11 +389,11 @@ namespace SabreTools.Library.Data
             <!ELEMENT conflocation EMPTY>
                 <!ATTLIST conflocation name CDATA #REQUIRED>
                 <!ATTLIST conflocation number CDATA #REQUIRED>
-                <!ATTLIST conflocation inverted (yes|no) ""no"">
+                <!ATTLIST conflocation inverted (yes|no) string.Emptynostring.Empty>
             <!ELEMENT confsetting (condition?)>
                 <!ATTLIST confsetting name CDATA #REQUIRED>
                 <!ATTLIST confsetting value CDATA #REQUIRED>
-                <!ATTLIST confsetting default (yes|no) ""no"">
+                <!ATTLIST confsetting default (yes|no) string.Emptynostring.Empty>
         <!ELEMENT port (analog*)>
             <!ATTLIST port tag CDATA #REQUIRED>
             <!ELEMENT analog EMPTY>
@@ -426,7 +426,7 @@ namespace SabreTools.Library.Data
             <!ELEMENT slotoption EMPTY>
                 <!ATTLIST slotoption name CDATA #REQUIRED>
                 <!ATTLIST slotoption devname CDATA #REQUIRED>
-                <!ATTLIST slotoption default (yes|no) ""no"">
+                <!ATTLIST slotoption default (yes|no) string.Emptynostring.Empty>
         <!ELEMENT softwarelist EMPTY>
             <!ATTLIST softwarelist name CDATA #REQUIRED>
             <!ATTLIST softwarelist status (original|compatible) #REQUIRED>
@@ -450,7 +450,7 @@ namespace SabreTools.Library.Data
     <!ELEMENT software (description, year, publisher, info*, sharedfeat*, part*)>
         <!ATTLIST software name CDATA #REQUIRED>
         <!ATTLIST software cloneof CDATA #IMPLIED>
-        <!ATTLIST software supported (yes|partial|no) ""yes"">
+        <!ATTLIST software supported (yes|partial|no) string.Emptyyesstring.Empty>
         <!ELEMENT description (#PCDATA)>
         <!ELEMENT year (#PCDATA)>
         <!ELEMENT publisher (#PCDATA)>
@@ -470,8 +470,8 @@ namespace SabreTools.Library.Data
             <!ELEMENT dataarea (rom*)>
                 <!ATTLIST dataarea name CDATA #REQUIRED>
                 <!ATTLIST dataarea size CDATA #REQUIRED>
-                <!ATTLIST dataarea width (8|16|32|64) ""8"">
-                <!ATTLIST dataarea endianness (big|little) ""little"">
+                <!ATTLIST dataarea width (8|16|32|64) string.Empty8string.Empty>
+                <!ATTLIST dataarea endianness (big|little) string.Emptylittlestring.Empty>
                 <!ELEMENT rom EMPTY>
                     <!ATTLIST rom name CDATA #IMPLIED>
                     <!ATTLIST rom size CDATA #IMPLIED>
@@ -484,7 +484,7 @@ namespace SabreTools.Library.Data
                     <!ATTLIST rom sha512 CDATA #IMPLIED>
                     <!ATTLIST rom offset CDATA #IMPLIED>
                     <!ATTLIST rom value CDATA #IMPLIED>
-                    <!ATTLIST rom status (baddump|nodump|good) ""good"">
+                    <!ATTLIST rom status (baddump|nodump|good) string.Emptygoodstring.Empty>
                     <!ATTLIST rom loadflag (load16_byte|load16_word|load16_word_swap|load32_byte|load32_word|load32_word_swap|load32_dword|load64_word|load64_word_swap|reload|fill|continue|reload_plain|ignore) #IMPLIED>
             <!ELEMENT diskarea (disk*)>
                 <!ATTLIST diskarea name CDATA #REQUIRED>
@@ -496,8 +496,8 @@ namespace SabreTools.Library.Data
                     <!ATTLIST disk sha256 CDATA #IMPLIED>
                     <!ATTLIST disk sha384 CDATA #IMPLIED>
                     <!ATTLIST disk sha512 CDATA #IMPLIED>
-                    <!ATTLIST disk status (baddump|nodump|good) ""good"">
-                    <!ATTLIST disk writeable (yes|no) ""no"">
+                    <!ATTLIST disk status (baddump|nodump|good) string.Emptygoodstring.Empty>
+                    <!ATTLIST disk writeable (yes|no) string.Emptynostring.Empty>
             <!ELEMENT dipswitch (dipvalue*)>
                 <!ATTLIST dipswitch name CDATA #REQUIRED>
                 <!ATTLIST dipswitch tag CDATA #REQUIRED>
@@ -505,7 +505,7 @@ namespace SabreTools.Library.Data
                 <!ELEMENT dipvalue EMPTY>
                     <!ATTLIST dipvalue name CDATA #REQUIRED>
                     <!ATTLIST dipvalue value CDATA #REQUIRED>
-                    <!ATTLIST dipvalue default (yes|no) ""no"">
+                    <!ATTLIST dipvalue default (yes|no) string.Emptynostring.Empty>
 ";
 
         #endregion

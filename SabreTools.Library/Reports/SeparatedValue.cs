@@ -65,8 +65,8 @@ namespace SabreTools.Library.Reports
                     + "\"" + _datFile.SHA256Count + "\"{0}"
                     + "\"" + _datFile.SHA384Count + "\"{0}"
                     + "\"" + _datFile.SHA512Count + "\""
-                    + (_baddumpCol ? "{0}\"" + _datFile.BaddumpCount + "\"" : "")
-                    + (_nodumpCol ? "{0}\"" + _datFile.BaddumpCount + "\"" : "")
+                    + (_baddumpCol ? "{0}\"" + _datFile.BaddumpCount + "\"" : string.Empty)
+                    + (_nodumpCol ? "{0}\"" + _datFile.BaddumpCount + "\"" : string.Empty)
                     + "\n", _separator);
             
             _writer.Write(line);
@@ -79,7 +79,7 @@ namespace SabreTools.Library.Reports
         public override void WriteHeader()
         {
             _writer.Write(string.Format("\"File Name\"{0}\"Total Size\"{0}\"Games\"{0}\"Roms\"{0}\"Disks\"{0}\"# with CRC\"{0}\"# with MD5\"{0}\"# with SHA-1\"{0}\"# with SHA-256\""
-                + (_baddumpCol ? "{0}\"BadDumps\"" : "") + (_nodumpCol ? "{0}\"Nodumps\"" : "") + "\n", _separator));
+                + (_baddumpCol ? "{0}\"BadDumps\"" : string.Empty) + (_nodumpCol ? "{0}\"Nodumps\"" : string.Empty) + "\n", _separator));
             _writer.Flush();
         }
 

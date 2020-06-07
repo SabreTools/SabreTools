@@ -466,7 +466,7 @@ namespace SabreTools.Library.FileTypes
             inputStream.Seek(0, SeekOrigin.Begin);
 
             // Get the output archive name from the first rebuild rom
-            string archiveFileName = Path.Combine(outDir, Utilities.RemovePathUnsafeCharacters(rom.MachineName) + (rom.MachineName.EndsWith(".zip") ? "" : ".zip"));
+            string archiveFileName = Path.Combine(outDir, Utilities.RemovePathUnsafeCharacters(rom.MachineName) + (rom.MachineName.EndsWith(".zip") ? string.Empty : ".zip"));
 
             // Set internal variables
             Stream writeStream = null;
@@ -675,7 +675,7 @@ namespace SabreTools.Library.FileTypes
             }
 
             // Get the output archive name from the first rebuild rom
-            string archiveFileName = Path.Combine(outDir, Utilities.RemovePathUnsafeCharacters(roms[0].MachineName) + (roms[0].MachineName.EndsWith(".zip") ? "" : ".zip"));
+            string archiveFileName = Path.Combine(outDir, Utilities.RemovePathUnsafeCharacters(roms[0].MachineName) + (roms[0].MachineName.EndsWith(".zip") ? string.Empty : ".zip"));
 
             // Set internal variables
             Stream writeStream = null;

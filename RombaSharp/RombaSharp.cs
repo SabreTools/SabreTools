@@ -106,15 +106,15 @@ namespace RombaSharp
                 useGolangZip = false;
 
             // User inputs
-            string backup = "",
-                description = "",
-                missingSha1s = "",
-                name = "",
-                newdat = "",
-                old = "",
-                outdat = "",
-                resume = "",
-                source = "";
+            string backup = string.Empty,
+                description = string.Empty,
+                missingSha1s = string.Empty,
+                name = string.Empty,
+                newdat = string.Empty,
+                old = string.Empty,
+                outdat = string.Empty,
+                resume = string.Empty,
+                source = string.Empty;
             int include7Zips = 1,
                 includeGZips = 1,
                 includeZips = 1,

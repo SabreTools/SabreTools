@@ -238,12 +238,12 @@ namespace SabreTools.Library.DatFiles
                 // No game should start with a path separator
                 rom.MachineName = rom.MachineName.TrimStart(Path.DirectorySeparatorChar);
 
-                string state = (!ExcludeFields[(int)Field.MachineName] ? rom.MachineName : "") + ";"
-                            + (!ExcludeFields[(int)Field.Description] ? rom.MachineDescription : "") + ";"
+                string state = (!ExcludeFields[(int)Field.MachineName] ? rom.MachineName : string.Empty) + ";"
+                            + (!ExcludeFields[(int)Field.Description] ? rom.MachineDescription : string.Empty) + ";"
                             + FileName + ";"
-                            + (!ExcludeFields[(int)Field.CloneOf] ? rom.CloneOf : "") + ";"
-                            + (!ExcludeFields[(int)Field.Year] ? rom.Year : "") + ";"
-                            + (!ExcludeFields[(int)Field.Manufacturer] ? rom.Manufacturer : "") + ";"
+                            + (!ExcludeFields[(int)Field.CloneOf] ? rom.CloneOf : string.Empty) + ";"
+                            + (!ExcludeFields[(int)Field.Year] ? rom.Year : string.Empty) + ";"
+                            + (!ExcludeFields[(int)Field.Manufacturer] ? rom.Manufacturer : string.Empty) + ";"
                             /* + rom.Category */ + ";"
                             /* + rom.Players */ + ";"
                             /* + rom.Rotation */ + ";"
@@ -253,7 +253,7 @@ namespace SabreTools.Library.DatFiles
                             /* + rom.DisplayType */ + ";"
                             /* + rom.AltRomname */ + ";"
                             /* + rom.AltTitle */ + ";"
-                            + (!ExcludeFields[(int)Field.Comment] ? rom.Comment : "") + ";"
+                            + (!ExcludeFields[(int)Field.Comment] ? rom.Comment : string.Empty) + ";"
                             /* + rom.Buttons */ + "\n";
 
                 sw.Write(state);

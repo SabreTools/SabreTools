@@ -13,7 +13,7 @@ namespace Compress.File
         private Stream _inStream;
         private byte[] _crc;
 
-        public string ZipFilename => _fileInfo?.FullName ?? "";
+        public string ZipFilename => _fileInfo?.FullName ?? string.Empty;
 
         public long TimeStamp => _fileInfo?.LastWriteTime ?? 0;
 

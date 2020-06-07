@@ -46,7 +46,7 @@ namespace Compress.SevenZip
 
         private long _baseOffset;
 
-        public string ZipFilename => _zipFileInfo != null ? _zipFileInfo.FullName : "";
+        public string ZipFilename => _zipFileInfo != null ? _zipFileInfo.FullName : string.Empty;
 
         public long TimeStamp => _zipFileInfo?.LastWriteTime ?? 0;
 

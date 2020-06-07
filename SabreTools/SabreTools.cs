@@ -109,7 +109,7 @@ namespace SabreTools
                 zip = 1;
             long radix = 0;
             string outDir = null,
-                tempDir = "";
+                tempDir = string.Empty;
             DatHeader datHeader = new DatHeader();
             Filter filter = new Filter();
             List<string> basePaths = new List<string>();

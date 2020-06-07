@@ -338,15 +338,15 @@ namespace SabreTools
                 if (string.IsNullOrWhiteSpace(datHeader.Name))
                 {
                     datHeader.Name = (updateMode != 0 ? "DiffDAT" : "MergeDAT")
-                        + (datHeader.Type == "SuperDAT" ? "-SuperDAT" : "")
-                        + (datHeader.DedupeRoms != DedupeType.None ? "-deduped" : "");
+                        + (datHeader.Type == "SuperDAT" ? "-SuperDAT" : string.Empty)
+                        + (datHeader.DedupeRoms != DedupeType.None ? "-deduped" : string.Empty);
                 }
 
                 if (string.IsNullOrWhiteSpace(datHeader.Description))
                 {
                     datHeader.Description = (updateMode != 0 ? "DiffDAT" : "MergeDAT")
-                        + (datHeader.Type == "SuperDAT" ? "-SuperDAT" : "")
-                        + (datHeader.DedupeRoms != DedupeType.None ? " - deduped" : "");
+                        + (datHeader.Type == "SuperDAT" ? "-SuperDAT" : string.Empty)
+                        + (datHeader.DedupeRoms != DedupeType.None ? " - deduped" : string.Empty);
 
                     if (!bare)
                         datHeader.Description += " (" + datHeader.Date + ")";

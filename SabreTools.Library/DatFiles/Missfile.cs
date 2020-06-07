@@ -153,7 +153,7 @@ namespace SabreTools.Library.DatFiles
 
             try
             {
-                string state = "";
+                string state = string.Empty;
 
                 // Process the item name
                 ProcessItemName(rom, false, forceRomName: false);
@@ -161,19 +161,19 @@ namespace SabreTools.Library.DatFiles
                 // If we're in Romba mode, the state is consistent
                 if (Romba)
                 {
-                    state += (!ExcludeFields[(int)Field.Name] ? rom.Name : "") + "\n";
+                    state += (!ExcludeFields[(int)Field.Name] ? rom.Name : string.Empty) + "\n";
                 }
                 // Otherwise, use any flags
                 else
                 {
                     if (!UseRomName && rom.MachineName != lastgame)
                     {
-                        state += (!ExcludeFields[(int)Field.Name] ? rom.Name : "") + "\n";
+                        state += (!ExcludeFields[(int)Field.Name] ? rom.Name : string.Empty) + "\n";
                         lastgame = rom.MachineName;
                     }
                     else if (UseRomName)
                     {
-                        state += (!ExcludeFields[(int)Field.Name] ? rom.Name : "") + "\n";
+                        state += (!ExcludeFields[(int)Field.Name] ? rom.Name : string.Empty) + "\n";
                     }
                 }
 

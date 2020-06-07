@@ -498,21 +498,21 @@ namespace SabreTools.Library.DatFiles
             try
             {
                 // Initialize all strings
-                string state = "",
-                    pre = "",
-                    post = "",
-                    type = "",
-                    romname = "",
-                    diskname = "",
-                    size = "",
-                    crc = "",
-                    md5 = "",
-                    ripemd160 = "",
-                    sha1 = "",
-                    sha256 = "",
-                    sha384 = "",
-                    sha512 = "",
-                    status = "";
+                string state = string.Empty,
+                    pre = string.Empty,
+                    post = string.Empty,
+                    type = string.Empty,
+                    romname = string.Empty,
+                    diskname = string.Empty,
+                    size = string.Empty,
+                    crc = string.Empty,
+                    md5 = string.Empty,
+                    ripemd160 = string.Empty,
+                    sha1 = string.Empty,
+                    sha256 = string.Empty,
+                    sha384 = string.Empty,
+                    sha512 = string.Empty,
+                    status = string.Empty;
 
                 // Separated values should only output Rom and Disk
                 if (rom.ItemType != ItemType.Disk && rom.ItemType != ItemType.Rom)
@@ -550,19 +550,19 @@ namespace SabreTools.Library.DatFiles
                 string inline = string.Format("\"" + FileName + "\""
                     + "{0}\"" + Name + "\""
                     + "{0}\"" + Description + "\""
-                    + "{0}\"" + (!ExcludeFields[(int)Field.MachineName] ? rom.MachineName : "") + "\""
-                    + "{0}\"" + (!ExcludeFields[(int)Field.Description] ? rom.MachineDescription : "") + "\""
+                    + "{0}\"" + (!ExcludeFields[(int)Field.MachineName] ? rom.MachineName : string.Empty) + "\""
+                    + "{0}\"" + (!ExcludeFields[(int)Field.Description] ? rom.MachineDescription : string.Empty) + "\""
                     + "{0}\"" + type + "\""
-                    + "{0}\"" + (!ExcludeFields[(int)Field.Name] ? romname : "") + "\""
-                    + "{0}\"" + (!ExcludeFields[(int)Field.Name] ? diskname : "") + "\""
-                    + "{0}\"" + (!ExcludeFields[(int)Field.Size] ? size : "") + "\""
-                    + "{0}\"" + (!ExcludeFields[(int)Field.CRC] ? crc : "") + "\""
-                    + "{0}\"" + (!ExcludeFields[(int)Field.MD5] ? md5 : "") + "\""
-                    // + "{0}\"" + (!ExcludeFields[(int)Field.RIPEMD160] ? ripemd160 : "") + "\""
-                    + "{0}\"" + (!ExcludeFields[(int)Field.SHA1] ? sha1 : "") + "\""
-                    + "{0}\"" + (!ExcludeFields[(int)Field.SHA256] ? sha256 : "") + "\""
-                    // + "{0}\"" + (!ExcludeFields[(int)Field.SHA384] ? sha384 : "") + "\""
-                    // + "{0}\"" + (!ExcludeFields[(int)Field.SHA512] ? sha512 : "") + "\""
+                    + "{0}\"" + (!ExcludeFields[(int)Field.Name] ? romname : string.Empty) + "\""
+                    + "{0}\"" + (!ExcludeFields[(int)Field.Name] ? diskname : string.Empty) + "\""
+                    + "{0}\"" + (!ExcludeFields[(int)Field.Size] ? size : string.Empty) + "\""
+                    + "{0}\"" + (!ExcludeFields[(int)Field.CRC] ? crc : string.Empty) + "\""
+                    + "{0}\"" + (!ExcludeFields[(int)Field.MD5] ? md5 : string.Empty) + "\""
+                    // + "{0}\"" + (!ExcludeFields[(int)Field.RIPEMD160] ? ripemd160 : string.Empty) + "\""
+                    + "{0}\"" + (!ExcludeFields[(int)Field.SHA1] ? sha1 : string.Empty) + "\""
+                    + "{0}\"" + (!ExcludeFields[(int)Field.SHA256] ? sha256 : string.Empty) + "\""
+                    // + "{0}\"" + (!ExcludeFields[(int)Field.SHA384] ? sha384 : string.Empty) + "\""
+                    // + "{0}\"" + (!ExcludeFields[(int)Field.SHA512] ? sha512 : string.Empty) + "\""
                     + "{0}" + status, _delim);
                 state += pre + inline + post + "\n";
 

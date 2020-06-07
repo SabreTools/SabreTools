@@ -1106,16 +1106,12 @@ namespace SabreTools.Library.DatFiles
 
             // If the key is null, we return false since keys can't be null
             if (key == null)
-            {
                 return contains;
-            }
 
             lock (_items)
             {
                 if (_items.ContainsKey(key))
-                {
                     contains = _items[key].Contains(value);
-                }
             }
 
             return contains;
@@ -1247,9 +1243,7 @@ namespace SabreTools.Library.DatFiles
         {
             // If the key is missing from the dictionary, add it
             if (!_items.ContainsKey(key))
-            {
                 _items.Add(key, new List<DatItem>());
-            }
         }
 
         #endregion
@@ -1305,10 +1299,6 @@ namespace SabreTools.Library.DatFiles
                             i--; // This make sure that the pointer stays on the correct since one was removed
                         }
                     }
-
-                    // If the key is now empty, remove it
-                    if (this[key].Count == 0)
-                        Remove(key);
                 }
             }
 
@@ -2299,7 +2289,7 @@ namespace SabreTools.Library.DatFiles
             InternalStopwatch watch = new InternalStopwatch("Initializing all output DATs");
 
             // Default vars for use
-            string post = "";
+            string post = string.Empty;
             DatFile outerDiffData = new DatFile();
             DatFile dupeData = new DatFile();
 
@@ -2457,7 +2447,7 @@ namespace SabreTools.Library.DatFiles
                         string filename = inputs[newItem.SystemID].Split('¬')[0];
                         string rootpath = inputs[newItem.SystemID].Split('¬')[1];
 
-                        rootpath += (string.IsNullOrWhiteSpace(rootpath) ? "" : Path.DirectorySeparatorChar.ToString());
+                        rootpath += (string.IsNullOrWhiteSpace(rootpath) ? string.Empty : Path.DirectorySeparatorChar.ToString());
                         filename = filename.Remove(0, rootpath.Length);
                         newItem.MachineName = Path.GetDirectoryName(filename) + Path.DirectorySeparatorChar
                             + Path.GetFileNameWithoutExtension(filename) + Path.DirectorySeparatorChar
@@ -2534,11 +2524,7 @@ namespace SabreTools.Library.DatFiles
             {
                 // Clone each list of DATs in the dictionary
                 List<DatItem> olditems = this[key];
-                List<DatItem> newitems = new List<DatItem>();
-                foreach (DatItem item in olditems)
-                {
-                    newitems.Add((DatItem)item.Clone());
-                }
+                List<DatItem> newitems = olditems.Select(i => (DatItem)i.Clone()).ToList();
 
                 // If the key is missing from the new dictionary, add it
                 if (!sorted.ContainsKey(key))
@@ -2667,12 +2653,7 @@ namespace SabreTools.Library.DatFiles
             foreach (string key in keys)
             {
                 List<DatItem> items = this[key];
-                List<DatItem> newItems = new List<DatItem>();
-                foreach (DatItem item in items)
-                {
-                    if (!item.Remove)
-                        newItems.Add(item);
-                }
+                List<DatItem> newItems = items.Where(i => !i.Remove).ToList();
 
                 Remove(key);
                 AddRange(key, newItems);
@@ -3303,12 +3284,7 @@ namespace SabreTools.Library.DatFiles
                 foreach (string key in Keys)
                 {
                     List<DatItem> items = this[key];
-                    List<DatItem> newitems = new List<DatItem>();
-                    foreach (DatItem item in items)
-                    {
-                        if (item.ItemType != ItemType.Blank)
-                            newitems.Add(item);
-                    }
+                    List<DatItem> newitems = items.Where(i => i.ItemType != ItemType.Blank).ToList();
 
                     this.Remove(key);
                     this.AddRange(key, newitems);
@@ -3325,7 +3301,7 @@ namespace SabreTools.Library.DatFiles
         /// <returns>The key for the item</returns>
         public string ParseAddHelper(DatItem item, bool clean, bool remUnicode)
         {
-            string key = "";
+            string key = string.Empty;
 
             // If there's no name in the rom, we log and skip it
             if (item.Name == null)
@@ -3522,7 +3498,7 @@ namespace SabreTools.Library.DatFiles
             // If the name is defined but not the description, set the description from the name
             else if (!string.IsNullOrWhiteSpace(Name) && string.IsNullOrWhiteSpace(Description))
             {
-                Description = Name + (bare ? "" : " (" + Date + ")");
+                Description = Name + (bare ? string.Empty : " (" + Date + ")");
             }
 
             // If neither the name or description are defined, set them from the automatic values
@@ -3530,7 +3506,7 @@ namespace SabreTools.Library.DatFiles
             {
                 string[] splitpath = basePath.Split(Path.DirectorySeparatorChar);
                 Name = string.IsNullOrWhiteSpace(splitpath.Last()) ? splitpath[splitpath.Length - 2] : splitpath.Last();
-                Description = Name + (bare ? "" : " (" + Date + ")");
+                Description = Name + (bare ? string.Empty : " (" + Date + ")");
             }
 
             // Clean the temp directory path
@@ -3559,8 +3535,8 @@ namespace SabreTools.Library.DatFiles
                         string fulldir = Path.GetFullPath(dir);
 
                         // Set the temporary variables
-                        string gamename = "";
-                        string romname = "";
+                        string gamename = string.Empty;
+                        string romname = string.Empty;
 
                         // If we have a SuperDAT, we want anything that's not the base path as the game, and the file as the rom
                         if (Type == "SuperDAT")
@@ -3673,7 +3649,7 @@ namespace SabreTools.Library.DatFiles
             // If the extracted list is null, just scan the item itself
             if (extracted == null)
             {
-                ProcessFile(newItem, "", newBasePath, omitFromScan, addDate, headerToCheckAgainst, chdsAsFiles);
+                ProcessFile(newItem, string.Empty, newBasePath, omitFromScan, addDate, headerToCheckAgainst, chdsAsFiles);
             }
             // Otherwise, add all of the found items
             else
@@ -3780,8 +3756,8 @@ namespace SabreTools.Library.DatFiles
         private void SetDatItemInfo(DatItem datItem, string item, string parent, string basepath)
         {
             // Get the data to be added as game and item names
-            string gamename = "";
-            string romname = "";
+            string gamename = string.Empty;
+            string romname = string.Empty;
 
             // If the parent is blank, then we have a non-archive file
             if (string.IsNullOrWhiteSpace(parent))
@@ -3836,7 +3812,7 @@ namespace SabreTools.Library.DatFiles
 
             // If we have a Disk, then the ".chd" extension needs to be removed
             if (datItem.ItemType == ItemType.Disk)
-                datItem.Name = datItem.Name.Replace(".chd", "");
+                datItem.Name = datItem.Name.Replace(".chd", string.Empty);
         }
 
         #endregion
@@ -3900,7 +3876,7 @@ namespace SabreTools.Library.DatFiles
 
             #region Rebuild from depots in order
 
-            string format = "";
+            string format = string.Empty;
             switch (outputFormat)
             {
                 case OutputFormat.Folder:
@@ -4081,7 +4057,7 @@ namespace SabreTools.Library.DatFiles
 
             #region Rebuild from sources in order
 
-            string format = "";
+            string format = string.Empty;
             switch (outputFormat)
             {
                 case OutputFormat.Folder:
@@ -4687,7 +4663,7 @@ namespace SabreTools.Library.DatFiles
             {
                 // TODO: All instances of Hash.DeepHashes should be made into 0x0 eventually
                 PopulateFromDir(input, (quickScan ? Hash.SecureHashes : Hash.DeepHashes) /* omitFromScan */, true /* bare */, false /* archivesAsFiles */,
-                    SkipFileType.None, false /* addBlanks */, false /* addDate */, "" /* tempDir */, false /* copyFiles */, headerToCheckAgainst, chdsAsFiles, filter);
+                    SkipFileType.None, false /* addBlanks */, false /* addDate */, string.Empty /* tempDir */, false /* copyFiles */, headerToCheckAgainst, chdsAsFiles, filter);
             }
 
             // Setup the fixdat
@@ -4812,11 +4788,11 @@ namespace SabreTools.Library.DatFiles
             if (Count == 0)
                 return false;
 
-            // Make sure all of the extensions have a dot at the beginning
-            var newExtA = extA.Select(s => (s.StartsWith(".") ? s.Substring(1) : s).ToUpperInvariant());
+            // Make sure all of the extensions don't have a dot at the beginning
+            var newExtA = extA.Select(s => s.TrimStart('.').ToUpperInvariant());
             string newExtAString = string.Join(",", newExtA);
 
-            var newExtB = extB.Select(s => (s.StartsWith(".") ? s.Substring(1) : s).ToUpperInvariant());
+            var newExtB = extB.Select(s => s.TrimStart('.').ToUpperInvariant());
             string newExtBString = string.Join(",", newExtB);
 
             // Set all of the appropriate outputs for each of the subsets
@@ -5980,7 +5956,7 @@ namespace SabreTools.Library.DatFiles
             if (!string.IsNullOrWhiteSpace(ReplaceExtension) || RemoveExtension)
             {
                 if (RemoveExtension)
-                    ReplaceExtension = "";
+                    ReplaceExtension = string.Empty;
 
                 string dir = Path.GetDirectoryName(name);
                 dir = dir.TrimStart(Path.DirectorySeparatorChar);
@@ -6013,7 +5989,7 @@ namespace SabreTools.Library.DatFiles
         protected string CreatePrefixPostfix(DatItem item, bool prefix)
         {
             // Initialize strings
-            string fix = "",
+            string fix = string.Empty,
                 game = item.MachineName,
                 name = item.Name,
                 manufacturer = item.Manufacturer,
@@ -6029,11 +6005,11 @@ namespace SabreTools.Library.DatFiles
 
             // If we have a prefix
             if (prefix)
-                fix = Prefix + (Quotes ? "\"" : "");
+                fix = Prefix + (Quotes ? "\"" : string.Empty);
 
             // If we have a postfix
             else
-                fix = (Quotes ? "\"" : "") + Postfix;
+                fix = (Quotes ? "\"" : string.Empty) + Postfix;
 
             // Ensure we have the proper values for replacement
             if (item.ItemType == ItemType.Rom)
@@ -6120,13 +6096,7 @@ namespace SabreTools.Library.DatFiles
                 .ToList();
 
             // Get all of the writers that we need
-            List<BaseReport> reports = new List<BaseReport>();
-
-            // Loop through and output based on the inputs
-            foreach (KeyValuePair<StatReportFormat, string> kvp in outputs)
-            {
-                reports.Add(Utilities.GetBaseReport(kvp.Key, kvp.Value, baddumpCol, nodumpCol));
-            }
+            List<BaseReport> reports = outputs.Select(kvp => Utilities.GetBaseReport(kvp.Key, kvp.Value, baddumpCol, nodumpCol)).ToList();
 
             // Write the header, if any
             reports.ForEach(report => report.WriteHeader());

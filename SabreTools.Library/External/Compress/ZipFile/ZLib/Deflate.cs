@@ -157,14 +157,14 @@ namespace Compress.ZipFile.ZLib
         {
             "need dictionary",
             "stream end",
-            "",
+            string.Empty,
             "file error",
             "stream error",
             "data error",
             "insufficient memory",
             "buffer error",
             "incompatible version",
-            ""
+            string.Empty
         };
 
         // preset dictionary flag in zlib header

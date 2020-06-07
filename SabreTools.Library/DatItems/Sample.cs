@@ -14,7 +14,7 @@ namespace SabreTools.Library.DatItems
         /// </summary>
         public Sample()
         {
-            this.Name = "";
+            this.Name = string.Empty;
             this.ItemType = ItemType.Sample;
         }
 

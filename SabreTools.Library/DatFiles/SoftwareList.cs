@@ -78,8 +78,8 @@ namespace SabreTools.Library.DatFiles
                     switch (xtr.Name)
                     {
                         case "softwarelist":
-                            Name = (string.IsNullOrWhiteSpace(Name) ? xtr.GetAttribute("name") ?? "" : Name);
-                            Description = (string.IsNullOrWhiteSpace(Description) ? xtr.GetAttribute("description") ?? "" : Description);
+                            Name = (string.IsNullOrWhiteSpace(Name) ? xtr.GetAttribute("name") ?? string.Empty : Name);
+                            Description = (string.IsNullOrWhiteSpace(Description) ? xtr.GetAttribute("description") ?? string.Empty : Description);
                             if (ForceMerging == ForceMerging.None)
                                 ForceMerging = Utilities.GetForceMerging(xtr.GetAttribute("forcemerging"));
 
@@ -147,7 +147,7 @@ namespace SabreTools.Library.DatFiles
             // Otherwise, add what is possible
             reader.MoveToContent();
 
-            string key = "";
+            string key = string.Empty;
             string temptype = reader.Name;
             bool containsItems = false;
 
@@ -168,7 +168,7 @@ namespace SabreTools.Library.DatFiles
                 Description = reader.GetAttribute("name"),
                 Supported = Utilities.GetYesNo(reader.GetAttribute("supported")), // (yes|partial|no) "yes"
 
-                CloneOf = reader.GetAttribute("cloneof") ?? "",
+                CloneOf = reader.GetAttribute("cloneof") ?? string.Empty,
                 Infos = new List<Tuple<string, string>>(),
 
                 MachineType = (machineType == MachineType.NULL ? MachineType.None : machineType),
@@ -263,7 +263,7 @@ namespace SabreTools.Library.DatFiles
             bool clean,
             bool remUnicode)
         {
-            string key = "", areaname = "", partname = "", partinterface = "";
+            string key = string.Empty, areaname = string.Empty, partname = string.Empty, partinterface = string.Empty;
             string temptype = reader.Name;
             long? areasize = null;
             List<Tuple<string, string>> features = new List<Tuple<string, string>>();
@@ -276,14 +276,14 @@ namespace SabreTools.Library.DatFiles
                 {
                     if (reader.NodeType == XmlNodeType.EndElement && reader.Name == "part")
                     {
-                        partname = "";
-                        partinterface = "";
+                        partname = string.Empty;
+                        partinterface = string.Empty;
                         features = new List<Tuple<string, string>>();
                     }
 
                     if (reader.NodeType == XmlNodeType.EndElement && (reader.Name == "dataarea" || reader.Name == "diskarea"))
                     {
-                        areaname = "";
+                        areaname = string.Empty;
                         areasize = null;
                     }
 
@@ -390,7 +390,7 @@ namespace SabreTools.Library.DatFiles
             bool clean,
             bool remUnicode)
         {
-            string key = "";
+            string key = string.Empty;
             string temptype = reader.Name;
             bool containsItems = false;
 
@@ -503,7 +503,7 @@ namespace SabreTools.Library.DatFiles
             bool clean,
             bool remUnicode)
         {
-            string key = "";
+            string key = string.Empty;
             string temptype = reader.Name;
             bool containsItems = false;
 
@@ -668,15 +668,15 @@ namespace SabreTools.Library.DatFiles
                             "<!DOCTYPE softwarelist SYSTEM \"softwarelist.dtd\">\n\n" +
                             "<softwarelist name=\"" + WebUtility.HtmlEncode(Name) + "\"" +
                                 " description=\"" + WebUtility.HtmlEncode(Description) + "\"" +
-                                (ForcePacking == ForcePacking.Unzip ? " forcepacking=\"unzip\"" : "") +
-                                (ForcePacking == ForcePacking.Zip ? " forcepacking=\"zip\"" : "") +
-                                (ForceMerging == ForceMerging.Full ? " forcemerging=\"full\"" : "") +
-                                (ForceMerging == ForceMerging.Split ? " forcemerging=\"split\"" : "") +
-                                (ForceMerging == ForceMerging.Merged ? " forcemerging=\"merged\"" : "") +
-                                (ForceMerging == ForceMerging.NonMerged ? " forcemerging=\"nonmerged\"" : "") +
-                                (ForceNodump == ForceNodump.Ignore ? " forcenodump=\"ignore\"" : "") +
-                                (ForceNodump == ForceNodump.Obsolete ? " forcenodump=\"obsolete\"" : "") +
-                                (ForceNodump == ForceNodump.Required ? " forcenodump=\"required\"" : "") +
+                                (ForcePacking == ForcePacking.Unzip ? " forcepacking=\"unzip\"" : string.Empty) +
+                                (ForcePacking == ForcePacking.Zip ? " forcepacking=\"zip\"" : string.Empty) +
+                                (ForceMerging == ForceMerging.Full ? " forcemerging=\"full\"" : string.Empty) +
+                                (ForceMerging == ForceMerging.Split ? " forcemerging=\"split\"" : string.Empty) +
+                                (ForceMerging == ForceMerging.Merged ? " forcemerging=\"merged\"" : string.Empty) +
+                                (ForceMerging == ForceMerging.NonMerged ? " forcemerging=\"nonmerged\"" : string.Empty) +
+                                (ForceNodump == ForceNodump.Ignore ? " forcenodump=\"ignore\"" : string.Empty) +
+                                (ForceNodump == ForceNodump.Obsolete ? " forcenodump=\"obsolete\"" : string.Empty) +
+                                (ForceNodump == ForceNodump.Required ? " forcenodump=\"required\"" : string.Empty) +
                                 ">\n\n";
 
                 // Write the header out
@@ -705,13 +705,13 @@ namespace SabreTools.Library.DatFiles
                 // No game should start with a path separator
                 rom.MachineName = rom.MachineName.TrimStart(Path.DirectorySeparatorChar);
 
-                string state = "\t<software name=\"" + (!ExcludeFields[(int)Field.MachineName] ? WebUtility.HtmlEncode(rom.MachineName) : "") + "\""
+                string state = "\t<software name=\"" + (!ExcludeFields[(int)Field.MachineName] ? WebUtility.HtmlEncode(rom.MachineName) : string.Empty) + "\""
                             + (!ExcludeFields[(int)Field.CloneOf] && !string.IsNullOrWhiteSpace(rom.CloneOf) && (rom.MachineName.ToLowerInvariant() != rom.CloneOf.ToLowerInvariant())
-                                ? " cloneof=\"" + WebUtility.HtmlEncode(rom.CloneOf) + "\"" : "")
-                            + (!ExcludeFields[(int)Field.Supported] ? " supported=\"" + (rom.Supported == true ? "yes" : rom.Supported == false ? "no" : "partial") + "\">\n" : "")
-                            + (!ExcludeFields[(int)Field.Description] ? "\t\t<description>" + WebUtility.HtmlEncode(rom.MachineDescription) + "</description>\n" : "")
-                            + (!ExcludeFields[(int)Field.Year] && rom.Year != null ? "\t\t<year>" + WebUtility.HtmlEncode(rom.Year) + "</year>\n" : "")
-                            + (!ExcludeFields[(int)Field.Publisher] && rom.Publisher != null ? "\t\t<publisher>" + WebUtility.HtmlEncode(rom.Publisher) + "</publisher>\n" : "");
+                                ? " cloneof=\"" + WebUtility.HtmlEncode(rom.CloneOf) + "\"" : string.Empty)
+                            + (!ExcludeFields[(int)Field.Supported] ? " supported=\"" + (rom.Supported == true ? "yes" : rom.Supported == false ? "no" : "partial") + "\">\n" : string.Empty)
+                            + (!ExcludeFields[(int)Field.Description] ? "\t\t<description>" + WebUtility.HtmlEncode(rom.MachineDescription) + "</description>\n" : string.Empty)
+                            + (!ExcludeFields[(int)Field.Year] && rom.Year != null ? "\t\t<year>" + WebUtility.HtmlEncode(rom.Year) + "</year>\n" : string.Empty)
+                            + (!ExcludeFields[(int)Field.Publisher] && rom.Publisher != null ? "\t\t<publisher>" + WebUtility.HtmlEncode(rom.Publisher) + "</publisher>\n" : string.Empty);
 
                 if (!ExcludeFields[(int)Field.Infos])
                 {
@@ -775,13 +775,13 @@ namespace SabreTools.Library.DatFiles
 
             try
             {
-                string state = "";
+                string state = string.Empty;
 
                 // Pre-process the item name
                 ProcessItemName(rom, true);
 
-                state += "\t\t<part name=\"" + (!ExcludeFields[(int)Field.PartName] ? rom.PartName : "") + "\" interface=\""
-                    + (!ExcludeFields[(int)Field.PartInterface] ? rom.PartInterface : "") + "\">\n";
+                state += "\t\t<part name=\"" + (!ExcludeFields[(int)Field.PartName] ? rom.PartName : string.Empty) + "\" interface=\""
+                    + (!ExcludeFields[(int)Field.PartInterface] ? rom.PartInterface : string.Empty) + "\">\n";
 
                 if (!ExcludeFields[(int)Field.Features])
                 {
@@ -794,36 +794,36 @@ namespace SabreTools.Library.DatFiles
                 switch (rom.ItemType)
                 {
                     case ItemType.Disk:
-                        state += "\t\t\t<diskarea name=\"" + (!ExcludeFields[(int)Field.AreaName] ? (string.IsNullOrWhiteSpace(rom.AreaName) ? "cdrom" : rom.AreaName) : "") + "\""
-                                + (!ExcludeFields[(int)Field.AreaSize] && rom.AreaSize != null ? " size=\"" + rom.AreaSize + "\"" : "") + ">\n"
-                            + "\t\t\t\t<disk name=\"" + (!ExcludeFields[(int)Field.Name] ? WebUtility.HtmlEncode(rom.Name) : "") + "\""
-                            + (!ExcludeFields[(int)Field.MD5] && !string.IsNullOrWhiteSpace(((Disk)rom).MD5) ? " md5=\"" + ((Disk)rom).MD5.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.RIPEMD160] && !string.IsNullOrWhiteSpace(((Disk)rom).RIPEMD160) ? " ripemd160=\"" + ((Disk)rom).RIPEMD160.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.SHA1] && !string.IsNullOrWhiteSpace(((Disk)rom).SHA1) ? " sha1=\"" + ((Disk)rom).SHA1.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.SHA256] && !string.IsNullOrWhiteSpace(((Disk)rom).SHA256) ? " sha256=\"" + ((Disk)rom).SHA256.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.SHA384] && !string.IsNullOrWhiteSpace(((Disk)rom).SHA384) ? " sha384=\"" + ((Disk)rom).SHA384.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.SHA512] && !string.IsNullOrWhiteSpace(((Disk)rom).SHA512) ? " sha512=\"" + ((Disk)rom).SHA512.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.Status] && ((Disk)rom).ItemStatus != ItemStatus.None ? " status=\"" + ((Disk)rom).ItemStatus.ToString().ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.Writable] && ((Disk)rom).Writable != null ? " writable=\"" + (((Disk)rom).Writable == true ? "yes" : "no") + "\"" : "")
+                        state += "\t\t\t<diskarea name=\"" + (!ExcludeFields[(int)Field.AreaName] ? (string.IsNullOrWhiteSpace(rom.AreaName) ? "cdrom" : rom.AreaName) : string.Empty) + "\""
+                                + (!ExcludeFields[(int)Field.AreaSize] && rom.AreaSize != null ? " size=\"" + rom.AreaSize + "\"" : string.Empty) + ">\n"
+                            + "\t\t\t\t<disk name=\"" + (!ExcludeFields[(int)Field.Name] ? WebUtility.HtmlEncode(rom.Name) : string.Empty) + "\""
+                            + (!ExcludeFields[(int)Field.MD5] && !string.IsNullOrWhiteSpace(((Disk)rom).MD5) ? " md5=\"" + ((Disk)rom).MD5.ToLowerInvariant() + "\"" : string.Empty)
+                            + (!ExcludeFields[(int)Field.RIPEMD160] && !string.IsNullOrWhiteSpace(((Disk)rom).RIPEMD160) ? " ripemd160=\"" + ((Disk)rom).RIPEMD160.ToLowerInvariant() + "\"" : string.Empty)
+                            + (!ExcludeFields[(int)Field.SHA1] && !string.IsNullOrWhiteSpace(((Disk)rom).SHA1) ? " sha1=\"" + ((Disk)rom).SHA1.ToLowerInvariant() + "\"" : string.Empty)
+                            + (!ExcludeFields[(int)Field.SHA256] && !string.IsNullOrWhiteSpace(((Disk)rom).SHA256) ? " sha256=\"" + ((Disk)rom).SHA256.ToLowerInvariant() + "\"" : string.Empty)
+                            + (!ExcludeFields[(int)Field.SHA384] && !string.IsNullOrWhiteSpace(((Disk)rom).SHA384) ? " sha384=\"" + ((Disk)rom).SHA384.ToLowerInvariant() + "\"" : string.Empty)
+                            + (!ExcludeFields[(int)Field.SHA512] && !string.IsNullOrWhiteSpace(((Disk)rom).SHA512) ? " sha512=\"" + ((Disk)rom).SHA512.ToLowerInvariant() + "\"" : string.Empty)
+                            + (!ExcludeFields[(int)Field.Status] && ((Disk)rom).ItemStatus != ItemStatus.None ? " status=\"" + ((Disk)rom).ItemStatus.ToString().ToLowerInvariant() + "\"" : string.Empty)
+                            + (!ExcludeFields[(int)Field.Writable] && ((Disk)rom).Writable != null ? " writable=\"" + (((Disk)rom).Writable == true ? "yes" : "no") + "\"" : string.Empty)
                             + "/>\n"
                             + "\t\t\t</diskarea>\n";
                         break;
                     case ItemType.Rom:
-                        state += "\t\t\t<dataarea name=\"" + (!ExcludeFields[(int)Field.AreaName] ? (string.IsNullOrWhiteSpace(rom.AreaName) ? "rom" : rom.AreaName) : "") + "\""
-                                + (!ExcludeFields[(int)Field.AreaSize] && rom.AreaSize != null ? " size=\"" + rom.AreaSize + "\"" : "") + ">\n"
-                            + "\t\t\t\t<rom name=\"" + (!ExcludeFields[(int)Field.Name] ? WebUtility.HtmlEncode(rom.Name) : "") + "\""
-                            + (!ExcludeFields[(int)Field.Size] && ((Rom)rom).Size != -1 ? " size=\"" + ((Rom)rom).Size + "\"" : "")
-                            + (!ExcludeFields[(int)Field.CRC] && !string.IsNullOrWhiteSpace(((Rom)rom).CRC) ? " crc=\"" + ((Rom)rom).CRC.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.MD5] && !string.IsNullOrWhiteSpace(((Rom)rom).MD5) ? " md5=\"" + ((Rom)rom).MD5.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.RIPEMD160] && !string.IsNullOrWhiteSpace(((Rom)rom).RIPEMD160) ? " ripemd160=\"" + ((Rom)rom).RIPEMD160.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.SHA1] && !string.IsNullOrWhiteSpace(((Rom)rom).SHA1) ? " sha1=\"" + ((Rom)rom).SHA1.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.SHA256] && !string.IsNullOrWhiteSpace(((Rom)rom).SHA256) ? " sha256=\"" + ((Rom)rom).SHA256.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.SHA384] && !string.IsNullOrWhiteSpace(((Rom)rom).SHA384) ? " sha384=\"" + ((Rom)rom).SHA384.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.SHA512] && !string.IsNullOrWhiteSpace(((Rom)rom).SHA512) ? " sha512=\"" + ((Rom)rom).SHA512.ToLowerInvariant() + "\"" : "")
-                            + (!ExcludeFields[(int)Field.Offset] && !string.IsNullOrWhiteSpace(((Rom)rom).Offset) ? " offset=\"" + ((Rom)rom).Offset + "\"" : "")
-                            // + (!ExcludeFields[(int)Field.Value] && !string.IsNullOrWhiteSpace(((Rom)rom).Value) ? " value=\"" + ((Rom)rom).Value + "\"" : "")
-                            + (!ExcludeFields[(int)Field.Status] && ((Rom)rom).ItemStatus != ItemStatus.None ? " status=\"" + ((Rom)rom).ItemStatus.ToString().ToLowerInvariant() + "\"" : "")
-                            // + (!ExcludeFields[(int)Field.Loadflag] && !string.IsNullOrWhiteSpace(((Rom)rom).Loadflag) ? " loadflag=\"" + ((Rom)rom).Loadflag + "\"" : "")
+                        state += "\t\t\t<dataarea name=\"" + (!ExcludeFields[(int)Field.AreaName] ? (string.IsNullOrWhiteSpace(rom.AreaName) ? "rom" : rom.AreaName) : string.Empty) + "\""
+                                + (!ExcludeFields[(int)Field.AreaSize] && rom.AreaSize != null ? " size=\"" + rom.AreaSize + "\"" : string.Empty) + ">\n"
+                            + "\t\t\t\t<rom name=\"" + (!ExcludeFields[(int)Field.Name] ? WebUtility.HtmlEncode(rom.Name) : string.Empty) + "\""
+                            + (!ExcludeFields[(int)Field.Size] && ((Rom)rom).Size != -1 ? " size=\"" + ((Rom)rom).Size + "\"" : string.Empty)
+                            + (!ExcludeFields[(int)Field.CRC] && !string.IsNullOrWhiteSpace(((Rom)rom).CRC) ? " crc=\"" + ((Rom)rom).CRC.ToLowerInvariant() + "\"" : string.Empty)
+                            + (!ExcludeFields[(int)Field.MD5] && !string.IsNullOrWhiteSpace(((Rom)rom).MD5) ? " md5=\"" + ((Rom)rom).MD5.ToLowerInvariant() + "\"" : string.Empty)
+                            + (!ExcludeFields[(int)Field.RIPEMD160] && !string.IsNullOrWhiteSpace(((Rom)rom).RIPEMD160) ? " ripemd160=\"" + ((Rom)rom).RIPEMD160.ToLowerInvariant() + "\"" : string.Empty)
+                            + (!ExcludeFields[(int)Field.SHA1] && !string.IsNullOrWhiteSpace(((Rom)rom).SHA1) ? " sha1=\"" + ((Rom)rom).SHA1.ToLowerInvariant() + "\"" : string.Empty)
+                            + (!ExcludeFields[(int)Field.SHA256] && !string.IsNullOrWhiteSpace(((Rom)rom).SHA256) ? " sha256=\"" + ((Rom)rom).SHA256.ToLowerInvariant() + "\"" : string.Empty)
+                            + (!ExcludeFields[(int)Field.SHA384] && !string.IsNullOrWhiteSpace(((Rom)rom).SHA384) ? " sha384=\"" + ((Rom)rom).SHA384.ToLowerInvariant() + "\"" : string.Empty)
+                            + (!ExcludeFields[(int)Field.SHA512] && !string.IsNullOrWhiteSpace(((Rom)rom).SHA512) ? " sha512=\"" + ((Rom)rom).SHA512.ToLowerInvariant() + "\"" : string.Empty)
+                            + (!ExcludeFields[(int)Field.Offset] && !string.IsNullOrWhiteSpace(((Rom)rom).Offset) ? " offset=\"" + ((Rom)rom).Offset + "\"" : string.Empty)
+                            // + (!ExcludeFields[(int)Field.Value] && !string.IsNullOrWhiteSpace(((Rom)rom).Value) ? " value=\"" + ((Rom)rom).Value + "\"" : string.Empty)
+                            + (!ExcludeFields[(int)Field.Status] && ((Rom)rom).ItemStatus != ItemStatus.None ? " status=\"" + ((Rom)rom).ItemStatus.ToString().ToLowerInvariant() + "\"" : string.Empty)
+                            // + (!ExcludeFields[(int)Field.Loadflag] && !string.IsNullOrWhiteSpace(((Rom)rom).Loadflag) ? " loadflag=\"" + ((Rom)rom).Loadflag + "\"" : string.Empty)
                             + "/>\n"
                             + "\t\t\t</dataarea>\n";
                         break;

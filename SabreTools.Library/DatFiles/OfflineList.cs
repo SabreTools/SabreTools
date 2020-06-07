@@ -136,7 +136,7 @@ namespace SabreTools.Library.DatFiles
                 }
 
                 // Get all configuration items (ONLY OVERWRITE IF THERE'S NO DATA)
-                string content = "";
+                string content = string.Empty;
                 switch (reader.Name.ToLowerInvariant())
                 {
                     case "datname":
@@ -398,7 +398,7 @@ namespace SabreTools.Library.DatFiles
                 }
 
                 // Get all newdat items
-                string content = "";
+                string content = string.Empty;
                 switch (reader.Name.ToLowerInvariant())
                 {
                     case "datversionurl":
@@ -448,7 +448,7 @@ namespace SabreTools.Library.DatFiles
                 }
 
                 // Get all search items
-                string content = "";
+                string content = string.Empty;
                 switch (reader.Name.ToLowerInvariant())
                 {
                     case "to":
@@ -493,7 +493,7 @@ namespace SabreTools.Library.DatFiles
                 }
 
                 // Get all search items
-                string content = "";
+                string content = string.Empty;
                 switch (reader.Name.ToLowerInvariant())
                 {
                     case "find":
@@ -573,7 +573,7 @@ namespace SabreTools.Library.DatFiles
             bool remUnicode)
         {
             // Prepare all internal variables
-            string releaseNumber = "", key = "", publisher = "", duplicateid = "";
+            string releaseNumber = string.Empty, key = string.Empty, publisher = string.Empty, duplicateid = string.Empty;
             long size = -1;
             List<Rom> roms = new List<Rom>();
             Machine machine = new Machine();
@@ -596,7 +596,7 @@ namespace SabreTools.Library.DatFiles
                 }
 
                 // Get all games items
-                string content = "";
+                string content = string.Empty;
                 switch (reader.Name.ToLowerInvariant())
                 {
                     case "imagenumber":
@@ -733,7 +733,7 @@ namespace SabreTools.Library.DatFiles
                     case "romcrc":
                         extensionToCrc.Add(
                             new Tuple<string, string>(
-                                reader.GetAttribute("extension") ?? "",
+                                reader.GetAttribute("extension") ?? string.Empty,
                                 reader.ReadElementContentAsString().ToLowerInvariant()));
                         break;
 
@@ -748,7 +748,7 @@ namespace SabreTools.Library.DatFiles
             {
                 roms.Add(new Rom()
                 {
-                    Name = (releaseNumber != "0" ? releaseNumber + " - " : "") + machineName + pair.Item1,
+                    Name = (releaseNumber != "0" ? releaseNumber + " - " : string.Empty) + machineName + pair.Item1,
                     CRC = Utilities.CleanHashData(pair.Item2, Constants.CRCLength),
 
                     ItemStatus = ItemStatus.None,
@@ -961,7 +961,7 @@ namespace SabreTools.Library.DatFiles
 
             try
             {
-                string state = "";
+                string state = string.Empty;
 
                 // Pre-process the item name
                 ProcessItemName(rom, true);
@@ -969,11 +969,11 @@ namespace SabreTools.Library.DatFiles
                 state += "\t\t<game>\n"
                             + "\t\t\t<imageNumber>1</imageNumber>\n"
                             + "\t\t\t<releaseNumber>1</releaseNumber>\n"
-                            + "\t\t\t<title>" + (!ExcludeFields[(int)Field.Name] ? WebUtility.HtmlEncode(rom.Name) : "") + "</title>\n"
+                            + "\t\t\t<title>" + (!ExcludeFields[(int)Field.Name] ? WebUtility.HtmlEncode(rom.Name) : string.Empty) + "</title>\n"
                             + "\t\t\t<saveType>None</saveType>\n";
 
                 if (rom.ItemType == ItemType.Rom)
-                    state += "\t\t\t<romSize>" + (!ExcludeFields[(int)Field.Size] ? ((Rom)rom).Size.ToString() : "") + "</romSize>\n";
+                    state += "\t\t\t<romSize>" + (!ExcludeFields[(int)Field.Size] ? ((Rom)rom).Size.ToString() : string.Empty) + "</romSize>\n";
 
                 state += "\t\t\t<publisher>None</publisher>\n"
                     + "\t\t\t<location>0</location>\n"
@@ -984,8 +984,8 @@ namespace SabreTools.Library.DatFiles
                 {
                     state += "\t\t\t<files>\n"
                         + (((Disk)rom).MD5 != null
-                            ? "\t\t\t\t<romMD5 extension=\".chd\">" + (!ExcludeFields[(int)Field.MD5] ? ((Disk)rom).MD5.ToUpperInvariant() : "") + "</romMD5>\n"
-                            : "\t\t\t\t<romSHA1 extension=\".chd\">" + (!ExcludeFields[(int)Field.SHA1] ? ((Disk)rom).SHA1.ToUpperInvariant() : "") + "</romSHA1>\n")
+                            ? "\t\t\t\t<romMD5 extension=\".chd\">" + (!ExcludeFields[(int)Field.MD5] ? ((Disk)rom).MD5.ToUpperInvariant() : string.Empty) + "</romMD5>\n"
+                            : "\t\t\t\t<romSHA1 extension=\".chd\">" + (!ExcludeFields[(int)Field.SHA1] ? ((Disk)rom).SHA1.ToUpperInvariant() : string.Empty) + "</romSHA1>\n")
                         + "\t\t\t</files>\n";
                 }
                 else if (rom.ItemType == ItemType.Rom)
@@ -994,10 +994,10 @@ namespace SabreTools.Library.DatFiles
 
                     state += "\t\t\t<files>\n"
                         + (((Rom)rom).CRC != null
-                            ? "\t\t\t\t<romCRC extension=\"" + tempext + "\">" + (!ExcludeFields[(int)Field.CRC] ? ((Rom)rom).CRC.ToUpperInvariant() : "") + "</romCRC>\n"
+                            ? "\t\t\t\t<romCRC extension=\"" + tempext + "\">" + (!ExcludeFields[(int)Field.CRC] ? ((Rom)rom).CRC.ToUpperInvariant() : string.Empty) + "</romCRC>\n"
                             : ((Rom)rom).MD5 != null
-                                ? "\t\t\t\t<romMD5 extension=\"" + tempext + "\">" + (!ExcludeFields[(int)Field.MD5] ? ((Rom)rom).MD5.ToUpperInvariant() : "") + "</romMD5>\n"
-                                : "\t\t\t\t<romSHA1 extension=\"" + tempext + "\">" + (!ExcludeFields[(int)Field.SHA1] ? ((Rom)rom).SHA1.ToUpperInvariant() : "") + "</romSHA1>\n")
+                                ? "\t\t\t\t<romMD5 extension=\"" + tempext + "\">" + (!ExcludeFields[(int)Field.MD5] ? ((Rom)rom).MD5.ToUpperInvariant() : string.Empty) + "</romMD5>\n"
+                                : "\t\t\t\t<romSHA1 extension=\"" + tempext + "\">" + (!ExcludeFields[(int)Field.SHA1] ? ((Rom)rom).SHA1.ToUpperInvariant() : string.Empty) + "</romSHA1>\n")
                         + "\t\t\t</files>\n";
                 }
 

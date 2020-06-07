@@ -205,7 +205,7 @@ namespace SabreTools.Library.DatFiles
                 // No game should start with a path separator
                 rom.MachineName = rom.MachineName.TrimStart(Path.DirectorySeparatorChar);
 
-                string state = "game (\n\tname \"" + (!ExcludeFields[(int)Field.MachineName] ? rom.MachineName + ".zip" : "") + "\"\n";
+                string state = "game (\n\tname \"" + (!ExcludeFields[(int)Field.MachineName] ? rom.MachineName + ".zip" : string.Empty) + "\"\n";
 
                 sw.Write(state);
                 sw.Flush();
@@ -229,7 +229,7 @@ namespace SabreTools.Library.DatFiles
         {
             try
             {
-                string state = (!ExcludeFields[(int)Field.SampleOf] && string.IsNullOrWhiteSpace(rom.SampleOf) ? "" : "\tsampleof \"" + rom.SampleOf + "\"\n") + ")\n";
+                string state = (!ExcludeFields[(int)Field.SampleOf] && string.IsNullOrWhiteSpace(rom.SampleOf) ? string.Empty : "\tsampleof \"" + rom.SampleOf + "\"\n") + ")\n";
 
                 sw.Write(state);
                 sw.Flush();
@@ -262,7 +262,7 @@ namespace SabreTools.Library.DatFiles
 
             try
             {
-                string state = "";
+                string state = string.Empty;
 
                 // Pre-process the item name
                 ProcessItemName(rom, true);
@@ -277,10 +277,10 @@ namespace SabreTools.Library.DatFiles
                         // We don't output these at all for DosCenter
                         break;
                     case ItemType.Rom:
-                        state += "\tfile ( name " + (!ExcludeFields[(int)Field.Name] ? ((Rom)rom).Name : "")
-                            + (!ExcludeFields[(int)Field.Size] && ((Rom)rom).Size != -1 ? " size " + ((Rom)rom).Size : "")
-                            + (!ExcludeFields[(int)Field.Date] && !string.IsNullOrWhiteSpace(((Rom)rom).Date) ? " date " + ((Rom)rom).Date : "")
-                            + (!ExcludeFields[(int)Field.CRC] && !string.IsNullOrWhiteSpace(((Rom)rom).CRC) ? " crc " + ((Rom)rom).CRC.ToLowerInvariant() : "")
+                        state += "\tfile ( name " + (!ExcludeFields[(int)Field.Name] ? ((Rom)rom).Name : string.Empty)
+                            + (!ExcludeFields[(int)Field.Size] && ((Rom)rom).Size != -1 ? " size " + ((Rom)rom).Size : string.Empty)
+                            + (!ExcludeFields[(int)Field.Date] && !string.IsNullOrWhiteSpace(((Rom)rom).Date) ? " date " + ((Rom)rom).Date : string.Empty)
+                            + (!ExcludeFields[(int)Field.CRC] && !string.IsNullOrWhiteSpace(((Rom)rom).CRC) ? " crc " + ((Rom)rom).CRC.ToLowerInvariant() : string.Empty)
                             + " )\n";
                         break;
                 }

@@ -14,7 +14,7 @@ namespace SabreTools.Library.DatItems
         /// </summary>
         public Archive()
         {
-            this.Name = "";
+            this.Name = string.Empty;
             this.ItemType = ItemType.Archive;
         }
 

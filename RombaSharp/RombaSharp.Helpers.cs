@@ -69,7 +69,7 @@ namespace RombaSharp
                 baddir = "bad",
                 dats = "dats",
                 db = "db",
-                connectionString = "";
+                connectionString = string.Empty;
             Dictionary<string, Tuple<long, bool>> depots = new Dictionary<string, Tuple<long, bool>>();
 
             // Get the XML text reader for the configuration file, if possible
@@ -121,7 +121,7 @@ namespace RombaSharp
                             XmlReader subreader = xtr.ReadSubtree();
                             if (subreader != null)
                             {
-                                string root = "";
+                                string root = string.Empty;
                                 long maxsize = -1;
                                 bool online = true;
 
@@ -255,7 +255,7 @@ namespace RombaSharp
         private static void AddDatToDatabase(Rom dat, SqliteConnection dbc)
         {
             // Get the dat full path
-            string fullpath = Path.Combine(_dats, (dat.MachineName == "dats" ? "" : dat.MachineName), dat.Name);
+            string fullpath = Path.Combine(_dats, (dat.MachineName == "dats" ? string.Empty : dat.MachineName), dat.Name);
 
             // Parse the Dat if possible
             Globals.Logger.User("Adding from '" + dat.Name + "'");

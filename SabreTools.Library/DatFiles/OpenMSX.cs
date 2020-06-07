@@ -320,7 +320,7 @@ namespace SabreTools.Library.DatFiles
             bool clean,
             bool remUnicode)
         {
-            string hash = "", offset = "", type = "", remark = "";
+            string hash = string.Empty, offset = string.Empty, type = string.Empty, remark = string.Empty;
             bool containsItems = false;
 
             while (!reader.EOF)
@@ -361,7 +361,7 @@ namespace SabreTools.Library.DatFiles
             // Create and add the new rom
             Rom rom = new Rom
             {
-                Name = machine.Name + "_" + diskno + (!string.IsNullOrWhiteSpace(remark) ? " " + remark : ""),
+                Name = machine.Name + "_" + diskno + (!string.IsNullOrWhiteSpace(remark) ? " " + remark : string.Empty),
                 Offset = offset,
                 Size = -1,
                 SHA1 = Utilities.CleanHashData(hash, Constants.SHA1Length),
@@ -400,7 +400,7 @@ namespace SabreTools.Library.DatFiles
             bool clean,
             bool remUnicode)
         {
-            string hash = "", offset = "", type = "", remark = "";
+            string hash = string.Empty, offset = string.Empty, type = string.Empty, remark = string.Empty;
             bool containsItems = false;
 
             while (!reader.EOF)
@@ -441,7 +441,7 @@ namespace SabreTools.Library.DatFiles
             // Create and add the new rom
             Rom rom = new Rom
             {
-                Name = machine.Name + "_" + diskno + (!string.IsNullOrWhiteSpace(remark) ? " " + remark : ""),
+                Name = machine.Name + "_" + diskno + (!string.IsNullOrWhiteSpace(remark) ? " " + remark : string.Empty),
                 Offset = offset,
                 Size = -1,
                 SHA1 = Utilities.CleanHashData(hash, Constants.SHA1Length),
@@ -480,7 +480,7 @@ namespace SabreTools.Library.DatFiles
             bool clean,
             bool remUnicode)
         {
-            string hash = "", boot = "", remark = "";
+            string hash = string.Empty, boot = string.Empty, remark = string.Empty;
             bool containsItems = false;
 
             while (!reader.EOF)
@@ -517,7 +517,7 @@ namespace SabreTools.Library.DatFiles
             // Create and add the new rom
             Rom rom = new Rom
             {
-                Name = machine.Name + "_" + diskno + (!string.IsNullOrWhiteSpace(remark) ? " " + remark : ""),
+                Name = machine.Name + "_" + diskno + (!string.IsNullOrWhiteSpace(remark) ? " " + remark : string.Empty),
                 Size = -1,
                 SHA1 = Utilities.CleanHashData(hash, Constants.SHA1Length),
             };
@@ -674,11 +674,11 @@ Generation MSXIDs by www.generation-msx.nl
                 rom.MachineName = rom.MachineName.TrimStart(Path.DirectorySeparatorChar);
 
                 string state = "<software>\n"
-                            + "\t<title>" + (!ExcludeFields[(int)Field.MachineName] ? WebUtility.HtmlEncode(rom.MachineName) : "") + "</title>\n"
+                            + "\t<title>" + (!ExcludeFields[(int)Field.MachineName] ? WebUtility.HtmlEncode(rom.MachineName) : string.Empty) + "</title>\n"
                             // + "\t<genmsxid>" + msxid + "</genmsxid>\n"
                             // + "\t<system>" + system + "</system>\n"
-                            + "\t<company>" + (!ExcludeFields[(int)Field.Manufacturer] ? rom.Manufacturer : "") + "</company>\n"
-                            + "\t<year>" + (!ExcludeFields[(int)Field.Year] ? rom.Year : "") + "</year>\n";
+                            + "\t<company>" + (!ExcludeFields[(int)Field.Manufacturer] ? rom.Manufacturer : string.Empty) + "</company>\n"
+                            + "\t<year>" + (!ExcludeFields[(int)Field.Year] ? rom.Year : string.Empty) + "</year>\n";
                             // + "\t<country>" + country + "</country>\n";
 
                 sw.Write(state);
@@ -735,7 +735,7 @@ Generation MSXIDs by www.generation-msx.nl
 
             try
             {
-                string state = "";
+                string state = string.Empty;
 
                 // Pre-process the item name
                 ProcessItemName(rom, true);
@@ -758,9 +758,9 @@ Generation MSXIDs by www.generation-msx.nl
                         state += "\t\t<dump>"
                             // + "<original value=\"true\">GoodMSX</original>"
                             + "<rom>"
-                            + (!ExcludeFields[(int)Field.Offset] && !string.IsNullOrWhiteSpace(((Rom)rom).Offset) ? "<start>" + ((Rom)rom).Offset + "</start>" : "")
+                            + (!ExcludeFields[(int)Field.Offset] && !string.IsNullOrWhiteSpace(((Rom)rom).Offset) ? "<start>" + ((Rom)rom).Offset + "</start>" : string.Empty)
                             // + "<type>Normal</type>"
-                            + "<hash>" + (!ExcludeFields[(int)Field.SHA1] ? ((Rom)rom).SHA1 : "") + "</hash>"
+                            + "<hash>" + (!ExcludeFields[(int)Field.SHA1] ? ((Rom)rom).SHA1 : string.Empty) + "</hash>"
                             // + "<remark></remark>"
                             + "</rom></dump>\n";
                             break;

@@ -532,7 +532,7 @@ namespace RombaSharp
                 string md5sha1query = "INSERT OR IGNORE INTO md5sha1 (md5, sha1) VALUES";
 
                 // For each line until we hit a blank line...
-                while (!sr.EndOfStream && line != "")
+                while (!sr.EndOfStream && line != string.Empty)
                 {
                     line = sr.ReadLine();
                     string[] hashes = line.Split(',');
@@ -614,7 +614,7 @@ namespace RombaSharp
             List<string> sha1 = new List<string>();
             foreach (string input in inputs)
             {
-                string temp = "";
+                string temp = string.Empty;
                 if (input.Length == Constants.CRCLength)
                 {
                     temp = Utilities.CleanHashData(input, Constants.CRCLength);
@@ -1087,7 +1087,7 @@ JOIN crc
     ON crcsha1.crc=crc.crc
 JOIN md5
     ON md5sha1.md5=md5.md5
-WHERE sha1.sha1 IN (""" + String.Join("\",\"", hashes) + "\")";
+WHERE sha1.sha1 IN (string.Empty" + String.Join("\",\"", hashes) + "\")";
                 slc = new SqliteCommand(query, dbc);
                 slc.ExecuteNonQuery();
 

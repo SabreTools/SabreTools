@@ -305,7 +305,7 @@ namespace RombaSharp
                 "RombaSharp - C# port of the Romba rom management tool",
                 barrier,
                 "Usage: RombaSharp [option] [filename|dirname] ...",
-                ""
+                string.Empty
             };
             Help help = new Help(helpHeader);
 

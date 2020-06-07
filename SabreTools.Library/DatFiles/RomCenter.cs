@@ -57,7 +57,7 @@ namespace SabreTools.Library.DatFiles
             Encoding enc = Utilities.GetEncoding(filename);
             StreamReader sr = new StreamReader(Utilities.TryOpenRead(filename), enc);
 
-            string blocktype = "";
+            string blocktype = string.Empty;
             while (!sr.EndOfStream)
             {
                 string line = sr.ReadLine();
@@ -128,9 +128,7 @@ namespace SabreTools.Library.DatFiles
                         if (Int32.TryParse(line.Split('=')[1], out int split))
                         {
                             if (split == 1 && ForceMerging == ForceMerging.None)
-                            {
                                 ForceMerging = ForceMerging.Split;
-                            }
                         }
                     }
 
@@ -140,9 +138,7 @@ namespace SabreTools.Library.DatFiles
                         if (Int32.TryParse(line.Split('=')[1], out int merge))
                         {
                             if (merge == 1 && ForceMerging == ForceMerging.None)
-                            {
                                 ForceMerging = ForceMerging.Full;
-                            }
                         }
                     }
 
@@ -157,9 +153,7 @@ namespace SabreTools.Library.DatFiles
                     {
                         // Some old RC DATs have this behavior
                         if (line.Contains("¬N¬O"))
-                        {
-                            line = line.Replace("¬N¬O", "") + "¬¬";
-                        }
+                            line = line.Replace("¬N¬O", string.Empty) + "¬¬";
 
                         /*
                         The rominfo order is as follows:
@@ -177,9 +171,7 @@ namespace SabreTools.Library.DatFiles
 
                         // Try getting the size separately
                         if (!Int64.TryParse(rominfo[7], out long size))
-                        {
                             size = 0;
-                        }
 
                         Rom rom = new Rom
                         {
@@ -350,28 +342,28 @@ namespace SabreTools.Library.DatFiles
 
             try
             {
-                string state = "";
+                string state = string.Empty;
 
                 // Pre-process the item name
                 ProcessItemName(rom, true);
 
                 if (rom.ItemType == ItemType.Rom)
                 {
-                    state += "¬" + (!ExcludeFields[(int)Field.CloneOf] && string.IsNullOrWhiteSpace(rom.CloneOf) ? WebUtility.HtmlEncode(rom.CloneOf) : "") +
-                    "¬" + (!ExcludeFields[(int)Field.CloneOf] && string.IsNullOrWhiteSpace(rom.CloneOf) ? WebUtility.HtmlEncode(rom.CloneOf) : "") +
-                    "¬" + (!ExcludeFields[(int)Field.MachineName] ? WebUtility.HtmlEncode(rom.MachineName) : "") +
-                    "¬" + (!ExcludeFields[(int)Field.Description] ? WebUtility.HtmlEncode((string.IsNullOrWhiteSpace(rom.MachineDescription) ? rom.MachineName : rom.MachineDescription)) : "") +
-                    "¬" + (!ExcludeFields[(int)Field.Name] ? WebUtility.HtmlEncode(rom.Name) : "") +
-                    "¬" + (!ExcludeFields[(int)Field.CRC] ? ((Rom)rom).CRC.ToLowerInvariant() : "") +
-                    "¬" + (!ExcludeFields[(int)Field.Size] && ((Rom)rom).Size != -1 ? ((Rom)rom).Size.ToString() : "") + "¬¬¬\n";
+                    state += "¬" + (!ExcludeFields[(int)Field.CloneOf] && string.IsNullOrWhiteSpace(rom.CloneOf) ? WebUtility.HtmlEncode(rom.CloneOf) : string.Empty) +
+                    "¬" + (!ExcludeFields[(int)Field.CloneOf] && string.IsNullOrWhiteSpace(rom.CloneOf) ? WebUtility.HtmlEncode(rom.CloneOf) : string.Empty) +
+                    "¬" + (!ExcludeFields[(int)Field.MachineName] ? WebUtility.HtmlEncode(rom.MachineName) : string.Empty) +
+                    "¬" + (!ExcludeFields[(int)Field.Description] ? WebUtility.HtmlEncode((string.IsNullOrWhiteSpace(rom.MachineDescription) ? rom.MachineName : rom.MachineDescription)) : string.Empty) +
+                    "¬" + (!ExcludeFields[(int)Field.Name] ? WebUtility.HtmlEncode(rom.Name) : string.Empty) +
+                    "¬" + (!ExcludeFields[(int)Field.CRC] ? ((Rom)rom).CRC.ToLowerInvariant() : string.Empty) +
+                    "¬" + (!ExcludeFields[(int)Field.Size] && ((Rom)rom).Size != -1 ? ((Rom)rom).Size.ToString() : string.Empty) + "¬¬¬\n";
                 }
                 else if (rom.ItemType == ItemType.Disk)
                 {
-                    state += "¬" + (!ExcludeFields[(int)Field.CloneOf] && string.IsNullOrWhiteSpace(rom.CloneOf) ? WebUtility.HtmlEncode(rom.CloneOf) : "") +
-                    "¬" + (!ExcludeFields[(int)Field.CloneOf] && string.IsNullOrWhiteSpace(rom.CloneOf) ? WebUtility.HtmlEncode(rom.CloneOf) : "") +
-                    "¬" + (!ExcludeFields[(int)Field.MachineName] ? WebUtility.HtmlEncode(rom.MachineName) : "") +
-                    "¬" + (!ExcludeFields[(int)Field.Description] ? WebUtility.HtmlEncode((string.IsNullOrWhiteSpace(rom.MachineDescription) ? rom.MachineName : rom.MachineDescription)) : "") +
-                    "¬" + (!ExcludeFields[(int)Field.Name] ? WebUtility.HtmlEncode(rom.Name) : "") +
+                    state += "¬" + (!ExcludeFields[(int)Field.CloneOf] && string.IsNullOrWhiteSpace(rom.CloneOf) ? WebUtility.HtmlEncode(rom.CloneOf) : string.Empty) +
+                    "¬" + (!ExcludeFields[(int)Field.CloneOf] && string.IsNullOrWhiteSpace(rom.CloneOf) ? WebUtility.HtmlEncode(rom.CloneOf) : string.Empty) +
+                    "¬" + (!ExcludeFields[(int)Field.MachineName] ? WebUtility.HtmlEncode(rom.MachineName) : string.Empty) +
+                    "¬" + (!ExcludeFields[(int)Field.Description] ? WebUtility.HtmlEncode((string.IsNullOrWhiteSpace(rom.MachineDescription) ? rom.MachineName : rom.MachineDescription)) : string.Empty) +
+                    "¬" + (!ExcludeFields[(int)Field.Name] ? WebUtility.HtmlEncode(rom.Name) : string.Empty) +
                     "¬¬¬¬¬\n";
                 }
 

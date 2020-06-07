@@ -323,7 +323,7 @@ Options:
 
 	  -h=, --header=			  Set a header skipper to use, blank means all
 		  Set the header special field for the output DAT(s). In file
-		  rebuilding, this flag allows for either all copier headers (using "")
+		  rebuilding, this flag allows for either all copier headers (using string.Empty)
 		  or specific copier headers by name (such as "fds.xml") to determine
 		  if a file matches or not.
 
@@ -689,7 +689,7 @@ Options:
 
 	  -h=, --header=			  Set a header skipper to use, blank means all
 		  Set the header special field for the output DAT(s). In file
-		  rebuilding, this flag allows for either all copier headers (using "")
+		  rebuilding, this flag allows for either all copier headers (using string.Empty)
 		  or specific copier headers by name (such as "fds.xml") to determine
 		  if a file matches or not.
 
@@ -1042,7 +1042,7 @@ Options:
 
 	  -h=, --header=			  Set a header skipper to use, blank means all
 		  Set the header special field for the output DAT(s). In file
-		  rebuilding, this flag allows for either all copier headers (using "")
+		  rebuilding, this flag allows for either all copier headers (using string.Empty)
 		  or specific copier headers by name (such as "fds.xml") to determine
 		  if a file matches or not.
 
@@ -1508,7 +1508,7 @@ Options:
 
 	  -h=, --header=			  Set a header skipper to use, blank means all
 		  Set the header special field for the output DAT(s). In file
-		  rebuilding, this flag allows for either all copier headers (using "")
+		  rebuilding, this flag allows for either all copier headers (using string.Empty)
 		  or specific copier headers by name (such as "fds.xml") to determine
 		  if a file matches or not.
 

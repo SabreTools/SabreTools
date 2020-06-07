@@ -28,7 +28,7 @@ namespace SabreTools.Library.DatItems
         /// </summary>
         public BiosSet()
         {
-            this.Name = "";
+            this.Name = string.Empty;
             this.ItemType = ItemType.BiosSet;
         }
 

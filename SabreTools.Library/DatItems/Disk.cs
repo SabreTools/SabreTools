@@ -116,7 +116,7 @@ namespace SabreTools.Library.DatItems
         /// </summary>
         public Disk()
         {
-            this.Name = "";
+            this.Name = string.Empty;
             this.ItemType = ItemType.Disk;
             this.DupeType = 0x00;
             this.ItemStatus = ItemStatus.None;
