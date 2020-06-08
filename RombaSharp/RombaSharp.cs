@@ -206,19 +206,19 @@ namespace RombaSharp
                     #region User Int32 Inputs
 
                     case "include-7zips":
-                        include7Zips = (int)feat.Value.GetValue() == Int32.MinValue ? (int)feat.Value.GetValue() : 0;
+                        include7Zips = feat.Value.GetInt32Value() == Int32.MinValue ? feat.Value.GetInt32Value() : 0;
                         break;
                     case "include-gzips":
-                        includeGZips = (int)feat.Value.GetValue() == Int32.MinValue ? (int)feat.Value.GetValue() : 0;
+                        includeGZips = feat.Value.GetInt32Value() == Int32.MinValue ? feat.Value.GetInt32Value() : 0;
                         break;
                     case "include-zips":
-                        includeZips = (int)feat.Value.GetValue() == Int32.MinValue ? (int)feat.Value.GetValue() : 0;
+                        includeZips = feat.Value.GetInt32Value() == Int32.MinValue ? feat.Value.GetInt32Value() : 0;
                         break;
                     case "subworkers":
-                        subworkers = (int)feat.Value.GetValue() == Int32.MinValue ? (int)feat.Value.GetValue() : _cores;
+                        subworkers = feat.Value.GetInt32Value() == Int32.MinValue ? feat.Value.GetInt32Value() : _cores;
                         break;
                     case "workers":
-                        workers = (int)feat.Value.GetValue() == Int32.MinValue ? (int)feat.Value.GetValue() : _cores;
+                        workers = feat.Value.GetInt32Value() == Int32.MinValue ? feat.Value.GetInt32Value() : _cores;
                         break;
 
                     #endregion
@@ -226,7 +226,7 @@ namespace RombaSharp
                     #region User Int64 Inputs
 
                     case "size":
-                        size = (long)feat.Value.GetValue() == Int64.MinValue ? (long)feat.Value.GetValue() : 0;
+                        size = feat.Value.GetInt64Value() == Int64.MinValue ? feat.Value.GetInt64Value() : 0;
                         break;
 
                     #endregion
@@ -234,10 +234,10 @@ namespace RombaSharp
                     #region User List<string> Inputs
 
                     case "dats":
-                        dats.AddRange((List<string>)feat.Value.GetValue());
+                        dats.AddRange(feat.Value.GetListValue());
                         break;
                     case "depot":
-                        depot.AddRange((List<string>)feat.Value.GetValue());
+                        depot.AddRange(feat.Value.GetListValue());
                         break;
 
                     #endregion
@@ -245,31 +245,31 @@ namespace RombaSharp
                     #region User String Inputs
 
                     case "backup":
-                        backup = (string)feat.Value.GetValue();
+                        backup = feat.Value.GetStringValue();
                         break;
                     case "description":
-                        description = (string)feat.Value.GetValue();
+                        description = feat.Value.GetStringValue();
                         break;
                     case "missingSha1s":
-                        missingSha1s = (string)feat.Value.GetValue();
+                        missingSha1s = feat.Value.GetStringValue();
                         break;
                     case "name":
-                        name = (string)feat.Value.GetValue();
+                        name = feat.Value.GetStringValue();
                         break;
                     case "new":
-                        newdat = (string)feat.Value.GetValue();
+                        newdat = feat.Value.GetStringValue();
                         break;
                     case "old":
-                        old = (string)feat.Value.GetValue();
+                        old = feat.Value.GetStringValue();
                         break;
                     case "out":
-                        outdat = (string)feat.Value.GetValue();
+                        outdat = feat.Value.GetStringValue();
                         break;
                     case "resume":
-                        resume = (string)feat.Value.GetValue();
+                        resume = feat.Value.GetStringValue();
                         break;
                     case "source":
-                        source = (string)feat.Value.GetValue();
+                        source = feat.Value.GetStringValue();
                         break;
 
                     #endregion

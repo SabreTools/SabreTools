@@ -229,7 +229,7 @@ namespace SabreTools.Library.Tools
         public static string CleanGameName(string[] game)
         {
             game[game.Length - 1] = CleanGameName(game[game.Length - 1]);
-            string outgame = String.Join(Path.DirectorySeparatorChar.ToString(), game);
+            string outgame = string.Join(Path.DirectorySeparatorChar.ToString(), game);
             outgame = outgame.TrimStart().TrimEnd();
             return outgame;
         }
@@ -647,7 +647,7 @@ namespace SabreTools.Library.Tools
                 case DatFormat.Logiqx:
                     return new Logiqx(baseDat, false);
 
-                case DatFormat.LogiqxDepreciated:
+                case DatFormat.LogiqxDeprecated:
                     return new Logiqx(baseDat, true);
 
                 case DatFormat.MissFile:
@@ -3036,9 +3036,6 @@ namespace SabreTools.Library.Tools
 
                 // Convert the decimal value to a hexadecimal value in string form.
                 hexOutput += String.Format("{0:X2}", value).Remove(0, 2);
-
-                // to make output as your eg 
-                //  hexOutput +=" "+ String.Format("{0:X}", value);
             }
 
             return hexOutput;

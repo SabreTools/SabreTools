@@ -239,7 +239,7 @@ Options:
 		  tsv				- Standardized Tab-Separated Value
 		  xml, logiqx		- Logiqx XML
 
-		  -dpc, --depreciated		 Output 'game' instead of 'machine'
+		  -dpc, --deprecated		 Output 'game' instead of 'machine'
 			  By default, Logiqx XML DATs output with the more modern "machine"
 			  tag for each set. This flag allows users to output the older
 			  "game" tag instead, for compatibility reasons. [Logiqx only]
@@ -777,7 +777,7 @@ Options:
 		  tsv				- Standardized Tab-Separated Value
 		  xml, logiqx		- Logiqx XML
 
-		  -dpc, --depreciated		 Output 'game' instead of 'machine'
+		  -dpc, --deprecated		 Output 'game' instead of 'machine'
 			  By default, Logiqx XML DATs output with the more modern "machine"
 			  tag for each set. This flag allows users to output the older
 			  "game" tag instead, for compatibility reasons. [Logiqx only]
@@ -999,7 +999,7 @@ Options:
 			  and output for physical files. Where appropriate, Romba depot
 			  files will be created as well.
 
-		  -dpc, --depreciated		 Output 'game' instead of 'machine'
+		  -dpc, --deprecated		 Output 'game' instead of 'machine'
 			  By default, Logiqx XML DATs output with the more modern "machine"
 			  tag for each set. This flag allows users to output the older
 			  "game" tag instead, for compatibility reasons. [Logiqx only]

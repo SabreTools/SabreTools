@@ -1087,7 +1087,7 @@ JOIN crc
     ON crcsha1.crc=crc.crc
 JOIN md5
     ON md5sha1.md5=md5.md5
-WHERE sha1.sha1 IN (string.Empty" + String.Join("\",\"", hashes) + "\")";
+WHERE sha1.sha1 IN (string.Empty" + string.Join("\",\"", hashes) + "\")";
                 slc = new SqliteCommand(query, dbc);
                 slc.ExecuteNonQuery();
 

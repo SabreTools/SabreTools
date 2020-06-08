@@ -79,7 +79,7 @@ namespace SabreTools.Library.DatFiles
                         // If we didn't find any items in the folder, make sure to add the blank rom
                         if (empty)
                         {
-                            string tempgame = String.Join("\\", parent);
+                            string tempgame = string.Join("\\", parent);
                             Rom rom = new Rom("null", tempgame, omitFromScan: Hash.DeepHashes); // TODO: All instances of Hash.DeepHashes should be made into 0x0 eventually
 
                             // Now process and add the rom
@@ -90,7 +90,7 @@ namespace SabreTools.Library.DatFiles
                         int parentcount = parent.Count;
                         if (parentcount == 0)
                         {
-                            Globals.Logger.Verbose("Empty parent '{0}' found in '{1}'", String.Join("\\", parent), filename);
+                            Globals.Logger.Verbose("Empty parent '{0}' found in '{1}'", string.Join("\\", parent), filename);
                             empty = true;
                         }
 
@@ -280,7 +280,7 @@ namespace SabreTools.Library.DatFiles
                     // If we didn't find any items in the folder, make sure to add the blank rom
                     if (empty)
                     {
-                        string tempgame = String.Join("\\", parent);
+                        string tempgame = string.Join("\\", parent);
                         Rom rom = new Rom("null", tempgame, omitFromScan: Hash.DeepHashes); // TODO: All instances of Hash.DeepHashes should be made into 0x0 eventually
 
                         // Now process and add the rom
@@ -291,7 +291,7 @@ namespace SabreTools.Library.DatFiles
                     int parentcount = parent.Count;
                     if (parentcount == 0)
                     {
-                        Globals.Logger.Verbose("Empty parent '{0}' found in '{1}'", String.Join("\\", parent), filename);
+                        Globals.Logger.Verbose("Empty parent '{0}' found in '{1}'", string.Join("\\", parent), filename);
                         empty = true;
                     }
 
@@ -370,7 +370,7 @@ namespace SabreTools.Library.DatFiles
                         Machine dir = new Machine();
 
                         // Get the name of the game from the parent
-                        dir.Name = String.Join("\\", parent);
+                        dir.Name = string.Join("\\", parent);
                         dir.Description = dir.Name;
 
                         DatItem datItem;

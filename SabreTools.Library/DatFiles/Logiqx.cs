@@ -29,17 +29,17 @@ namespace SabreTools.Library.DatFiles
     internal class Logiqx : DatFile
     {
         // Private instance variables specific to Logiqx DATs
-        bool _depreciated;
+        bool _deprecated;
 
         /// <summary>
         /// Constructor designed for casting a base DatFile
         /// </summary>
         /// <param name="datFile">Parent DatFile to copy from</param>
-        /// <param name="depreciated">True if the output uses "game", false if the output uses "machine"</param>
-        public Logiqx(DatFile datFile, bool depreciated)
+        /// <param name="deprecated">True if the output uses "game", false if the output uses "machine"</param>
+        public Logiqx(DatFile datFile, bool deprecated)
             : base(datFile, cloneHeader: false)
         {
-            _depreciated = depreciated;
+            _deprecated = deprecated;
         }
 
         /// <summary>
@@ -835,7 +835,7 @@ namespace SabreTools.Library.DatFiles
                 // No game should start with a path separator
                 rom.MachineName = rom.MachineName.TrimStart(Path.DirectorySeparatorChar);
 
-                string state = "\t<" + (_depreciated ? "game" : "machine") + " name=\"" + (!ExcludeFields[(int)Field.MachineName] ? WebUtility.HtmlEncode(rom.MachineName) : string.Empty) + "\""
+                string state = "\t<" + (_deprecated ? "game" : "machine") + " name=\"" + (!ExcludeFields[(int)Field.MachineName] ? WebUtility.HtmlEncode(rom.MachineName) : string.Empty) + "\""
                                 + (!ExcludeFields[(int)Field.MachineType] && (rom.MachineType & MachineType.Bios) != 0 ? " isbios=\"yes\"" : string.Empty)
                                 + (!ExcludeFields[(int)Field.MachineType] && (rom.MachineType & MachineType.Device) != 0 ? " isdevice=\"yes\"" : string.Empty)
                                 + (!ExcludeFields[(int)Field.MachineType] && (rom.MachineType & MachineType.Mechanical) != 0 ? " ismechanical=\"yes\"" : string.Empty)
@@ -879,7 +879,7 @@ namespace SabreTools.Library.DatFiles
         {
             try
             {
-                string state = "\t</" + (_depreciated ? "game" : "machine") + ">\n";
+                string state = "\t</" + (_deprecated ? "game" : "machine") + ">\n";
 
                 sw.Write(state);
                 sw.Flush();
@@ -993,7 +993,7 @@ namespace SabreTools.Library.DatFiles
         {
             try
             {
-                string footer = "\t</" + (_depreciated ? "game" : "machine") + ">\n</datafile>\n";
+                string footer = "\t</" + (_deprecated ? "game" : "machine") + ">\n</datafile>\n";
 
                 // Write the footer out
                 sw.Write(footer);

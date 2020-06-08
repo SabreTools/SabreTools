@@ -249,9 +249,9 @@ namespace SabreTools.Library.Data
         Logiqx =                1 << 0,
 
         /// <summary>
-        /// Logiqx XML (using gmae)
+        /// Logiqx XML (using game)
         /// </summary>
-        LogiqxDepreciated =     1 << 1,
+        LogiqxDeprecated =     1 << 1,
 
         /// <summary>
         /// MAME Softare List XML

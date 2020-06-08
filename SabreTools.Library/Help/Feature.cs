@@ -12,13 +12,7 @@ namespace SabreTools.Library.Help
 
         private FeatureType _featureType;
         private bool _foundOnce = false;
-
-        // Specific value types
-        private bool _valueBool = false;
-        private int _valueInt32 = Int32.MinValue;
-        private long _valueInt64 = Int64.MinValue;
-        private string _valueString = null;
-        private List<string> _valueList = null;
+        private object _value = null;
 
         #endregion
 
@@ -194,7 +188,7 @@ namespace SabreTools.Library.Help
             }
 
             // Now add all flags
-            output += String.Join(", ", newflags);
+            output += string.Join(", ", newflags);
 
             // If we have a midpoint set, check to see if the string needs padding
             if (midpoint > 0 && output.Length < midpoint)
@@ -334,7 +328,7 @@ namespace SabreTools.Library.Help
             }
 
             // Now add all flags
-            output += String.Join(", ", newflags);
+            output += string.Join(", ", newflags);
 
             // If we have a midpoint set, check to see if the string needs padding
             if (midpoint > 0 && output.Length < midpointAdjusted)
@@ -435,7 +429,7 @@ namespace SabreTools.Library.Help
                     valid = !input.Contains("=") && this.Flags.Contains(input);
                     if (valid)
                     {
-                        _valueBool = true;
+                        _value = true;
 
                         // If we've already found this feature before
                         if (_foundOnce && !ignore)
@@ -454,7 +448,7 @@ namespace SabreTools.Library.Help
                         if (!Int32.TryParse(input.Split('=')[1], out int value))
                             value = Int32.MinValue;
 
-                        _valueInt32 = value;
+                        _value = value;
 
                         // If we've already found this feature before
                         if (_foundOnce && !ignore)
@@ -473,7 +467,7 @@ namespace SabreTools.Library.Help
                         if (!Int64.TryParse(input.Split('=')[1], out long value))
                             value = Int64.MinValue;
 
-                        _valueInt64 = value;
+                        _value = value;
 
                         // If we've already found this feature before
                         if (_foundOnce && !ignore)
@@ -489,10 +483,10 @@ namespace SabreTools.Library.Help
                     valid = input.Contains("=") && this.Flags.Contains(input.Split('=')[0]);
                     if (valid)
                     {
-                        if (_valueList == null)
-                            _valueList = new List<string>();
+                        if (_value == null)
+                            _value = new List<string>();
 
-                        _valueList.Add(input.Split('=')[1]);
+                        (_value as List<string>).Add(input.Split('=')[1]);
                     }
 
                     break;
@@ -501,7 +495,7 @@ namespace SabreTools.Library.Help
                     valid = input.Contains("=") && this.Flags.Contains(input.Split('=')[0]);
                     if (valid)
                     {
-                        _valueString = input.Split('=')[1];
+                        _value = input.Split('=')[1];
 
                         // If we've already found this feature before
                         if (_foundOnce && !ignore)
@@ -525,26 +519,58 @@ namespace SabreTools.Library.Help
         }
 
         /// <summary>
-        /// Get the proper value associated with this feature
+        /// Get the boolean value associated with this feature
         /// </summary>
-        /// <returns>Value associated with this feature</returns>
-        public object GetValue()
+        public bool GetBoolValue()
         {
-            switch (_featureType)
-            {
-                case FeatureType.Flag:
-                    return _valueBool;
-                case FeatureType.Int32:
-                    return _valueInt32;
-                case FeatureType.Int64:
-                    return _valueInt64;
-                case FeatureType.List:
-                    return _valueList;
-                case FeatureType.String:
-                    return _valueString;
-            }
+            if (_featureType != FeatureType.Flag)
+                throw new ArgumentException("Feature is not a flag");
 
-            return null;
+            return (_value as bool?).HasValue ? (_value as bool?).Value : false;
+        }
+
+        /// <summary>
+        /// Get the string value associated with this feature
+        /// </summary>
+        public string GetStringValue()
+        {
+            if (_featureType != FeatureType.String)
+                throw new ArgumentException("Feature is not a string");
+
+            return (_value as string);
+        }
+
+        /// <summary>
+        /// Get the Int32 value associated with this feature
+        /// </summary>
+        public int GetInt32Value()
+        {
+            if (_featureType != FeatureType.Int32)
+                throw new ArgumentException("Feature is not an int");
+
+            return (_value as int?).HasValue ? (_value as int?).Value : int.MinValue;
+        }
+
+        /// <summary>
+        /// Get the Int64 value associated with this feature
+        /// </summary>
+        public long GetInt64Value()
+        {
+            if (_featureType != FeatureType.Int64)
+                throw new ArgumentException("Feature is not a long");
+
+            return (_value as long?).HasValue ? (_value as long?).Value : long.MinValue;
+        }
+
+        /// <summary>
+        /// Get the List\<string\> value associated with this feature
+        /// </summary>
+        public List<string> GetListValue()
+        {
+            if (_featureType != FeatureType.List)
+                throw new ArgumentException("Feature is not a list");
+
+            return (_value as List<string>);
         }
 
         /// <summary>
@@ -553,20 +579,18 @@ namespace SabreTools.Library.Help
         /// <returns>True if the feature is enabled, false otherwise</returns>
         public bool IsEnabled()
         {
-            object obj = GetValue();
-
             switch (_featureType)
             {
                 case FeatureType.Flag:
-                    return (bool)obj;
-                case FeatureType.Int32:
-                    return (int)obj != Int32.MinValue;
-                case FeatureType.Int64:
-                    return (long)obj != Int64.MinValue;
-                case FeatureType.List:
-                    return obj != null;
+                    return (_value as bool?) == true;
                 case FeatureType.String:
-                    return obj != null;
+                    return (_value as string) != null;
+                case FeatureType.Int32:
+                    return (_value as int?).HasValue && (_value as int?).Value != int.MinValue;
+                case FeatureType.Int64:
+                    return (_value as long?).HasValue && (_value as long?).Value != long.MinValue;
+                case FeatureType.List:
+                    return (_value as List<string>) != null;
             }
 
             return false;

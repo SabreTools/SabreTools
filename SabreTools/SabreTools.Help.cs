@@ -9,1044 +9,1217 @@ namespace SabreTools
     {
         #region Private Flag features
 
+        public const string AddBlankFilesValue = "add-blank-files";
         private static Feature _addBlankFilesFlag
         {
             get
             {
                 return new Feature(
-                    "add-blank-files",
+                    AddBlankFilesValue,
                     new List<string>() { "-ab", "--add-blank-files" },
                     "Output blank files for folders",
                     FeatureType.Flag,
                     longDescription: "If this flag is set, then blank entries will be created for each of the empty directories in the source. This is useful for tools that require all folders be accounted for in the output DAT.");
             }
         }
+
+        public const string AddDateValue = "add-date";
         private static Feature _addDateFlag
         {
             get
             {
                 return new Feature(
-                    "add-date",
+                    AddDateValue,
                     new List<string>() { "-ad", "--add-date" },
                     "Add dates to items, where posible",
                     FeatureType.Flag,
                     longDescription: "If this flag is set, then the Date will be appended to each file information in the output DAT. The output format is standardized as \"yyyy/MM/dd HH:mm:ss\".");
             }
         }
+
+        public const string ArchivesAsFilesValue = "archives-as-files";
         private static Feature _archivesAsFilesFlag
         {
             get
             {
                 return new Feature(
-                    "archives-as-files",
+                    ArchivesAsFilesValue,
                     new List<string>() { "-aaf", "--archives-as-files" },
                     "Treat archives as files",
                     FeatureType.Flag,
                     longDescription: "Instead of trying to enumerate the files within archives, treat the archives as files themselves. This is good for uncompressed sets that include archives that should be read as-is.");
             }
         }
+
+        public const string BaddumpColumnValue = "baddump-column";
         private static Feature _baddumpColumnFlag
         {
             get
             {
                 return new Feature(
-                    "baddump-column",
+                    BaddumpColumnValue,
                     new List<string>() { "-bc", "--baddump-column" },
                     "Add baddump stats to output",
                     FeatureType.Flag,
                     longDescription: "Add a new column or field for counting the number of baddumps in the DAT.");
             }
         }
+
+        public const string BaseValue = "base";
         private static Feature _baseFlag
         {
             get
             {
                 return new Feature(
-                    "base",
+                    BaseValue,
                     new List<string>() { "-ba", "--base" },
                     "Use source DAT as base name for outputs",
                     FeatureType.Flag,
                     longDescription: "If splitting an entire folder of DATs, some output files may be normally overwritten since the names would be the same. With this flag, the original DAT name is used in the output name, in the format of \"Original Name(Dir - Name)\". This can be used in conjunction with --short to output in the format of \"Original Name (Name)\" instead.");
             }
         }
+
+        public const string BaseReplaceValue = "base-replace";
         private static Feature _baseReplaceFlag
         {
             get
             {
                 return new Feature(
-                    "base-replace",
+                    BaseReplaceValue,
                     new List<string>() { "-br", "--base-replace" },
                     "Replace from base DATs in order",
                     FeatureType.Flag,
                     longDescription: "By default, no item names are changed except when there is a merge occurring. This flag enables users to define a DAT or set of base DATs to use as \"replacements\" for all input DATs. Note that the first found instance of an item in the base DAT(s) will be used and all others will be discarded. If no additional flag is given, it will default to updating names.");
             }
         }
+
+        public const string ChdsAsFilesValue = "chds-as-files";
         private static Feature _chdsAsFilesFlag
         {
             get
             {
                 return new Feature(
-                    "chds-as-files",
+                    ChdsAsFilesValue,
                     new List<string>() { "-ic", "--chds-as-files" },
                     "Treat CHDs as regular files",
                     FeatureType.Flag,
                     longDescription: "Normally, CHDs would be processed using their internal hash to compare against the input DATs. This flag forces all CHDs to be treated like regular files.");
             }
         }
+
+        public const string CleanValue = "clean";
         private static Feature _cleanFlag
         {
             get
             {
                 return new Feature(
-                    "clean",
+                    CleanValue,
                     new List<string>() { "-clean", "--clean" },
                     "Clean game names according to WoD standards",
                     FeatureType.Flag,
                     longDescription: "Game names will be sanitized to remove what the original WoD standards deemed as unneeded information, such as parenthesized or bracketed strings.");
             }
         }
+
+        public const string CopyFilesValue = "copy-files";
         private static Feature _copyFilesFlag
         {
             get
             {
                 return new Feature(
-                    "copy-files",
+                    CopyFilesValue,
                     new List<string>() { "-cf", "--copy-files" },
                     "Copy files to the temp directory before parsing",
                     FeatureType.Flag,
                     longDescription: "If this flag is set, then all files that are going to be parsed are moved to the temporary directory before being hashed. This can be helpful in cases where the temp folder is located on an SSD and the user wants to take advantage of this.");
             }
         }
+
+        public const string DatDeviceNonMergedValue = "dat-device-non-merged";
         private static Feature _datDeviceNonMergedFlag
         {
             get
             {
                 return new Feature(
-                    "dat-device-non-merged",
+                    DatDeviceNonMergedValue,
                     new List<string>() { "-dnd", "--dat-device-non-merged" },
                     "Create device non-merged sets",
                     FeatureType.Flag,
                     longDescription: "Preprocess the DAT to have child sets contain all items from the device references. This is incompatible with the other --dat-X flags.");
             }
         }
+
+        public const string DatFullNonMergedValue = "dat-full-non-merged";
         private static Feature _datFullNonMergedFlag
         {
             get
             {
                 return new Feature(
-                    "dat-full-non-merged",
+                    DatFullNonMergedValue,
                     new List<string>() { "-df", "--dat-full-non-merged" },
                     "Create fully non-merged sets",
                     FeatureType.Flag,
                     longDescription: "Preprocess the DAT to have child sets contain all items from the parent sets based on the cloneof and romof tags as well as device references. This is incompatible with the other --dat-X flags.");
             }
         }
+
+        public const string DatMergedValue = "dat-merged";
         private static Feature _datMergedFlag
         {
             get
             {
                 return new Feature(
-                    "dat-merged",
+                    DatMergedValue,
                     new List<string>() { "-dm", "--dat-merged" },
                     "Force creating merged sets",
                     FeatureType.Flag,
                     longDescription: "Preprocess the DAT to have parent sets contain all items from the children based on the cloneof tag. This is incompatible with the other --dat-X flags.");
             }
         }
+
+        public const string DatNonMergedValue = "dat-non-merged";
         private static Feature _datNonMergedFlag
         {
             get
             {
                 return new Feature(
-                    "dat-non-merged",
+                    DatNonMergedValue,
                     new List<string>() { "-dnm", "--dat-non-merged" },
                     "Force creating non-merged sets",
                     FeatureType.Flag,
                     longDescription: "Preprocess the DAT to have child sets contain all items from the parent set based on the romof and cloneof tags. This is incompatible with the other --dat-X flags.");
             }
         }
+
+        public const string DatSplitValue = "dat-split";
         private static Feature _datSplitFlag
         {
             get
             {
                 return new Feature(
-                    "dat-split",
+                    DatSplitValue,
                     new List<string>() { "-ds", "--dat-split" },
                     "Force creating split sets",
                     FeatureType.Flag,
                     longDescription: "Preprocess the DAT to remove redundant files between parents and children based on the romof and cloneof tags. This is incompatible with the other --dat-X flags.");
             }
         }
+
+        public const string DedupValue = "dedup";
         private static Feature _dedupFlag
         {
             get
             {
                 return new Feature(
-                    "dedup",
+                    DedupValue,
                     new List<string>() { "-dd", "--dedup" },
                     "Enable deduping in the created DAT",
                     FeatureType.Flag,
                     longDescription: "For all outputted DATs, allow for hash deduping. This makes sure that there are effectively no duplicates in the output files. Cannot be used with game dedup.");
             }
         }
+
+        public const string DeleteValue = "delete";
         private static Feature _deleteFlag
         {
             get
             {
                 return new Feature(
-                    "delete",
+                    DeleteValue,
                     new List<string>() { "-del", "--delete" },
                     "Delete fully rebuilt input files",
                     FeatureType.Flag,
                     longDescription: "Optionally, the input files, once processed and fully matched, can be deleted. This can be useful when the original file structure is no longer needed or if there is limited space on the source drive.");
             }
         }
+
+        public const string DepotValue = "depot";
         private static Feature _depotFlag
         {
             get
             {
                 return new Feature(
-                    "depot",
+                    DepotValue,
                     new List<string>() { "-dep", "--depot" },
                     "Assume directories are romba depots",
                     FeatureType.Flag,
                     longDescription: "Normally, input directories will be treated with no special format. If this flag is used, all input directories will be assumed to be romba-style depots.");
             }
         }
-        private static Feature _depreciatedFlag
+
+        public const string DeprecatedValue = "deprecated";
+        private static Feature _deprecatedFlag
         {
             get
             {
                 return new Feature(
-                    "depreciated",
-                    new List<string>() { "-dpc", "--depreciated" },
+                    DeprecatedValue,
+                    new List<string>() { "-dpc", "--deprecated" },
                     "Output 'game' instead of 'machine'",
                     FeatureType.Flag,
                     longDescription: "By default, Logiqx XML DATs output with the more modern \"machine\" tag for each set. This flag allows users to output the older \"game\" tag instead, for compatibility reasons. [Logiqx only]");
             }
         }
+
+        public const string DescriptionAsNameValue = "description-as-name";
         private static Feature _descriptionAsNameFlag
         {
             get
             {
                 return new Feature(
-                    "description-as-name",
+                    DescriptionAsNameValue,
                     new List<string>() { "-dan", "--description-as-name" },
                     "Use description instead of machine name",
                     FeatureType.Flag,
                     longDescription: "By default, all DATs are converted exactly as they are input. Enabling this flag allows for the machine names in the DAT to be replaced by the machine description instead. In most cases, this will result in no change in the output DAT, but a notable example would be a software list DAT where the machine names are generally DOS-friendly while the description is more complete.");
             }
         }
+
+        public const string DiffAgainstValue = "diff-against";
         private static Feature _diffAgainstFlag
         {
             get
             {
                 return new Feature(
-                    "diff-against",
+                    DiffAgainstValue,
                     new List<string>() { "-dag", "--diff-against" },
                     "Diff all inputs against a set of base DATs",
                     FeatureType.Flag,
                     "This flag will enable a special type of diffing in which a set of base DATs are used as a comparison point for each of the input DATs. This allows users to get a slightly different output to cascaded diffing, which may be more useful in some cases. This is heavily influenced by the diffing model used by Romba.");
             }
         }
+
+        public const string DiffAllValue = "diff-all";
         private static Feature _diffAllFlag
         {
             get
             {
                 return new Feature(
-                    "diff-all",
+                    DiffAllValue,
                     new List<string>() { "-di", "--diff-all" },
                     "Create diffdats from inputs (all standard outputs)",
                     FeatureType.Flag,
                     longDescription: "By default, all DATs are processed individually with the user-specified flags. With this flag enabled, input DATs are diffed against each other to find duplicates, no duplicates, and only in individuals.");
             }
         }
+
+        public const string DiffCascadeValue = "diff-cascade";
         private static Feature _diffCascadeFlag
         {
             get
             {
                 return new Feature(
-                    "diff-cascade",
+                    DiffCascadeValue,
                     new List<string>() { "-dc", "--diff-cascade" },
                     "Enable cascaded diffing",
                     FeatureType.Flag,
                     longDescription: "This flag allows for a special type of diffing in which the first DAT is considered a base, and for each additional input DAT, it only leaves the files that are not in one of the previous DATs. This can allow for the creation of rollback sets or even just reduce the amount of duplicates across multiple sets.");
             }
         }
+
+        public const string DiffDuplicatesValue = "diff-duplicates";
         private static Feature _diffDuplicatesFlag
         {
             get
             {
                 return new Feature(
-                    "diff-duplicates",
+                    DiffDuplicatesValue,
                     new List<string>() { "-did", "--diff-duplicates" },
                     "Create diffdat containing just duplicates",
                     FeatureType.Flag,
                     longDescription: "All files that have duplicates outside of the original DAT are included.");
             }
         }
+
+        public const string DiffIndividualsValue = "diff-individuals";
         private static Feature _diffIndividualsFlag
         {
             get
             {
                 return new Feature(
-                    "diff-individuals",
+                    DiffIndividualsValue,
                     new List<string>() { "-dii", "--diff-individuals" },
                     "Create diffdats for individual DATs",
                     FeatureType.Flag,
                     longDescription: "All files that have no duplicates outside of the original DATs are put into DATs that are named after the source DAT.");
             }
         }
+
+        public const string DiffNoDuplicatesValue = "diff-no-duplicates";
         private static Feature _diffNoDuplicatesFlag
         {
             get
             {
                 return new Feature(
-                    "diff-no-duplicates",
+                    DiffNoDuplicatesValue,
                     new List<string>() { "-din", "--diff-no-duplicates" },
                     "Create diffdat containing no duplicates",
                     FeatureType.Flag,
                     longDescription: "All files that have no duplicates outside of the original DATs are included.");
             }
         }
+
+        public const string DiffReverseCascadeValue = "diff-reverse-cascade";
         private static Feature _diffReverseCascadeFlag
         {
             get
             {
                 return new Feature(
-                    "diff-reverse-cascade",
+                    DiffReverseCascadeValue,
                     new List<string>() { "-drc", "--diff-reverse-cascade" },
                     "Enable reverse cascaded diffing",
                     FeatureType.Flag,
                     longDescription: "This flag allows for a special type of diffing in which the last DAT is considered a base, and for each additional input DAT, it only leaves the files that are not in one of the previous DATs. This can allow for the creation of rollback sets or even just reduce the amount of duplicates across multiple sets.");
             }
         }
+
+        public const string ExtensionValue = "extension";
         private static Feature _extensionFlag
         {
             get
             {
                 return new Feature(
-                    "extension",
+                    ExtensionValue,
                     new List<string>() { "-es", "--extension" },
                     "Split DAT(s) by two file extensions",
                     FeatureType.Flag,
                     longDescription: "For a DAT, or set of DATs, allow for splitting based on a list of input extensions. This can allow for combined DAT files, such as those combining two separate systems, to be split. Files with any extensions not listed in the input lists will be included in both outputted DAT files.");
             }
         }
+
+        public const string GameDedupValue = "game-dedup";
         private static Feature _gameDedupFlag
         {
             get
             {
                 return new Feature(
-                    "game-dedup",
+                    GameDedupValue,
                     new List<string>() { "-gdd", "--game-dedup" },
                     "Enable deduping within games in the created DAT",
                     FeatureType.Flag,
                     longDescription: "For all outputted DATs, allow for hash deduping but only within the games, and not across the entire DAT. This makes sure that there are effectively no duplicates within each of the output sets. Cannot be used with standard dedup.");
             }
         }
+
+        public const string GamePrefixValue = "game-prefix";
         private static Feature _gamePrefixFlag
         {
             get
             {
                 return new Feature(
-                    "game-prefix",
+                    GamePrefixValue,
                     new List<string>() { "-gp", "--game-prefix" },
                     "Add game name as a prefix",
                     FeatureType.Flag,
                     longDescription: "This flag allows for the name of the game to be used as a prefix to each file.");
             }
         }
+
+        public const string HashValue = "hash";
         private static Feature _hashFlag
         {
             get
             {
                 return new Feature(
-                    "hash",
+                    HashValue,
                     new List<string>() { "-hs", "--hash" },
                     "Split DAT(s) or folder by best-available hashes",
                     FeatureType.Flag,
                     longDescription: "For a DAT, or set of DATs, allow for splitting based on the best available hash for each file within. The order of preference for the outputted DATs is as follows: Nodump, SHA-512, SHA-384, SHA-256, SHA-1, MD5, CRC (or worse).");
             }
         }
+
+        public const string HashOnlyValue = "hash-only";
         private static Feature _hashOnlyFlag
         {
             get
             {
                 return new Feature(
-                    "hash-only",
+                    HashOnlyValue,
                     new List<string>() { "-ho", "--hash-only" },
                     "Check files by hash only",
                     FeatureType.Flag,
                     longDescription: "This sets a mode where files are not checked based on name but rather hash alone. This allows verification of (possibly) incorrectly named folders and sets to be verified without worrying about the proper set structure to be there.");
             }
         }
+
+        public const string IndividualValue = "individual";
         private static Feature _individualFlag
         {
             get
             {
                 return new Feature(
-                    "individual",
+                    IndividualValue,
                     new List<string>() { "-ind", "--individual" },
                     "Process input DATs individually",
                     FeatureType.Flag,
                     longDescription: "In cases where DATs would be processed in bulk, this flag allows them to be processed on their own instead.");
             }
         }
+
+        public const string InplaceValue = "inplace";
         private static Feature _inplaceFlag
         {
             get
             {
                 return new Feature(
-                    "inplace",
+                    InplaceValue,
                     new List<string>() { "-ip", "--inplace" },
                     "Write to the input directories, where possible",
                     FeatureType.Flag,
                     longDescription: "By default, files are written to the runtime directory (or the output directory, if set). This flag enables users to write out to the directory that the DATs originated from.");
             }
         }
+
+        public const string InverseValue = "inverse";
         private static Feature _inverseFlag
         {
             get
             {
                 return new Feature(
-                    "inverse",
+                    InverseValue,
                     new List<string>() { "-in", "--inverse" },
                     "Rebuild only files not in DAT",
                     FeatureType.Flag,
                     longDescription: "Instead of the normal behavior of rebuilding using a DAT, this flag allows the user to use the DAT as a filter instead. All files that are found in the DAT will be skipped and everything else will be output in the selected format.");
             }
         }
+
+        public const string KeepEmptyGamesValue = "keep-empty-games";
         private static Feature _keepEmptyGamesFlag
         {
             get
             {
                 return new Feature(
-                    "keep-empty-games",
+                    KeepEmptyGamesValue,
                     new List<string>() { "-keg", "--keep-empty-games" },
                     "Keep originally empty sets from the input(s)",
                     FeatureType.Flag,
                     longDescription: "Normally, any sets that are considered empty will not be included in the output, this flag allows these empty sets to be added to the output.");
             }
         }
+
+        public const string LevelValue = "level";
         private static Feature _levelFlag
         {
             get
             {
                 return new Feature(
-                    "level",
+                    LevelValue,
                     new List<string>() { "-ls", "--level" },
                     "Split a SuperDAT or folder by lowest available level",
                     FeatureType.Flag,
                     longDescription: "For a DAT, or set of DATs, allow for splitting based on the lowest available level of game name. That is, if a game name is top/mid/last, then it will create an output DAT for the parent directory \"mid\" in a folder called \"top\" with a game called \"last\".");
             }
         }
-        private static Feature _mergeFlag
-        {
-            get
-            {
-                return new Feature(
-                    "merge",
-                    new List<string>() { "-m", "--merge" },
-                    "Merge the input DATs",
-                    FeatureType.Flag,
-                    longDescription: "By default, all DATs are processed individually with the user-specified flags. With this flag enabled, all of the input DATs are merged into a single output. This is best used with the dedup flag.");
-            }
-        }
-        private static Feature _noAutomaticDateFlag
-        {
-            get
-            {
-                return new Feature(
-                    "no-automatic-date",
-                    new List<string>() { "-b", "--no-automatic-date" },
-                    "Don't include date in file name",
-                    FeatureType.Flag,
-                    longDescription: "Normally, the DAT will be created with the date in the file name in brackets. This flag removes that instead of the default.");
-            }
-        }
-        private static Feature _nodumpColumnFlag
-        {
-            get
-            {
-                return new Feature(
-                    "nodump-column",
-                    new List<string>() { "-nc", "--nodump-column" },
-                    "Add statistics for nodumps to output",
-                    FeatureType.Flag,
-                    longDescription: "Add a new column or field for counting the number of nodumps in the DAT.");
-            }
-        }
-        private static Feature _noStoreHeaderFlag
-        {
-            get
-            {
-                return new Feature(
-                    "no-store-header",
-                    new List<string>() { "-nsh", "--no-store-header" },
-                    "Don't store the extracted header",
-                    FeatureType.Flag,
-                    longDescription: "By default, all headers that are removed from files are backed up in the database. This flag allows users to skip that step entirely, avoiding caching the headers at all.");
-            }
-        }
-        private static Feature _notRunnableFlag
-        {
-            get
-            {
-                return new Feature(
-                    "not-runnable",
-                    new List<string>() { "-nrun", "--not-runnable" },
-                    "Include only items that are not marked runnable",
-                    FeatureType.Flag,
-                    longDescription: "This allows users to include only unrunnable games.");
-            }
-        }
+
+        public const string MatchOfTagsValue = "match-of-tags";
         private static Feature _matchOfTagsFlag
         {
             get
             {
                 return new Feature(
-                    "match-of-tags",
+                    MatchOfTagsValue,
                     new List<string>() { "-ofg", "--match-of-tags" },
                     "Allow cloneof and romof tags to match game name filters",
                     FeatureType.Flag,
                     longDescription: "If filter or exclude by game name is used, this flag will allow those filters to be checked against the romof and cloneof tags as well. This can allow for more advanced set-building, especially in arcade-based sets.");
             }
         }
+
+        public const string MergeValue = "merge";
+        private static Feature _mergeFlag
+        {
+            get
+            {
+                return new Feature(
+                    MergeValue,
+                    new List<string>() { "-m", "--merge" },
+                    "Merge the input DATs",
+                    FeatureType.Flag,
+                    longDescription: "By default, all DATs are processed individually with the user-specified flags. With this flag enabled, all of the input DATs are merged into a single output. This is best used with the dedup flag.");
+            }
+        }
+
+        public const string NoAutomaticDateValue = "no-automatic-date";
+        private static Feature _noAutomaticDateFlag
+        {
+            get
+            {
+                return new Feature(
+                    NoAutomaticDateValue,
+                    new List<string>() { "-b", "--no-automatic-date" },
+                    "Don't include date in file name",
+                    FeatureType.Flag,
+                    longDescription: "Normally, the DAT will be created with the date in the file name in brackets. This flag removes that instead of the default.");
+            }
+        }
+
+        public const string NodumpColumnValue = "nodump-column";
+        private static Feature _nodumpColumnFlag
+        {
+            get
+            {
+                return new Feature(
+                    NodumpColumnValue,
+                    new List<string>() { "-nc", "--nodump-column" },
+                    "Add statistics for nodumps to output",
+                    FeatureType.Flag,
+                    longDescription: "Add a new column or field for counting the number of nodumps in the DAT.");
+            }
+        }
+
+        public const string NoStoreHeaderValue = "no-store-header";
+        private static Feature _noStoreHeaderFlag
+        {
+            get
+            {
+                return new Feature(
+                    NoStoreHeaderValue,
+                    new List<string>() { "-nsh", "--no-store-header" },
+                    "Don't store the extracted header",
+                    FeatureType.Flag,
+                    longDescription: "By default, all headers that are removed from files are backed up in the database. This flag allows users to skip that step entirely, avoiding caching the headers at all.");
+            }
+        }
+
+        public const string NotRunnableValue = "not-runnable";
+        private static Feature _notRunnableFlag
+        {
+            get
+            {
+                return new Feature(
+                    NotRunnableValue,
+                    new List<string>() { "-nrun", "--not-runnable" },
+                    "Include only items that are not marked runnable",
+                    FeatureType.Flag,
+                    longDescription: "This allows users to include only unrunnable games.");
+            }
+        }
+
+        public const string OneRomPerGameValue = "one-rom-per-game";
         private static Feature _oneRomPerGameFlag
         {
             get
             {
                 return new Feature(
-                    "one-rom-per-game",
+                    OneRomPerGameValue,
                     new List<string>() { "-orpg", "--one-rom-per-game" },
                     "Try to ensure each rom has its own game",
                     FeatureType.Flag,
                     longDescription: "In some cases, it is beneficial to have every rom put into its own output set as a subfolder of the original parent. This flag enables outputting each rom to its own game for this purpose.");
             }
         }
+
+        public const string OnlySameValue = "only-same";
         private static Feature _onlySameFlag
         {
             get
             {
                 return new Feature(
-                    "only-same",
+                    OnlySameValue,
                     new List<string>() { "-ons", "--only-same" },
                     "Only update description if machine name matches description",
                     FeatureType.Flag,
                     longDescription: "Normally, updating the description will always overwrite if the machine names are the same. With this flag, descriptions will only be overwritten if they are the same as the machine names.");
             }
         }
+
+        public const string QuickValue = "quick";
         private static Feature _quickFlag
         {
             get
             {
                 return new Feature(
-                    "quick",
+                    QuickValue,
                     new List<string>() { "-qs", "--quick" },
                     "Enable quick scanning of archives",
                     FeatureType.Flag,
                     longDescription: "For all archives, if this flag is enabled, it will only use the header information to get the archive entries' file information. The upside to this is that it is the fastest option. On the downside, it can only get the CRC and size from most archive formats, leading to possible issues.");
             }
         }
+
+        public const string QuotesValue = "quotes";
         private static Feature _quotesFlag
         {
             get
             {
                 return new Feature(
-                    "quotes",
+                    QuotesValue,
                     new List<string>() { "-q", "--quotes" },
                     "Double-quote each item",
                     FeatureType.Flag,
                     longDescription: "This flag surrounds the item by double-quotes, not including the prefix or postfix.");
             }
         }
+
+        public const string RemoveExtensionsValue = "remove-extensions";
         private static Feature _removeExtensionsFlag
         {
             get
             {
                 return new Feature(
-                    "remove-extensions",
+                    RemoveExtensionsValue,
                     new List<string>() { "-rme", "--remove-extensions" },
                     "Remove all extensions from all items",
                     FeatureType.Flag,
                     longDescription: "For each item, remove the extension.");
             }
         }
+
+        public const string RemoveUnicodeValue = "remove-unicode";
         private static Feature _removeUnicodeFlag
         {
             get
             {
                 return new Feature(
-                    "remove-unicode",
+                    RemoveUnicodeValue,
                     new List<string>() { "-ru", "--remove-unicode" },
                     "Remove unicode characters from names",
                     FeatureType.Flag,
                     longDescription: "By default, the character set from the original file(s) will be used for item naming. This flag removes all Unicode characters from the item names, machine names, and machine descriptions.");
             }
         }
+
+        public const string ReverseBaseReplaceValue = "reverse-base-replace";
         private static Feature _reverseBaseReplaceFlag
         {
             get
             {
                 return new Feature(
-                    "reverse-base-replace",
+                    ReverseBaseReplaceValue,
                     new List<string>() { "-rbr", "--reverse-base-replace" },
                     "Replace item names from base DATs in reverse",
                     FeatureType.Flag,
                     longDescription: "By default, no item names are changed except when there is a merge occurring. This flag enables users to define a DAT or set of base DATs to use as \"replacements\" for all input DATs. Note that the first found instance of an item in the last base DAT(s) will be used and all others will be discarded. If no additional flag is given, it will default to updating names.");
             }
         }
+
+        public const string RombaValue = "romba";
         private static Feature _rombaFlag
         {
             get
             {
                 return new Feature(
-                    "romba",
+                    RombaValue,
                     new List<string>() { "-ro", "--romba" },
                     "Treat like a Romba depot (requires SHA-1)",
                     FeatureType.Flag,
                     longDescription: "This flag allows reading and writing of DATs and output files to and from a Romba-style depot. This also implies TorrentGZ input and output for physical files. Where appropriate, Romba depot files will be created as well.");
             }
         }
+
+        public const string RomsValue = "roms";
         private static Feature _romsFlag
         {
             get
             {
                 return new Feature(
-                    "roms",
+                    RomsValue,
                     new List<string>() { "-r", "--roms" },
                     "Output roms to miss instead of sets",
                     FeatureType.Flag,
                     longDescription: "By default, the outputted file will include the name of the game so this flag allows for the name of the rom to be output instead. [Missfile only]");
             }
         }
+
+        public const string RunnableValue = "runnable";
         private static Feature _runnableFlag
         {
             get
             {
                 return new Feature(
-                    "runnable",
+                    RunnableValue,
                     new List<string>() { "-run", "--runnable" },
                     "Include only items that are marked runnable",
                     FeatureType.Flag,
                     longDescription: "This allows users to include only verified runnable games.");
             }
         }
+
+        public const string ScanAllValue = "scan-all";
         private static Feature _scanAllFlag
         {
             get
             {
                 return new Feature(
-                    "scan-all",
+                    ScanAllValue,
                     new List<string>() { "-sa", "--scan-all" },
                     "Set scanning levels for all archives to 0",
                     FeatureType.Flag,
                     longDescription: "This flag is the short equivalent to -7z=0 -gz=0 -rar=0 -zip=0 wrapped up. Generally this will be helpful in all cases where the content of the rebuild folder is not entirely known or is known to be mixed.");
             }
         }
+
+        public const string SceneDateStripValue = "scene-date-strip";
         private static Feature _sceneDateStripFlag
         {
             get
             {
                 return new Feature(
-                    "scene-date-strip",
+                    SceneDateStripValue,
                     new List<string>() { "-sds", "--scene-date-strip" },
                     "Remove date from scene-named sets",
                     FeatureType.Flag,
                     longDescription: "If this flag is enabled, sets with \"scene\" names will have the date removed from the beginning. For example \"01.01.01-Game_Name-GROUP\" would become \"Game_Name-Group\".");
             }
         }
+
+        public const string ShortValue = "short";
         private static Feature _shortFlag
         {
             get
             {
                 return new Feature(
-                    "short",
+                    ShortValue,
                     new List<string>() { "-s", "--short" },
                     "Use short output names",
                     FeatureType.Flag,
                     longDescription: "Instead of using ClrMamePro-style long names for DATs, use just the name of the folder as the name of the DAT. This can be used in conjunction with --base to output in the format of \"Original Name (Name)\" instead.");
             }
         }
+
+        public const string SingleSetValue = "single-set";
         private static Feature _singleSetFlag
         {
             get
             {
                 return new Feature(
-                    "single-set",
+                    SingleSetValue,
                     new List<string>() { "-si", "--single-set" },
                     "All game names replaced by '!'",
                     FeatureType.Flag,
                     longDescription: "This is useful for keeping all roms in a DAT in the same archive or folder.");
             }
         }
+
+        public const string SizeValue = "size";
         private static Feature _sizeFlag
         {
             get
             {
                 return new Feature(
-                    "size",
+                    SizeValue,
                     new List<string>() { "-szs", "--size" },
                     "Split DAT(s) or folder by file sizes",
                     FeatureType.Flag,
                     longDescription: "For a DAT, or set of DATs, allow for splitting based on the sizes of the files, specifically if the type is a Rom (most item types don't have sizes).");
             }
         }
-        private static Feature _skipFirstOutputFlag
-        {
-            get
-            {
-                return new Feature(
-                    "skip-first-output",
-                    new List<string>() { "-sf", "--skip-first-output" },
-                    "Skip output of first DAT",
-                    FeatureType.Flag,
-                    longDescription: "In times where the first DAT does not need to be written out a second time, this will skip writing it. This can often speed up the output process.");
-            }
-        }
+
+        public const string SkipArchivesValue = "skip-archives";
         private static Feature _skipArchivesFlag
         {
             get
             {
                 return new Feature(
-                    "skip-archives",
+                    SkipArchivesValue,
                     new List<string>() { "-ska", "--skip-archives" },
                     "Skip all archives",
                     FeatureType.Flag,
                     longDescription: "Skip any files that are treated like archives");
             }
         }
+
+        public const string SkipFilesValue = "skip-files";
         private static Feature _skipFilesFlag
         {
             get
             {
                 return new Feature(
-                    "skip-files",
+                    SkipFilesValue,
                     new List<string>() { "-skf", "--skip-files" },
                     "Skip all non-archives",
                     FeatureType.Flag,
                     longDescription: "Skip any files that are not treated like archives");
             }
         }
+
+        public const string SkipFirstOutputValue = "skip-first-output";
+        private static Feature _skipFirstOutputFlag
+        {
+            get
+            {
+                return new Feature(
+                    SkipFirstOutputValue,
+                    new List<string>() { "-sf", "--skip-first-output" },
+                    "Skip output of first DAT",
+                    FeatureType.Flag,
+                    longDescription: "In times where the first DAT does not need to be written out a second time, this will skip writing it. This can often speed up the output process.");
+            }
+        }
+
+        public const string SkipMd5Value = "skip-md5";
         private static Feature _skipMd5Flag
         {
             get
             {
                 return new Feature(
-                    "skip-md5",
+                    SkipMd5Value,
                     new List<string>() { "-nm", "--skip-md5" },
                     "Don't include MD5 in output",
                     FeatureType.Flag,
                     longDescription: "This allows the user to skip calculating the MD5 for each of the files which will speed up the creation of the DAT.");
             }
         }
+
+        public const string SkipRipeMd160Value = "skip-ripemd160";
         private static Feature _skipRipeMd160Flag
         {
             get
             {
                 return new Feature(
-                    "skip-ripemd160",
+                    SkipRipeMd160Value,
                     new List<string>() { "-nr160", "--skip-ripemd160" },
                     "Include RIPEMD160 in output", // TODO: Invert this later
                     FeatureType.Flag,
                     longDescription: "This allows the user to skip calculating the RIPEMD160 for each of the files which will speed up the creation of the DAT.");
             }
         }
+
+        public const string SkipSha1Value = "skip-sha1";
         private static Feature _skipSha1Flag
         {
             get
             {
                 return new Feature(
-                    "skip-sha1",
+                    SkipSha1Value,
                     new List<string>() { "-ns", "--skip-sha1" },
                     "Don't include SHA-1 in output",
                     FeatureType.Flag,
                     longDescription: "This allows the user to skip calculating the SHA-1 for each of the files which will speed up the creation of the DAT.");
             }
         }
+
+        public const string SkipSha256Value = "skip-sha256";
         private static Feature _skipSha256Flag
         {
             get
             {
                 return new Feature(
-                    "skip-sha256",
+                    SkipSha256Value,
                     new List<string>() { "-ns256", "--skip-sha256" },
                     "Include SHA-256 in output", // TODO: Invert this later
                     FeatureType.Flag,
                     longDescription: "This allows the user to skip calculating the SHA-256 for each of the files which will speed up the creation of the DAT.");
             }
         }
+
+        public const string SkipSha384Value = "skip-sha384";
         private static Feature _skipSha384Flag
         {
             get
             {
                 return new Feature(
-                    "skip-sha384",
+                    SkipSha384Value,
                     new List<string>() { "-ns384", "--skip-sha384" },
                     "Include SHA-384 in output", // TODO: Invert this later
                     FeatureType.Flag,
                     longDescription: "This allows the user to skip calculating the SHA-384 for each of the files which will speed up the creation of the DAT.");
             }
         }
+
+        public const string SkipSha512Value = "skip-sha512";
         private static Feature _skipSha512Flag
         {
             get
             {
                 return new Feature(
-                    "skip-sha512",
+                    SkipSha512Value,
                     new List<string>() { "-ns512", "--skip-sha512" },
                     "Include SHA-512 in output", // TODO: Invert this later
                     FeatureType.Flag,
                     longDescription: "This allows the user to skip calculating the SHA-512 for each of the files which will speed up the creation of the DAT.");
             }
         }
+
+        public const string SuperdatValue = "superdat";
         private static Feature _superdatFlag
         {
             get
             {
                 return new Feature(
-                    "superdat",
+                    SuperdatValue,
                     new List<string>() { "-sd", "--superdat" },
                     "Enable SuperDAT creation",
                     FeatureType.Flag,
                     longDescription: "Set the type flag to \"SuperDAT\" for the output DAT as well as preserving the directory structure of the inputted folder, if applicable.");
             }
         }
+
+        public const string TarValue = "tar";
         private static Feature _tarFlag
         {
             get
             {
                 return new Feature(
-                    "tar",
+                    TarValue,
                     new List<string>() { "-tar", "--tar" },
                     "Enable Tape ARchive output",
                     FeatureType.Flag,
                     longDescription: "Instead of outputting the files to folder, files will be rebuilt to Tape ARchive (TAR) files. This format is a standardized storage archive without any compression, usually used with other compression formats around it. It is widely used in backup applications and source code archives.");
             }
         }
+
+        public const string Torrent7zipValue = "torrent-7zip";
         private static Feature _torrent7zipFlag
         {
             get
             {
                 return new Feature(
-                    "torrent-7zip",
+                    Torrent7zipValue,
                     new List<string>() { "-t7z", "--torrent-7zip" },
                     "Enable Torrent7Zip output",
                     FeatureType.Flag,
                     longDescription: "Instead of outputting the files to folder, files will be rebuilt to Torrent7Zip (T7Z) files. This format is based on the LZMA container format 7Zip, but with custom header information. This is currently unused by any major application. Currently does not produce proper Torrent-compatible outputs.");
             }
         }
+
+        public const string TorrentGzipValue = "torrent-gzip";
         private static Feature _torrentGzipFlag
         {
             get
             {
                 return new Feature(
-                    "torrent-gzip",
+                    TorrentGzipValue,
                     new List<string>() { "-tgz", "--torrent-gzip" },
                     "Enable Torrent GZip output",
                     FeatureType.Flag,
                     longDescription: "Instead of outputting the files to folder, files will be rebuilt to TorrentGZ (TGZ) files. This format is based on the GZip archive format, but with custom header information and a file name replaced by the SHA-1 of the file inside. This is primarily used by external tool Romba (https://github.com/uwedeportivo/romba), but may be used more widely in the future.");
             }
         }
+
+        public const string TorrentLrzipValue = "torrent-lrzip";
         private static Feature _torrentLrzipFlag
         {
             get
             {
                 return new Feature(
-                    "torrent-lrzip",
+                    TorrentLrzipValue,
                     new List<string>() { "-tlrz", "--torrent-lrzip" },
                     "Enable Torrent Long-Range Zip output [UNIMPLEMENTED]",
                     FeatureType.Flag,
                     longDescription: "Instead of outputting the files to folder, files will be rebuilt to Torrent Long-Range Zip (TLRZ) files. This format is based on the LRZip file format as defined at https://github.com/ckolivas/lrzip but with custom header information. This is currently unused by any major application.");
             }
         }
+        
+        public const string TorrentLz4Value = "torrent-lz4";
         private static Feature _torrentLz4Flag
         {
             get
             {
                 return new Feature(
-                    "torrent-lz4",
+                    TorrentLz4Value,
                     new List<string>() { "-tlz4", "--torrent-lz4" },
                     "Enable Torrent LZ4 output [UNIMPLEMENTED]",
                     FeatureType.Flag,
                     longDescription: "Instead of outputting the files to folder, files will be rebuilt to Torrent LZ4 (TLZ4) files. This format is based on the LZ4 file format as defined at https://github.com/lz4/lz4 but with custom header information. This is currently unused by any major application.");
             }
         }
+
+        public const string TorrentRarValue = "torrent-rar";
         private static Feature _torrentRarFlag
         {
             get
             {
                 return new Feature(
-                    "torrent-rar",
+                    TorrentRarValue,
                     new List<string>() { "-trar", "--torrent-rar" },
                     "Enable Torrent RAR output [UNIMPLEMENTED]",
                     FeatureType.Flag,
                     longDescription: "Instead of outputting files to folder, files will be rebuilt to Torrent RAR (TRAR) files. This format is based on the RAR propietary format but with custom header information. This is currently unused by any major application.");
             }
         }
+
+        public const string TorrentXzValue = "torrent-xz";
         private static Feature _torrentXzFlag
         {
             get
             {
                 return new Feature(
-                    "torrent-xz",
+                    TorrentXzValue,
                     new List<string>() { "-txz", "--torrent-xz" },
                     "Enable Torrent XZ output [UNSUPPORTED]",
                     FeatureType.Flag,
                     longDescription: "Instead of outputting files to folder, files will be rebuilt to Torrent XZ (TXZ) files. This format is based on the LZMA container format XZ, but with custom header information. This is currently unused by any major application. Currently does not produce proper Torrent-compatible outputs.");
             }
         }
+
+        public const string TorrentZipValue = "torrent-zip";
         private static Feature _torrentZipFlag
         {
             get
             {
                 return new Feature(
-                    "torrent-zip",
+                    TorrentZipValue,
                     new List<string>() { "-tzip", "--torrent-zip" },
                     "Enable Torrent Zip output",
                     FeatureType.Flag,
                     longDescription: "Instead of outputting files to folder, files will be rebuilt to TorrentZip (TZip) files. This format is based on the ZIP archive format, but with custom header information. This is primarily used by external tool RomVault (http://www.romvault.com/) and is already widely used.");
             }
         }
+
+        public const string TorrentZpaqValue = "torrent-zpaq";
         private static Feature _torrentZpaqFlag
         {
             get
             {
                 return new Feature(
-                    "torrent-zpaq",
+                    TorrentZpaqValue,
                     new List<string>() { "-tzpaq", "--torrent-zpaq" },
                     "Enable Torrent ZPAQ output [UNIMPLEMENTED]",
                     FeatureType.Flag,
                     longDescription: "Instead of outputting the files to folder, files will be rebuilt to Torrent ZPAQ (TZPAQ) files. This format is based on the ZPAQ file format as defined at https://github.com/zpaq/zpaq but with custom header information. This is currently unused by any major application.");
             }
         }
+
+        public const string TorrentZstdValue = "torrent-zstd";
         private static Feature _torrentZstdFlag
         {
             get
             {
                 return new Feature(
-                    "torrent-zstd",
+                    TorrentZstdValue,
                     new List<string>() { "-tzstd", "--torrent-zstd" },
                     "Enable Torrent Zstd output [UNIMPLEMENTED]",
                     FeatureType.Flag,
                     longDescription: "Instead of outputting the files to folder, files will be rebuilt to Torrent Zstd (TZstd) files. This format is based on the Zstd file format as defined at https://github.com/skbkontur/ZstdNet but with custom header information. This is currently unused by any major application.");
             }
         }
+
+        public const string TrimValue = "trim";
         private static Feature _trimFlag
         {
             get
             {
                 return new Feature(
-                    "trim",
+                    TrimValue,
                     new List<string>() { "-trim", "--trim" },
                     "Trim file names to fit NTFS length",
                     FeatureType.Flag,
                     longDescription: "In the cases where files will have too long a name, this allows for trimming the name of the files to the NTFS maximum length at most.");
             }
         }
+
+        public const string TypeValue = "type";
         private static Feature _typeFlag
         {
             get
             {
                 return new Feature(
-                    "type",
+                    TypeValue,
                     new List<string>() { "-ts", "--type" },
                     "Split DAT(s) or folder by file types (rom/disk)",
                     FeatureType.Flag,
                     longDescription: "For a DAT, or set of DATs, allow for splitting based on the types of the files, specifically if the type is a rom or a disk.");
             }
         }
+
+        public const string UpdateDatValue = "update-dat";
         private static Feature _updateDatFlag
         {
             get
             {
                 return new Feature(
-                    "update-dat",
+                    UpdateDatValue,
                     new List<string>() { "-ud", "--update-dat" },
                     "Output updated DAT to output directory",
                     FeatureType.Flag,
                     longDescription: "Once the files that were able to rebuilt are taken care of, a DAT of the files that could not be matched will be output to the output directory.");
             }
         }
+
+        public const string UpdateDescriptionValue = "update-description";
         private static Feature _updateDescriptionFlag
         {
             get
             {
                 return new Feature(
-                    "update-description",
+                    UpdateDescriptionValue,
                     new List<string>() { "-udd", "--update-description" },
                     "Update machine descriptions from base DATs",
                     FeatureType.Flag,
                     longDescription: "This flag enables updating of machine descriptions from base DATs.");
             }
         }
+
+        public const string UpdateGameTypeValue = "update-game-type";
         private static Feature _updateGameTypeFlag
         {
             get
             {
                 return new Feature(
-                    "update-game-type",
+                    UpdateGameTypeValue,
                     new List<string>() { "-ugt", "--update-game-type" },
                     "Update machine type from base DATs",
                     FeatureType.Flag,
                     longDescription: "This flag enables updating of machine type from base DATs.");
             }
         }
+
+        public const string UpdateHashesValue = "update-hashes";
         private static Feature _updateHashesFlag
         {
             get
             {
                 return new Feature(
-                    "update-hashes",
+                    UpdateHashesValue,
                     new List<string>() { "-uh", "--update-hashes" },
                     "Update hashes from base DATs",
                     FeatureType.Flag,
                     longDescription: "This flag enables updating of hashes from base DATs.");
             }
         }
+
+        public const string UpdateManufacturerValue = "update-manufacturer";
         private static Feature _updateManufacturerFlag
         {
             get
             {
                 return new Feature(
-                    "update-manufacturer",
+                    UpdateManufacturerValue,
                     new List<string>() { "-um", "--update-manufacturer" },
                     "Update machine manufacturers from base DATs",
                     FeatureType.Flag,
                     longDescription: "This flag enables updating of machine manufacturers from base DATs.");
             }
         }
+
+        public const string UpdateNamesValue = "update-names";
         private static Feature _updateNamesFlag
         {
             get
             {
                 return new Feature(
-                    "update-names",
+                    UpdateNamesValue,
                     new List<string>() { "-un", "--update-names" },
                     "Update item names from base DATs",
                     FeatureType.Flag,
                     longDescription: "This flag enables updating of item names from base DATs.");
             }
         }
+
+        public const string UpdateParentsValue = "update-parents";
         private static Feature _updateParentsFlag
         {
             get
             {
                 return new Feature(
-                    "update-parents",
+                    UpdateParentsValue,
                     new List<string>() { "-up", "--update-parents" },
                     "Update machine parents from base DATs",
                     FeatureType.Flag,
                     longDescription: "This flag enables updating of machine parents (romof, cloneof, sampleof) from base DATs.");
             }
         }
+
+        public const string UpdateYearValue = "update-year";
         private static Feature _updateYearFlag
         {
             get
             {
                 return new Feature(
-                    "update-year",
+                    UpdateYearValue,
                     new List<string>() { "-uy", "--update-year" },
                     "Update machine years from base DATs",
                     FeatureType.Flag,
@@ -1058,12 +1231,13 @@ namespace SabreTools
 
         #region Private Int32 features
 
+        public const string GzInt32Value = "gz";
         private static Feature _gzInt32Input
         {
             get
             {
                 return new Feature(
-                    "gz",
+                    GzInt32Value,
                     new List<string>() { "-gz", "--gz" },
                     "Set scanning level for GZip archives (default 1)",
                     FeatureType.Int32,
@@ -1073,12 +1247,14 @@ namespace SabreTools
 2 - Only hash archive itself (treat like a regular file)");
             }
         }
+
+        public const string RarInt32Value = "rar";
         private static Feature _rarInt32Input
         {
             get
             {
                 return new Feature(
-                    "rar",
+                    RarInt32Value,
                     new List<string>() { "-rar", "--rar" },
                     "Set scanning level for RAR archives (default 1)",
                     FeatureType.Int32,
@@ -1088,12 +1264,14 @@ namespace SabreTools
 2 - Only hash archive itself (treat like a regular file)");
             }
         }
+
+        public const string SevenZipInt32Value = "7z";
         private static Feature _sevenZipInt32Input
         {
             get
             {
                 return new Feature(
-                    "7z",
+                    SevenZipInt32Value,
                     new List<string>() { "-7z", "--7z" },
                     "Set scanning level for 7zip archives (default 1)",
                     FeatureType.Int32,
@@ -1103,24 +1281,28 @@ namespace SabreTools
 2 - Only hash archive itself (treat like a regular file)");
             }
         }
+
+        public const string ThreadsInt32Value = "threads";
         private static Feature _threadsInt32Input
         {
             get
             {
                 return new Feature(
-                    "threads",
+                    ThreadsInt32Value,
                     new List<string>() { "-mt", "--threads" },
                     "Amount of threads to use (default = # cores)",
                     FeatureType.Int32,
                     longDescription: "Optionally, set the number of threads to use for the multithreaded operations. The default is the number of available machine threads; -1 means unlimited threads created.");
             }
         }
+
+        public const string ZipInt32Value = "zip";
         private static Feature _zipInt32Input
         {
             get
             {
                 return new Feature(
-                    "zip",
+                    ZipInt32Value,
                     new List<string>() { "-zip", "--zip" },
                     "Set scanning level for Zip archives (default 1)",
                     FeatureType.Int32,
@@ -1135,12 +1317,13 @@ namespace SabreTools
 
         #region Private Int64 features
 
+        public const string RadixInt64Value = "radix";
         private static Feature _radixInt64Input
         {
             get
             {
                 return new Feature(
-                    "radix",
+                    RadixInt64Value,
                     new List<string>() { "-rad", "--radix" },
                     "Set the midpoint to split at",
                     FeatureType.Int64,
@@ -1152,108 +1335,125 @@ namespace SabreTools
 
         #region Private List<string> features
 
+        public const string BaseDatListValue = "base-dat";
         private static Feature _baseDatListInput
         {
             get
             {
                 return new Feature(
-                    "base-dat",
+                    BaseDatListValue,
                     new List<string>() { "-bd", "--base-dat" },
                     "Add a base DAT for processing",
                     FeatureType.List,
                     longDescription: "Add a DAT or folder of DATs to the base set to be used for all operations. Multiple instances of this flag are allowed.");
             }
         }
+
+        public const string CrcListValue = "crc";
         private static Feature _crcListInput
         {
             get
             {
                 return new Feature(
-                    "crc",
+                    CrcListValue,
                     new List<string>() { "-crc", "--crc" },
                     "Filter by CRC hash",
                     FeatureType.List,
                     longDescription: "Include only items with this CRC hash in the output. Additionally, the user can specify an exact match or full C#-style regex for pattern matching. Multiple instances of this flag are allowed.");
             }
         }
+
+        public const string DatListValue = "dat";
         private static Feature _datListInput
         {
             get
             {
                 return new Feature(
-                    "dat",
+                    DatListValue,
                     new List<string>() { "-dat", "--dat" },
                     "Input DAT to be used",
                     FeatureType.List,
                     longDescription: "User-supplied DAT for use in all operations. Multiple instances of this flag are allowed.");
             }
         }
+
+        public const string ExcludeFieldListValue = "exclude-field";
         private static Feature _excludeFieldListInput 
         {
             get
             {
                 return new Feature(
-                    "exclude-field",
+                    ExcludeFieldListValue,
                     new List<string>() { "-ef", "--exclude-field" },
                     "Exclude a game/rom field from outputs",
                     FeatureType.List,
                     longDescription: "Exclude any valid item or machine field from outputs. Examples include: romof, publisher, and offset.");
             }
         }
+        
+        public const string ExtAListValue = "exta";
         private static Feature _extaListInput
         {
             get
             {
                 return new Feature(
-                    "exta",
+                    ExtAListValue,
                     new List<string>() { "-exta", "--exta" },
                     "Set extension to be included in first DAT",
                     FeatureType.List,
                     longDescription: "Set the extension to be used to populate the first DAT. Multiple instances of this flag are allowed.");
             }
         }
+
+        public const string ExtBListValue = "extb";
         private static Feature _extbListInput
         {
             get
             {
                 return new Feature(
-                    "extb",
+                    ExtBListValue,
                     new List<string>() { "-extb", "--extb" },
                     "Set extension to be included in second DAT",
                     FeatureType.List,
                     longDescription: "Set the extension to be used to populate the second DAT. Multiple instances of this flag are allowed.");
             }
         }
+
+        public const string GameDescriptionListValue = "game-description";
         private static Feature _gameDescriptionListInput
         {
             get
             {
                 return new Feature(
-                    "game-description",
+                    GameDescriptionListValue,
                     new List<string>() { "-gd", "--game-description" },
                     "Filter by game description",
                     FeatureType.List,
                     longDescription: "Include only items with this game description in the output. Additionally, the user can specify an exact match or full C#-style regex for pattern matching. Multiple instances of this flag are allowed.");
             }
         }
+
+        public const string GameNameListValue = "game-name";
         private static Feature _gameNameListInput
         {
             get
             {
                 return new Feature(
-                    "game-name",
+                    GameNameListValue,
                     new List<string>() { "-gn", "--game-name" },
                     "Filter by game name",
                     FeatureType.List,
                     longDescription: "Include only items with this game name in the output. Additionally, the user can specify an exact match or full C#-style regex for pattern matching. Multiple instances of this flag are allowed.");
             }
         }
+
+        public const string GameTypeListValue = "game-type";
         private static Feature _gameTypeListInput
         {
             get
             {
                 return new Feature(
-                    "game-type",
+                    GameTypeListValue,
                     new List<string>() { "-gt", "--game-type" },
                     "Include only games with a given type",
                     FeatureType.List,
@@ -1261,84 +1461,98 @@ namespace SabreTools
 Possible values are: None, Bios, Device, Mechanical");
             }
         }
+
+        public const string ItemNameListValue = "item-name";
         private static Feature _itemNameListInput
         {
             get
             {
                 return new Feature(
-                    "item-name",
+                    ItemNameListValue,
                     new List<string>() { "-rn", "--item-name" },
                     "Filter by item name",
                     FeatureType.List,
                     longDescription: "Include only items with this item name in the output. Additionally, the user can specify an exact match or full C#-style regex for pattern matching. Multiple instances of this flag are allowed.");
             }
         }
+
+        public const string ItemTypeListValue = "item-type";
         private static Feature _itemTypeListInput
         {
             get
             {
                 return new Feature(
-                    "item-type",
+                    ItemTypeListValue,
                     new List<string>() { "-rt", "--item-type" },
                     "Filter by item type",
                     FeatureType.List,
                     longDescription: "Include only items with this item type in the output. Additionally, the user can specify an exact match or full C#-style regex for pattern matching. Multiple instances of this flag are allowed.");
             }
         }
+
+        public const string Md5ListValue = "md5";
         private static Feature _md5ListInput
         {
             get
             {
                 return new Feature(
-                    "md5",
+                    Md5ListValue,
                     new List<string>() { "-md5", "--md5" },
                     "Filter by MD5 hash",
                     FeatureType.List,
                     longDescription: "Include only items with this MD5 hash in the output. Additionally, the user can specify an exact match or full C#-style regex for pattern matching. Multiple instances of this flag are allowed.");
             }
         }
+
+        public const string NotCrcListValue = "not-crc";
         private static Feature _notCrcListInput
         {
             get
             {
                 return new Feature(
-                    "not-crc",
+                    NotCrcListValue,
                     new List<string>() { "-ncrc", "--not-crc" },
                     "Filter by not CRC hash",
                     FeatureType.List,
                     longDescription: "Include only items without this CRC hash in the output. Additionally, the user can specify an exact match or full C#-style regex for pattern matching. Multiple instances of this flag are allowed.");
             }
         }
+
+        public const string NotGameDescriptionListValue = "not-game-description";
         private static Feature _notGameDescriptionListInput
         {
             get
             {
                 return new Feature(
-                    "not-game-description",
+                    NotGameDescriptionListValue,
                     new List<string>() { "-ngd", "--not-game-description" },
                     "Filter by not game description",
                     FeatureType.List,
                     longDescription: "Include only items without this game description in the output. Additionally, the user can specify an exact match or full C#-style regex for pattern matching. Multiple instances of this flag are allowed.");
             }
         }
+
+        public const string NotGameNameListValue = "not-game-name";
         private static Feature _notGameNameListInput
         {
             get
             {
                 return new Feature(
-                    "not-game-name",
+                    NotGameNameListValue,
                     new List<string>() { "-ngn", "--not-game-name" },
                     "Filter by not game name",
                     FeatureType.List,
                     longDescription: "Include only items without this game name in the output. Additionally, the user can specify an exact match or full C#-style regex for pattern matching. Multiple instances of this flag are allowed.");
             }
         }
+
+        public const string NotGameTypeListValue = "not-game-type";
         private static Feature _notGameTypeListInput
         {
             get
             {
                 return new Feature(
-                    "not-game-type",
+                    NotGameTypeListValue,
                     new List<string>() { "-ngt", "--not-game-type" },
                     "Exclude only games with a given type",
                     FeatureType.List,
@@ -1346,108 +1560,126 @@ Possible values are: None, Bios, Device, Mechanical");
 Possible values are: None, Bios, Device, Mechanical");
             }
         }
+
+        public const string NotItemNameListValue = "not-item-name";
         private static Feature _notItemNameListInput
         {
             get
             {
                 return new Feature(
-                    "not-item-name",
+                    NotItemNameListValue,
                     new List<string>() { "-nrn", "--not-item-name" },
                     "Filter by not item name",
                     FeatureType.List,
                     longDescription: "Include only items without this item name in the output. Additionally, the user can specify an exact match or full C#-style regex for pattern matching. Multiple instances of this flag are allowed.");
             }
         }
+
+        public const string NotItemTypeListValue = "not-item-type";
         private static Feature _notItemTypeListInput
         {
             get
             {
                 return new Feature(
-                    "not-item-type",
+                    NotItemTypeListValue,
                     new List<string>() { "-nrt", "--not-item-type" },
                     "Filter by not item type",
                     FeatureType.List,
                     longDescription: "Include only items without this item type in the output. Additionally, the user can specify an exact match or full C#-style regex for pattern matching. Multiple instances of this flag are allowed.");
             }
         }
+
+        public const string NotMd5ListValue = "not-md5";
         private static Feature _notMd5ListInput
         {
             get
             {
                 return new Feature(
-                    "not-md5",
+                    NotMd5ListValue,
                     new List<string>() { "-nmd5", "--not-md5" },
                     "Filter by not MD5 hash",
                     FeatureType.List,
                     longDescription: "Include only items without this MD5 hash in the output. Additionally, the user can specify an exact match or full C#-style regex for pattern matching. Multiple instances of this flag are allowed.");
             }
         }
+
+        public const string NotRipeMd160ListValue = "not-ripemd160";
         private static Feature _notRipeMd160ListInput
         {
             get
             {
                 return new Feature(
-                    "not-ripemd160",
+                    NotRipeMd160ListValue,
                     new List<string>() { "-nripemd160", "--not-ripemd160" },
                     "Filter by not RIPEMD160 hash",
                     FeatureType.List,
                     longDescription: "Include only items without this RIPEMD160 hash in the output. Additionally, the user can specify an exact match or full C#-style regex for pattern matching. Multiple instances of this flag are allowed.");
             }
         }
+
+        public const string NotSha1ListValue = "not-sha1";
         private static Feature _notSha1ListInput
         {
             get
             {
                 return new Feature(
-                    "not-sha1",
+                    NotSha1ListValue,
                     new List<string>() { "-nsha1", "--not-sha1" },
                     "Filter by not SHA-1 hash",
                     FeatureType.List,
                     longDescription: "Include only items without this SHA-1 hash in the output. Additionally, the user can specify an exact match or full C#-style regex for pattern matching. Multiple instances of this flag are allowed.");
             }
         }
+
+        public const string NotSha256ListValue = "not-sha256";
         private static Feature _notSha256ListInput
         {
             get
             {
                 return new Feature(
-                    "not-sha256",
+                    NotSha256ListValue,
                     new List<string>() { "-nsha256", "--not-sha256" },
                     "Filter by not SHA-256 hash",
                     FeatureType.List,
                     longDescription: "Include only items without this SHA-256 hash in the output. Additionally, the user can specify an exact match or full C#-style regex for pattern matching. Multiple instances of this flag are allowed.");
             }
         }
+
+        public const string NotSha384ListValue = "not-sha384";
         private static Feature _notSha384ListInput
         {
             get
             {
                 return new Feature(
-                    "not-sha384",
+                    NotSha384ListValue,
                     new List<string>() { "-nsha384", "--not-sha384" },
                     "Filter by not SHA-384 hash",
                     FeatureType.List,
                     longDescription: "Include only items without this SHA-384 hash in the output. Additionally, the user can specify an exact match or full C#-style regex for pattern matching. Multiple instances of this flag are allowed.");
             }
         }
+
+        public const string NotSha512ListValue = "not-sha512";
         private static Feature _notSha512ListInput
         {
             get
             {
                 return new Feature(
-                    "not-sha512",
+                    NotSha512ListValue,
                     new List<string>() { "-nsha512", "--not-sha512" },
                     "Filter by not SHA-512 hash",
                     FeatureType.List,
                     longDescription: "Include only items without this SHA-512 hash in the output. Additionally, the user can specify an exact match or full C#-style regex for pattern matching. Multiple instances of this flag are allowed.");
             }
         }
+
+        public const string NotStatusListValue = "not-status";
         private static Feature _notStatusListInput
         {
             get
             {
                 return new Feature(
-                    "not-status",
+                    NotStatusListValue,
                     new List<string>() { "-nis", "--not-status" },
                     "Exclude only items with a given status",
                     FeatureType.List,
@@ -1455,12 +1687,14 @@ Possible values are: None, Bios, Device, Mechanical");
 Possible values are: None, Good, BadDump, Nodump, Verified");
             }
         }
+
+        public const string OutputTypeListValue = "output-type";
         private static Feature _outputTypeListInput
         {
             get
             {
                 return new Feature(
-                    "output-type",
+                    OutputTypeListValue,
                     new List<string>() { "-ot", "--output-type" },
                     "Output DATs to a specified format",
                     FeatureType.List,
@@ -1493,12 +1727,14 @@ Possible values are:
     xml, logiqx      - Logiqx XML");
             }
         }
+
+        public const string ReportTypeListValue = "report-type";
         private static Feature _reportTypeListInput
         {
             get
             {
                 return new Feature(
-                    "report-type",
+                    ReportTypeListValue,
                     new List<string>() { "-srt", "--report-type" },
                     "Output statistics to a specified format",
                     FeatureType.List,
@@ -1513,72 +1749,84 @@ Possible values are:
     tsv              - Standardized Tab-Separated Value");
             }
         }
+
+        public const string RipeMd160ListValue = "ripemd160";
         private static Feature _ripeMd160ListInput
         {
             get
             {
                 return new Feature(
-                    "ripemd160",
+                    RipeMd160ListValue,
                     new List<string>() { "-ripemd160", "--ripemd160" },
                     "Filter by RIPEMD160 hash",
                     FeatureType.List,
                     longDescription: "Include only items with this RIPEMD160 hash in the output. Additionally, the user can specify an exact match or full C#-style regex for pattern matching. Multiple instances of this flag are allowed.");
             }
         }
+
+        public const string Sha1ListValue = "sha1";
         private static Feature _sha1ListInput
         {
             get
             {
                 return new Feature(
-                    "sha1",
+                    Sha1ListValue,
                     new List<string>() { "-sha1", "--sha1" },
                     "Filter by SHA-1 hash",
                     FeatureType.List,
                     longDescription: "Include only items with this SHA-1 hash in the output. Additionally, the user can specify an exact match or full C#-style regex for pattern matching. Multiple instances of this flag are allowed.");
             }
         }
+
+        public const string Sha256ListValue = "sha256";
         private static Feature _sha256ListInput
         {
             get
             {
                 return new Feature(
-                    "sha256",
+                    Sha256ListValue,
                     new List<string>() { "-sha256", "--sha256" },
                     "Filter by SHA-256 hash",
                     FeatureType.List,
                     longDescription: "Include only items with this SHA-256 hash in the output. Additionally, the user can specify an exact match or full C#-style regex for pattern matching. Multiple instances of this flag are allowed.");
             }
         }
+
+        public const string Sha384ListValue = "sha384";
         private static Feature _sha384ListInput
         {
             get
             {
                 return new Feature(
-                    "sha384",
+                    Sha384ListValue,
                     new List<string>() { "-sha384", "--sha384" },
                     "Filter by SHA-384 hash",
                     FeatureType.List,
                     longDescription: "Include only items with this SHA-384 hash in the output. Additionally, the user can specify an exact match or full C#-style regex for pattern matching. Multiple instances of this flag are allowed.");
             }
         }
+
+        public const string Sha512ListValue = "sha512";
         private static Feature _sha512ListInput
         {
             get
             {
                 return new Feature(
-                    "sha512",
+                    Sha512ListValue,
                     new List<string>() { "-sha512", "--sha512" },
                     "Filter by SHA-512 hash",
                     FeatureType.List,
                     longDescription: "Include only items with this SHA-512 hash in the output. Additionally, the user can specify an exact match or full C#-style regex for pattern matching. Multiple instances of this flag are allowed.");
             }
         }
+
+        public const string StatusListValue = "status";
         private static Feature _statusListInput
         {
             get
             {
                 return new Feature(
-                    "status",
+                    StatusListValue,
                     new List<string>() { "-is", "--status" },
                     "Include only items with a given status",
                     FeatureType.List,
@@ -1586,12 +1834,14 @@ Possible values are:
 Possible values are: None, Good, BadDump, Nodump, Verified");
             }
         }
+
+        public const string UpdateFieldListValue = "update-field";
         private static Feature _updateFieldListInput
         {
             get
             {
                 return new Feature(
-                    "update-field",
+                    UpdateFieldListValue,
                     new List<string>() { "-uf", "--update-field" },
                     "Update a game/rom field from base DATs",
                     FeatureType.List,
@@ -1603,120 +1853,139 @@ Possible values are: None, Good, BadDump, Nodump, Verified");
 
         #region Private String features
 
+        public const string AddExtensionStringValue = "add-extension";
         private static Feature _addExtensionStringInput
         {
             get
             {
                 return new Feature(
-                    "add-extension",
+                    AddExtensionStringValue,
                     new List<string>() { "-ae", "--add-extension" },
                     "Add an extension to each item",
                     FeatureType.String,
                     longDescription: "Add a postfix extension to each full item name.");
             }
         }
+
+        public const string AuthorStringValue = "author";
         private static Feature _authorStringInput
         {
             get
             {
                 return new Feature(
-                    "author",
+                    AuthorStringValue,
                     new List<string>() { "-au", "--author" },
                     "Set the author of the DAT",
                     FeatureType.String,
                     longDescription: "Set the author header field for the output DAT(s)");
             }
         }
+
+        public const string CategoryStringValue = "category";
         private static Feature _categoryStringInput
         {
             get
             {
                 return new Feature(
-                    "category",
+                    CategoryStringValue,
                     new List<string>() { "-c", "--category" },
                     "Set the category of the DAT",
                     FeatureType.String,
                     longDescription: "Set the category header field for the output DAT(s)");
             }
         }
+
+        public const string CommentStringValue = "comment";
         private static Feature _commentStringInput
         {
             get
             {
                 return new Feature(
-                    "comment",
+                    CommentStringValue,
                     new List<string>() { "-co", "--comment" },
                     "Set a new comment of the DAT",
                     FeatureType.String,
                     longDescription: "Set the comment header field for the output DAT(s)");
             }
         }
+
+        public const string DateStringValue = "date";
         private static Feature _dateStringInput
         {
             get
             {
                 return new Feature(
-                    "date",
+                    DateStringValue,
                     new List<string>() { "-da", "--date" },
                     "Set a new date",
                     FeatureType.String,
                     longDescription: "Set the date header field for the output DAT(s)");
             }
         }
+
+        public const string DescriptionStringValue = "description";
         private static Feature _descriptionStringInput
         {
             get
             {
                 return new Feature(
-                    "description",
+                    DescriptionStringValue,
                     new List<string>() { "-de", "--description" },
                     "Set the description of the DAT",
                     FeatureType.String,
                     longDescription: "Set the description header field for the output DAT(s)");
             }
         }
+
+        public const string EmailStringValue = "email";
         private static Feature _emailStringInput
         {
             get
             {
                 return new Feature(
-                    "email",
+                    EmailStringValue,
                     new List<string>() { "-em", "--email" },
                     "Set a new email of the DAT",
                     FeatureType.String,
                     longDescription: "Set the email header field for the output DAT(s)");
             }
         }
+
+        public const string EqualStringValue = "equal";
         private static Feature _equalStringInput
         {
             get
             {
                 return new Feature(
-                    "equal",
+                    EqualStringValue,
                     new List<string>() { "-seq", "--equal" },
                     "Filter by size ==",
                     FeatureType.String,
                     longDescription: "Only include items of this exact size in the output DAT. Users can specify either a regular integer number or a number with a standard postfix. e.g. 8kb => 8000 or 8kib => 8192");
             }
         }
+
+        public const string FilenameStringValue = "filename";
         private static Feature _filenameStringInput
         {
             get
             {
                 return new Feature(
-                    "filename",
+                    FilenameStringValue,
                     new List<string>() { "-f", "--filename" },
                     "Set the external name of the DAT",
                     FeatureType.String,
                     longDescription: "Set the external filename for the output DAT(s)");
             }
         }
+
+        public const string ForceMergingStringInput = "forcemerging";
         private static Feature _forcemergingStringInput
         {
             get
             {
                 return new Feature(
-                    "forcemerging",
+                    ForceMergingStringInput,
                     new List<string>() { "-fm", "--forcemerging" },
                     "Set force merging",
                     FeatureType.String,
@@ -1724,12 +1993,14 @@ Possible values are: None, Good, BadDump, Nodump, Verified");
 Possible values are: None, Split, Merged, Nonmerged, Full");
             }
         }
+
+        public const string ForceNodumpStringInput = "forcenodump";
         private static Feature _forcenodumpStringInput
         {
             get
             {
                 return new Feature(
-                    "forcenodump",
+                    ForceNodumpStringInput,
                     new List<string>() { "-fn", "--forcenodump" },
                     "Set force nodump",
                     FeatureType.String,
@@ -1737,12 +2008,14 @@ Possible values are: None, Split, Merged, Nonmerged, Full");
 Possible values are: None, Obsolete, Required, Ignore");
             }
         }
+
+        public const string ForcePackingStringInput = "forcepacking";
         private static Feature _forcepackingStringInput
         {
             get
             {
                 return new Feature(
-                    "forcepacking",
+                    ForcePackingStringInput,
                     new List<string>() { "-fp", "--forcepacking" },
                     "Set force packing",
                     FeatureType.String,
@@ -1750,24 +2023,28 @@ Possible values are: None, Obsolete, Required, Ignore");
 Possible values are: None, Zip, Unzip");
             }
         }
+
+        public const string GreaterStringValue = "greater";
         private static Feature _greaterStringInput
         {
             get
             {
                 return new Feature(
-                    "greater",
+                    GreaterStringValue,
                     new List<string>() { "-sgt", "--greater" },
                     "Filter by size >=",
                     FeatureType.String,
                     longDescription: "Only include items whose size is greater than or equal to this value in the output DAT. Users can specify either a regular integer number or a number with a standard postfix. e.g. 8kb => 8000 or 8kib => 8192");
             }
         }
+
+        public const string HeaderStringValue = "header";
         private static Feature _headerStringInput
         {
             get
             {
                 return new Feature(
-                    "header",
+                    HeaderStringValue,
                     new List<string>() { "-h", "--header" },
                     "Set a header skipper to use, blank means all",
                     FeatureType.String,
@@ -1775,60 +2052,70 @@ Possible values are: None, Zip, Unzip");
 
             }
         }
+
+        public const string HomepageStringValue = "homepage";
         private static Feature _homepageStringInput
         {
             get
             {
                 return new Feature(
-                    "homepage",
+                    HomepageStringValue,
                     new List<string>() { "-hp", "--homepage" },
                     "Set a new homepage of the DAT",
                     FeatureType.String,
                     longDescription: "Set the homepage header field for the output DAT(s)");
             }
         }
+
+        public const string LessStringValue = "less";
         private static Feature _lessStringInput
         {
             get
             {
                 return new Feature(
-                    "less",
+                    LessStringValue,
                     new List<string>() { "-slt", "--less" },
                     "Filter by size =<",
                     FeatureType.String,
                     longDescription: "Only include items whose size is less than or equal to this value in the output DAT. Users can specify either a regular integer number or a number with a standard postfix. e.g. 8kb => 8000 or 8kib => 8192");
             }
         }
+
+        public const string NameStringValue = "name";
         private static Feature _nameStringInput
         {
             get
             {
                 return new Feature(
-                    "name",
+                    NameStringValue,
                     new List<string>() { "-n", "--name" },
                     "Set the internal name of the DAT",
                     FeatureType.String,
                     longDescription: "Set the name header field for the output DAT(s)");
             }
         }
+
+        public const string OutputDirStringValue = "output-dir";
         private static Feature _outputDirStringInput
         {
             get
             {
                 return new Feature(
-                    "output-dir",
+                    OutputDirStringValue,
                     new List<string>() { "-out", "--output-dir" },
                     "Output directory",
                     FeatureType.String,
                     longDescription: "This sets an output folder to be used when the files are created. If a path is not defined, the runtime directory is used instead.");
             }
         }
+
+        public const string PostfixStringValue = "postfix";
         private static Feature _postfixStringInput
         {
             get
             {
                 return new Feature(
-                    "postfix",
+                    PostfixStringValue,
                     new List<string>() { "-post", "--postfix" },
                     "Set postfix for all lines",
                     FeatureType.String,
@@ -1849,12 +2136,14 @@ Some special strings that can be used:
 - %size% - Replaced with the size");
             }
         }
+
+        public const string PrefixStringValue = "prefix";
         private static Feature _prefixStringInput
         {
             get
             {
                 return new Feature(
-                    "prefix",
+                    PrefixStringValue,
                     new List<string>() { "-pre", "--prefix" },
                     "Set prefix for all lines",
                     FeatureType.String,
@@ -1874,72 +2163,84 @@ Some special strings that can be used:
 - %size% - Replaced with the size");
             }
         }
+
+        public const string ReplaceExtensionStringValue = "replace-extension";
         private static Feature _replaceExtensionStringInput
         {
             get
             {
                 return new Feature(
-                    "replace-extension",
+                    ReplaceExtensionStringValue,
                     new List<string>() { "-rep", "--replace-extension" },
                     "Replace all extensions with specified",
                     FeatureType.String,
                     longDescription: "When an extension exists, replace it with the provided instead.");
             }
         }
+
+        public const string RootStringValue = "root";
         private static Feature _rootStringInput
         {
             get
             {
                 return new Feature(
-                    "root",
+                    RootStringValue,
                     new List<string>() { "-r", "--root" },
                     "Set a new rootdir",
                     FeatureType.String,
                     longDescription: "Set the rootdir (as used by SuperDAT mode) for the output DAT(s).");
             }
         }
+
+        public const string RootDirStringValue = "root-dir";
         private static Feature _rootDirStringInput
         {
             get
             {
                 return new Feature(
-                    "root-dir",
+                    RootDirStringValue,
                     new List<string>() { "-rd", "--root-dir" },
                     "Set the root directory for calc",
                     FeatureType.String,
                     longDescription: "In the case that the files will not be stored from the root directory, a new root can be set for path length calculations.");
             }
         }
+
+        public const string TempStringValue = "temp";
         private static Feature _tempStringInput
         {
             get
             {
                 return new Feature(
-                    "temp",
+                    TempStringValue,
                     new List<string>() { "-t", "--temp" },
                     "Set the temporary directory to use",
                     FeatureType.String,
                     longDescription: "Optionally, a temp folder can be supplied in the case the default temp directory is not preferred.");
             }
         }
+
+        public const string UrlStringValue = "url";
         private static Feature _urlStringInput
         {
             get
             {
                 return new Feature(
-                    "url",
+                    UrlStringValue,
                     new List<string>() { "-u", "--url" },
                     "Set a new URL of the DAT",
                     FeatureType.String,
                     longDescription: "Set the URL header field for the output DAT(s)");
             }
         }
+
+        public const string VersionStringValue = "version";
         private static Feature _versionStringInput
         {
             get
             {
                 return new Feature(
-                    "version",
+                    VersionStringValue,
                     new List<string>() { "-v", "--version" },
                     "Set the version of the DAT",
                     FeatureType.String,
@@ -2013,7 +2314,7 @@ Some special strings that can be used:
             datFromDir.AddFeature(_forcepackingStringInput);
             datFromDir.AddFeature(_archivesAsFilesFlag);
             datFromDir.AddFeature(_outputTypeListInput);
-                datFromDir[_outputTypeListInput.Name].AddFeature(_depreciatedFlag);
+                datFromDir[_outputTypeListInput.Name].AddFeature(_deprecatedFlag);
             datFromDir.AddFeature(_rombaFlag);
             datFromDir.AddFeature(_skipArchivesFlag);
             datFromDir.AddFeature(_skipFilesFlag);
@@ -2172,7 +2473,7 @@ The following systems have headers that this program can work with:
                 FeatureType.Flag,
                 longDescription: "This feature allows the user to split input DATs by a number of different possible criteria. See the individual input information for details. More than one split type is allowed at a time.");
             split.AddFeature(_outputTypeListInput);
-                split[_outputTypeListInput.Name].AddFeature(_depreciatedFlag);
+                split[_outputTypeListInput.Name].AddFeature(_deprecatedFlag);
             split.AddFeature(_outputDirStringInput);
             split.AddFeature(_inplaceFlag);
             split.AddFeature(_extensionFlag);
@@ -2236,7 +2537,7 @@ The stats that are outputted are as follows:
                 update[_outputTypeListInput].AddFeature(_replaceExtensionStringInput);
                 update[_outputTypeListInput].AddFeature(_removeExtensionsFlag);
                 update[_outputTypeListInput].AddFeature(_rombaFlag);
-                update[_outputTypeListInput].AddFeature(_depreciatedFlag);
+                update[_outputTypeListInput].AddFeature(_deprecatedFlag);
             update.AddFeature(_filenameStringInput);
             update.AddFeature(_nameStringInput);
             update.AddFeature(_descriptionStringInput);
