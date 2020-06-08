@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
-
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using SabreTools.Library.Data;
 using SabreTools.Library.Help;
 
@@ -7,6 +8,197 @@ namespace SabreTools
 {
     public partial class SabreTools
     {
+        #region Public Top-level Features
+
+        public const string HelpFeatureValue = "Help";
+        private static Feature _helpFeatureFlag
+        {
+            get
+            {
+                return new Feature(
+                    HelpFeatureValue,
+                    new List<string>() { "-?", "-h", "--help" },
+                    "Show this help",
+                    FeatureType.Flag,
+                    longDescription: "Built-in to most of the programs is a basic help text.");
+            }
+        }
+
+        public const string HelpDetailedFeatureValue = "Help (Detailed)";
+        private static Feature _helpDetailedFeatureFlag
+        {
+            get
+            {
+                return new Feature(
+                    HelpDetailedFeatureValue,
+                    new List<string>() { "-??", "-hd", "--help-detailed" },
+                    "Show this detailed help",
+                    FeatureType.Flag,
+                    longDescription: "Display a detailed help text to the screen.");
+            }
+        }
+
+        public const string ScriptFeatureValue = "Script";
+        private static Feature _scriptFeatureFlag
+        {
+            get
+            {
+                return new Feature(
+                    ScriptFeatureValue,
+                    "--script",
+                    "Enable script mode (no clear screen)",
+                    FeatureType.Flag,
+                    longDescription: "For times when SabreTools is being used in a scripted environment, the user may not want the screen to be cleared every time that it is called. This flag allows the user to skip clearing the screen on run just like if the console was being redirected.");
+            }
+        }
+
+        public const string DatFromDirFeatureValue = "DATFromDir";
+        private static Feature _datFromDirFeatureFlag
+        {
+            get
+            {
+                return new Feature(
+                    DatFromDirFeatureValue,
+                    new List<string>() { "-d", "--d2d", "--dfd" },
+                    "Create DAT(s) from an input directory",
+                    FeatureType.Flag,
+                    longDescription: "Create a DAT file from an input directory or set of files. By default, this will output a DAT named based on the input directory and the current date. It will also treat all archives as possible games and add all three hashes (CRC, MD5, SHA-1) for each file.");
+            }
+        }
+
+        public const string ExtractFeatureValue = "Extract";
+        private static Feature _extractFeatureFlag
+        {
+            get
+            {
+                return new Feature(
+                    ExtractFeatureValue,
+                    new List<string>() { "-ex", "--extract" },
+                    "Extract and remove copier headers",
+                    FeatureType.Flag,
+                    longDescription: @"This will detect, store, and remove copier headers from a file or folder of files. The headers are backed up and collated by the hash of the unheadered file. Files are then output without the detected copier header alongside the originals with the suffix .new. No input files are altered in the process.
+
+The following systems have headers that this program can work with:
+  - Atari 7800
+  - Atari Lynx
+  - Commodore PSID Music
+  - NEC PC - Engine / TurboGrafx 16
+  - Nintendo Famicom / Nintendo Entertainment System
+  - Nintendo Famicom Disk System
+  - Nintendo Super Famicom / Super Nintendo Entertainment System
+  - Nintendo Super Famicom / Super Nintendo Entertainment System SPC");
+            }
+        }
+
+        public const string RestoreFeatureValue = "Restore";
+        private static Feature _restoreFeatureFlag
+        {
+            get
+            {
+                return new Feature(
+                    RestoreFeatureValue,
+                    new List<string>() { "-re", "--restore" },
+                    "Restore header to file based on SHA-1",
+                    FeatureType.Flag,
+                    longDescription: @"This will make use of stored copier headers and reapply them to files if they match the included hash. More than one header can be applied to a file, so they will be output to new files, suffixed with .newX, where X is a number. No input files are altered in the process.
+
+The following systems have headers that this program can work with:
+  - Atari 7800
+  - Atari Lynx
+  - Commodore PSID Music
+  - NEC PC - Engine / TurboGrafx 16
+  - Nintendo Famicom / Nintendo Entertainment System
+  - Nintendo Famicom Disk System
+  - Nintendo Super Famicom / Super Nintendo Entertainment System
+  - Nintendo Super Famicom / Super Nintendo Entertainment System SPC");
+            }
+        }
+
+        public const string SortFeatureValue = "Sort";
+        private static Feature _sortFeatureFlag
+        {
+            get
+            {
+                return new Feature(
+                    SortFeatureValue,
+                    new List<string>() { "-ss", "--sort" },
+                    "Sort inputs by a set of DATs",
+                    FeatureType.Flag,
+                    longDescription: "This feature allows the user to quickly rebuild based on a supplied DAT file(s). By default all files will be rebuilt to uncompressed folders in the output directory.");
+            }
+        }
+
+        public const string SplitFeatureValue = "Split";
+        private static Feature _splitFeatureFlag
+        {
+            get
+            {
+                return new Feature(
+                    SplitFeatureValue,
+                    new List<string>() { "-sp", "--split" },
+                    "Split input DATs by a given criteria",
+                    FeatureType.Flag,
+                    longDescription: "This feature allows the user to split input DATs by a number of different possible criteria. See the individual input information for details. More than one split type is allowed at a time.");
+            }
+        }
+
+        public const string StatsFeatureValue = "Stats";
+        private static Feature _statsFeatureFlag
+        {
+            get
+            {
+                return new Feature(
+                    StatsFeatureValue,
+                    new List<string>() { "-st", "--stats" },
+                    "Get statistics on all input DATs",
+                    FeatureType.Flag,
+                    longDescription: @"This will output by default the combined statistics for all input DAT files.
+
+The stats that are outputted are as follows:
+- Total uncompressed size
+- Number of games found
+- Number of roms found
+- Number of disks found
+- Items that include a CRC
+- Items that include a MD5
+- Items that include a SHA-1
+- Items that include a SHA-256
+- Items that include a SHA-384
+- Items that include a SHA-512
+- Items with Nodump status");
+            }
+        }
+
+        public const string UpdateFeatureValue = "Update";
+        private static Feature _updateFeatureFlag
+        {
+            get
+            {
+                return new Feature(
+                    UpdateFeatureValue,
+                    new List<string>() { "-ud", "--update" },
+                    "Update and manipulate DAT(s)",
+                    FeatureType.Flag,
+                    longDescription: "This is the multitool part of the program, allowing for almost every manipulation to a DAT, or set of DATs. This is also a combination of many different programs that performed DAT manipulation that work better together.");
+            }
+        }
+
+        public const string VerifyFeatureValue = "Verify";
+        private static Feature _verifyFeatureFlag
+        {
+            get
+            {
+                return new Feature(
+                    VerifyFeatureValue,
+                    new List<string>() { "-ve", "--verify" },
+                    "Verify a folder against DATs",
+                    FeatureType.Flag,
+                    longDescription: "When used, this will use an input DAT or set of DATs to blindly check against an input folder. The base of the folder is considered the base for the combined DATs and games are either the directories or archives within. This will only do a direct verification of the items within and will create a fixdat afterwards for missing files.");
+            }
+        }
+
+        #endregion
+
         #region Private Flag features
 
         public const string AddBlankFilesValue = "add-blank-files";
@@ -2261,49 +2453,31 @@ Some special strings that can be used:
                 "Usage: SabreTools [option] [flags] [filename|dirname] ...",
                 string.Empty
             };
+
+            // Build the feature trees
             Help help = new Help(helpHeader);
 
             #region Help
 
-            Feature helpFeature = new Feature(
-                "Help",
-                new List<string>() { "-?", "-h", "--help" },
-                "Show this help",
-                FeatureType.Flag,
-                longDescription: "Built-in to most of the programs is a basic help text.");
+            Feature helpFeature = _helpFeatureFlag;
 
             #endregion
 
-            #region Detailed Help
+            #region Help (Detailed)
 
-            Feature detailedHelpFeature = new Feature(
-                "Help (Detailed)",
-                new List<string>() { "-??", "-hd", "--help-detailed" },
-                "Show this detailed help",
-                FeatureType.Flag,
-                longDescription: "Display a detailed help text to the screen.");
+            Feature detailedHelpFeature = _helpDetailedFeatureFlag;
 
             #endregion
 
             #region Script
 
-            Feature script = new Feature(
-                "Script",
-                "--script",
-                "Enable script mode (no clear screen)",
-                FeatureType.Flag,
-                longDescription: "For times when SabreTools is being used in a scripted environment, the user may not want the screen to be cleared every time that it is called. This flag allows the user to skip clearing the screen on run just like if the console was being redirected.");
+            Feature script = _scriptFeatureFlag;
 
             #endregion
 
             #region DATFromDir
 
-            Feature datFromDir = new Feature(
-                "DATFromDir",
-                new List<string>() { "-d", "--d2d", "--dfd" },
-                "Create DAT(s) from an input directory",
-                FeatureType.Flag,
-                longDescription: "Create a DAT file from an input directory or set of files. By default, this will output a DAT named based on the input directory and the current date. It will also treat all archives as possible games and add all three hashes (CRC, MD5, SHA-1) for each file.");
+            Feature datFromDir = _datFromDirFeatureFlag;
             datFromDir.AddFeature(_skipMd5Flag);
             datFromDir.AddFeature(_skipRipeMd160Flag);
             datFromDir.AddFeature(_skipSha1Flag);
@@ -2314,7 +2488,7 @@ Some special strings that can be used:
             datFromDir.AddFeature(_forcepackingStringInput);
             datFromDir.AddFeature(_archivesAsFilesFlag);
             datFromDir.AddFeature(_outputTypeListInput);
-                datFromDir[_outputTypeListInput.Name].AddFeature(_deprecatedFlag);
+                datFromDir[_outputTypeListInput].AddFeature(_deprecatedFlag);
             datFromDir.AddFeature(_rombaFlag);
             datFromDir.AddFeature(_skipArchivesFlag);
             datFromDir.AddFeature(_skipFilesFlag);
@@ -2377,22 +2551,7 @@ Some special strings that can be used:
 
             #region Extract
 
-            Feature extract = new Feature(
-                "Extract",
-                new List<string>() { "-ex", "--extract" },
-                "Extract and remove copier headers",
-                FeatureType.Flag,
-                longDescription: @"This will detect, store, and remove copier headers from a file or folder of files. The headers are backed up and collated by the hash of the unheadered file. Files are then output without the detected copier header alongside the originals with the suffix .new. No input files are altered in the process.
-
-The following systems have headers that this program can work with:
-  - Atari 7800
-  - Atari Lynx
-  - Commodore PSID Music
-  - NEC PC - Engine / TurboGrafx 16
-  - Nintendo Famicom / Nintendo Entertainment System
-  - Nintendo Famicom Disk System
-  - Nintendo Super Famicom / Super Nintendo Entertainment System
-  - Nintendo Super Famicom / Super Nintendo Entertainment System SPC");
+            Feature extract = _extractFeatureFlag;
             extract.AddFeature(_outputDirStringInput);
             extract.AddFeature(_noStoreHeaderFlag);
 
@@ -2400,34 +2559,14 @@ The following systems have headers that this program can work with:
 
             #region Restore
 
-            Feature restore = new Feature(
-                "Restore",
-                new List<string>() { "-re", "--restore" },
-                "Restore header to file based on SHA-1",
-                FeatureType.Flag,
-                longDescription: @"This will make use of stored copier headers and reapply them to files if they match the included hash. More than one header can be applied to a file, so they will be output to new files, suffixed with .newX, where X is a number. No input files are altered in the process.
-
-The following systems have headers that this program can work with:
-  - Atari 7800
-  - Atari Lynx
-  - Commodore PSID Music
-  - NEC PC - Engine / TurboGrafx 16
-  - Nintendo Famicom / Nintendo Entertainment System
-  - Nintendo Famicom Disk System
-  - Nintendo Super Famicom / Super Nintendo Entertainment System
-  - Nintendo Super Famicom / Super Nintendo Entertainment System SPC");
+            Feature restore = _restoreFeatureFlag;
             restore.AddFeature(_outputDirStringInput);
 
             #endregion
 
             #region Sort
 
-            Feature sort = new Feature(
-                "Sort",
-                new List<string>() { "-ss", "--sort" },
-                "Sort inputs by a set of DATs",
-                FeatureType.Flag,
-                longDescription: "This feature allows the user to quickly rebuild based on a supplied DAT file(s). By default all files will be rebuilt to uncompressed folders in the output directory.");
+            Feature sort = _sortFeatureFlag;
             sort.AddFeature(_datListInput);
             sort.AddFeature(_outputDirStringInput);
             sort.AddFeature(_depotFlag);
@@ -2466,14 +2605,9 @@ The following systems have headers that this program can work with:
 
             #region Split
 
-            Feature split = new Feature(
-                "Split",
-                new List<string>() { "-sp", "--split" },
-                "Split input DATs by a given criteria",
-                FeatureType.Flag,
-                longDescription: "This feature allows the user to split input DATs by a number of different possible criteria. See the individual input information for details. More than one split type is allowed at a time.");
+            Feature split = _splitFeatureFlag;
             split.AddFeature(_outputTypeListInput);
-                split[_outputTypeListInput.Name].AddFeature(_deprecatedFlag);
+                split[_outputTypeListInput].AddFeature(_deprecatedFlag);
             split.AddFeature(_outputDirStringInput);
             split.AddFeature(_inplaceFlag);
             split.AddFeature(_extensionFlag);
@@ -2491,25 +2625,7 @@ The following systems have headers that this program can work with:
 
             #region Stats
 
-            Feature stats = new Feature(
-                "Stats",
-                new List<string>() { "-st", "--stats" },
-                "Get statistics on all input DATs",
-                FeatureType.Flag,
-                longDescription: @"This will output by default the combined statistics for all input DAT files.
-
-The stats that are outputted are as follows:
-- Total uncompressed size
-- Number of games found
-- Number of roms found
-- Number of disks found
-- Items that include a CRC
-- Items that include a MD5
-- Items that include a SHA-1
-- Items that include a SHA-256
-- Items that include a SHA-384
-- Items that include a SHA-512
-- Items with Nodump status");
+            Feature stats = _statsFeatureFlag;
             stats.AddFeature(_reportTypeListInput);
             stats.AddFeature(_filenameStringInput);
             stats.AddFeature(_outputDirStringInput);
@@ -2521,12 +2637,7 @@ The stats that are outputted are as follows:
 
             #region Update
 
-            Feature update = new Feature(
-                "Update",
-                new List<string>() { "-ud", "--update" },
-                "Update and manipulate DAT(s)",
-                FeatureType.Flag,
-                longDescription: "This is the multitool part of the program, allowing for almost every manipulation to a DAT, or set of DATs. This is also a combination of many different programs that performed DAT manipulation that work better together.");
+            Feature update = _updateFeatureFlag;
             update.AddFeature(_outputTypeListInput);
                 update[_outputTypeListInput].AddFeature(_prefixStringInput);
                 update[_outputTypeListInput].AddFeature(_postfixStringInput);
@@ -2652,12 +2763,7 @@ The stats that are outputted are as follows:
 
             #region Verify
 
-            Feature verify = new Feature(
-                "Verify",
-                new List<string>() { "-ve", "--verify" },
-                "Verify a folder against DATs",
-                FeatureType.Flag,
-                longDescription: "When used, this will use an input DAT or set of DATs to blindly check against an input folder. The base of the folder is considered the base for the combined DATs and games are either the directories or archives within. This will only do a direct verification of the items within and will create a fixdat afterwards for missing files.");
+            Feature verify = _verifyFeatureFlag;
             verify.AddFeature(_datListInput);
             verify.AddFeature(_depotFlag);
             verify.AddFeature(_tempStringInput);

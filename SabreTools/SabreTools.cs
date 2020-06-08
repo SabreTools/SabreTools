@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using SabreTools.Library.Data;
 using SabreTools.Library.DatFiles;
 using SabreTools.Library.Help;
 using SabreTools.Library.Tools;
-using System.Linq;
 
 #if MONO
 using System.IO;
@@ -86,7 +86,7 @@ namespace SabreTools
             feature = _help.GetFeatureName(feature);
 
             // If we had the help feature first
-            if (feature == "Help")
+            if (feature == HelpFeatureValue)
             {
                 // If we had something else after help
                 if (args.Length > 1)
@@ -103,7 +103,7 @@ namespace SabreTools
                     return;
                 }
             }
-            else if (feature == "Help (Detailed)")
+            else if (feature == HelpDetailedFeatureValue)
             {
                 // If we had something else after help
                 if (args.Length > 1)
@@ -562,6 +562,7 @@ namespace SabreTools
                 filter.CRC.PositiveSet.AddRange(features[CrcListValue].GetListValue());
 
             // Input DATs
+            // TODO: Should this be a required flag instead of implied as "inputs"?
             if (features.ContainsKey(DatListValue))
                 datfiles.AddRange(features[DatListValue].GetListValue());
 
@@ -848,61 +849,59 @@ namespace SabreTools
             // TODO: Should each feature have subsets of the flags?
             switch (feature)
             {
-                case "Help":
+                case HelpFeatureValue:
+                case HelpDetailedFeatureValue:
+                case ScriptFeatureValue:
                     // No-op as this should be caught
                     break;
 
                 // Create a DAT from a directory or set of directories
-                case "DATFromDir":
+                case DatFromDirFeatureValue:
                     VerifyInputs(inputs, feature);
                     InitDatFromDir(inputs, datHeader, omitFromScan, noAutomaticDate, archivesAsFiles, chdsAsFiles,
                         skipFileType, addBlankFiles, addFileDates, tempDir, outDir, copyFiles, filter);
                     break;
 
                 // If we're in header extract and remove mode
-                case "Extract":
+                case ExtractFeatureValue:
                     VerifyInputs(inputs, feature);
                     InitExtractRemoveHeader(inputs, outDir, nostore);
                     break;
 
                 // If we're in header restore mode
-                case "Restore":
+                case RestoreFeatureValue:
                     VerifyInputs(inputs, feature);
                     InitReplaceHeader(inputs, outDir);
                     break;
 
-                case "Script":
-                    // No-op as this should be caught
-                    break;
-
                 // If we're using the sorter
-                case "Sort":
+                case SortFeatureValue:
                     InitSort(datfiles, inputs, outDir, depot, quickScan, addFileDates, delete, inverse,
                         outputFormat, datHeader.Romba, sevenzip, gz, rar, zip, updateDat, datHeader.Header,
                         splitType, chdsAsFiles, individual);
                     break;
 
                 // Split a DAT by the split type
-                case "Split":
+                case SplitFeatureValue:
                     VerifyInputs(inputs, feature);
                     InitSplit(inputs, outDir, inplace, datHeader.DatFormat, splittingMode, exta, extb, shortname, basedat, radix);
                     break;
 
                 // Get statistics on input files
-                case "Stats":
+                case StatsFeatureValue:
                     VerifyInputs(inputs, feature);
                     InitStats(inputs, datHeader.FileName, outDir, individual, showBaddumpColumn, showNodumpColumn, statDatFormat);
                     break;
 
                 // Convert, update, merge, diff, and filter a DAT or folder of DATs
-                case "Update":
+                case UpdateFeatureValue:
                     VerifyInputs(inputs, feature);
                     InitUpdate(inputs, basePaths, datHeader, updateMode, inplace, skipFirstOutput, noAutomaticDate, filter,
                         splitType, outDir, cleanGameNames, removeUnicode, descAsName, updateFields, onlySame);
                     break;
 
                 // If we're using the verifier
-                case "Verify":
+                case VerifyFeatureValue:
                     VerifyInputs(inputs, feature);
                     InitVerify(datfiles, inputs, depot, hashOnly, quickScan, datHeader.Header, splitType, chdsAsFiles, individual, filter);
                     break;
