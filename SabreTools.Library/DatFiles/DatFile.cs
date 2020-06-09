@@ -1,29 +1,18 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+
 using SabreTools.Library.Data;
 using SabreTools.Library.FileTypes;
 using SabreTools.Library.DatItems;
 using SabreTools.Library.Reports;
 using SabreTools.Library.Skippers;
 using SabreTools.Library.Tools;
-
-#if MONO
-using System.IO;
-#else
-using Alphaleonis.Win32.Filesystem;
-
-using FileStream = System.IO.FileStream;
-using IOException = System.IO.IOException;
-using MemoryStream = System.IO.MemoryStream;
-using SearchOption = System.IO.SearchOption;
-using SeekOrigin = System.IO.SeekOrigin;
-using Stream = System.IO.Stream;
-#endif
 using NaturalSort;
 
 namespace SabreTools.Library.DatFiles

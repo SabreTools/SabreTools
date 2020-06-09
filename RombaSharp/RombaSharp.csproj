@@ -2,53 +2,12 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net462;netcoreapp2.1</TargetFrameworks>
-    <RuntimeIdentifiers>win10-x64;win7-x86</RuntimeIdentifiers>
-    <Configurations>Debug;Release;Mono</Configurations>
+    <TargetFrameworks>net462;net472;net48;netcoreapp3.1</TargetFrameworks>
+    <Configurations>Debug;Release</Configurations>
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mono|AnyCPU'">
-    <DefineConstants>DEBUG;TRACE;MONO</DefineConstants>
-    <Optimize>false</Optimize>
-    <NoWarn />
-    <WarningLevel>3</WarningLevel>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mono|x64'">
-    <DefineConstants>DEBUG;TRACE;MONO</DefineConstants>
-    <NoWarn />
-    <Optimize>false</Optimize>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <Optimize>false</Optimize>
-    <NoWarn />
-    <WarningLevel>3</WarningLevel>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <NoWarn />
-    <Optimize>false</Optimize>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <NoWarn />
-    <WarningLevel>3</WarningLevel>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <DefineConstants>TRACE</DefineConstants>
-    <NoWarn />
-    <Optimize>true</Optimize>
-  </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="AlphaFS" Version="2.2.6" />
     <PackageReference Include="Mono.Data.Sqlite.Portable" Version="1.0.3.5" />
   </ItemGroup>
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -17,26 +18,6 @@ using SabreTools.Library.FileTypes;
 using SabreTools.Library.Reports;
 using SabreTools.Library.Skippers;
 using Compress.ThreadReaders;
-
-#if MONO
-using System.IO;
-#else
-using Alphaleonis.Win32.Filesystem;
-
-using BinaryReader = System.IO.BinaryReader;
-using BinaryWriter = System.IO.BinaryWriter;
-using FileAccess = System.IO.FileAccess;
-using FileMode = System.IO.FileMode;
-using FileShare = System.IO.FileShare;
-using FileStream = System.IO.FileStream;
-using IOException = System.IO.IOException;
-using MemoryStream = System.IO.MemoryStream;
-using PathTooLongException = System.IO.PathTooLongException;
-using SearchOption = System.IO.SearchOption;
-using SeekOrigin = System.IO.SeekOrigin;
-using Stream = System.IO.Stream;
-using StreamReader = System.IO.StreamReader;
-#endif
 using NaturalSort;
 
 namespace SabreTools.Library.Tools

@@ -1,14 +1,9 @@
-﻿using Mono.Data.Sqlite;
-using System;
+﻿using System;
+using System.IO;
 using System.Collections.Generic;
 
 using SabreTools.Library.Data;
-
-#if MONO
-using System.IO;
-#else
-using Alphaleonis.Win32.Filesystem;
-#endif
+using Mono.Data.Sqlite;
 
 namespace SabreTools.Library.Tools
 {

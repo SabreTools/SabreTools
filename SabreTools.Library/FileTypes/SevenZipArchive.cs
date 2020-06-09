@@ -1,23 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 using SabreTools.Library.Data;
 using SabreTools.Library.DatItems;
 using SabreTools.Library.Tools;
-
-#if MONO
-using System.IO;
-#else
-using Alphaleonis.Win32.Filesystem;
-
-using BinaryWriter = System.IO.BinaryWriter;
-using EndOfStreamException = System.IO.EndOfStreamException;
-using FileStream = System.IO.FileStream;
-using MemoryStream = System.IO.MemoryStream;
-using SeekOrigin = System.IO.SeekOrigin;
-using Stream = System.IO.Stream;
-#endif
 using Compress;
 using Compress.SevenZip;
 using Compress.ZipFile;

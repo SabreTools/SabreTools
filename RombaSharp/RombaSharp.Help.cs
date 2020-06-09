@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Mono.Data.Sqlite;
 
@@ -8,16 +9,6 @@ using SabreTools.Library.DatFiles;
 using SabreTools.Library.DatItems;
 using SabreTools.Library.Help;
 using SabreTools.Library.Tools;
-
-#if MONO
-using System.IO;
-#else
-using Alphaleonis.Win32.Filesystem;
-
-using SearchOption = System.IO.SearchOption;
-using StreamReader = System.IO.StreamReader;
-using StreamWriter = System.IO.StreamWriter;
-#endif
 
 namespace RombaSharp
 {

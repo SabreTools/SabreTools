@@ -1,15 +1,8 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 
 using SabreTools.Library.DatFiles;
 using SabreTools.Library.Tools;
-
-#if MONO
-using System.IO;
-#else
-using Alphaleonis.Win32.Filesystem;
-
-using Stream = System.IO.Stream;
-#endif
 
 namespace SabreTools.Library.Reports
 {

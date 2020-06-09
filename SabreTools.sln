@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26228.10
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30128.74
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SabreTools.Library", "SabreTools.Library\SabreTools.Library.csproj", "{CA54EDF8-100F-46E7-933C-0E081C7FCBD3}"
 EndProject
@@ -9,12 +9,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RombaSharp", "RombaSharp\Ro
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SabreTools", "SabreTools\SabreTools.csproj", "{A7F4C9D8-C086-4296-9BD3-637CF9C78F51}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E848678E-0B14-4D37-B647-F2D75958C600}"
+	ProjectSection(SolutionItems) = preProject
+		appveyor.yml = appveyor.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
-		Mono|Any CPU = Mono|Any CPU
-		Mono|x64 = Mono|x64
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 	EndGlobalSection
@@ -23,10 +26,6 @@ Global
 		{CA54EDF8-100F-46E7-933C-0E081C7FCBD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA54EDF8-100F-46E7-933C-0E081C7FCBD3}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{CA54EDF8-100F-46E7-933C-0E081C7FCBD3}.Debug|x64.Build.0 = Debug|Any CPU
-		{CA54EDF8-100F-46E7-933C-0E081C7FCBD3}.Mono|Any CPU.ActiveCfg = Mono|Any CPU
-		{CA54EDF8-100F-46E7-933C-0E081C7FCBD3}.Mono|Any CPU.Build.0 = Mono|Any CPU
-		{CA54EDF8-100F-46E7-933C-0E081C7FCBD3}.Mono|x64.ActiveCfg = Mono|x64
-		{CA54EDF8-100F-46E7-933C-0E081C7FCBD3}.Mono|x64.Build.0 = Mono|x64
 		{CA54EDF8-100F-46E7-933C-0E081C7FCBD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA54EDF8-100F-46E7-933C-0E081C7FCBD3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CA54EDF8-100F-46E7-933C-0E081C7FCBD3}.Release|x64.ActiveCfg = Release|Any CPU
@@ -35,10 +34,6 @@ Global
 		{99B5AAC0-A92C-4FD8-82B6-F82B44D7279D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99B5AAC0-A92C-4FD8-82B6-F82B44D7279D}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{99B5AAC0-A92C-4FD8-82B6-F82B44D7279D}.Debug|x64.Build.0 = Debug|Any CPU
-		{99B5AAC0-A92C-4FD8-82B6-F82B44D7279D}.Mono|Any CPU.ActiveCfg = Mono|Any CPU
-		{99B5AAC0-A92C-4FD8-82B6-F82B44D7279D}.Mono|Any CPU.Build.0 = Mono|Any CPU
-		{99B5AAC0-A92C-4FD8-82B6-F82B44D7279D}.Mono|x64.ActiveCfg = Mono|Any CPU
-		{99B5AAC0-A92C-4FD8-82B6-F82B44D7279D}.Mono|x64.Build.0 = Mono|Any CPU
 		{99B5AAC0-A92C-4FD8-82B6-F82B44D7279D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99B5AAC0-A92C-4FD8-82B6-F82B44D7279D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{99B5AAC0-A92C-4FD8-82B6-F82B44D7279D}.Release|x64.ActiveCfg = Release|Any CPU
@@ -47,10 +42,6 @@ Global
 		{A7F4C9D8-C086-4296-9BD3-637CF9C78F51}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7F4C9D8-C086-4296-9BD3-637CF9C78F51}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{A7F4C9D8-C086-4296-9BD3-637CF9C78F51}.Debug|x64.Build.0 = Debug|Any CPU
-		{A7F4C9D8-C086-4296-9BD3-637CF9C78F51}.Mono|Any CPU.ActiveCfg = Mono|Any CPU
-		{A7F4C9D8-C086-4296-9BD3-637CF9C78F51}.Mono|Any CPU.Build.0 = Mono|Any CPU
-		{A7F4C9D8-C086-4296-9BD3-637CF9C78F51}.Mono|x64.ActiveCfg = Mono|Any CPU
-		{A7F4C9D8-C086-4296-9BD3-637CF9C78F51}.Mono|x64.Build.0 = Mono|Any CPU
 		{A7F4C9D8-C086-4296-9BD3-637CF9C78F51}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7F4C9D8-C086-4296-9BD3-637CF9C78F51}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A7F4C9D8-C086-4296-9BD3-637CF9C78F51}.Release|x64.ActiveCfg = Release|Any CPU

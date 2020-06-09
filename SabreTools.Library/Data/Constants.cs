@@ -1,13 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Reflection;
 
 using SabreTools.Library.Tools;
-
-#if MONO
-using System.IO;
-#else
-using Alphaleonis.Win32.Filesystem;
-#endif
 
 namespace SabreTools.Library.Data
 {

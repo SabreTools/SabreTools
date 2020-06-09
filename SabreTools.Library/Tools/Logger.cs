@@ -1,17 +1,9 @@
 ﻿using System;
+using System.IO;
 using System.Text;
 
 using SabreTools.Library.Data;
 using SabreTools.Library.Tools;
-
-#if MONO
-using System.IO;
-#else
-using Alphaleonis.Win32.Filesystem;
-
-using FileStream = System.IO.FileStream;
-using StreamWriter = System.IO.StreamWriter;
-#endif
 
 namespace SabreTools.Library.Tools
 {
