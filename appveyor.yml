@@ -13,7 +13,6 @@ platform:
 - x64
 configuration:
 - Debug
-- Mono
 
 # install dependencies
 install:
