@@ -2690,6 +2690,10 @@ namespace SabreTools.Library.Tools
         /// <returns>Tuple of multiplier to use on final size and fixed size string</returns>
         public static long GetSizeFromString(string sizestring)
         {
+            // If the string is null or empty, we return -1
+            if (string.IsNullOrWhiteSpace(sizestring))
+                return -1;
+
             // Make sure the string is in lower case
             sizestring = sizestring.ToLowerInvariant();
 

@@ -1,204 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+
 using SabreTools.Library.Data;
+using SabreTools.Library.DatFiles;
 using SabreTools.Library.Help;
+using SabreTools.Library.Tools;
+
+#if MONO
+using System.IO;
+#else
+using Alphaleonis.Win32.Filesystem;
+
+using SearchOption = System.IO.SearchOption;
+#endif
 
 namespace SabreTools
 {
     public partial class SabreTools
     {
-        #region Public Top-level Features
-
-        public const string HelpFeatureValue = "Help";
-        private static Feature _helpFeatureFlag
-        {
-            get
-            {
-                return new Feature(
-                    HelpFeatureValue,
-                    new List<string>() { "-?", "-h", "--help" },
-                    "Show this help",
-                    FeatureType.Flag,
-                    longDescription: "Built-in to most of the programs is a basic help text.");
-            }
-        }
-
-        public const string HelpDetailedFeatureValue = "Help (Detailed)";
-        private static Feature _helpDetailedFeatureFlag
-        {
-            get
-            {
-                return new Feature(
-                    HelpDetailedFeatureValue,
-                    new List<string>() { "-??", "-hd", "--help-detailed" },
-                    "Show this detailed help",
-                    FeatureType.Flag,
-                    longDescription: "Display a detailed help text to the screen.");
-            }
-        }
-
-        public const string ScriptFeatureValue = "Script";
-        private static Feature _scriptFeatureFlag
-        {
-            get
-            {
-                return new Feature(
-                    ScriptFeatureValue,
-                    "--script",
-                    "Enable script mode (no clear screen)",
-                    FeatureType.Flag,
-                    longDescription: "For times when SabreTools is being used in a scripted environment, the user may not want the screen to be cleared every time that it is called. This flag allows the user to skip clearing the screen on run just like if the console was being redirected.");
-            }
-        }
-
-        public const string DatFromDirFeatureValue = "DATFromDir";
-        private static Feature _datFromDirFeatureFlag
-        {
-            get
-            {
-                return new Feature(
-                    DatFromDirFeatureValue,
-                    new List<string>() { "-d", "--d2d", "--dfd" },
-                    "Create DAT(s) from an input directory",
-                    FeatureType.Flag,
-                    longDescription: "Create a DAT file from an input directory or set of files. By default, this will output a DAT named based on the input directory and the current date. It will also treat all archives as possible games and add all three hashes (CRC, MD5, SHA-1) for each file.");
-            }
-        }
-
-        public const string ExtractFeatureValue = "Extract";
-        private static Feature _extractFeatureFlag
-        {
-            get
-            {
-                return new Feature(
-                    ExtractFeatureValue,
-                    new List<string>() { "-ex", "--extract" },
-                    "Extract and remove copier headers",
-                    FeatureType.Flag,
-                    longDescription: @"This will detect, store, and remove copier headers from a file or folder of files. The headers are backed up and collated by the hash of the unheadered file. Files are then output without the detected copier header alongside the originals with the suffix .new. No input files are altered in the process.
-
-The following systems have headers that this program can work with:
-  - Atari 7800
-  - Atari Lynx
-  - Commodore PSID Music
-  - NEC PC - Engine / TurboGrafx 16
-  - Nintendo Famicom / Nintendo Entertainment System
-  - Nintendo Famicom Disk System
-  - Nintendo Super Famicom / Super Nintendo Entertainment System
-  - Nintendo Super Famicom / Super Nintendo Entertainment System SPC");
-            }
-        }
-
-        public const string RestoreFeatureValue = "Restore";
-        private static Feature _restoreFeatureFlag
-        {
-            get
-            {
-                return new Feature(
-                    RestoreFeatureValue,
-                    new List<string>() { "-re", "--restore" },
-                    "Restore header to file based on SHA-1",
-                    FeatureType.Flag,
-                    longDescription: @"This will make use of stored copier headers and reapply them to files if they match the included hash. More than one header can be applied to a file, so they will be output to new files, suffixed with .newX, where X is a number. No input files are altered in the process.
-
-The following systems have headers that this program can work with:
-  - Atari 7800
-  - Atari Lynx
-  - Commodore PSID Music
-  - NEC PC - Engine / TurboGrafx 16
-  - Nintendo Famicom / Nintendo Entertainment System
-  - Nintendo Famicom Disk System
-  - Nintendo Super Famicom / Super Nintendo Entertainment System
-  - Nintendo Super Famicom / Super Nintendo Entertainment System SPC");
-            }
-        }
-
-        public const string SortFeatureValue = "Sort";
-        private static Feature _sortFeatureFlag
-        {
-            get
-            {
-                return new Feature(
-                    SortFeatureValue,
-                    new List<string>() { "-ss", "--sort" },
-                    "Sort inputs by a set of DATs",
-                    FeatureType.Flag,
-                    longDescription: "This feature allows the user to quickly rebuild based on a supplied DAT file(s). By default all files will be rebuilt to uncompressed folders in the output directory.");
-            }
-        }
-
-        public const string SplitFeatureValue = "Split";
-        private static Feature _splitFeatureFlag
-        {
-            get
-            {
-                return new Feature(
-                    SplitFeatureValue,
-                    new List<string>() { "-sp", "--split" },
-                    "Split input DATs by a given criteria",
-                    FeatureType.Flag,
-                    longDescription: "This feature allows the user to split input DATs by a number of different possible criteria. See the individual input information for details. More than one split type is allowed at a time.");
-            }
-        }
-
-        public const string StatsFeatureValue = "Stats";
-        private static Feature _statsFeatureFlag
-        {
-            get
-            {
-                return new Feature(
-                    StatsFeatureValue,
-                    new List<string>() { "-st", "--stats" },
-                    "Get statistics on all input DATs",
-                    FeatureType.Flag,
-                    longDescription: @"This will output by default the combined statistics for all input DAT files.
-
-The stats that are outputted are as follows:
-- Total uncompressed size
-- Number of games found
-- Number of roms found
-- Number of disks found
-- Items that include a CRC
-- Items that include a MD5
-- Items that include a SHA-1
-- Items that include a SHA-256
-- Items that include a SHA-384
-- Items that include a SHA-512
-- Items with Nodump status");
-            }
-        }
-
-        public const string UpdateFeatureValue = "Update";
-        private static Feature _updateFeatureFlag
-        {
-            get
-            {
-                return new Feature(
-                    UpdateFeatureValue,
-                    new List<string>() { "-ud", "--update" },
-                    "Update and manipulate DAT(s)",
-                    FeatureType.Flag,
-                    longDescription: "This is the multitool part of the program, allowing for almost every manipulation to a DAT, or set of DATs. This is also a combination of many different programs that performed DAT manipulation that work better together.");
-            }
-        }
-
-        public const string VerifyFeatureValue = "Verify";
-        private static Feature _verifyFeatureFlag
-        {
-            get
-            {
-                return new Feature(
-                    VerifyFeatureValue,
-                    new List<string>() { "-ve", "--verify" },
-                    "Verify a folder against DATs",
-                    FeatureType.Flag,
-                    longDescription: "When used, this will use an input DAT or set of DATs to blindly check against an input folder. The base of the folder is considered the base for the combined DATs and games are either the directories or archives within. This will only do a direct verification of the items within and will create a fixdat afterwards for missing files.");
-            }
-        }
-
-        #endregion
-
         #region Private Flag features
 
         public const string AddBlankFilesValue = "add-blank-files";
@@ -2454,378 +2275,1263 @@ Some special strings that can be used:
                 string.Empty
             };
 
-            // Build the feature trees
+            // Create the base help object with header
             Help help = new Help(helpHeader);
 
-            #region Help
-
-            Feature helpFeature = _helpFeatureFlag;
-
-            #endregion
-
-            #region Help (Detailed)
-
-            Feature detailedHelpFeature = _helpDetailedFeatureFlag;
-
-            #endregion
-
-            #region Script
-
-            Feature script = _scriptFeatureFlag;
-
-            #endregion
-
-            #region DATFromDir
-
-            Feature datFromDir = _datFromDirFeatureFlag;
-            datFromDir.AddFeature(_skipMd5Flag);
-            datFromDir.AddFeature(_skipRipeMd160Flag);
-            datFromDir.AddFeature(_skipSha1Flag);
-            datFromDir.AddFeature(_skipSha256Flag);
-            datFromDir.AddFeature(_skipSha384Flag);
-            datFromDir.AddFeature(_skipSha512Flag);
-            datFromDir.AddFeature(_noAutomaticDateFlag);
-            datFromDir.AddFeature(_forcepackingStringInput);
-            datFromDir.AddFeature(_archivesAsFilesFlag);
-            datFromDir.AddFeature(_outputTypeListInput);
-                datFromDir[_outputTypeListInput].AddFeature(_deprecatedFlag);
-            datFromDir.AddFeature(_rombaFlag);
-            datFromDir.AddFeature(_skipArchivesFlag);
-            datFromDir.AddFeature(_skipFilesFlag);
-            datFromDir.AddFeature(_filenameStringInput);
-            datFromDir.AddFeature(_nameStringInput);
-            datFromDir.AddFeature(_descriptionStringInput);
-            datFromDir.AddFeature(_categoryStringInput);
-            datFromDir.AddFeature(_versionStringInput);
-            datFromDir.AddFeature(_authorStringInput);
-            datFromDir.AddFeature(_emailStringInput);
-            datFromDir.AddFeature(_homepageStringInput);
-            datFromDir.AddFeature(_urlStringInput);
-            datFromDir.AddFeature(_commentStringInput);
-            datFromDir.AddFeature(_superdatFlag);
-            datFromDir.AddFeature(_excludeFieldListInput);
-            datFromDir.AddFeature(_oneRomPerGameFlag);
-            datFromDir.AddFeature(_sceneDateStripFlag);
-            datFromDir.AddFeature(_addBlankFilesFlag);
-            datFromDir.AddFeature(_addDateFlag);
-            datFromDir.AddFeature(_copyFilesFlag);
-            datFromDir.AddFeature(_headerStringInput);
-            datFromDir.AddFeature(_chdsAsFilesFlag);
-            datFromDir.AddFeature(_gameNameListInput);
-            datFromDir.AddFeature(_notGameNameListInput);
-            datFromDir.AddFeature(_gameDescriptionListInput);
-            datFromDir.AddFeature(_notGameDescriptionListInput);
-            datFromDir.AddFeature(_matchOfTagsFlag);
-            datFromDir.AddFeature(_itemNameListInput);
-            datFromDir.AddFeature(_notItemNameListInput);
-            datFromDir.AddFeature(_itemTypeListInput);
-            datFromDir.AddFeature(_notItemTypeListInput);
-            datFromDir.AddFeature(_greaterStringInput);
-            datFromDir.AddFeature(_lessStringInput);
-            datFromDir.AddFeature(_equalStringInput);
-            datFromDir.AddFeature(_crcListInput);
-            datFromDir.AddFeature(_notCrcListInput);
-            datFromDir.AddFeature(_md5ListInput);
-            datFromDir.AddFeature(_notMd5ListInput);
-            datFromDir.AddFeature(_ripeMd160ListInput);
-            datFromDir.AddFeature(_notRipeMd160ListInput);
-            datFromDir.AddFeature(_sha1ListInput);
-            datFromDir.AddFeature(_notSha1ListInput);
-            datFromDir.AddFeature(_sha256ListInput);
-            datFromDir.AddFeature(_notSha256ListInput);
-            datFromDir.AddFeature(_sha384ListInput);
-            datFromDir.AddFeature(_notSha384ListInput);
-            datFromDir.AddFeature(_sha512ListInput);
-            datFromDir.AddFeature(_notSha512ListInput);
-            datFromDir.AddFeature(_statusListInput);
-            datFromDir.AddFeature(_notStatusListInput);
-            datFromDir.AddFeature(_gameTypeListInput);
-            datFromDir.AddFeature(_notGameTypeListInput);
-            datFromDir.AddFeature(_runnableFlag);
-            datFromDir.AddFeature(_notRunnableFlag);
-            datFromDir.AddFeature(_tempStringInput);
-            datFromDir.AddFeature(_outputDirStringInput);
-            datFromDir.AddFeature(_threadsInt32Input);
-
-            #endregion
-
-            #region Extract
-
-            Feature extract = _extractFeatureFlag;
-            extract.AddFeature(_outputDirStringInput);
-            extract.AddFeature(_noStoreHeaderFlag);
-
-            #endregion
-
-            #region Restore
-
-            Feature restore = _restoreFeatureFlag;
-            restore.AddFeature(_outputDirStringInput);
-
-            #endregion
-
-            #region Sort
-
-            Feature sort = _sortFeatureFlag;
-            sort.AddFeature(_datListInput);
-            sort.AddFeature(_outputDirStringInput);
-            sort.AddFeature(_depotFlag);
-            sort.AddFeature(_deleteFlag);
-            sort.AddFeature(_inverseFlag);
-            sort.AddFeature(_quickFlag);
-            sort.AddFeature(_chdsAsFilesFlag);
-            sort.AddFeature(_addDateFlag);
-            sort.AddFeature(_individualFlag);
-            sort.AddFeature(_torrent7zipFlag);
-            sort.AddFeature(_tarFlag);
-            sort.AddFeature(_torrentGzipFlag);
-                sort[_torrentGzipFlag].AddFeature(_rombaFlag);
-            sort.AddFeature(_torrentLrzipFlag);
-            sort.AddFeature(_torrentLz4Flag);
-            sort.AddFeature(_torrentRarFlag);
-            sort.AddFeature(_torrentXzFlag);
-            sort.AddFeature(_torrentZipFlag);
-            sort.AddFeature(_torrentZpaqFlag);
-            sort.AddFeature(_torrentZstdFlag);
-            sort.AddFeature(_headerStringInput);
-            sort.AddFeature(_sevenZipInt32Input);
-            sort.AddFeature(_gzInt32Input);
-            sort.AddFeature(_rarInt32Input);
-            sort.AddFeature(_zipInt32Input);
-            sort.AddFeature(_scanAllFlag);
-            sort.AddFeature(_datMergedFlag);
-            sort.AddFeature(_datSplitFlag);
-            sort.AddFeature(_datNonMergedFlag);
-            sort.AddFeature(_datDeviceNonMergedFlag);
-            sort.AddFeature(_datFullNonMergedFlag);
-            sort.AddFeature(_updateDatFlag);
-            sort.AddFeature(_threadsInt32Input);
-
-            #endregion
-
-            #region Split
-
-            Feature split = _splitFeatureFlag;
-            split.AddFeature(_outputTypeListInput);
-                split[_outputTypeListInput].AddFeature(_deprecatedFlag);
-            split.AddFeature(_outputDirStringInput);
-            split.AddFeature(_inplaceFlag);
-            split.AddFeature(_extensionFlag);
-                split[_extensionFlag].AddFeature(_extaListInput);
-                split[_extensionFlag].AddFeature(_extbListInput);
-            split.AddFeature(_hashFlag);
-            split.AddFeature(_levelFlag);
-                split[_levelFlag].AddFeature(_shortFlag);
-                split[_levelFlag].AddFeature(_baseFlag);
-            split.AddFeature(_sizeFlag);
-                split[_sizeFlag].AddFeature(_radixInt64Input);
-            split.AddFeature(_typeFlag);
-
-            #endregion
-
-            #region Stats
-
-            Feature stats = _statsFeatureFlag;
-            stats.AddFeature(_reportTypeListInput);
-            stats.AddFeature(_filenameStringInput);
-            stats.AddFeature(_outputDirStringInput);
-            stats.AddFeature(_baddumpColumnFlag);
-            stats.AddFeature(_nodumpColumnFlag);
-            stats.AddFeature(_individualFlag);
-
-            #endregion
-
-            #region Update
-
-            Feature update = _updateFeatureFlag;
-            update.AddFeature(_outputTypeListInput);
-                update[_outputTypeListInput].AddFeature(_prefixStringInput);
-                update[_outputTypeListInput].AddFeature(_postfixStringInput);
-                update[_outputTypeListInput].AddFeature(_quotesFlag);
-                update[_outputTypeListInput].AddFeature(_romsFlag);
-                update[_outputTypeListInput].AddFeature(_gamePrefixFlag);
-                update[_outputTypeListInput].AddFeature(_addExtensionStringInput);
-                update[_outputTypeListInput].AddFeature(_replaceExtensionStringInput);
-                update[_outputTypeListInput].AddFeature(_removeExtensionsFlag);
-                update[_outputTypeListInput].AddFeature(_rombaFlag);
-                update[_outputTypeListInput].AddFeature(_deprecatedFlag);
-            update.AddFeature(_filenameStringInput);
-            update.AddFeature(_nameStringInput);
-            update.AddFeature(_descriptionStringInput);
-            update.AddFeature(_rootStringInput);
-            update.AddFeature(_categoryStringInput);
-            update.AddFeature(_versionStringInput);
-            update.AddFeature(_dateStringInput);
-            update.AddFeature(_authorStringInput);
-            update.AddFeature(_emailStringInput);
-            update.AddFeature(_homepageStringInput);
-            update.AddFeature(_urlStringInput);
-            update.AddFeature(_commentStringInput);
-            update.AddFeature(_headerStringInput);
-            update.AddFeature(_superdatFlag);
-            update.AddFeature(_forcemergingStringInput);
-            update.AddFeature(_forcenodumpStringInput);
-            update.AddFeature(_forcepackingStringInput);
-            update.AddFeature(_excludeFieldListInput);
-            update.AddFeature(_oneRomPerGameFlag);
-            update.AddFeature(_keepEmptyGamesFlag);
-            update.AddFeature(_sceneDateStripFlag);
-            update.AddFeature(_cleanFlag);
-            update.AddFeature(_removeUnicodeFlag);
-            update.AddFeature(_descriptionAsNameFlag);
-            update.AddFeature(_datMergedFlag);
-            update.AddFeature(_datSplitFlag);
-            update.AddFeature(_datNonMergedFlag);
-            update.AddFeature(_datDeviceNonMergedFlag);
-            update.AddFeature(_datFullNonMergedFlag);
-            update.AddFeature(_trimFlag);
-                update[_trimFlag].AddFeature(_rootDirStringInput);
-            update.AddFeature(_singleSetFlag);
-            update.AddFeature(_dedupFlag);
-            update.AddFeature(_gameDedupFlag);
-            update.AddFeature(_mergeFlag);
-                update[_mergeFlag].AddFeature(_noAutomaticDateFlag);
-            update.AddFeature(_diffAllFlag);
-                update[_diffAllFlag].AddFeature(_noAutomaticDateFlag);
-            update.AddFeature(_diffDuplicatesFlag);
-                update[_diffDuplicatesFlag].AddFeature(_noAutomaticDateFlag);
-            update.AddFeature(_diffIndividualsFlag);
-                update[_diffIndividualsFlag].AddFeature(_noAutomaticDateFlag);
-            update.AddFeature(_diffNoDuplicatesFlag);
-                update[_diffNoDuplicatesFlag].AddFeature(_noAutomaticDateFlag);
-            update.AddFeature(_diffAgainstFlag);
-                update[_diffAgainstFlag].AddFeature(_baseDatListInput);
-            update.AddFeature(_baseReplaceFlag);
-                update[_baseReplaceFlag].AddFeature(_baseDatListInput);
-                update[_baseReplaceFlag].AddFeature(_updateFieldListInput);
-                    update[_baseReplaceFlag][_updateFieldListInput].AddFeature(_onlySameFlag);
-                update[_baseReplaceFlag].AddFeature(_updateNamesFlag);
-                update[_baseReplaceFlag].AddFeature(_updateHashesFlag);
-                update[_baseReplaceFlag].AddFeature(_updateDescriptionFlag);
-                    update[_baseReplaceFlag][_updateDescriptionFlag].AddFeature(_onlySameFlag);
-                update[_baseReplaceFlag].AddFeature(_updateGameTypeFlag);
-                update[_baseReplaceFlag].AddFeature(_updateYearFlag);
-                update[_baseReplaceFlag].AddFeature(_updateManufacturerFlag);
-                update[_baseReplaceFlag].AddFeature(_updateParentsFlag);
-            update.AddFeature(_reverseBaseReplaceFlag);
-                update[_reverseBaseReplaceFlag].AddFeature(_baseDatListInput);
-                update[_baseReplaceFlag].AddFeature(_updateFieldListInput);
-                    update[_baseReplaceFlag][_updateFieldListInput].AddFeature(_onlySameFlag);
-                update[_reverseBaseReplaceFlag].AddFeature(_updateNamesFlag);
-                update[_reverseBaseReplaceFlag].AddFeature(_updateHashesFlag);
-                update[_reverseBaseReplaceFlag].AddFeature(_updateDescriptionFlag);
-                    update[_reverseBaseReplaceFlag][_updateDescriptionFlag].AddFeature(_onlySameFlag);
-                update[_reverseBaseReplaceFlag].AddFeature(_updateGameTypeFlag);
-                update[_reverseBaseReplaceFlag].AddFeature(_updateYearFlag);
-                update[_reverseBaseReplaceFlag].AddFeature(_updateManufacturerFlag);
-                update[_reverseBaseReplaceFlag].AddFeature(_updateParentsFlag);
-            update.AddFeature(_diffCascadeFlag);
-                update[_diffCascadeFlag].AddFeature(_skipFirstOutputFlag);
-            update.AddFeature(_diffReverseCascadeFlag);
-                update[_diffReverseCascadeFlag].AddFeature(_skipFirstOutputFlag);
-            update.AddFeature(_gameNameListInput);
-            update.AddFeature(_notGameNameListInput);
-            update.AddFeature(_gameDescriptionListInput);
-            update.AddFeature(_notGameDescriptionListInput);
-            update.AddFeature(_matchOfTagsFlag);
-            update.AddFeature(_itemNameListInput);
-            update.AddFeature(_notItemNameListInput);
-            update.AddFeature(_itemTypeListInput);
-            update.AddFeature(_notItemTypeListInput);
-            update.AddFeature(_greaterStringInput);
-            update.AddFeature(_lessStringInput);
-            update.AddFeature(_equalStringInput);
-            update.AddFeature(_crcListInput);
-            update.AddFeature(_notCrcListInput);
-            update.AddFeature(_md5ListInput);
-            update.AddFeature(_notMd5ListInput);
-            update.AddFeature(_ripeMd160ListInput);
-            update.AddFeature(_notRipeMd160ListInput);
-            update.AddFeature(_sha1ListInput);
-            update.AddFeature(_notSha1ListInput);
-            update.AddFeature(_sha256ListInput);
-            update.AddFeature(_notSha256ListInput);
-            update.AddFeature(_sha384ListInput);
-            update.AddFeature(_notSha384ListInput);
-            update.AddFeature(_sha512ListInput);
-            update.AddFeature(_notSha512ListInput);
-            update.AddFeature(_statusListInput);
-            update.AddFeature(_notStatusListInput);
-            update.AddFeature(_gameTypeListInput);
-            update.AddFeature(_notGameTypeListInput);
-            update.AddFeature(_runnableFlag);
-            update.AddFeature(_notRunnableFlag);
-            update.AddFeature(_outputDirStringInput);
-            update.AddFeature(_inplaceFlag);
-            update.AddFeature(_threadsInt32Input);
-
-            #endregion
-
-            #region Verify
-
-            Feature verify = _verifyFeatureFlag;
-            verify.AddFeature(_datListInput);
-            verify.AddFeature(_depotFlag);
-            verify.AddFeature(_tempStringInput);
-            verify.AddFeature(_hashOnlyFlag);
-            verify.AddFeature(_quickFlag);
-            verify.AddFeature(_headerStringInput);
-            verify.AddFeature(_chdsAsFilesFlag);
-            verify.AddFeature(_individualFlag);
-            verify.AddFeature(_datMergedFlag);
-            verify.AddFeature(_datSplitFlag);
-            verify.AddFeature(_datDeviceNonMergedFlag);
-            verify.AddFeature(_datNonMergedFlag);
-            verify.AddFeature(_datFullNonMergedFlag);
-            verify.AddFeature(_gameNameListInput);
-            verify.AddFeature(_notGameNameListInput);
-            verify.AddFeature(_gameDescriptionListInput);
-            verify.AddFeature(_notGameDescriptionListInput);
-            verify.AddFeature(_matchOfTagsFlag);
-            verify.AddFeature(_itemNameListInput);
-            verify.AddFeature(_notItemNameListInput);
-            verify.AddFeature(_itemTypeListInput);
-            verify.AddFeature(_notItemTypeListInput);
-            verify.AddFeature(_greaterStringInput);
-            verify.AddFeature(_lessStringInput);
-            verify.AddFeature(_equalStringInput);
-            verify.AddFeature(_crcListInput);
-            verify.AddFeature(_notCrcListInput);
-            verify.AddFeature(_md5ListInput);
-            verify.AddFeature(_notMd5ListInput);
-            verify.AddFeature(_ripeMd160ListInput);
-            verify.AddFeature(_notRipeMd160ListInput);
-            verify.AddFeature(_sha1ListInput);
-            verify.AddFeature(_notSha1ListInput);
-            verify.AddFeature(_sha256ListInput);
-            verify.AddFeature(_notSha256ListInput);
-            verify.AddFeature(_sha384ListInput);
-            verify.AddFeature(_notSha384ListInput);
-            verify.AddFeature(_sha512ListInput);
-            verify.AddFeature(_notSha512ListInput);
-            verify.AddFeature(_statusListInput);
-            verify.AddFeature(_notStatusListInput);
-            verify.AddFeature(_gameTypeListInput);
-            verify.AddFeature(_notGameTypeListInput);
-            verify.AddFeature(_runnableFlag);
-            verify.AddFeature(_notRunnableFlag);
-
-            #endregion
-
-            // Now, add all of the main features to the Help object
-            help.Add(helpFeature);
-            help.Add(detailedHelpFeature);
-            help.Add(script);
-            help.Add(datFromDir);
-            help.Add(extract);
-            help.Add(restore);
-            help.Add(sort);
-            help.Add(split);
-            help.Add(stats);
-            help.Add(update);
-            help.Add(verify);
+            // Add all of the features
+            help.Add(new HelpFeature());
+            help.Add(new DetailedHelpFeature());
+            help.Add(new ScriptFeature());
+            help.Add(new DatFromDirFeature());
+            help.Add(new ExtractFeature());
+            help.Add(new RestoreFeature());
+            help.Add(new SortFeature());
+            help.Add(new SplitFeature());
+            help.Add(new StatsFeature());
+            help.Add(new UpdateFeature());
+            help.Add(new VerifyFeature());
 
             return help;
         }
+
+        #region Top-level Features
+
+        private class SabreToolsFeature : TopLevel
+        {
+            #region Specific Extraction
+
+            /// <summary>
+            /// Get DatHeader from feature list
+            /// </summary>
+            protected DatHeader GetDatHeader(Dictionary<string, Feature> features)
+            {
+                DatHeader datHeader = new DatHeader();
+
+                datHeader.AddExtension = GetString(features, AddExtensionStringValue);
+                datHeader.Author = GetString(features, AuthorStringValue);
+                datHeader.Category = GetString(features, CategoryStringValue);
+                datHeader.Comment = GetString(features, CommentStringValue);
+                datHeader.Date = GetString(features, DateStringValue);
+                datHeader.DedupeRoms = GetDedupeType(features);
+                datHeader.Description = GetString(features, DescriptionStringValue);
+                datHeader.Email = GetString(features, EmailStringValue);
+                datHeader.FileName = GetString(features, FilenameStringValue);
+                datHeader.ForceMerging = Utilities.GetForceMerging(GetString(features, ForceMergingStringInput));
+                datHeader.ForceNodump = Utilities.GetForceNodump(GetString(features, ForceNodumpStringInput));
+                datHeader.ForcePacking = Utilities.GetForcePacking(GetString(features, ForcePackingStringInput));
+                datHeader.GameName = GetBoolean(features, GamePrefixValue);
+                datHeader.Header = GetString(features, HeaderStringValue);
+                datHeader.Homepage = GetString(features, HomepageStringValue);
+                datHeader.KeepEmptyGames = GetBoolean(features, KeepEmptyGamesValue);
+                datHeader.Name = GetString(features, NameStringValue);
+                datHeader.OneRom = GetBoolean(features, OneRomPerGameValue);
+                datHeader.Postfix = GetString(features, PostfixStringValue);
+                datHeader.Prefix = GetString(features, PrefixStringValue);
+                datHeader.Quotes = GetBoolean(features, QuotesValue);
+                datHeader.RemoveExtension = GetBoolean(features, RemoveExtensionsValue);
+                datHeader.ReplaceExtension = GetString(features, ReplaceExtensionStringValue);
+                datHeader.Romba = GetBoolean(features, RombaValue);
+                datHeader.RootDir = GetString(features, RootStringValue);
+                datHeader.SceneDateStrip = GetBoolean(features, SceneDateStripValue);
+                datHeader.Type = GetBoolean(features, SuperdatValue) ? "SuperDAT" : null;
+                datHeader.Url = GetString(features, UrlStringValue);
+                datHeader.UseRomName = GetBoolean(features, RomsValue);
+                datHeader.Version = GetString(features, VersionStringValue);
+
+                bool deprecated = GetBoolean(features, DeprecatedValue);
+                foreach (string ot in GetList(features, OutputTypeListValue))
+                {
+                    DatFormat dftemp = Utilities.GetDatFormat(ot);
+                    if (dftemp == DatFormat.Logiqx && deprecated)
+                        datHeader.DatFormat |= DatFormat.LogiqxDeprecated;
+                    else
+                        datHeader.DatFormat |= dftemp;
+                }
+
+                foreach (string field in GetList(features, ExcludeFieldListValue))
+                {
+                    datHeader.ExcludeFields[(int)Utilities.GetField(field)] = true;
+                }
+
+                return datHeader;
+            }
+
+            /// <summary>
+            /// Get DedupeType from feature list
+            /// </summary>
+            protected DedupeType GetDedupeType(Dictionary<string, Feature> features)
+            {
+                if (GetBoolean(features, DedupValue))
+                    return DedupeType.Full;
+                else if (GetBoolean(features, GameDedupValue))
+                    return DedupeType.Game;
+                else
+                    return DedupeType.None;
+            }
+
+            /// <summary>
+            /// Get Filter from feature list
+            /// </summary>
+            protected Filter GetFilter(Dictionary<string, Feature> features)
+            {
+                Filter filter = new Filter();
+
+                // CRC
+                filter.CRC.NegativeSet.AddRange(GetList(features, NotCrcListValue));
+                filter.CRC.PositiveSet.AddRange(GetList(features, CrcListValue));
+
+                // Include 'of" in game filters
+                filter.IncludeOfInGame.Neutral = GetBoolean(features, MatchOfTagsValue);
+
+                // Item name
+                filter.ItemName.NegativeSet.AddRange(GetList(features, NotItemNameListValue));
+                filter.ItemName.PositiveSet.AddRange(GetList(features, ItemNameListValue));
+
+                // Item status
+                foreach (string stat in GetList(features, NotStatusListValue))
+                {
+                    filter.ItemStatuses.Negative |= Utilities.GetItemStatus(stat);
+                }
+                foreach (string stat in GetList(features, StatusListValue))
+                {
+                    filter.ItemStatuses.Positive |= Utilities.GetItemStatus(stat);
+                }
+
+                // Item type
+                filter.ItemTypes.NegativeSet.AddRange(GetList(features, NotItemTypeListValue));
+                filter.ItemTypes.PositiveSet.AddRange(GetList(features, ItemTypeListValue));
+
+                // Machine description
+                filter.MachineDescription.NegativeSet.AddRange(GetList(features, NotGameDescriptionListValue));
+                filter.MachineDescription.PositiveSet.AddRange(GetList(features, GameDescriptionListValue));
+
+                // Machine name
+                filter.MachineName.NegativeSet.AddRange(GetList(features, NotGameNameListValue));
+                filter.MachineName.PositiveSet.AddRange(GetList(features, GameNameListValue));
+
+                // Machine type
+                foreach (string mach in GetList(features, NotGameTypeListValue))
+                {
+                    filter.MachineTypes.Negative |= Utilities.GetMachineType(mach);
+                }
+                foreach (string mach in GetList(features, GameTypeListValue))
+                {
+                    filter.MachineTypes.Positive |= Utilities.GetMachineType(mach);
+                }
+
+                // MD5
+                filter.MD5.NegativeSet.AddRange(GetList(features, NotMd5ListValue));
+                filter.MD5.PositiveSet.AddRange(GetList(features, Md5ListValue));
+
+                // RIPEMD160
+                filter.RIPEMD160.NegativeSet.AddRange(GetList(features, NotRipeMd160ListValue));
+                filter.RIPEMD160.PositiveSet.AddRange(GetList(features, RipeMd160ListValue));
+
+                // Root directory
+                filter.Root.Neutral = GetString(features, RootDirStringValue);
+
+                // Runnable
+                filter.Runnable.Neutral = GetBoolean(features, NotRunnableValue);
+
+                // SHA-1
+                filter.SHA1.NegativeSet.AddRange(GetList(features, NotSha1ListValue));
+                filter.SHA1.PositiveSet.AddRange(GetList(features, Sha1ListValue));
+
+                // SHA-256
+                filter.SHA256.NegativeSet.AddRange(GetList(features, NotSha256ListValue));
+                filter.SHA256.PositiveSet.AddRange(GetList(features, Sha256ListValue));
+
+                // SHA-384
+                filter.SHA384.NegativeSet.AddRange(GetList(features, NotSha384ListValue));
+                filter.SHA384.PositiveSet.AddRange(GetList(features, Sha384ListValue));
+
+                // SHA-512
+                filter.SHA512.NegativeSet.AddRange(GetList(features, NotSha512ListValue));
+                filter.SHA512.PositiveSet.AddRange(GetList(features, Sha512ListValue));
+
+                // Single game in output
+                filter.Single.Neutral = GetBoolean(features, SingleSetValue);
+
+                // Size
+                filter.Size.Negative = Utilities.GetSizeFromString(GetString(features, LessStringValue));
+                filter.Size.Neutral = Utilities.GetSizeFromString(GetString(features, EqualStringValue));
+                filter.Size.Positive = Utilities.GetSizeFromString(GetString(features, GreaterStringValue));
+
+                // Trim to NTFS length
+                filter.Trim.Neutral = GetBoolean(features, TrimValue);
+
+                return filter;
+            }
+            
+            /// <summary>
+            /// Get omit from scan from feature list
+            /// </summary>
+            protected Hash GetOmitFromScan(Dictionary<string, Feature> features)
+            {
+                Hash omitFromScan = Hash.DeepHashes; // TODO: All instances of Hash.DeepHashes should be made into 0x0 eventually
+
+                if (GetBoolean(features, SkipMd5Value))
+                    omitFromScan |= Hash.MD5;
+                if (GetBoolean(features, SkipRipeMd160Value))
+                    omitFromScan &= ~Hash.RIPEMD160; // TODO: This needs to be inverted later
+                if (GetBoolean(features, SkipSha1Value))
+                    omitFromScan |= Hash.SHA1;
+                if (GetBoolean(features, SkipSha256Value))
+                    omitFromScan &= ~Hash.SHA256; // TODO: This needs to be inverted later
+                if (GetBoolean(features, SkipSha384Value))
+                    omitFromScan &= ~Hash.SHA384; // TODO: This needs to be inverted later
+                if (GetBoolean(features, SkipSha512Value))
+                    omitFromScan &= ~Hash.SHA512; // TODO: This needs to be inverted later
+
+                return omitFromScan;
+            }
+
+            /// <summary>
+            /// Get OutputFormat from feature list
+            /// </summary>
+            protected OutputFormat GetOutputFormat(Dictionary<string, Feature> features)
+            {
+                if (GetBoolean(features, TarValue))
+                    return OutputFormat.TapeArchive;
+                else if (GetBoolean(features, Torrent7zipValue))
+                    return OutputFormat.Torrent7Zip;
+                else if (GetBoolean(features, TorrentGzipValue))
+                    return OutputFormat.TorrentGzip;
+                else if (GetBoolean(features, TorrentLrzipValue))
+                    return OutputFormat.TorrentLRZip;
+                else if (GetBoolean(features, TorrentLz4Value))
+                    return OutputFormat.TorrentLZ4;
+                else if (GetBoolean(features, TorrentRarValue))
+                    return OutputFormat.TorrentRar;
+                else if (GetBoolean(features, TorrentXzValue))
+                    return OutputFormat.TorrentXZ;
+                else if (GetBoolean(features, TorrentZipValue))
+                    return OutputFormat.TorrentZip;
+                else if (GetBoolean(features, TorrentZpaqValue))
+                    return OutputFormat.TorrentZPAQ;
+                else if (GetBoolean(features, TorrentZstdValue))
+                    return OutputFormat.TorrentZstd;
+                else
+                    return OutputFormat.Folder;
+            }
+
+            /// <summary>
+            /// Get SkipFileType from feature list
+            /// </summary>
+            protected SkipFileType GetSkipFileType(Dictionary<string, Feature> features)
+            {
+                if (GetBoolean(features, SkipArchivesValue))
+                    return SkipFileType.Archive;
+                else if (GetBoolean(features, SkipFilesValue))
+                    return SkipFileType.File;
+                else
+                    return SkipFileType.None;
+            }
+
+            /// <summary>
+            /// Get SplitType from feature list
+            /// </summary>
+            protected SplitType GetSplitType(Dictionary<string, Feature> features)
+            {
+                SplitType splitType = SplitType.None;
+                if (GetBoolean(features, DatDeviceNonMergedValue))
+                    splitType = SplitType.DeviceNonMerged;
+                else if (GetBoolean(features, DatFullNonMergedValue))
+                    splitType = SplitType.FullNonMerged;
+                else if (GetBoolean(features, DatMergedValue))
+                    splitType = SplitType.Merged;
+                else if (GetBoolean(features, DatNonMergedValue))
+                    splitType = SplitType.NonMerged;
+                else if (GetBoolean(features, DatSplitValue))
+                    splitType = SplitType.Split;
+
+                return splitType;
+            }
+
+            /// <summary>
+            /// Get SplittingMode from feature list
+            /// </summary>
+            protected SplittingMode GetSplittingMode(Dictionary<string, Feature> features)
+            {
+                SplittingMode splittingMode = SplittingMode.None;
+
+                if (GetBoolean(features, ExtensionValue))
+                    splittingMode |= SplittingMode.Extension;
+                if (GetBoolean(features, HashValue))
+                    splittingMode |= SplittingMode.Hash;
+                if (GetBoolean(features, LevelValue))
+                    splittingMode |= SplittingMode.Level;
+                if (GetBoolean(features, SizeValue))
+                    splittingMode |= SplittingMode.Size;
+                if (GetBoolean(features, TypeValue))
+                    splittingMode |= SplittingMode.Type;
+
+                return splittingMode;
+            }
+
+            /// <summary>
+            /// Get StatReportFormat from feature list
+            /// </summary>
+            protected StatReportFormat GetStatReportFormat(Dictionary<string, Feature> features)
+            {
+                StatReportFormat statDatFormat = StatReportFormat.None;
+
+                foreach (string rt in GetList(features, ReportTypeListValue))
+                {
+                    statDatFormat |= Utilities.GetStatFormat(rt);
+                }
+
+                return statDatFormat;
+            }
+
+            /// <summary>
+            /// Get update fields from feature list
+            /// </summary>
+            protected List<Field> GetUpdateFields(Dictionary<string, Feature> features)
+            {
+                List<Field> updateFields = new List<Field>();
+
+                if (GetBoolean(features, UpdateDescriptionValue))
+                {
+                    Globals.Logger.User("This flag '{0}' is deprecated, please use {1} instead", UpdateDescriptionValue, string.Join(", ", _updateFieldListInput.Flags));
+                    updateFields.Add(Field.Description);
+                }
+
+                if (GetBoolean(features, UpdateGameTypeValue))
+                {
+                    Globals.Logger.User("This flag '{0}' is deprecated, please use {1} instead", UpdateGameTypeValue, string.Join(", ", _updateFieldListInput.Flags));
+                    updateFields.Add(Field.MachineType);
+                }
+
+                if (GetBoolean(features, UpdateHashesValue))
+                {
+                    Globals.Logger.User("This flag '{0}' is deprecated, please use {1} instead", UpdateHashesValue, string.Join(", ", _updateFieldListInput.Flags));
+                    updateFields.Add(Field.CRC);
+                    updateFields.Add(Field.MD5);
+                    updateFields.Add(Field.RIPEMD160);
+                    updateFields.Add(Field.SHA1);
+                    updateFields.Add(Field.SHA256);
+                    updateFields.Add(Field.SHA384);
+                    updateFields.Add(Field.SHA512);
+                }
+
+                if (GetBoolean(features, UpdateManufacturerValue))
+                {
+                    Globals.Logger.User("This flag '{0}' is deprecated, please use {1} instead", UpdateManufacturerValue, string.Join(", ", _updateFieldListInput.Flags));
+                    updateFields.Add(Field.Manufacturer);
+                }
+
+                if (GetBoolean(features, UpdateNamesValue))
+                {
+                    Globals.Logger.User("This flag '{0}' is deprecated, please use {1} instead", UpdateNamesValue, string.Join(", ", _updateFieldListInput.Flags));
+                    updateFields.Add(Field.Name);
+                }
+
+                if (GetBoolean(features, UpdateParentsValue))
+                {
+                    Globals.Logger.User("This flag '{0}' is deprecated, please use {1} instead", UpdateParentsValue, string.Join(", ", _updateFieldListInput.Flags));
+                    updateFields.Add(Field.CloneOf);
+                    updateFields.Add(Field.RomOf);
+                    updateFields.Add(Field.SampleOf);
+                }
+
+                if (GetBoolean(features, UpdateYearValue))
+                {
+                    Globals.Logger.User("This flag '{0}' is deprecated, please use {1} instead", UpdateYearValue, string.Join(", ", _updateFieldListInput.Flags));
+                    updateFields.Add(Field.Year);
+                }
+
+                foreach (string field in GetList(features, UpdateFieldListValue))
+                {
+                    updateFields.Add(Utilities.GetField(field));
+                }
+
+                return updateFields;
+            }
+
+            /// <summary>
+            /// Get UpdateMode from feature list
+            /// </summary>
+            protected UpdateMode GetUpdateMode(Dictionary<string, Feature> features)
+            {
+                UpdateMode updateMode = UpdateMode.None;
+
+                if (GetBoolean(features, DiffAllValue))
+                    updateMode |= UpdateMode.AllDiffs;
+
+                if (GetBoolean(features, BaseReplaceValue))
+                    updateMode |= UpdateMode.BaseReplace;
+
+                if (GetBoolean(features, DiffAgainstValue))
+                    updateMode |= UpdateMode.DiffAgainst;
+
+                if (GetBoolean(features, DiffCascadeValue))
+                    updateMode |= UpdateMode.DiffCascade;
+
+                if (GetBoolean(features, DiffDuplicatesValue))
+                    updateMode |= UpdateMode.DiffDupesOnly;
+
+                if (GetBoolean(features, DiffIndividualsValue))
+                    updateMode |= UpdateMode.DiffIndividualsOnly;
+
+                if (GetBoolean(features, DiffNoDuplicatesValue))
+                    updateMode |= UpdateMode.DiffNoDupesOnly;
+
+                if (GetBoolean(features, DiffReverseCascadeValue))
+                    updateMode |= UpdateMode.DiffReverseCascade;
+
+                if (GetBoolean(features, MergeValue))
+                    updateMode |= UpdateMode.Merge;
+
+                if (GetBoolean(features, ReverseBaseReplaceValue))
+                    updateMode |= UpdateMode.ReverseBaseReplace;
+
+                return updateMode;
+            }
+
+            #endregion
+        }
+
+        private class DetailedHelpFeature : SabreToolsFeature
+        {
+            public const string Value = "Help (Detailed)";
+
+            public DetailedHelpFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "-??", "-hd", "--help-detailed" };
+                this.Description = "Show this detailed help";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = "Display a detailed help text to the screen.";
+                this.Features = new Dictionary<string, Feature>();
+            }
+
+            public override bool ProcessArgs(string[] args, Help help)
+            {
+                // If we had something else after help
+                if (args.Length > 1)
+                {
+                    help.OutputIndividualFeature(args[1], includeLongDescription: true);
+                    return true;
+                }
+
+                // Otherwise, show generic help
+                else
+                {
+                    help.OutputAllHelp();
+                    return true;
+                }
+            }
+        }
+
+        private class DatFromDirFeature : SabreToolsFeature
+        {
+            public const string Value = "DATFromDir";
+
+            public DatFromDirFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "-d", "--d2d", "--dfd" };
+                this.Description = "Create DAT(s) from an input directory";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = "Create a DAT file from an input directory or set of files. By default, this will output a DAT named based on the input directory and the current date. It will also treat all archives as possible games and add all three hashes (CRC, MD5, SHA-1) for each file.";
+                this.Features = new Dictionary<string, Feature>();
+
+                AddFeature(_skipMd5Flag);
+                AddFeature(_skipRipeMd160Flag);
+                AddFeature(_skipSha1Flag);
+                AddFeature(_skipSha256Flag);
+                AddFeature(_skipSha384Flag);
+                AddFeature(_skipSha512Flag);
+                AddFeature(_noAutomaticDateFlag);
+                AddFeature(_forcepackingStringInput);
+                AddFeature(_archivesAsFilesFlag);
+                AddFeature(_outputTypeListInput);
+                    this[_outputTypeListInput].AddFeature(_deprecatedFlag);
+                AddFeature(_rombaFlag);
+                AddFeature(_skipArchivesFlag);
+                AddFeature(_skipFilesFlag);
+                AddFeature(_filenameStringInput);
+                AddFeature(_nameStringInput);
+                AddFeature(_descriptionStringInput);
+                AddFeature(_categoryStringInput);
+                AddFeature(_versionStringInput);
+                AddFeature(_authorStringInput);
+                AddFeature(_emailStringInput);
+                AddFeature(_homepageStringInput);
+                AddFeature(_urlStringInput);
+                AddFeature(_commentStringInput);
+                AddFeature(_superdatFlag);
+                AddFeature(_excludeFieldListInput);
+                AddFeature(_oneRomPerGameFlag);
+                AddFeature(_sceneDateStripFlag);
+                AddFeature(_addBlankFilesFlag);
+                AddFeature(_addDateFlag);
+                AddFeature(_copyFilesFlag);
+                AddFeature(_headerStringInput);
+                AddFeature(_chdsAsFilesFlag);
+                AddFeature(_gameNameListInput);
+                AddFeature(_notGameNameListInput);
+                AddFeature(_gameDescriptionListInput);
+                AddFeature(_notGameDescriptionListInput);
+                AddFeature(_matchOfTagsFlag);
+                AddFeature(_itemNameListInput);
+                AddFeature(_notItemNameListInput);
+                AddFeature(_itemTypeListInput);
+                AddFeature(_notItemTypeListInput);
+                AddFeature(_greaterStringInput);
+                AddFeature(_lessStringInput);
+                AddFeature(_equalStringInput);
+                AddFeature(_crcListInput);
+                AddFeature(_notCrcListInput);
+                AddFeature(_md5ListInput);
+                AddFeature(_notMd5ListInput);
+                AddFeature(_ripeMd160ListInput);
+                AddFeature(_notRipeMd160ListInput);
+                AddFeature(_sha1ListInput);
+                AddFeature(_notSha1ListInput);
+                AddFeature(_sha256ListInput);
+                AddFeature(_notSha256ListInput);
+                AddFeature(_sha384ListInput);
+                AddFeature(_notSha384ListInput);
+                AddFeature(_sha512ListInput);
+                AddFeature(_notSha512ListInput);
+                AddFeature(_statusListInput);
+                AddFeature(_notStatusListInput);
+                AddFeature(_gameTypeListInput);
+                AddFeature(_notGameTypeListInput);
+                AddFeature(_runnableFlag);
+                AddFeature(_notRunnableFlag);
+                AddFeature(_tempStringInput);
+                AddFeature(_outputDirStringInput);
+                AddFeature(_threadsInt32Input);
+            }
+
+            public override void ProcessFeatures(Dictionary<string, Feature> features)
+            {
+                // Get feature flags
+                bool addBlankFiles = GetBoolean(features, AddBlankFilesValue);
+                bool addFileDates = GetBoolean(features, AddDateValue);
+                bool archivesAsFiles = GetBoolean(features, ArchivesAsFilesValue);
+                bool chdsAsFiles = GetBoolean(features, ChdsAsFilesValue);
+                bool copyFiles = GetBoolean(features, CopyFilesValue);
+                bool noAutomaticDate = GetBoolean(features, NoAutomaticDateValue);
+                string outDir = GetString(features, OutputDirStringValue);
+                string tempDir = GetString(features, TempStringValue);
+                var datHeader = GetDatHeader(features);
+                var filter = GetFilter(features);
+                var omitFromScan = GetOmitFromScan(features);
+                var skipFileType = GetSkipFileType(features);
+
+                // Create a new DATFromDir object and process the inputs
+                DatFile basedat = new DatFile(datHeader)
+                {
+                    Date = DateTime.Now.ToString("yyyy-MM-dd"),
+                };
+
+                // For each input directory, create a DAT
+                foreach (string path in Inputs)
+                {
+                    if (Directory.Exists(path) || File.Exists(path))
+                    {
+                        // Clone the base Dat for information
+                        DatFile datdata = new DatFile(basedat);
+
+                        string basePath = Path.GetFullPath(path);
+                        bool success = datdata.PopulateFromDir(
+                            basePath,
+                            omitFromScan,
+                            noAutomaticDate,
+                            archivesAsFiles,
+                            skipFileType,
+                            addBlankFiles,
+                            addFileDates,
+                            tempDir,
+                            copyFiles,
+                            datHeader.Header,
+                            chdsAsFiles,
+                            filter);
+
+                        if (success)
+                        {
+                            datdata.Write(outDir);
+                        }
+                        else
+                        {
+                            Console.WriteLine();
+                            _help.OutputIndividualFeature("DATFromDir");
+                        }
+                    }
+                }
+            }
+        }
+
+        private class ExtractFeature : SabreToolsFeature
+        {
+            public const string Value = "Extract";
+
+            public ExtractFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "-ex", "--extract" };
+                this.Description = "Extract and remove copier headers";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = @"This will detect, store, and remove copier headers from a file or folder of files. The headers are backed up and collated by the hash of the unheadered file. Files are then output without the detected copier header alongside the originals with the suffix .new. No input files are altered in the process.
+
+The following systems have headers that this program can work with:
+  - Atari 7800
+  - Atari Lynx
+  - Commodore PSID Music
+  - NEC PC - Engine / TurboGrafx 16
+  - Nintendo Famicom / Nintendo Entertainment System
+  - Nintendo Famicom Disk System
+  - Nintendo Super Famicom / Super Nintendo Entertainment System
+  - Nintendo Super Famicom / Super Nintendo Entertainment System SPC";
+                this.Features = new Dictionary<string, Feature>();
+
+                AddFeature(_outputDirStringInput);
+                AddFeature(_noStoreHeaderFlag);
+            }
+
+            public override void ProcessFeatures(Dictionary<string, Feature> features)
+            {
+                // Get feature flags
+                bool nostore = GetBoolean(features, NoStoreHeaderValue);
+                string outDir = GetString(features, OutputDirStringValue);
+
+                // Get only files from the inputs
+                List<string> files = Utilities.GetOnlyFilesFromInputs(Inputs);
+                foreach (string file in files)
+                {
+                    Utilities.DetectSkipperAndTransform(file, outDir, nostore);
+                }
+            }
+        }
+
+        private class HelpFeature : SabreToolsFeature
+        {
+            public const string Value = "Help";
+
+            public HelpFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "-?", "-h", "--help" };
+                this.Description = "Show this help";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = "Built-in to most of the programs is a basic help text.";
+                this.Features = new Dictionary<string, Feature>();
+            }
+
+            public override bool ProcessArgs(string[] args, Help help)
+            {
+                // If we had something else after help
+                if (args.Length > 1)
+                {
+                    help.OutputIndividualFeature(args[1]);
+                    return true;
+                }
+
+                // Otherwise, show generic help
+                else
+                {
+                    help.OutputGenericHelp();
+                    return true;
+                }
+            }
+        }
+
+        private class RestoreFeature : SabreToolsFeature
+        {
+            public const string Value = "Restore";
+
+            public RestoreFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "-re", "--restore" };
+                this.Description = "Restore header to file based on SHA-1";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = @"This will make use of stored copier headers and reapply them to files if they match the included hash. More than one header can be applied to a file, so they will be output to new files, suffixed with .newX, where X is a number. No input files are altered in the process.
+
+The following systems have headers that this program can work with:
+  - Atari 7800
+  - Atari Lynx
+  - Commodore PSID Music
+  - NEC PC - Engine / TurboGrafx 16
+  - Nintendo Famicom / Nintendo Entertainment System
+  - Nintendo Famicom Disk System
+  - Nintendo Super Famicom / Super Nintendo Entertainment System
+  - Nintendo Super Famicom / Super Nintendo Entertainment System SPC";
+                this.Features = new Dictionary<string, Feature>();
+
+                AddFeature(_outputDirStringInput);
+            }
+
+            public override void ProcessFeatures(Dictionary<string, Feature> features)
+            {
+                // Get feature flags
+                string outDir = GetString(features, OutputDirStringValue);
+
+                // Get only files from the inputs
+                List<string> files = Utilities.GetOnlyFilesFromInputs(Inputs);
+                foreach (string file in files)
+                {
+                    Utilities.RestoreHeader(file, outDir);
+                }
+            }
+        }
+
+        private class ScriptFeature : SabreToolsFeature
+        {
+            public const string Value = "Script";
+
+            public ScriptFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "--script" };
+                this.Description = "Enable script mode (no clear screen)";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = "For times when SabreTools is being used in a scripted environment, the user may not want the screen to be cleared every time that it is called. This flag allows the user to skip clearing the screen on run just like if the console was being redirected.";
+                this.Features = new Dictionary<string, Feature>();
+            }
+        }
+
+        private class SortFeature : SabreToolsFeature
+        {
+            public const string Value = "Sort";
+
+            public SortFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "-ss", "--sort" };
+                this.Description = "Sort inputs by a set of DATs";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = "This feature allows the user to quickly rebuild based on a supplied DAT file(s). By default all files will be rebuilt to uncompressed folders in the output directory.";
+                this.Features = new Dictionary<string, Feature>();
+
+                AddFeature(_datListInput);
+                AddFeature(_outputDirStringInput);
+                AddFeature(_depotFlag);
+                AddFeature(_deleteFlag);
+                AddFeature(_inverseFlag);
+                AddFeature(_quickFlag);
+                AddFeature(_chdsAsFilesFlag);
+                AddFeature(_addDateFlag);
+                AddFeature(_individualFlag);
+                AddFeature(_torrent7zipFlag);
+                AddFeature(_tarFlag);
+                AddFeature(_torrentGzipFlag);
+                    this[_torrentGzipFlag].AddFeature(_rombaFlag);
+                AddFeature(_torrentLrzipFlag);
+                AddFeature(_torrentLz4Flag);
+                AddFeature(_torrentRarFlag);
+                AddFeature(_torrentXzFlag);
+                AddFeature(_torrentZipFlag);
+                AddFeature(_torrentZpaqFlag);
+                AddFeature(_torrentZstdFlag);
+                AddFeature(_headerStringInput);
+                AddFeature(_sevenZipInt32Input);
+                AddFeature(_gzInt32Input);
+                AddFeature(_rarInt32Input);
+                AddFeature(_zipInt32Input);
+                AddFeature(_scanAllFlag);
+                AddFeature(_datMergedFlag);
+                AddFeature(_datSplitFlag);
+                AddFeature(_datNonMergedFlag);
+                AddFeature(_datDeviceNonMergedFlag);
+                AddFeature(_datFullNonMergedFlag);
+                AddFeature(_updateDatFlag);
+                AddFeature(_threadsInt32Input);
+            }
+
+            public override void ProcessFeatures(Dictionary<string, Feature> features)
+            {
+                // Get the archive scanning level
+                int sevenzip = GetInt32(features, SevenZipInt32Value);
+                sevenzip = sevenzip == Int32.MinValue ? 1 : sevenzip;
+
+                int gz = GetInt32(features, GzInt32Value);
+                gz = gz == Int32.MinValue ? 1 : gz;
+
+                int rar = GetInt32(features, RarInt32Value);
+                rar = rar == Int32.MinValue ? 1 : rar;
+
+                int zip = GetInt32(features, ZipInt32Value);
+                zip = zip == Int32.MinValue ? 1 : zip;
+
+                var asl = Utilities.GetArchiveScanLevelFromNumbers(sevenzip, gz, rar, zip);
+
+                // Get feature flags
+                bool chdsAsFiles = GetBoolean(features, ChdsAsFilesValue);
+                bool date = GetBoolean(features, AddDateValue);
+                bool delete = GetBoolean(features, DeleteValue);
+                bool depot = GetBoolean(features, DepotValue);
+                bool inverse = GetBoolean(features, InverseValue);
+                bool quickScan = GetBoolean(features, QuickValue);
+                bool romba = GetBoolean(features, RombaValue);
+                bool updateDat = GetBoolean(features, UpdateDatValue);
+                string headerToCheckAgainst = GetString(features, HeaderStringValue);
+                string outDir = GetString(features, OutputDirStringValue);
+                var outputFormat = GetOutputFormat(features);
+                var splitType = GetSplitType(features);
+
+                // If we have TorrentGzip output and the romba flag, update
+                if (romba && outputFormat == OutputFormat.TorrentGzip)
+                    outputFormat = OutputFormat.TorrentGzipRomba;
+
+                // Get a list of files from the input datfiles
+                var datfiles = GetList(features, DatListValue);
+                datfiles = Utilities.GetOnlyFilesFromInputs(datfiles);
+
+                // If we are in individual mode, process each DAT on their own, appending the DAT name to the output dir
+                if (GetBoolean(features, IndividualValue))
+                {
+                    foreach (string datfile in datfiles)
+                    {
+                        DatFile datdata = new DatFile();
+                        datdata.Parse(datfile, 99, 99, splitType, keep: true, useTags: true);
+
+                        // If we have the depot flag, respect it
+                        if (depot)
+                            datdata.RebuildDepot(Inputs, Path.Combine(outDir, datdata.FileName), date, delete, inverse, outputFormat, updateDat, headerToCheckAgainst);
+                        else
+                            datdata.RebuildGeneric(Inputs, Path.Combine(outDir, datdata.FileName), quickScan, date, delete, inverse, outputFormat, asl, updateDat, headerToCheckAgainst, chdsAsFiles);
+                    }
+                }
+
+                // Otherwise, process all DATs into the same output
+                else
+                {
+                    InternalStopwatch watch = new InternalStopwatch("Populating internal DAT");
+
+                    // Add all of the input DATs into one huge internal DAT
+                    DatFile datdata = new DatFile();
+                    foreach (string datfile in datfiles)
+                    {
+                        datdata.Parse(datfile, 99, 99, splitType, keep: true, useTags: true);
+                    }
+
+                    watch.Stop();
+
+                    // If we have the depot flag, respect it
+                    if (depot)
+                        datdata.RebuildDepot(Inputs, outDir, date, delete, inverse, outputFormat, updateDat, headerToCheckAgainst);
+                    else
+                        datdata.RebuildGeneric(Inputs, outDir, quickScan, date, delete, inverse, outputFormat, asl, updateDat, headerToCheckAgainst, chdsAsFiles);
+                }
+            }
+        }
+
+        private class SplitFeature : SabreToolsFeature
+        {
+            public const string Value = "Split";
+
+            public SplitFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "-sp", "--split" };
+                this.Description = "Split input DATs by a given criteria";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = "This feature allows the user to split input DATs by a number of different possible criteria. See the individual input information for details. More than one split type is allowed at a time.";
+                this.Features = new Dictionary<string, Feature>();
+
+                AddFeature(_outputTypeListInput);
+                    this[_outputTypeListInput].AddFeature(_deprecatedFlag);
+                AddFeature(_outputDirStringInput);
+                AddFeature(_inplaceFlag);
+                AddFeature(_extensionFlag);
+                    this[_extensionFlag].AddFeature(_extaListInput);
+                    this[_extensionFlag].AddFeature(_extbListInput);
+                AddFeature(_hashFlag);
+                AddFeature(_levelFlag);
+                    this[_levelFlag].AddFeature(_shortFlag);
+                    this[_levelFlag].AddFeature(_baseFlag);
+                AddFeature(_sizeFlag);
+                    this[_sizeFlag].AddFeature(_radixInt64Input);
+                AddFeature(_typeFlag);
+            }
+
+            public override void ProcessFeatures(Dictionary<string, Feature> features)
+            {
+                DatFile datfile = new DatFile();
+                datfile.DatFormat = GetDatHeader(features).DatFormat;
+                datfile.DetermineSplitType(
+                    Inputs,
+                    GetString(features, OutputDirStringValue),
+                    GetBoolean(features, InplaceValue),
+                    GetSplittingMode(features),
+                    GetList(features, ExtAListValue),
+                    GetList(features, ExtBListValue),
+                    GetBoolean(features, ShortValue),
+                    GetBoolean(features, BaseValue),
+                    GetInt64(features, RadixInt64Value));
+            }
+        }
+
+        private class StatsFeature : SabreToolsFeature
+        {
+            public const string Value = "Stats";
+
+            public StatsFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "-st", "--stats" };
+                this.Description = "Get statistics on all input DATs";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = @"This will output by default the combined statistics for all input DAT files.
+
+The stats that are outputted are as follows:
+- Total uncompressed size
+- Number of games found
+- Number of roms found
+- Number of disks found
+- Items that include a CRC
+- Items that include a MD5
+- Items that include a SHA-1
+- Items that include a SHA-256
+- Items that include a SHA-384
+- Items that include a SHA-512
+- Items with Nodump status";
+                this.Features = new Dictionary<string, Feature>();
+
+                AddFeature(_reportTypeListInput);
+                AddFeature(_filenameStringInput);
+                AddFeature(_outputDirStringInput);
+                AddFeature(_baddumpColumnFlag);
+                AddFeature(_nodumpColumnFlag);
+                AddFeature(_individualFlag);
+            }
+
+            public override void ProcessFeatures(Dictionary<string, Feature> features)
+            {
+                DatFile.OutputStats(
+                    Inputs,
+                    GetDatHeader(features).FileName,
+                    GetString(features, OutputDirStringValue),
+                    GetBoolean(features, IndividualValue),
+                    GetBoolean(features, BaddumpColumnValue),
+                    GetBoolean(features, NodumpColumnValue),
+                    GetStatReportFormat(features));
+            }
+        }
+
+        private class UpdateFeature : SabreToolsFeature
+        {
+            public const string Value = "Update";
+
+            public UpdateFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "-ud", "--update" };
+                this.Description = "Update and manipulate DAT(s)";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = "This is the multitool part of the program, allowing for almost every manipulation to a DAT, or set of DATs. This is also a combination of many different programs that performed DAT manipulation that work better together.";
+                this.Features = new Dictionary<string, Feature>();
+
+                AddFeature(_outputTypeListInput);
+                    this[_outputTypeListInput].AddFeature(_prefixStringInput);
+                    this[_outputTypeListInput].AddFeature(_postfixStringInput);
+                    this[_outputTypeListInput].AddFeature(_quotesFlag);
+                    this[_outputTypeListInput].AddFeature(_romsFlag);
+                    this[_outputTypeListInput].AddFeature(_gamePrefixFlag);
+                    this[_outputTypeListInput].AddFeature(_addExtensionStringInput);
+                    this[_outputTypeListInput].AddFeature(_replaceExtensionStringInput);
+                    this[_outputTypeListInput].AddFeature(_removeExtensionsFlag);
+                    this[_outputTypeListInput].AddFeature(_rombaFlag);
+                    this[_outputTypeListInput].AddFeature(_deprecatedFlag);
+                AddFeature(_filenameStringInput);
+                AddFeature(_nameStringInput);
+                AddFeature(_descriptionStringInput);
+                AddFeature(_rootStringInput);
+                AddFeature(_categoryStringInput);
+                AddFeature(_versionStringInput);
+                AddFeature(_dateStringInput);
+                AddFeature(_authorStringInput);
+                AddFeature(_emailStringInput);
+                AddFeature(_homepageStringInput);
+                AddFeature(_urlStringInput);
+                AddFeature(_commentStringInput);
+                AddFeature(_headerStringInput);
+                AddFeature(_superdatFlag);
+                AddFeature(_forcemergingStringInput);
+                AddFeature(_forcenodumpStringInput);
+                AddFeature(_forcepackingStringInput);
+                AddFeature(_excludeFieldListInput);
+                AddFeature(_oneRomPerGameFlag);
+                AddFeature(_keepEmptyGamesFlag);
+                AddFeature(_sceneDateStripFlag);
+                AddFeature(_cleanFlag);
+                AddFeature(_removeUnicodeFlag);
+                AddFeature(_descriptionAsNameFlag);
+                AddFeature(_datMergedFlag);
+                AddFeature(_datSplitFlag);
+                AddFeature(_datNonMergedFlag);
+                AddFeature(_datDeviceNonMergedFlag);
+                AddFeature(_datFullNonMergedFlag);
+                AddFeature(_trimFlag);
+                    this[_trimFlag].AddFeature(_rootDirStringInput);
+                AddFeature(_singleSetFlag);
+                AddFeature(_dedupFlag);
+                AddFeature(_gameDedupFlag);
+                AddFeature(_mergeFlag);
+                    this[_mergeFlag].AddFeature(_noAutomaticDateFlag);
+                AddFeature(_diffAllFlag);
+                    this[_diffAllFlag].AddFeature(_noAutomaticDateFlag);
+                AddFeature(_diffDuplicatesFlag);
+                    this[_diffDuplicatesFlag].AddFeature(_noAutomaticDateFlag);
+                AddFeature(_diffIndividualsFlag);
+                    this[_diffIndividualsFlag].AddFeature(_noAutomaticDateFlag);
+                AddFeature(_diffNoDuplicatesFlag);
+                    this[_diffNoDuplicatesFlag].AddFeature(_noAutomaticDateFlag);
+                AddFeature(_diffAgainstFlag);
+                    this[_diffAgainstFlag].AddFeature(_baseDatListInput);
+                AddFeature(_baseReplaceFlag);
+                    this[_baseReplaceFlag].AddFeature(_baseDatListInput);
+                    this[_baseReplaceFlag].AddFeature(_updateFieldListInput);
+                        this[_baseReplaceFlag][_updateFieldListInput].AddFeature(_onlySameFlag);
+                    this[_baseReplaceFlag].AddFeature(_updateNamesFlag);
+                    this[_baseReplaceFlag].AddFeature(_updateHashesFlag);
+                    this[_baseReplaceFlag].AddFeature(_updateDescriptionFlag);
+                        this[_baseReplaceFlag][_updateDescriptionFlag].AddFeature(_onlySameFlag);
+                    this[_baseReplaceFlag].AddFeature(_updateGameTypeFlag);
+                    this[_baseReplaceFlag].AddFeature(_updateYearFlag);
+                    this[_baseReplaceFlag].AddFeature(_updateManufacturerFlag);
+                    this[_baseReplaceFlag].AddFeature(_updateParentsFlag);
+                AddFeature(_reverseBaseReplaceFlag);
+                    this[_reverseBaseReplaceFlag].AddFeature(_baseDatListInput);
+                    this[_baseReplaceFlag].AddFeature(_updateFieldListInput);
+                        this[_baseReplaceFlag][_updateFieldListInput].AddFeature(_onlySameFlag);
+                    this[_reverseBaseReplaceFlag].AddFeature(_updateNamesFlag);
+                    this[_reverseBaseReplaceFlag].AddFeature(_updateHashesFlag);
+                    this[_reverseBaseReplaceFlag].AddFeature(_updateDescriptionFlag);
+                        this[_reverseBaseReplaceFlag][_updateDescriptionFlag].AddFeature(_onlySameFlag);
+                    this[_reverseBaseReplaceFlag].AddFeature(_updateGameTypeFlag);
+                    this[_reverseBaseReplaceFlag].AddFeature(_updateYearFlag);
+                    this[_reverseBaseReplaceFlag].AddFeature(_updateManufacturerFlag);
+                    this[_reverseBaseReplaceFlag].AddFeature(_updateParentsFlag);
+                AddFeature(_diffCascadeFlag);
+                    this[_diffCascadeFlag].AddFeature(_skipFirstOutputFlag);
+                AddFeature(_diffReverseCascadeFlag);
+                    this[_diffReverseCascadeFlag].AddFeature(_skipFirstOutputFlag);
+                AddFeature(_gameNameListInput);
+                AddFeature(_notGameNameListInput);
+                AddFeature(_gameDescriptionListInput);
+                AddFeature(_notGameDescriptionListInput);
+                AddFeature(_matchOfTagsFlag);
+                AddFeature(_itemNameListInput);
+                AddFeature(_notItemNameListInput);
+                AddFeature(_itemTypeListInput);
+                AddFeature(_notItemTypeListInput);
+                AddFeature(_greaterStringInput);
+                AddFeature(_lessStringInput);
+                AddFeature(_equalStringInput);
+                AddFeature(_crcListInput);
+                AddFeature(_notCrcListInput);
+                AddFeature(_md5ListInput);
+                AddFeature(_notMd5ListInput);
+                AddFeature(_ripeMd160ListInput);
+                AddFeature(_notRipeMd160ListInput);
+                AddFeature(_sha1ListInput);
+                AddFeature(_notSha1ListInput);
+                AddFeature(_sha256ListInput);
+                AddFeature(_notSha256ListInput);
+                AddFeature(_sha384ListInput);
+                AddFeature(_notSha384ListInput);
+                AddFeature(_sha512ListInput);
+                AddFeature(_notSha512ListInput);
+                AddFeature(_statusListInput);
+                AddFeature(_notStatusListInput);
+                AddFeature(_gameTypeListInput);
+                AddFeature(_notGameTypeListInput);
+                AddFeature(_runnableFlag);
+                AddFeature(_notRunnableFlag);
+                AddFeature(_outputDirStringInput);
+                AddFeature(_inplaceFlag);
+                AddFeature(_threadsInt32Input);
+            }
+
+            public override void ProcessFeatures(Dictionary<string, Feature> features)
+            {
+                // Get feature flags
+                var datHeader = GetDatHeader(features);
+                var updateFields = GetUpdateFields(features);
+                var updateMode = GetUpdateMode(features);
+
+                // Normalize the extensions
+                datHeader.AddExtension = (string.IsNullOrWhiteSpace(datHeader.AddExtension) || datHeader.AddExtension.StartsWith(".")
+                    ? datHeader.AddExtension
+                    : "." + datHeader.AddExtension);
+                datHeader.ReplaceExtension = (string.IsNullOrWhiteSpace(datHeader.ReplaceExtension) || datHeader.ReplaceExtension.StartsWith(".")
+                    ? datHeader.ReplaceExtension
+                    : "." + datHeader.ReplaceExtension);
+
+                // If we're in a special update mode and the names aren't set, set defaults
+                if (updateMode != 0)
+                {
+                    // Get the values that will be used
+                    if (string.IsNullOrWhiteSpace(datHeader.Date))
+                        datHeader.Date = DateTime.Now.ToString("yyyy-MM-dd");
+
+                    if (string.IsNullOrWhiteSpace(datHeader.Name))
+                    {
+                        datHeader.Name = (updateMode != 0 ? "DiffDAT" : "MergeDAT")
+                            + (datHeader.Type == "SuperDAT" ? "-SuperDAT" : string.Empty)
+                            + (datHeader.DedupeRoms != DedupeType.None ? "-deduped" : string.Empty);
+                    }
+
+                    if (string.IsNullOrWhiteSpace(datHeader.Description))
+                    {
+                        datHeader.Description = (updateMode != 0 ? "DiffDAT" : "MergeDAT")
+                            + (datHeader.Type == "SuperDAT" ? "-SuperDAT" : string.Empty)
+                            + (datHeader.DedupeRoms != DedupeType.None ? " - deduped" : string.Empty);
+
+                        if (!GetBoolean(features, NoAutomaticDateValue))
+                            datHeader.Description += " (" + datHeader.Date + ")";
+                    }
+
+                    if (string.IsNullOrWhiteSpace(datHeader.Category) && updateMode != 0)
+                        datHeader.Category = "DiffDAT";
+
+                    if (string.IsNullOrWhiteSpace(datHeader.Author))
+                        datHeader.Author = "SabreTools";
+                }
+
+                // If no update fields are set, default to Names
+                if (updateFields == null || updateFields.Count == 0)
+                    updateFields = new List<Field>() { Field.Name };
+
+                // Populate the DatData object
+                DatFile userInputDat = new DatFile(datHeader);
+
+                userInputDat.DetermineUpdateType(
+                    Inputs,
+                    GetList(features, BaseDatListValue),
+                    GetString(features, OutputDirStringValue),
+                    updateMode,
+                    GetBoolean(features, InplaceValue),
+                    GetBoolean(features, SkipFirstOutputValue),
+                    GetBoolean(features, CleanValue),
+                    GetBoolean(features, RemoveUnicodeValue),
+                    GetBoolean(features, DescriptionAsNameValue),
+                    GetFilter(features),
+                    GetSplitType(features),
+                    updateFields,
+                    GetBoolean(features, OnlySameValue));
+            }
+        }
+
+        private class VerifyFeature : SabreToolsFeature
+        {
+            public const string Value = "Verify";
+
+            public VerifyFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "-ve", "--verify" };
+                this.Description = "Verify a folder against DATs";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = "When used, this will use an input DAT or set of DATs to blindly check against an input folder. The base of the folder is considered the base for the combined DATs and games are either the directories or archives within. This will only do a direct verification of the items within and will create a fixdat afterwards for missing files.";
+                this.Features = new Dictionary<string, Feature>();
+
+                AddFeature(_datListInput);
+                AddFeature(_depotFlag);
+                AddFeature(_tempStringInput);
+                AddFeature(_hashOnlyFlag);
+                AddFeature(_quickFlag);
+                AddFeature(_headerStringInput);
+                AddFeature(_chdsAsFilesFlag);
+                AddFeature(_individualFlag);
+                AddFeature(_datMergedFlag);
+                AddFeature(_datSplitFlag);
+                AddFeature(_datDeviceNonMergedFlag);
+                AddFeature(_datNonMergedFlag);
+                AddFeature(_datFullNonMergedFlag);
+                AddFeature(_gameNameListInput);
+                AddFeature(_notGameNameListInput);
+                AddFeature(_gameDescriptionListInput);
+                AddFeature(_notGameDescriptionListInput);
+                AddFeature(_matchOfTagsFlag);
+                AddFeature(_itemNameListInput);
+                AddFeature(_notItemNameListInput);
+                AddFeature(_itemTypeListInput);
+                AddFeature(_notItemTypeListInput);
+                AddFeature(_greaterStringInput);
+                AddFeature(_lessStringInput);
+                AddFeature(_equalStringInput);
+                AddFeature(_crcListInput);
+                AddFeature(_notCrcListInput);
+                AddFeature(_md5ListInput);
+                AddFeature(_notMd5ListInput);
+                AddFeature(_ripeMd160ListInput);
+                AddFeature(_notRipeMd160ListInput);
+                AddFeature(_sha1ListInput);
+                AddFeature(_notSha1ListInput);
+                AddFeature(_sha256ListInput);
+                AddFeature(_notSha256ListInput);
+                AddFeature(_sha384ListInput);
+                AddFeature(_notSha384ListInput);
+                AddFeature(_sha512ListInput);
+                AddFeature(_notSha512ListInput);
+                AddFeature(_statusListInput);
+                AddFeature(_notStatusListInput);
+                AddFeature(_gameTypeListInput);
+                AddFeature(_notGameTypeListInput);
+                AddFeature(_runnableFlag);
+                AddFeature(_notRunnableFlag);
+            }
+
+            public override void ProcessFeatures(Dictionary<string, Feature> features)
+            {
+                // Get a list of files from the input datfiles
+                var datfiles = GetList(features, DatListValue);
+                datfiles = Utilities.GetOnlyFilesFromInputs(datfiles);
+
+                // Get feature flags
+                bool chdsAsFiles = GetBoolean(features, ChdsAsFilesValue);
+                bool depot = GetBoolean(features, DepotValue);
+                bool hashOnly = GetBoolean(features, HashOnlyValue);
+                bool quickScan = GetBoolean(features, QuickValue);
+                string headerToCheckAgainst = GetDatHeader(features).Header;
+                var filter = GetFilter(features);
+                var splitType = GetSplitType(features);
+
+                // If we are in individual mode, process each DAT on their own
+                if (GetBoolean(features, IndividualValue))
+                {
+                    foreach (string datfile in datfiles)
+                    {
+                        DatFile datdata = new DatFile();
+                        datdata.Parse(datfile, 99, 99, splitType, keep: true, useTags: true);
+
+                        // If we have the depot flag, respect it
+                        if (depot)
+                            datdata.VerifyDepot(Inputs, headerToCheckAgainst);
+                        else
+                            datdata.VerifyGeneric(Inputs, hashOnly, quickScan, headerToCheckAgainst, chdsAsFiles, filter);
+                    }
+                }
+                // Otherwise, process all DATs into the same output
+                else
+                {
+                    InternalStopwatch watch = new InternalStopwatch("Populating internal DAT");
+
+                    // Add all of the input DATs into one huge internal DAT
+                    DatFile datdata = new DatFile();
+                    foreach (string datfile in datfiles)
+                    {
+                        datdata.Parse(datfile, 99, 99, splitType, keep: true, useTags: true);
+                    }
+
+                    watch.Stop();
+
+                    // If we have the depot flag, respect it
+                    if (depot)
+                        datdata.VerifyDepot(Inputs, headerToCheckAgainst);
+                    else
+                        datdata.VerifyGeneric(Inputs, hashOnly, quickScan, headerToCheckAgainst, chdsAsFiles, filter);
+                }
+            }
+        }
+
+        #endregion
     }
 }

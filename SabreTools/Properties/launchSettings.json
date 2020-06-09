@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SabreTools": {
+      "commandName": "Project",
+      "commandLineArgs": "--help update"
+    }
+  }
+}

@@ -1,7 +1,23 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Mono.Data.Sqlite;
 
 using SabreTools.Library.Data;
+using SabreTools.Library.DatFiles;
+using SabreTools.Library.DatItems;
 using SabreTools.Library.Help;
+using SabreTools.Library.Tools;
+
+#if MONO
+using System.IO;
+#else
+using Alphaleonis.Win32.Filesystem;
+
+using SearchOption = System.IO.SearchOption;
+using StreamReader = System.IO.StreamReader;
+using StreamWriter = System.IO.StreamWriter;
+#endif
 
 namespace RombaSharp
 {
@@ -10,78 +26,91 @@ namespace RombaSharp
     {
         #region Private Flag features
 
+        public const string CopyValue = "copy";
         private static Feature copyFlag
         {
             get
             {
                 return new Feature(
-                    "copy",
+                    CopyValue,
                     "-copy",
                     "Copy files to output instead of rebuilding",
                     FeatureType.Flag);
             }
         } // Unique to RombaSharp
+
+        public const string FixdatOnlyValue = "fixdat-only";
         private static Feature fixdatOnlyFlag
         {
             get
             {
                 return new Feature(
-                    "fixdatOnly",
+                    FixdatOnlyValue,
                     "-fixdatOnly",
                     "only fix dats and don't generate torrentzips",
                     FeatureType.Flag);
             }
         }
+
+        public const string LogOnlyValue = "log-only";
         private static Feature logOnlyFlag
         {
             get
             {
                 return new Feature(
-                "log-only",
+                LogOnlyValue,
                 "-log-only",
                 "Only write out actions to log",
                 FeatureType.Flag);
             }
         }
+
+        public const string NoDbValue = "no-db";
         private static Feature noDbFlag
         {
             get
             {
                 return new Feature(
-                    "no-db",
+                    NoDbValue,
                     "-no-db",
                     "archive into depot but do not touch DB index and ignore only-needed flag",
                     FeatureType.Flag);
             }
         }
+
+        public const string OnlyNeededValue = "only-needed";
         private static Feature onlyNeededFlag
         {
             get
             {
                 return new Feature(
-                    "only-needed",
+                    OnlyNeededValue,
                     "-only-needed",
                     "only archive ROM files actually referenced by DAT files from the DAT index",
                     FeatureType.Flag);
             }
         }
+
+        public const string SkipInitialScanValue = "skip-initial-scan";
         private static Feature skipInitialScanFlag
         {
             get
             {
                 return new Feature(
-                    "skip-initial-scan",
+                    SkipInitialScanValue,
                     "-skip-initial-scan",
                     "skip the initial scan of the files to determine amount of work",
                     FeatureType.Flag);
             }
         }
+
+        public const string UseGolangZipValue = "use-golang-zip";
         private static Feature useGolangZipFlag
         {
             get
             {
                 return new Feature(
-                    "use-golang-zip",
+                    UseGolangZipValue,
                     "-use-golang-zip",
                     "use go zip implementation instead of zlib",
                     FeatureType.Flag);
@@ -92,56 +121,65 @@ namespace RombaSharp
 
         #region Private Int32 features
 
+        public const string Include7ZipsInt32Value = "include-7zips";
         private static Feature include7ZipsInt32Input
         {
             get
             {
                 return new Feature(
-                    "include-7zips",
+                    Include7ZipsInt32Value,
                     "-include-7zips",
                     "flag value == 0 means: add 7zip files themselves into the depot in addition to their contents, flag value == 2 means add 7zip files themselves but don't add content",
                     FeatureType.Int32);
             }
         }
+
+        public const string IncludeGZipsInt32Value = "include-gzips";
         private static Feature includeGZipsInt32Input
         {
             get
             {
                 return new Feature(
-                    "include-gzips",
+                    IncludeGZipsInt32Value,
                     "-include-gzips",
                     "flag value == 0 means: add gzip files themselves into the depot in addition to their contents, flag value == 2 means add gzip files themselves but don't add content",
                     FeatureType.Int32);
             }
         }
+
+        public const string IncludeZipsInt32Value = "include-zips";
         private static Feature includeZipsInt32Input
         {
             get
             {
                 return new Feature(
-                    "include-zips",
+                    IncludeZipsInt32Value,
                     "-include-zips",
                     "flag value == 0 means: add zip files themselves into the depot in addition to their contents, flag value == 2 means add zip files themselves but don't add content",
                     FeatureType.Int32);
             }
         }
+
+        public const string SubworkersInt32Value = "subworkers";
         private static Feature subworkersInt32Input
         {
             get
             {
                 return new Feature(
-                    "subworkers",
+                    SubworkersInt32Value,
                     "-subworkers",
                     "how many subworkers to launch for each worker",
                     FeatureType.Int32);
             }
         } // Defaults to Workers count in config
+
+        public const string WorkersInt32Value = "workers";
         private static Feature workersInt32Input
         {
             get
             {
                 return new Feature(
-                    "workers",
+                    WorkersInt32Value,
                     "-workers",
                     "how many workers to launch for the job",
                     FeatureType.Int32);
@@ -152,12 +190,13 @@ namespace RombaSharp
 
         #region Private Int64 features
 
+        public const string SizeInt64Value = "size";
         private static Feature sizeInt64Input
         {
             get
             {
                 return new Feature(
-                    "size",
+                    SizeInt64Value,
                     "-size",
                     "size of the rom to lookup",
                     FeatureType.Int64);
@@ -168,23 +207,26 @@ namespace RombaSharp
 
         #region Private List<String> features
 
+        public const string DatsListStringValue = "dats";
         private static Feature datsListStringInput
         {
             get
             {
                 return new Feature(
-                    "dats",
+                    DatsListStringValue,
                     "-dats",
                     "purge only roms declared in these dats",
                     FeatureType.List);
             }
         }
+
+        public const string DepotListStringValue = "depot";
         private static Feature depotListStringInput
         {
             get
             {
                 return new Feature(
-                    "depot",
+                    DepotListStringValue,
                     "-depot",
                     "work only on specified depot path",
                     FeatureType.List);
@@ -195,100 +237,117 @@ namespace RombaSharp
 
         #region Private String features
 
+        public const string BackupStringValue = "backup";
         private static Feature backupStringInput
         {
             get
             {
                 return new Feature(
-                    "backup",
+                    BackupStringValue,
                     "-backup",
                     "backup directory where backup files are moved to",
                     FeatureType.String);
             }
         }
+
+        public const string DescriptionStringValue = "description";
         private static Feature descriptionStringInput
         {
             get
             {
                 return new Feature(
-                    "description",
+                    DescriptionStringValue,
                     "-description",
                     "description value in DAT header",
                     FeatureType.String);
             }
         }
+
+        public const string MissingSha1sStringValue = "missing-sha1s";
         private static Feature missingSha1sStringInput
         {
             get
             {
                 return new Feature(
-                    "missingSha1s",
+                    MissingSha1sStringValue,
                     "-missingSha1s",
                     "write paths of dats with missing sha1s into this file",
                     FeatureType.String);
             }
         }
+
+        public const string NameStringValue = "name";
         private static Feature nameStringInput
         {
             get
             {
                 return new Feature(
-                    "name",
+                    NameStringValue,
                     "-name",
                     "name value in DAT header",
                     FeatureType.String);
             }
         }
+
+        public const string NewStringValue = "new";
         private static Feature newStringInput
         {
             get
             {
                 return new Feature(
-                    "new",
+                    NewStringValue,
                     "-new",
                     "new DAT file",
                     FeatureType.String);
             }
         }
+
+        public const string OldStringValue = "old";
         private static Feature oldStringInput
         {
             get
             {
                 return new Feature(
-                    "old",
+                    OldStringValue,
                     "-old",
                     "old DAT file",
                     FeatureType.String);
             }
         }
+
+        public const string OutStringValue = "out";
         private static Feature outStringInput
         {
             get
             {
                 return new Feature(
-                    "out",
+                    OutStringValue,
                     "-out",
                     "output file",
                     FeatureType.String);
             }
         }
+
+        public const string ResumeStringValue = "resume";
         private static Feature resumeStringInput
         {
             get
             {
                 return new Feature(
-                    "resume",
+                    ResumeStringValue,
                     "-resume",
                     "resume a previously interrupted operation from the specified path",
                     FeatureType.String);
             }
         }
+
+        public const string SourceStringValue = "source";
         private static Feature sourceStringInput
         {
             get
             {
                 return new Feature(
-                    "source",
+                    SourceStringValue,
                     "-source",
                     "source directory",
                     FeatureType.String);
@@ -308,365 +367,1515 @@ namespace RombaSharp
                 "Usage: RombaSharp [option] [filename|dirname] ...",
                 string.Empty
             };
+
+            // Create the base help object with header
             Help help = new Help(helpHeader);
 
-            #region Help
+            // Add all of the features
+            help.Add(new HelpFeature());
+            help.Add(new DetailedHelpFeature());
+            help.Add(new ScriptFeature());
+            help.Add(new ArchiveFeature());
+            help.Add(new BuildFeature());
+            help.Add(new CancelFeature());
+            help.Add(new DatStatsFeature());
+            help.Add(new DbStatsFeature());
+            help.Add(new DiffdatFeature());
+            help.Add(new Dir2DatFeature());
+            help.Add(new EDiffdatFeature());
+            help.Add(new ExportFeature());
+            help.Add(new FixdatFeature());
+            help.Add(new ImportFeature());
+            help.Add(new LookupFeature());
+            help.Add(new MemstatsFeature());
+            help.Add(new MergeFeature());
+            help.Add(new MissFeature());
+            help.Add(new PurgeBackupFeature());
+            help.Add(new PurgeDeleteFeature());
+            help.Add(new RefreshDatsFeature());
+            help.Add(new RescanDepotsFeature());
+            help.Add(new ProgressFeature());
+            help.Add(new ShutdownFeature());
+            help.Add(new VersionFeature());
 
-            Feature helpFeature = new Feature(
-                "Help",
-                new List<string>() { "-?", "-h", "--help" },
-                "Show this help",
-                FeatureType.Flag);
+            return help;
+        }
 
-            #endregion
+        #region Top-level Features
 
-            #region Script
+        private class RombaSharpFeature : TopLevel
+        {
+        }
 
-            Feature script = new Feature(
-                "Script",
-                "--script",
-                "Enable script mode (no clear screen)",
-                FeatureType.Flag,
-                longDescription: "For times when RombaSharp is being used in a scripted environment, the user may not want the screen to be cleared every time that it is called. This flag allows the user to skip clearing the screen on run just like if the console was being redirected.");
+        private class ArchiveFeature : RombaSharpFeature
+        {
+            public const string Value = "Archive";
 
-            #endregion
-
-            #region Archive
-
-            Feature archive = new Feature(
-                "Archive",
-                "archive",
-                "Adds ROM files from the specified directories to the ROM archive.",
-                FeatureType.Flag,
-                longDescription: @"Adds ROM files from the specified directories to the ROM archive.
+            public ArchiveFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "archive" };
+                this.Description = "Adds ROM files from the specified directories to the ROM archive.";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = @"Adds ROM files from the specified directories to the ROM archive.
 Traverses the specified directory trees looking for zip files and normal files.
 Unpacked files will be stored as individual entries. Prior to unpacking a zip
 file, the external SHA1 is checked against the DAT index. 
 If -only-needed is set, only those files are put in the ROM archive that
-have a current entry in the DAT index.");
-            archive.AddFeature(onlyNeededFlag);
-            archive.AddFeature(resumeStringInput);
-            archive.AddFeature(includeZipsInt32Input); // Defaults to 0
-            archive.AddFeature(workersInt32Input);
-            archive.AddFeature(includeGZipsInt32Input); // Defaults to 0
-            archive.AddFeature(include7ZipsInt32Input); // Defaults to 0
-            archive.AddFeature(skipInitialScanFlag);
-            archive.AddFeature(useGolangZipFlag);
-            archive.AddFeature(noDbFlag);
+have a current entry in the DAT index.";
+                this.Features = new Dictionary<string, Feature>();
 
-            #endregion
+                AddFeature(onlyNeededFlag);
+                AddFeature(resumeStringInput);
+                AddFeature(includeZipsInt32Input); // Defaults to 0
+                AddFeature(workersInt32Input);
+                AddFeature(includeGZipsInt32Input); // Defaults to 0
+                AddFeature(include7ZipsInt32Input); // Defaults to 0
+                AddFeature(skipInitialScanFlag);
+                AddFeature(useGolangZipFlag);
+                AddFeature(noDbFlag);
+            }
 
-            #region Build
+            public override void ProcessFeatures(Dictionary<string, Feature> features)
+            {
+                // Get the archive scanning level
+                int sevenzip = GetInt32(features, Include7ZipsInt32Value);
+                sevenzip = sevenzip == Int32.MinValue ? 1 : sevenzip;
 
-            Feature build = new Feature(
-                "Build",
-                "build",
-                "For each specified DAT file it creates the torrentzip files.",
-                FeatureType.Flag,
-                longDescription: @"For each specified DAT file it creates the torrentzip files in the specified
+                int gz = GetInt32(features, IncludeGZipsInt32Value);
+                gz = gz == Int32.MinValue ? 1 : gz;
+
+                int zip = GetInt32(features, IncludeZipsInt32Value);
+                zip = zip == Int32.MinValue ? 1 : zip;
+
+                var asl = Utilities.GetArchiveScanLevelFromNumbers(sevenzip, gz, 2, zip);
+
+                // Get feature flags
+                bool noDb = GetBoolean(features, NoDbValue);
+                bool onlyNeeded = GetBoolean(features, OnlyNeededValue);
+
+                // First we want to get just all directories from the inputs
+                List<string> onlyDirs = new List<string>();
+                foreach (string input in Inputs)
+                {
+                    if (Directory.Exists(input))
+                        onlyDirs.Add(Path.GetFullPath(input));
+                }
+
+                // Then process all of the input directories into an internal DAT
+                DatFile df = new DatFile();
+                foreach (string dir in onlyDirs)
+                {
+                    // TODO: All instances of Hash.DeepHashes should be made into 0x0 eventually
+                    df.PopulateFromDir(dir, Hash.DeepHashes, false, false, SkipFileType.None, false, false, _tmpdir, false, null, true, null);
+                    df.PopulateFromDir(dir, Hash.DeepHashes, false, true, SkipFileType.None, false, false, _tmpdir, false, null, true, null);
+                }
+
+                // Create an empty Dat for files that need to be rebuilt
+                DatFile need = new DatFile();
+
+                // Open the database connection
+                SqliteConnection dbc = new SqliteConnection(_connectionString);
+                dbc.Open();
+
+                // Now that we have the Dats, add the files to the database
+                string crcquery = "INSERT OR IGNORE INTO crc (crc) VALUES";
+                string md5query = "INSERT OR IGNORE INTO md5 (md5) VALUES";
+                string sha1query = "INSERT OR IGNORE INTO sha1 (sha1, depot) VALUES";
+                string crcsha1query = "INSERT OR IGNORE INTO crcsha1 (crc, sha1) VALUES";
+                string md5sha1query = "INSERT OR IGNORE INTO md5sha1 (md5, sha1) VALUES";
+
+                foreach (string key in df.Keys)
+                {
+                    List<DatItem> datItems = df[key];
+                    foreach (Rom rom in datItems)
+                    {
+                        // If we care about if the file exists, check the databse first
+                        if (onlyNeeded && !noDb)
+                        {
+                            string query = "SELECT * FROM crcsha1 JOIN md5sha1 ON crcsha1.sha1=md5sha1.sha1"
+                                        + " WHERE crcsha1.crc=\"" + rom.CRC + "\""
+                                        + " OR md5sha1.md5=\"" + rom.MD5 + "\""
+                                        + " OR md5sha1.sha1=\"" + rom.SHA1 + "\"";
+                            SqliteCommand slc = new SqliteCommand(query, dbc);
+                            SqliteDataReader sldr = slc.ExecuteReader();
+
+                            if (sldr.HasRows)
+                            {
+                                // Add to the queries
+                                if (!string.IsNullOrWhiteSpace(rom.CRC))
+                                    crcquery += " (\"" + rom.CRC + "\"),";
+
+                                if (!string.IsNullOrWhiteSpace(rom.MD5))
+                                    md5query += " (\"" + rom.MD5 + "\"),";
+
+                                if (!string.IsNullOrWhiteSpace(rom.SHA1))
+                                {
+                                    sha1query += " (\"" + rom.SHA1 + "\", \"" + _depots.Keys.ToList()[0] + "\"),";
+
+                                    if (!string.IsNullOrWhiteSpace(rom.CRC))
+                                        crcsha1query += " (\"" + rom.CRC + "\", \"" + rom.SHA1 + "\"),";
+
+                                    if (!string.IsNullOrWhiteSpace(rom.MD5))
+                                        md5sha1query += " (\"" + rom.MD5 + "\", \"" + rom.SHA1 + "\"),";
+                                }
+
+                                // Add to the Dat
+                                need.Add(key, rom);
+                            }
+                        }
+                        // Otherwise, just add the file to the list
+                        else
+                        {
+                            // Add to the queries
+                            if (!noDb)
+                            {
+                                if (!string.IsNullOrWhiteSpace(rom.CRC))
+                                    crcquery += " (\"" + rom.CRC + "\"),";
+
+                                if (!string.IsNullOrWhiteSpace(rom.MD5))
+                                    md5query += " (\"" + rom.MD5 + "\"),";
+
+                                if (!string.IsNullOrWhiteSpace(rom.SHA1))
+                                {
+                                    sha1query += " (\"" + rom.SHA1 + "\", \"" + _depots.Keys.ToList()[0] + "\"),";
+
+                                    if (!string.IsNullOrWhiteSpace(rom.CRC))
+                                        crcsha1query += " (\"" + rom.CRC + "\", \"" + rom.SHA1 + "\"),";
+
+                                    if (!string.IsNullOrWhiteSpace(rom.MD5))
+                                        md5sha1query += " (\"" + rom.MD5 + "\", \"" + rom.SHA1 + "\"),";
+                                }
+                            }
+
+                            // Add to the Dat
+                            need.Add(key, rom);
+                        }
+                    }
+                }
+
+                // Now run the queries, if they're populated
+                if (crcquery != "INSERT OR IGNORE INTO crc (crc) VALUES")
+                {
+                    SqliteCommand slc = new SqliteCommand(crcquery.TrimEnd(','), dbc);
+                    slc.ExecuteNonQuery();
+                    slc.Dispose();
+                }
+
+                if (md5query != "INSERT OR IGNORE INTO md5 (md5) VALUES")
+                {
+                    SqliteCommand slc = new SqliteCommand(md5query.TrimEnd(','), dbc);
+                    slc.ExecuteNonQuery();
+                    slc.Dispose();
+                }
+
+                if (sha1query != "INSERT OR IGNORE INTO sha1 (sha1, depot) VALUES")
+                {
+                    SqliteCommand slc = new SqliteCommand(sha1query.TrimEnd(','), dbc);
+                    slc.ExecuteNonQuery();
+                    slc.Dispose();
+                }
+
+                if (crcsha1query != "INSERT OR IGNORE INTO crcsha1 (crc, sha1) VALUES")
+                {
+                    SqliteCommand slc = new SqliteCommand(crcsha1query.TrimEnd(','), dbc);
+                    slc.ExecuteNonQuery();
+                    slc.Dispose();
+                }
+
+                if (md5sha1query != "INSERT OR IGNORE INTO md5sha1 (md5, sha1) VALUES")
+                {
+                    SqliteCommand slc = new SqliteCommand(md5sha1query.TrimEnd(','), dbc);
+                    slc.ExecuteNonQuery();
+                    slc.Dispose();
+                }
+
+                // Create the sorting object to use and rebuild the needed files
+                need.RebuildGeneric(onlyDirs, _depots.Keys.ToList()[0], false /*quickScan*/, false /*date*/,
+                    false /*delete*/, false /*inverse*/, OutputFormat.TorrentGzipRomba, asl, false /*updateDat*/,
+                    null /*headerToCheckAgainst*/, true /* chdsAsFiles */);
+            }
+        }
+
+        private class BuildFeature : RombaSharpFeature
+        {
+            public const string Value = "Build";
+
+            public BuildFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "build" };
+                this.Description = "For each specified DAT file it creates the torrentzip files.";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = @"For each specified DAT file it creates the torrentzip files in the specified
 output dir. The files will be placed in the specified location using a folder
-structure according to the original DAT master directory tree structure.");
-            build.AddFeature(outStringInput);
-            build.AddFeature(fixdatOnlyFlag);
-            build.AddFeature(copyFlag);
-            build.AddFeature(workersInt32Input);
-            build.AddFeature(subworkersInt32Input);
+structure according to the original DAT master directory tree structure.";
+                this.Features = new Dictionary<string, Feature>();
 
-            #endregion
+                AddFeature(outStringInput);
+                AddFeature(fixdatOnlyFlag);
+                AddFeature(copyFlag);
+                AddFeature(workersInt32Input);
+                AddFeature(subworkersInt32Input);
+            }
 
-            #region Cancel
+            public override void ProcessFeatures(Dictionary<string, Feature> features)
+            {
+                // Get feature flags
+                bool copy = GetBoolean(features, CopyValue);
+                string outdat = GetString(features, OutStringValue);
 
-            Feature cancel = new Feature(
-                "Cancel",
-                "cancel",
-                "Cancels current long-running job",
-                FeatureType.Flag,
-                longDescription: @"Cancels current long-running job.");
+                // Verify the filenames
+                Dictionary<string, string> foundDats = GetValidDats(Inputs);
 
-            #endregion
+                // Ensure the output directory is set
+                if (string.IsNullOrWhiteSpace(outdat))
+                    outdat = "out";
 
-            #region DatStats
+                // Now that we have the dictionary, we can loop through and output to a new folder for each
+                foreach (string key in foundDats.Keys)
+                {
+                    // Get the DAT file associated with the key
+                    DatFile datFile = new DatFile();
+                    datFile.Parse(Path.Combine(_dats, foundDats[key]), 0, 0);
 
-            Feature datstats = new Feature(
-                "DatStats",
-                "datstats",
-                "Prints dat stats.",
-                FeatureType.Flag,
-                longDescription: @"Print dat stats.");
+                    // Create the new output directory if it doesn't exist
+                    string outputFolder = Path.Combine(outdat, Path.GetFileNameWithoutExtension(foundDats[key]));
+                    Utilities.EnsureOutputDirectory(outputFolder, create: true);
 
-            #endregion
+                    // Get all online depots
+                    List<string> onlineDepots = _depots.Where(d => d.Value.Item2).Select(d => d.Key).ToList();
 
-            #region DbStats
+                    // Now scan all of those depots and rebuild
+                    ArchiveScanLevel asl = Utilities.GetArchiveScanLevelFromNumbers(1, 1, 1, 1);
+                    datFile.RebuildDepot(onlineDepots, outputFolder, false /*date*/,
+                        false /*delete*/, false /*inverse*/, (copy ? OutputFormat.TorrentGzipRomba : OutputFormat.TorrentZip),
+                        false /*updateDat*/, null /*headerToCheckAgainst*/);
+                }
+            }
+        }
 
-            Feature dbstats = new Feature(
-                "DbStats",
-                "dbstats",
-                "Prints db stats.",
-                FeatureType.Flag,
-                longDescription: @"Print db stats.");
+        private class CancelFeature : RombaSharpFeature
+        {
+            public const string Value = "Cancel";
 
-            #endregion
+            public CancelFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "cancel" };
+                this.Description = "Cancels current long-running job";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = "Cancels current long-running job.";
+                this.Features = new Dictionary<string, Feature>();
+            }
 
-            #region Diffdat
+            public override void ProcessFeatures(Dictionary<string, Feature> features)
+            {
+                Globals.Logger.User("This feature is not yet implemented: cancel");
+            }
+        }
 
-            Feature diffdat = new Feature(
-                "Diffdat",
-                "diffdat",
-                "Creates a DAT file with those entries that are in -new DAT.",
-                FeatureType.Flag,
-                longDescription: @"Creates a DAT file with those entries that are in -new DAT file and not
-in -old DAT file. Ignores those entries in -old that are not in -new.");
-            diffdat.AddFeature(outStringInput);
-            diffdat.AddFeature(oldStringInput);
-            diffdat.AddFeature(newStringInput);
-            diffdat.AddFeature(nameStringInput);
-            diffdat.AddFeature(descriptionStringInput);
+        private class DatStatsFeature : RombaSharpFeature
+        {
+            public const string Value = "DatStats";
 
-            #endregion
+            public DatStatsFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "datstats" };
+                this.Description = "Prints dat stats.";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = "Print dat stats.";
+                this.Features = new Dictionary<string, Feature>();
+            }
 
-            #region Dir2Dat
+            public override void ProcessFeatures(Dictionary<string, Feature> features)
+            {
+                // If we have no inputs listed, we want to use datroot
+                if (Inputs == null || Inputs.Count == 0)
+                {
+                    Inputs = new List<string>();
+                    Inputs.Add(Path.GetFullPath(_dats));
+                }
 
-            Feature dir2dat = new Feature(
-                "Dir2Dat",
-                "dir2dat",
-                "Creates a DAT file for the specified input directory and saves it to the -out filename.",
-                FeatureType.Flag);
-            dir2dat.AddFeature(outStringInput);
-            dir2dat.AddFeature(sourceStringInput);
-            dir2dat.AddFeature(nameStringInput); // Defaults to "untitled"
-            dir2dat.AddFeature(descriptionStringInput);
+                // Now output the stats for all inputs
+                DatFile.OutputStats(Inputs, "rombasharp-datstats", null /* outDir */, true /* single */, true /* baddumpCol */, true /* nodumpCol */, StatReportFormat.Textfile);
+            }
+        }
 
-            #endregion
+        private class DbStatsFeature : RombaSharpFeature
+        {
+            public const string Value = "DbStats";
 
-            #region EDiffdat
+            public DbStatsFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "dbstats" };
+                this.Description = "Prints db stats.";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = "Print db stats.";
+                this.Features = new Dictionary<string, Feature>();
+            }
 
-            Feature ediffdat = new Feature(
-                "EDiffdat",
-                "ediffdat",
-                "Creates a DAT file with those entries that are in -new DAT.",
-                FeatureType.Flag,
-                longDescription: @"Creates a DAT file with those entries that are in -new DAT files and not
-in -old DAT files. Ignores those entries in -old that are not in -new.");
-            ediffdat.AddFeature(outStringInput);
-            ediffdat.AddFeature(oldStringInput);
-            ediffdat.AddFeature(newStringInput);
+            public override void ProcessFeatures(Dictionary<string, Feature> features)
+            {
+                SqliteConnection dbc = new SqliteConnection(_connectionString);
+                dbc.Open();
 
-            #endregion
+                // Total number of CRCs
+                string query = "SELECT COUNT(*) FROM crc";
+                SqliteCommand slc = new SqliteCommand(query, dbc);
+                Globals.Logger.User("Total CRCs: {0}", (long)slc.ExecuteScalar());
 
-            #region Export
+                // Total number of MD5s
+                query = "SELECT COUNT(*) FROM md5";
+                slc = new SqliteCommand(query, dbc);
+                Globals.Logger.User("Total MD5s: {0}", (long)slc.ExecuteScalar());
+
+                // Total number of SHA1s
+                query = "SELECT COUNT(*) FROM sha1";
+                slc = new SqliteCommand(query, dbc);
+                Globals.Logger.User("Total SHA1s: {0}", (long)slc.ExecuteScalar());
+
+                // Total number of DATs
+                query = "SELECT COUNT(*) FROM dat";
+                slc = new SqliteCommand(query, dbc);
+                Globals.Logger.User("Total DATs: {0}", (long)slc.ExecuteScalar());
+
+                slc.Dispose();
+                dbc.Dispose();
+            }
+        }
+
+        private class DetailedHelpFeature : RombaSharpFeature
+        {
+            public const string Value = "Help (Detailed)";
+
+            public DetailedHelpFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "-??", "-hd", "--help-detailed" };
+                this.Description = "Show this detailed help";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = "Display a detailed help text to the screen.";
+                this.Features = new Dictionary<string, Feature>();
+            }
+
+            public override bool ProcessArgs(string[] args, Help help)
+            {
+                // If we had something else after help
+                if (args.Length > 1)
+                {
+                    help.OutputIndividualFeature(args[1], includeLongDescription: true);
+                    return true;
+                }
+
+                // Otherwise, show generic help
+                else
+                {
+                    help.OutputAllHelp();
+                    return true;
+                }
+            }
+        }
+
+        private class DiffdatFeature : RombaSharpFeature
+        {
+            public const string Value = "Diffdat";
+
+            public DiffdatFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "diffdat" };
+                this.Description = "Creates a DAT file with those entries that are in -new DAT.";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = @"Creates a DAT file with those entries that are in -new DAT file and not
+in -old DAT file. Ignores those entries in -old that are not in -new.";
+                this.Features = new Dictionary<string, Feature>();
+
+                AddFeature(outStringInput);
+                AddFeature(oldStringInput);
+                AddFeature(newStringInput);
+                AddFeature(nameStringInput);
+                AddFeature(descriptionStringInput);
+            }
+
+            public override void ProcessFeatures(Dictionary<string, Feature> features)
+            {
+                // Get feature flags
+                string name = GetString(features, NameStringValue);
+                string description = GetString(features, DescriptionStringValue);
+                string newdat = GetString(features, NewStringValue);
+                string olddat = GetString(features, OldStringValue);
+                string outdat = GetString(features, OutStringValue);
+
+                // Ensure the output directory
+                Utilities.EnsureOutputDirectory(outdat, create: true);
+
+                // Check that all required files exist
+                if (!File.Exists(olddat))
+                {
+                    Globals.Logger.Error("File '{0}' does not exist!", olddat);
+                    return;
+                }
+
+                if (!File.Exists(newdat))
+                {
+                    Globals.Logger.Error("File '{0}' does not exist!", newdat);
+                    return;
+                }
+
+                // Create the encapsulating datfile
+                DatFile datfile = new DatFile()
+                {
+                    Name = name,
+                    Description = description,
+                };
+
+                // Create the inputs
+                List<string> dats = new List<string>();
+                dats.Add(newdat);
+                List<string> basedats = new List<string>();
+                basedats.Add(olddat);
+
+                // Now run the diff on the inputs
+                datfile.DetermineUpdateType(dats, basedats, outdat, UpdateMode.DiffAgainst, false /* inplace */, false /* skip */,
+                    false /* clean */, false /* remUnicode */, false /* descAsName */, new Filter(), SplitType.None,
+                    new List<Field>(), false /* onlySame */);
+            }
+        }
+
+        private class Dir2DatFeature : RombaSharpFeature
+        {
+            public const string Value = "Dir2Dat";
+
+            public Dir2DatFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "dir2dat" };
+                this.Description = "Creates a DAT file for the specified input directory and saves it to the -out filename.";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = "Creates a DAT file for the specified input directory and saves it to the -out filename.";
+                this.Features = new Dictionary<string, Feature>();
+
+                AddFeature(outStringInput);
+                AddFeature(sourceStringInput);
+                AddFeature(nameStringInput); // Defaults to "untitled"
+                AddFeature(descriptionStringInput);
+            }
+
+            public override void ProcessFeatures(Dictionary<string, Feature> features)
+            {
+                // Get feature flags
+                string name = GetString(features, NameStringValue);
+                string description = GetString(features, DescriptionStringValue);
+                string source = GetString(features, SourceStringValue);
+                string outdat = GetString(features, OutStringValue);
+
+                // Ensure the output directory
+                Utilities.EnsureOutputDirectory(outdat, create: true);
+
+                // Check that all required directories exist
+                if (!Directory.Exists(source))
+                {
+                    Globals.Logger.Error("File '{0}' does not exist!", source);
+                    return;
+                }
+
+                // Create the encapsulating datfile
+                DatFile datfile = new DatFile()
+                {
+                    Name = (string.IsNullOrWhiteSpace(name) ? "untitled" : name),
+                    Description = description,
+                };
+
+                // Now run the D2D on the input and write out
+                // TODO: All instances of Hash.DeepHashes should be made into 0x0 eventually
+                datfile.PopulateFromDir(source, Hash.DeepHashes, true /* bare */, false /* archivesAsFiles */, SkipFileType.None, false /* addBlanks */,
+                    false /* addDate */, _tmpdir, false /* copyFiles */, null /* headerToCheckAgainst */, true /* chdsAsFiles */, null /* filter */);
+                datfile.Write(outDir: outdat);
+            }
+        }
+
+        private class EDiffdatFeature : RombaSharpFeature
+        {
+            public const string Value = "EDiffdat";
+
+            public EDiffdatFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "ediffdat" };
+                this.Description = "Creates a DAT file with those entries that are in -new DAT.";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = @"Creates a DAT file with those entries that are in -new DAT files and not
+in -old DAT files. Ignores those entries in -old that are not in -new.";
+                this.Features = new Dictionary<string, Feature>();
+
+                AddFeature(outStringInput);
+                AddFeature(oldStringInput);
+                AddFeature(newStringInput);
+            }
+
+            public override void ProcessFeatures(Dictionary<string, Feature> features)
+            {
+                // Get feature flags
+                string olddat = GetString(features, OldStringValue);
+                string outdat = GetString(features, OutStringValue);
+                string newdat = GetString(features, NewStringValue);
+
+                // Ensure the output directory
+                Utilities.EnsureOutputDirectory(outdat, create: true);
+
+                // Check that all required files exist
+                if (!File.Exists(olddat))
+                {
+                    Globals.Logger.Error("File '{0}' does not exist!", olddat);
+                    return;
+                }
+
+                if (!File.Exists(newdat))
+                {
+                    Globals.Logger.Error("File '{0}' does not exist!", newdat);
+                    return;
+                }
+
+                // Create the encapsulating datfile
+                DatFile datfile = new DatFile();
+
+                // Create the inputs
+                List<string> dats = new List<string>();
+                dats.Add(newdat);
+                List<string> basedats = new List<string>();
+                basedats.Add(olddat);
+
+                // Now run the diff on the inputs
+                datfile.DetermineUpdateType(dats, basedats, outdat, UpdateMode.DiffAgainst, false /* inplace */, false /* skip */,
+                    false /* clean */, false /* remUnicode */, false /* descAsName */, new Filter(), SplitType.None,
+                    new List<Field>(), false /* onlySame */);
+            }
+        }
+
+        private class ExportFeature : RombaSharpFeature
+        {
+            public const string Value = "Export";
 
             // Unique to RombaSharp
-            Feature export = new Feature(
-                "Export",
-                "export",
-                "Exports db to export.csv",
-                FeatureType.Flag,
-                longDescription: "Exports db to standardized export.csv");
+            public ExportFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "export" };
+                this.Description = "Exports db to export.csv";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = "Exports db to standardized export.csv";
+                this.Features = new Dictionary<string, Feature>();
+            }
 
-            #endregion
+            // TODO: Add ability to say which depot the files are found in
+            public override void ProcessFeatures(Dictionary<string, Feature> features)
+            {
+                SqliteConnection dbc = new SqliteConnection(_connectionString);
+                dbc.Open();
+                StreamWriter sw = new StreamWriter(Utilities.TryCreate("export.csv"));
 
-            #region Fixdat
+                // First take care of all file hashes
+                sw.WriteLine("CRC,MD5,SHA-1"); // ,Depot
 
-            Feature fixdat = new Feature(
-                "Fixdat",
-                "fixdat",
-                "For each specified DAT file it creates a fix DAT.",
-                FeatureType.Flag,
-                longDescription: @"For each specified DAT file it creates a fix DAT with the missing entries for
+                string query = "SELECT crcsha1.crc, md5sha1.md5, md5sha1.sha1 FROM crcsha1 JOIN md5sha1 ON crcsha1.sha1=md5sha1.sha1"; // md5sha1.sha1=sha1depot.sha1
+                SqliteCommand slc = new SqliteCommand(query, dbc);
+                SqliteDataReader sldr = slc.ExecuteReader();
+
+                if (sldr.HasRows)
+                {
+                    while (sldr.Read())
+                    {
+                        string line = sldr.GetString(0) + ","
+                                + sldr.GetString(1) + ","
+                                + sldr.GetString(2); // + ","
+                                                     // + sldr.GetString(3);
+                        sw.WriteLine(line);
+                    }
+                }
+
+                // Then take care of all DAT hashes
+                sw.WriteLine();
+                sw.WriteLine("DAT Hash");
+
+                query = "SELECT hash FROM dat";
+                slc = new SqliteCommand(query, dbc);
+                sldr = slc.ExecuteReader();
+
+                if (sldr.HasRows)
+                {
+                    while (sldr.Read())
+                    {
+                        sw.WriteLine(sldr.GetString(0));
+                    }
+                }
+
+                sldr.Dispose();
+                slc.Dispose();
+                sw.Dispose();
+                dbc.Dispose();
+            }
+        }
+
+        private class FixdatFeature : RombaSharpFeature
+        {
+            public const string Value = "Fixdat";
+
+            public FixdatFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "fixdat" };
+                this.Description = "For each specified DAT file it creates a fix DAT.";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = @"For each specified DAT file it creates a fix DAT with the missing entries for
 that DAT. If nothing is missing it doesn't create a fix DAT for that
-particular DAT.");
-            fixdat.AddFeature(outStringInput);
-            fixdat.AddFeature(fixdatOnlyFlag); // Enabled by default
-            fixdat.AddFeature(workersInt32Input);
-            fixdat.AddFeature(subworkersInt32Input);
+particular DAT.";
+                this.Features = new Dictionary<string, Feature>();
 
-            #endregion
+                AddFeature(outStringInput);
+                AddFeature(fixdatOnlyFlag); // Enabled by default
+                AddFeature(workersInt32Input);
+                AddFeature(subworkersInt32Input);
+            }
 
-            #region Import
+            public override void ProcessFeatures(Dictionary<string, Feature> features)
+            {
+                // Get feature flags
+                // Inputs
+                bool fixdatOnly = GetBoolean(features, FixdatOnlyValue);
+                int subworkers = GetInt32(features, SubworkersInt32Value);
+                int workers = GetInt32(features, WorkersInt32Value);
+                string outdat = GetString(features, OutStringValue);
 
-            // Unique to RombaSharp
-            Feature import = new Feature(
-                "Import",
-                "import",
-                "Import a database from a formatted CSV file",
-                FeatureType.Flag,
-                longDescription: @"Import a database from a formatted CSV file");
+                Globals.Logger.Error("This feature is not yet implemented: fixdat");
+            }
+        }
 
-            #endregion
+        private class HelpFeature : RombaSharpFeature
+        {
+            public const string Value = "Help";
 
-            #region Lookup
+            public HelpFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "-?", "-h", "--help" };
+                this.Description = "Show this help";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = "Built-in to most of the programs is a basic help text.";
+                this.Features = new Dictionary<string, Feature>();
+            }
 
-            Feature lookup = new Feature(
-                "Lookup",
-                "lookup",
-                "For each specified hash it looks up any available information.",
-                FeatureType.Flag,
-                longDescription: @"For each specified hash it looks up any available information (dat or rom).");
-            lookup.AddFeature(sizeInt64Input); // Defaults to -1
-            lookup.AddFeature(outStringInput);
+            public override bool ProcessArgs(string[] args, Help help)
+            {
+                // If we had something else after help
+                if (args.Length > 1)
+                {
+                    help.OutputIndividualFeature(args[1]);
+                    return true;
+                }
 
-            #endregion
+                // Otherwise, show generic help
+                else
+                {
+                    help.OutputGenericHelp();
+                    return true;
+                }
+            }
+        }
 
-            #region Memstats
-
-            Feature memstats = new Feature(
-                "Memstats",
-                "memstats",
-                "Prints memory stats.",
-                FeatureType.Flag,
-                longDescription: @"Print memory stats.");
-
-            #endregion
-
-            #region Merge
-
-            Feature merge = new Feature(
-                "Merge",
-                "merge",
-                "Merges depot",
-                FeatureType.Flag,
-                longDescription: @"Merges specified depot into current depot.");
-            merge.AddFeature(onlyNeededFlag);
-            merge.AddFeature(resumeStringInput);
-            merge.AddFeature(workersInt32Input);
-            merge.AddFeature(skipInitialScanFlag);
-
-            #endregion
-
-            #region Miss
+        private class ImportFeature : RombaSharpFeature
+        {
+            public const string Value = "Import";
 
             // Unique to RombaSharp
-            Feature miss = new Feature(
-                "Miss",
-                "miss",
-                "Create miss and have file",
-                FeatureType.Flag,
-                longDescription: @"For each specified DAT file, create miss and have file");
+            public ImportFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "import" };
+                this.Description = "Import a database from a formatted CSV file";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = "Import a database from a formatted CSV file";
+                this.Features = new Dictionary<string, Feature>();
+            }
 
-            #endregion
+            public override void ProcessFeatures(Dictionary<string, Feature> features)
+            {
+                Globals.Logger.Error("This feature is not yet implemented: import");
 
-            #region Progress
+                // First ensure the inputs and database connection
+                Inputs = Utilities.GetOnlyFilesFromInputs(Inputs);
+                SqliteConnection dbc = new SqliteConnection(_connectionString);
+                SqliteCommand slc = new SqliteCommand();
+                dbc.Open();
 
-            Feature progress = new Feature(
-                "Progress",
-                "progress",
-                "Shows progress of the currently running command.",
-                FeatureType.Flag,
-                longDescription: @"Shows progress of the currently running command.");
+                // Now, for each of these files, attempt to add the data found inside
+                foreach (string input in Inputs)
+                {
+                    StreamReader sr = new StreamReader(Utilities.TryOpenRead(input));
 
-            #endregion
+                    // The first line should be the hash header
+                    string line = sr.ReadLine();
+                    if (line != "CRC,MD5,SHA-1") // ,Depot
+                    {
+                        Globals.Logger.Error("{0} is not a valid export file");
+                        continue;
+                    }
 
-            #region Purge Backup
+                    // Define the insert queries
+                    string crcquery = "INSERT OR IGNORE INTO crc (crc) VALUES";
+                    string md5query = "INSERT OR IGNORE INTO md5 (md5) VALUES";
+                    string sha1query = "INSERT OR IGNORE INTO sha1 (sha1) VALUES";
+                    string crcsha1query = "INSERT OR IGNORE INTO crcsha1 (crc, sha1) VALUES";
+                    string md5sha1query = "INSERT OR IGNORE INTO md5sha1 (md5, sha1) VALUES";
 
-            Feature purgeBackup = new Feature(
-                "Purge Backup",
-                "purge-backup",
-                "Moves DAT index entries for orphaned DATs.",
-                FeatureType.Flag,
-                longDescription: @"Deletes DAT index entries for orphaned DATs and moves ROM files that are no
+                    // For each line until we hit a blank line...
+                    while (!sr.EndOfStream && line != string.Empty)
+                    {
+                        line = sr.ReadLine();
+                        string[] hashes = line.Split(',');
+
+                        // Loop through the parsed entries
+                        if (!string.IsNullOrWhiteSpace(hashes[0]))
+                            crcquery += " (\"" + hashes[0] + "\"),";
+
+                        if (!string.IsNullOrWhiteSpace(hashes[1]))
+                            md5query += " (\"" + hashes[1] + "\"),";
+
+                        if (!string.IsNullOrWhiteSpace(hashes[2]))
+                        {
+                            sha1query += " (\"" + hashes[2] + "\"),";
+
+                            if (!string.IsNullOrWhiteSpace(hashes[0]))
+                                crcsha1query += " (\"" + hashes[0] + "\", \"" + hashes[2] + "\"),";
+
+                            if (!string.IsNullOrWhiteSpace(hashes[1]))
+                                md5sha1query += " (\"" + hashes[1] + "\", \"" + hashes[2] + "\"),";
+                        }
+                    }
+
+                    // Now run the queries after fixing them
+                    if (crcquery != "INSERT OR IGNORE INTO crc (crc) VALUES")
+                    {
+                        slc = new SqliteCommand(crcquery.TrimEnd(','), dbc);
+                        slc.ExecuteNonQuery();
+                    }
+
+                    if (md5query != "INSERT OR IGNORE INTO md5 (md5) VALUES")
+                    {
+                        slc = new SqliteCommand(md5query.TrimEnd(','), dbc);
+                        slc.ExecuteNonQuery();
+                    }
+
+                    if (sha1query != "INSERT OR IGNORE INTO sha1 (sha1) VALUES")
+                    {
+                        slc = new SqliteCommand(sha1query.TrimEnd(','), dbc);
+                        slc.ExecuteNonQuery();
+                    }
+
+                    if (crcsha1query != "INSERT OR IGNORE INTO crcsha1 (crc, sha1) VALUES")
+                    {
+                        slc = new SqliteCommand(crcsha1query.TrimEnd(','), dbc);
+                        slc.ExecuteNonQuery();
+                    }
+
+                    if (md5sha1query != "INSERT OR IGNORE INTO md5sha1 (md5, sha1) VALUES")
+                    {
+                        slc = new SqliteCommand(md5sha1query.TrimEnd(','), dbc);
+                        slc.ExecuteNonQuery();
+                    }
+
+                    // Now add all of the DAT hashes
+                    // TODO: Do we really need to save the DAT hashes?
+
+                    sr.Dispose();
+                }
+
+                slc.Dispose();
+                dbc.Dispose();
+            }
+        }
+
+        private class LookupFeature : RombaSharpFeature
+        {
+            public const string Value = "Lookup";
+
+            public LookupFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "lookup" };
+                this.Description = "For each specified hash it looks up any available information.";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = "For each specified hash it looks up any available information (dat or rom).";
+                this.Features = new Dictionary<string, Feature>();
+
+                AddFeature(sizeInt64Input); // Defaults to -1
+                AddFeature(outStringInput);
+            }
+
+            public override void ProcessFeatures(Dictionary<string, Feature> features)
+            {
+                // Get feature flags
+                long size = GetInt64(features, SizeInt64Value);
+                string outdat = GetString(features, OutStringValue);
+
+                // First, try to figure out what type of hash each is by length and clean it
+                List<string> crc = new List<string>();
+                List<string> md5 = new List<string>();
+                List<string> sha1 = new List<string>();
+                foreach (string input in Inputs)
+                {
+                    string temp = string.Empty;
+                    if (input.Length == Constants.CRCLength)
+                    {
+                        temp = Utilities.CleanHashData(input, Constants.CRCLength);
+                        if (!string.IsNullOrWhiteSpace(temp))
+                        {
+                            crc.Add(temp);
+                        }
+                    }
+                    else if (input.Length == Constants.MD5Length)
+                    {
+                        temp = Utilities.CleanHashData(input, Constants.MD5Length);
+                        if (!string.IsNullOrWhiteSpace(temp))
+                        {
+                            md5.Add(temp);
+                        }
+                    }
+                    else if (input.Length == Constants.SHA1Length)
+                    {
+                        temp = Utilities.CleanHashData(input, Constants.SHA1Length);
+                        if (!string.IsNullOrWhiteSpace(temp))
+                        {
+                            sha1.Add(temp);
+                        }
+                    }
+                }
+
+                SqliteConnection dbc = new SqliteConnection(_connectionString);
+                dbc.Open();
+
+                // Now, search for each of them and return true or false for each
+                foreach (string input in crc)
+                {
+                    string query = "SELECT * FROM crc WHERE crc=\"" + input + "\"";
+                    SqliteCommand slc = new SqliteCommand(query, dbc);
+                    SqliteDataReader sldr = slc.ExecuteReader();
+                    if (sldr.HasRows)
+                    {
+                        int count = 0;
+                        while (sldr.Read())
+                        {
+                            count++;
+                        }
+
+                        Globals.Logger.User("For hash '{0}' there were {1} matches in the database", input, count);
+                    }
+                    else
+                    {
+                        Globals.Logger.User("Hash '{0}' had no matches in the database", input);
+                    }
+
+                    sldr.Dispose();
+                    slc.Dispose();
+                }
+                foreach (string input in md5)
+                {
+                    string query = "SELECT * FROM md5 WHERE md5=\"" + input + "\"";
+                    SqliteCommand slc = new SqliteCommand(query, dbc);
+                    SqliteDataReader sldr = slc.ExecuteReader();
+                    if (sldr.HasRows)
+                    {
+                        int count = 0;
+                        while (sldr.Read())
+                        {
+                            count++;
+                        }
+
+                        Globals.Logger.User("For hash '{0}' there were {1} matches in the database", input, count);
+                    }
+                    else
+                    {
+                        Globals.Logger.User("Hash '{0}' had no matches in the database", input);
+                    }
+
+                    sldr.Dispose();
+                    slc.Dispose();
+                }
+                foreach (string input in sha1)
+                {
+                    string query = "SELECT * FROM sha1 WHERE sha1=\"" + input + "\"";
+                    SqliteCommand slc = new SqliteCommand(query, dbc);
+                    SqliteDataReader sldr = slc.ExecuteReader();
+                    if (sldr.HasRows)
+                    {
+                        int count = 0;
+                        while (sldr.Read())
+                        {
+                            count++;
+                        }
+
+                        Globals.Logger.User("For hash '{0}' there were {1} matches in the database", input, count);
+                    }
+                    else
+                    {
+                        Globals.Logger.User("Hash '{0}' had no matches in the database", input);
+                    }
+
+                    sldr.Dispose();
+                    slc.Dispose();
+                }
+
+                dbc.Dispose();
+            }
+        }
+
+        private class MemstatsFeature : RombaSharpFeature
+        {
+            public const string Value = "Memstats";
+
+            public MemstatsFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "memstats" };
+                this.Description = "Prints memory stats.";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = "Print memory stats.";
+                this.Features = new Dictionary<string, Feature>();
+            }
+
+            public override void ProcessFeatures(Dictionary<string, Feature> features)
+            {
+                Globals.Logger.User("This feature is not yet implemented: memstats");
+            }
+        }
+
+        private class MergeFeature : RombaSharpFeature
+        {
+            public const string Value = "Merge";
+
+            public MergeFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "merge" };
+                this.Description = "Merges depot";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = "Merges specified depot into current depot.";
+                this.Features = new Dictionary<string, Feature>();
+
+                AddFeature(onlyNeededFlag);
+                AddFeature(resumeStringInput);
+                AddFeature(workersInt32Input);
+                AddFeature(skipInitialScanFlag);
+            }
+
+            // TODO: Add way of specifying "current depot" since that's what Romba relies on
+            public override void ProcessFeatures(Dictionary<string, Feature> features)
+            {
+                // Get feature flags
+                bool onlyNeeded = GetBoolean(features, OnlyNeededValue);
+                bool skipInitialscan = GetBoolean(features, SkipInitialScanValue);
+                int workers = GetInt32(features, WorkersInt32Value);
+                string resume = GetString(features, ResumeStringValue);
+
+                Globals.Logger.Error("This feature is not yet implemented: merge");
+
+                // Verify that the inputs are valid directories
+                Inputs = Utilities.GetOnlyDirectoriesFromInputs(Inputs);
+
+                // Loop over all input directories
+                foreach (string input in Inputs)
+                {
+                    List<string> depotFiles = Directory.EnumerateFiles(input, "*.gz", SearchOption.AllDirectories).ToList();
+
+                    // If we are copying all that is possible but we want to scan first
+                    if (!onlyNeeded && !skipInitialscan)
+                    {
+
+                    }
+
+                    // If we are copying all that is possible but we don't care to scan first
+                    else if (!onlyNeeded && skipInitialscan)
+                    {
+
+                    }
+
+                    // If we are copying only what is needed but we want to scan first
+                    else if (onlyNeeded && !skipInitialscan)
+                    {
+
+                    }
+
+                    // If we are copying only what is needed but we don't care to scan first
+                    else if (onlyNeeded && skipInitialscan)
+                    {
+
+                    }
+                }
+            }
+        }
+
+        private class MissFeature : RombaSharpFeature
+        {
+            public const string Value = "Miss";
+
+            // Unique to RombaSharp
+            public MissFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "miss" };
+                this.Description = "Create miss and have file";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = "For each specified DAT file, create miss and have file";
+                this.Features = new Dictionary<string, Feature>();
+            }
+
+            public override void ProcessFeatures(Dictionary<string, Feature> features)
+            {
+                // Verify the filenames
+                Dictionary<string, string> foundDats = GetValidDats(Inputs);
+
+                // Create the new output directory if it doesn't exist
+                Utilities.EnsureOutputDirectory(Path.Combine(Globals.ExeDir, "out"), create: true);
+
+                // Now that we have the dictionary, we can loop through and output to a new folder for each
+                foreach (string key in foundDats.Keys)
+                {
+                    // Get the DAT file associated with the key
+                    DatFile datFile = new DatFile();
+                    datFile.Parse(Path.Combine(_dats, foundDats[key]), 0, 0);
+
+                    // Now loop through and see if all of the hash combinations exist in the database
+                    /* ended here */
+                }
+
+                Globals.Logger.Error("This feature is not yet implemented: miss");
+            }
+        }
+
+        private class ProgressFeature : RombaSharpFeature
+        {
+            public const string Value = "Progress";
+
+            public ProgressFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "progress" };
+                this.Description = "Shows progress of the currently running command.";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = "Shows progress of the currently running command.";
+                this.Features = new Dictionary<string, Feature>();
+            }
+
+            public override void ProcessFeatures(Dictionary<string, Feature> features)
+            {
+                Globals.Logger.User("This feature is not yet implemented: progress");
+            }
+        }
+
+        private class PurgeBackupFeature : RombaSharpFeature
+        {
+            public const string Value = "Purge Backup";
+
+            public PurgeBackupFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "purge-backup" };
+                this.Description = "Moves DAT index entries for orphaned DATs.";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = @"Deletes DAT index entries for orphaned DATs and moves ROM files that are no
 longer associated with any current DATs to the specified backup folder.
 The files will be placed in the backup location using
 a folder structure according to the original DAT master directory tree
-structure. It also deletes the specified DATs from the DAT index.");
-            purgeBackup.AddFeature(backupStringInput);
-            purgeBackup.AddFeature(workersInt32Input);
-            purgeBackup.AddFeature(depotListStringInput);
-            purgeBackup.AddFeature(datsListStringInput);
-            purgeBackup.AddFeature(logOnlyFlag);
+structure. It also deletes the specified DATs from the DAT index.";
+                this.Features = new Dictionary<string, Feature>();
 
-            #endregion
+                AddFeature(backupStringInput);
+                AddFeature(workersInt32Input);
+                AddFeature(depotListStringInput);
+                AddFeature(datsListStringInput);
+                AddFeature(logOnlyFlag);
+            }
 
-            #region Purge Delete
+            public override void ProcessFeatures(Dictionary<string, Feature> features)
+            {
+                // Get feature flags
+                bool logOnly = GetBoolean(features, LogOnlyValue);
+                int workers = GetInt32(features, WorkersInt32Value);
+                string backup = GetString(features, BackupStringValue);
+                List<string> dats = GetList(features, DatsListStringValue);
+                List<string> depot = GetList(features, DepotListStringValue);
+
+                Globals.Logger.Error("This feature is not yet implemented: purge-backup");
+            }
+        }
+
+        private class PurgeDeleteFeature : RombaSharpFeature
+        {
+            public const string Value = "Purge Delete";
 
             // Unique to RombaSharp
-            Feature purgeDelete = new Feature(
-                "Purge Delete",
-                "purge-delete",
-                "Deletes DAT index entries for orphaned DATs",
-                FeatureType.Flag);
-            purgeDelete.AddFeature(workersInt32Input);
-            purgeDelete.AddFeature(depotListStringInput);
-            purgeDelete.AddFeature(datsListStringInput);
-            purgeDelete.AddFeature(logOnlyFlag);
+            public PurgeDeleteFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "purge-delete" };
+                this.Description = "Deletes DAT index entries for orphaned DATs";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = @"Deletes DAT index entries for orphaned DATs and moves ROM files that are no
+longer associated with any current DATs to the specified backup folder.
+The files will be placed in the backup location using
+a folder structure according to the original DAT master directory tree
+structure. It also deletes the specified DATs from the DAT index.";
+                this.Features = new Dictionary<string, Feature>();
 
-            #endregion
+                AddFeature(workersInt32Input);
+                AddFeature(depotListStringInput);
+                AddFeature(datsListStringInput);
+                AddFeature(logOnlyFlag);
+            }
 
-            #region Refresh DATs
+            public override void ProcessFeatures(Dictionary<string, Feature> features)
+            {
+                // Get feature flags
+                bool logOnly = GetBoolean(features, LogOnlyValue);
+                int workers = GetInt32(features, WorkersInt32Value);
+                List<string> dats = GetList(features, DatsListStringValue);
+                List<string> depot = GetList(features, DepotListStringValue);
 
-            Feature refreshDats = new Feature(
-                "Refresh DATs",
-                "refresh-dats",
-                "Refreshes the DAT index from the files in the DAT master directory tree.",
-                FeatureType.Flag,
-                longDescription: @"Refreshes the DAT index from the files in the DAT master directory tree.
+                Globals.Logger.Error("This feature is not yet implemented: purge-delete");
+            }
+        }
+
+        private class RefreshDatsFeature : RombaSharpFeature
+        {
+            public const string Value = "Refresh DATs";
+
+            public RefreshDatsFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "refresh-dats" };
+                this.Description = "Refreshes the DAT index from the files in the DAT master directory tree.";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = @"Refreshes the DAT index from the files in the DAT master directory tree.
 Detects any changes in the DAT master directory tree and updates the DAT index
 accordingly, marking deleted or overwritten dats as orphaned and updating
-contents of any changed dats.");
-            refreshDats.AddFeature(workersInt32Input);
-            refreshDats.AddFeature(missingSha1sStringInput);
+contents of any changed dats.";
+                this.Features = new Dictionary<string, Feature>();
 
-            #endregion
+                AddFeature(workersInt32Input);
+                AddFeature(missingSha1sStringInput);
+            }
 
-            #region Recan Depots
+            public override void ProcessFeatures(Dictionary<string, Feature> features)
+            {
+                // Get feature flags
+                int workers = GetInt32(features, WorkersInt32Value);
+                string missingSha1s = GetString(features, MissingSha1sStringValue);
+
+                // Make sure the db is set
+                if (string.IsNullOrWhiteSpace(_db))
+                {
+                    _db = "db.sqlite";
+                    _connectionString = "Data Source=" + _db + ";Version = 3;";
+                }
+
+                // Make sure the file exists
+                if (!File.Exists(_db))
+                    DatabaseTools.EnsureDatabase(_dbSchema, _db, _connectionString);
+
+                // Make sure the dats dir is set
+                if (string.IsNullOrWhiteSpace(_dats))
+                    _dats = "dats";
+
+                _dats = Path.Combine(Globals.ExeDir, _dats);
+
+                // Make sure the folder exists
+                if (!Directory.Exists(_dats))
+                    Directory.CreateDirectory(_dats);
+
+                // First get a list of SHA-1's from the input DATs
+                DatFile datroot = new DatFile { Type = "SuperDAT", };
+                // TODO: All instances of Hash.DeepHashes should be made into 0x0 eventually
+                datroot.PopulateFromDir(_dats, Hash.DeepHashes, false, false, SkipFileType.None, false, false, _tmpdir, false, null, true, null);
+                datroot.BucketBy(SortedBy.SHA1, DedupeType.None);
+
+                // Create a List of dat hashes in the database (SHA-1)
+                List<string> databaseDats = new List<string>();
+                List<string> unneeded = new List<string>();
+
+                SqliteConnection dbc = new SqliteConnection(_connectionString);
+                dbc.Open();
+
+                // Populate the List from the database
+                InternalStopwatch watch = new InternalStopwatch("Populating the list of existing DATs");
+
+                string query = "SELECT DISTINCT hash FROM dat";
+                SqliteCommand slc = new SqliteCommand(query, dbc);
+                SqliteDataReader sldr = slc.ExecuteReader();
+                if (sldr.HasRows)
+                {
+                    sldr.Read();
+                    string hash = sldr.GetString(0);
+                    if (datroot.Contains(hash))
+                    {
+                        datroot.Remove(hash);
+                        databaseDats.Add(hash);
+                    }
+                    else if (!databaseDats.Contains(hash))
+                    {
+                        unneeded.Add(hash);
+                    }
+                }
+                datroot.BucketBy(SortedBy.Game, DedupeType.None, norename: true);
+
+                watch.Stop();
+
+                slc.Dispose();
+                sldr.Dispose();
+
+                // Loop through the Dictionary and add all data
+                watch.Start("Adding new DAT information");
+                foreach (string key in datroot.Keys)
+                {
+                    foreach (Rom value in datroot[key])
+                    {
+                        AddDatToDatabase(value, dbc);
+                    }
+                }
+
+                watch.Stop();
+
+                // Now loop through and remove all references to old Dats
+                if (unneeded.Count > 0)
+                {
+                    watch.Start("Removing unmatched DAT information");
+
+                    query = "DELETE FROM dat WHERE";
+                    foreach (string dathash in unneeded)
+                    {
+                        query += " OR hash=\"" + dathash + "\"";
+                    }
+
+                    query = query.Replace("WHERE OR", "WHERE");
+                    slc = new SqliteCommand(query, dbc);
+                    slc.ExecuteNonQuery();
+                    slc.Dispose();
+
+                    watch.Stop();
+                }
+
+                dbc.Dispose();
+            }
+        }
+
+        private class RescanDepotsFeature : RombaSharpFeature
+        {
+            public const string Value = "Rescan Depots";
 
             // Unique to RombaSharp
-            Feature rescanDepots = new Feature(
-                "Rescan Depots",
-                "depot-rescan",
-                "Rescan a specific depot to get new information",
-                FeatureType.Flag);
+            public RescanDepotsFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "depot-rescan" };
+                this.Description = "Rescan a specific depot to get new information";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = "Rescan a specific depot to get new information";
+                this.Features = new Dictionary<string, Feature>();
+            }
 
-            #endregion
+            public override void ProcessFeatures(Dictionary<string, Feature> features)
+            {
+                Globals.Logger.Error("This feature is not yet implemented: rescan-depots");
 
-            #region Shutdown
+                foreach (string depotname in Inputs)
+                {
+                    // Check that it's a valid depot first
+                    if (!_depots.ContainsKey(depotname))
+                    {
+                        Globals.Logger.User("'{0}' is not a recognized depot. Please add it to your configuration file and try again", depotname);
+                        return;
+                    }
 
-            Feature shutdown = new Feature(
-                "Shutdown",
-                "shutdown",
-                "Gracefully shuts down server.",
-                FeatureType.Flag,
-                longDescription: @"Gracefully shuts down server saving all the cached data.");
+                    // Then check that the depot is online
+                    if (!Directory.Exists(depotname))
+                    {
+                        Globals.Logger.User("'{0}' does not appear to be online. Please check its status and try again", depotname);
+                        return;
+                    }
 
-            #endregion
+                    // Open the database connection
+                    SqliteConnection dbc = new SqliteConnection(_connectionString);
+                    dbc.Open();
 
-            #region Version
+                    // If we have it, then check for all hashes that are in that depot
+                    List<string> hashes = new List<string>();
+                    string query = "SELECT sha1 FROM sha1 WHERE depot=\"" + depotname + "\"";
+                    SqliteCommand slc = new SqliteCommand(query, dbc);
+                    SqliteDataReader sldr = slc.ExecuteReader();
+                    if (sldr.HasRows)
+                    {
+                        while (sldr.Read())
+                        {
+                            hashes.Add(sldr.GetString(0));
+                        }
+                    }
 
-            Feature version = new Feature(
-                "Version",
-                "version",
-                "Prints version",
-                FeatureType.Flag,
-                longDescription: @"Prints version.");
+                    // Now rescan the depot itself
+                    DatFile depot = new DatFile();
+                    // TODO: All instances of Hash.DeepHashes should be made into 0x0 eventually
+                    depot.PopulateFromDir(depotname, Hash.DeepHashes, false, false, SkipFileType.None, false, false, _tmpdir, false, null, true, null);
+                    depot.BucketBy(SortedBy.SHA1, DedupeType.None);
 
-            #endregion
+                    // Set the base queries to use
+                    string crcquery = "INSERT OR IGNORE INTO crc (crc) VALUES";
+                    string md5query = "INSERT OR IGNORE INTO md5 (md5) VALUES";
+                    string sha1query = "INSERT OR IGNORE INTO sha1 (sha1, depot) VALUES";
+                    string crcsha1query = "INSERT OR IGNORE INTO crcsha1 (crc, sha1) VALUES";
+                    string md5sha1query = "INSERT OR IGNORE INTO md5sha1 (md5, sha1) VALUES";
 
-            // Now, add all of the main features to the Help object
-            help.Add(helpFeature);
-            help.Add(script);
-            help.Add(archive);
-            help.Add(build);
-            help.Add(cancel);
-            help.Add(datstats);
-            help.Add(dbstats);
-            help.Add(diffdat);
-            help.Add(dir2dat);
-            help.Add(ediffdat);
-            help.Add(export);
-            help.Add(fixdat);
-            help.Add(import);
-            help.Add(lookup);
-            help.Add(memstats);
-            help.Add(merge);
-            help.Add(miss);
-            help.Add(purgeBackup);
-            help.Add(purgeDelete);
-            help.Add(refreshDats);
-            help.Add(rescanDepots);
-            help.Add(progress);
-            help.Add(shutdown);
-            help.Add(version);
+                    // Once we have both, check for any new files
+                    List<string> dupehashes = new List<string>();
+                    List<string> keys = depot.Keys;
+                    foreach (string key in keys)
+                    {
+                        List<DatItem> roms = depot[key];
+                        foreach (Rom rom in roms)
+                        {
+                            if (hashes.Contains(rom.SHA1))
+                            {
+                                dupehashes.Add(rom.SHA1);
+                                hashes.Remove(rom.SHA1);
+                            }
+                            else if (!dupehashes.Contains(rom.SHA1))
+                            {
+                                if (!string.IsNullOrWhiteSpace(rom.CRC))
+                                    crcquery += " (\"" + rom.CRC + "\"),";
 
-            return help;
+                                if (!string.IsNullOrWhiteSpace(rom.MD5))
+                                    md5query += " (\"" + rom.MD5 + "\"),";
+
+                                if (!string.IsNullOrWhiteSpace(rom.SHA1))
+                                {
+                                    sha1query += " (\"" + rom.SHA1 + "\", \"" + depotname + "\"),";
+
+                                    if (!string.IsNullOrWhiteSpace(rom.CRC))
+                                        crcsha1query += " (\"" + rom.CRC + "\", \"" + rom.SHA1 + "\"),";
+
+                                    if (!string.IsNullOrWhiteSpace(rom.MD5))
+                                        md5sha1query += " (\"" + rom.MD5 + "\", \"" + rom.SHA1 + "\"),";
+                                }
+                            }
+                        }
+                    }
+
+                    // Now run the queries after fixing them
+                    if (crcquery != "INSERT OR IGNORE INTO crc (crc) VALUES")
+                    {
+                        slc = new SqliteCommand(crcquery.TrimEnd(','), dbc);
+                        slc.ExecuteNonQuery();
+                    }
+
+                    if (md5query != "INSERT OR IGNORE INTO md5 (md5) VALUES")
+                    {
+                        slc = new SqliteCommand(md5query.TrimEnd(','), dbc);
+                        slc.ExecuteNonQuery();
+                    }
+
+                    if (sha1query != "INSERT OR IGNORE INTO sha1 (sha1, depot) VALUES")
+                    {
+                        slc = new SqliteCommand(sha1query.TrimEnd(','), dbc);
+                        slc.ExecuteNonQuery();
+                    }
+
+                    if (crcsha1query != "INSERT OR IGNORE INTO crcsha1 (crc, sha1) VALUES")
+                    {
+                        slc = new SqliteCommand(crcsha1query.TrimEnd(','), dbc);
+                        slc.ExecuteNonQuery();
+                    }
+
+                    if (md5sha1query != "INSERT OR IGNORE INTO md5sha1 (md5, sha1) VALUES")
+                    {
+                        slc = new SqliteCommand(md5sha1query.TrimEnd(','), dbc);
+                        slc.ExecuteNonQuery();
+                    }
+
+                    // Now that we've added the information, we get to remove all of the hashes that we want to
+                    query = @"DELETE FROM sha1
+JOIN crcsha1
+    ON sha1.sha1=crcsha1.sha1
+JOIN md5sha1
+    ON sha1.sha1=md5sha1.sha1
+JOIN crc
+    ON crcsha1.crc=crc.crc
+JOIN md5
+    ON md5sha1.md5=md5.md5
+WHERE sha1.sha1 IN (string.Empty" + string.Join("\",\"", hashes) + "\")";
+                    slc = new SqliteCommand(query, dbc);
+                    slc.ExecuteNonQuery();
+
+                    // Dispose of the database connection
+                    slc.Dispose();
+                    dbc.Dispose();
+                }
+            }
         }
+
+        private class ScriptFeature : RombaSharpFeature
+        {
+            public const string Value = "Script";
+
+            public ScriptFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "--script" };
+                this.Description = "Enable script mode (no clear screen)";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = "For times when RombaSharp is being used in a scripted environment, the user may not want the screen to be cleared every time that it is called. This flag allows the user to skip clearing the screen on run just like if the console was being redirected.";
+                this.Features = new Dictionary<string, Feature>();
+            }
+        }
+
+        private class ShutdownFeature : RombaSharpFeature
+        {
+            public const string Value = "Shutdown";
+
+            public ShutdownFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "shutdown" };
+                this.Description = "Gracefully shuts down server.";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = "Gracefully shuts down server saving all the cached data.";
+                this.Features = new Dictionary<string, Feature>();
+            }
+
+            public override void ProcessFeatures(Dictionary<string, Feature> features)
+            {
+                Globals.Logger.User("This feature is not yet implemented: shutdown");
+            }
+        }
+
+        private class VersionFeature : RombaSharpFeature
+        {
+            public const string Value = "Version";
+
+            public VersionFeature()
+            {
+                this.Name = Value;
+                this.Flags = new List<string>() { "version" };
+                this.Description = "Prints version";
+                this._featureType = FeatureType.Flag;
+                this.LongDescription = "Prints version.";
+                this.Features = new Dictionary<string, Feature>();
+            }
+
+            public override void ProcessFeatures(Dictionary<string, Feature> features)
+            {
+                Globals.Logger.User("RombaSharp version: {0}", Constants.Version);
+            }
+        }
+
+        #endregion
     }
 }

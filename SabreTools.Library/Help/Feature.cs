@@ -8,21 +8,21 @@ namespace SabreTools.Library.Help
 {
     public class Feature
     {
-        #region Private instance variables
+        #region Protected instance variables
 
-        private FeatureType _featureType;
-        private bool _foundOnce = false;
-        private object _value = null;
+        protected FeatureType _featureType;
+        protected bool _foundOnce = false;
+        protected object _value = null;
 
         #endregion
 
         #region Publicly facing variables
 
-        public string Name { get; private set; }
-        public List<string> Flags { get; private set; }
-        public string Description { get; private set; }
-        public string LongDescription { get; private set; } // TODO: Use this to generate README.1ST?
-        public Dictionary<string, Feature> Features { get; private set; }
+        public string Name { get; protected set; }
+        public List<string> Flags { get; protected set; }
+        public string Description { get; protected set; }
+        public string LongDescription { get; protected set; } // TODO: Use this to generate README.1ST?
+        public Dictionary<string, Feature> Features { get; protected set; }
 
         #endregion
 
@@ -68,7 +68,7 @@ namespace SabreTools.Library.Help
         /// </summary>
         public Feature this[string name]
         {
-            get { return this.Features[name]; }
+            get { return this.Features.ContainsKey(name) ? this.Features[name] : null; }
             set { this.Features[name] = value; }
         }
 
@@ -77,7 +77,7 @@ namespace SabreTools.Library.Help
         /// </summary>
         public Feature this[Feature subfeature]
         {
-            get { return this.Features[subfeature.Name]; }
+            get { return this.Features.ContainsKey(subfeature.Name) ? this.Features[subfeature.Name] : null; }
             set { this.Features[subfeature.Name] = value; }
         }
 
@@ -570,7 +570,7 @@ namespace SabreTools.Library.Help
             if (_featureType != FeatureType.List)
                 throw new ArgumentException("Feature is not a list");
 
-            return (_value as List<string>);
+            return (_value as List<string>) ?? new List<string>();
         }
 
         /// <summary>
