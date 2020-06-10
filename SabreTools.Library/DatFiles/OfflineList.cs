@@ -959,7 +959,7 @@ namespace SabreTools.Library.DatFiles
                 state += "\t\t<game>\n";
                 state += "\t\t\t<imageNumber>1</imageNumber>\n";
                 state += "\t\t\t<releaseNumber>1</releaseNumber>\n";
-                state += $"\t\t\t<title>{WebUtility.HtmlEncode(datItem.GetField(Field.Name, ExcludeFields) as string)}</title>\n";
+                state += $"\t\t\t<title>{WebUtility.HtmlEncode(datItem.GetField(Field.Name, ExcludeFields))}</title>\n";
                 state += "\t\t\t<saveType>None</saveType>\n"; ;
 
                 if (datItem.ItemType == ItemType.Rom)

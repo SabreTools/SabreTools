@@ -226,7 +226,7 @@ namespace SabreTools.Library.DatFiles
                 string state = string.Empty;
 
                 // Build the state based on excluded fields
-                if (!ExcludeFields[(int)Field.SampleOf] && string.IsNullOrWhiteSpace(datItem.SampleOf))
+                if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SampleOf, ExcludeFields)))
                     state += $"\tsampleof \"{datItem.SampleOf}\"\n";
 
                 state += ")\n";

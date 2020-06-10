@@ -863,13 +863,13 @@ namespace SabreTools.Library.DatFiles
                 switch (datItem.ItemType)
                 {
                     case ItemType.Archive:
-                        state += $"<file type=\"archive\" name=\"{WebUtility.HtmlEncode(datItem.GetField(Field.Name, ExcludeFields) as string)}\"";
+                        state += $"<file type=\"archive\" name=\"{WebUtility.HtmlEncode(datItem.GetField(Field.Name, ExcludeFields))}\"";
                         state += "/>\n";
                         break;
 
                     case ItemType.BiosSet:
                         var biosSet = datItem as BiosSet;
-                        state += $"<file type=\"biosset\" name\"{WebUtility.HtmlEncode(biosSet.GetField(Field.Name, ExcludeFields) as string)}\"";
+                        state += $"<file type=\"biosset\" name\"{WebUtility.HtmlEncode(biosSet.GetField(Field.Name, ExcludeFields))}\"";
                         if (!ExcludeFields[(int)Field.BiosDescription] && !string.IsNullOrWhiteSpace(biosSet.Description))
                             state += $" description=\"{WebUtility.HtmlEncode(biosSet.Description)}\"";
                         if (!ExcludeFields[(int)Field.Default] && biosSet.Default != null)
@@ -879,7 +879,7 @@ namespace SabreTools.Library.DatFiles
 
                     case ItemType.Disk:
                         var disk = datItem as Disk;
-                        state += $"<file type=\"disk\" name=\"{WebUtility.HtmlEncode(disk.GetField(Field.Name, ExcludeFields) as string)}\"";
+                        state += $"<file type=\"disk\" name=\"{WebUtility.HtmlEncode(disk.GetField(Field.Name, ExcludeFields))}\"";
                         if (!ExcludeFields[(int)Field.MD5] && !string.IsNullOrWhiteSpace(disk.MD5))
                             state += $" md5=\"{disk.MD5.ToLowerInvariant()}\"";
                         if (!ExcludeFields[(int)Field.RIPEMD160] && !string.IsNullOrWhiteSpace(disk.RIPEMD160))
@@ -908,7 +908,7 @@ namespace SabreTools.Library.DatFiles
 
                     case ItemType.Release:
                         var release = datItem as Release;
-                        state += $"<file type=\"release\" name\"{WebUtility.HtmlEncode(release.GetField(Field.Name, ExcludeFields) as string)}\"";
+                        state += $"<file type=\"release\" name\"{WebUtility.HtmlEncode(release.GetField(Field.Name, ExcludeFields))}\"";
                         if (!ExcludeFields[(int)Field.Region] && !string.IsNullOrWhiteSpace(release.Region))
                             state += $" region=\"{WebUtility.HtmlEncode(release.Region)}\"";
                         if (!ExcludeFields[(int)Field.Language] && !string.IsNullOrWhiteSpace(release.Language))
@@ -922,7 +922,7 @@ namespace SabreTools.Library.DatFiles
 
                     case ItemType.Rom:
                         var rom = datItem as Rom;
-                        state += $"<file type=\"rom\" name=\"{WebUtility.HtmlEncode(rom.GetField(Field.Name, ExcludeFields) as string)}\"";
+                        state += $"<file type=\"rom\" name=\"{WebUtility.HtmlEncode(rom.GetField(Field.Name, ExcludeFields))}\"";
                         if (!ExcludeFields[(int)Field.Size] && rom.Size != -1)
                             state += $" size=\"{rom.Size}\"";
                         if (!ExcludeFields[(int)Field.CRC] && !string.IsNullOrWhiteSpace(rom.CRC))
@@ -956,7 +956,7 @@ namespace SabreTools.Library.DatFiles
                         break;
 
                     case ItemType.Sample:
-                        state += $"<file type=\"sample\" name=\"{WebUtility.HtmlEncode(datItem.GetField(Field.Name, ExcludeFields) as string)}\"";
+                        state += $"<file type=\"sample\" name=\"{WebUtility.HtmlEncode(datItem.GetField(Field.Name, ExcludeFields))}\"";
                         state += "/>\n";
                         break;
                 }

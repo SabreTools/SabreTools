@@ -340,10 +340,10 @@ namespace SabreTools.Library.DatFiles
                 {
                     case ItemType.Disk:
                         state += "¬";
-                        if (!ExcludeFields[(int)Field.CloneOf] && string.IsNullOrWhiteSpace(datItem.CloneOf))
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.CloneOf, ExcludeFields)))
                             state += datItem.CloneOf;
                         state += "¬";
-                        if (!ExcludeFields[(int)Field.CloneOf] && string.IsNullOrWhiteSpace(datItem.CloneOf))
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.CloneOf, ExcludeFields)))
                             state += datItem.CloneOf;
                         state += $"¬{datItem.GetField(Field.MachineName, ExcludeFields)}";
                         if (string.IsNullOrWhiteSpace(datItem.MachineDescription))
@@ -357,10 +357,10 @@ namespace SabreTools.Library.DatFiles
                     case ItemType.Rom:
                         var rom = datItem as Rom;
                         state += "¬";
-                        if (!ExcludeFields[(int)Field.CloneOf] && string.IsNullOrWhiteSpace(datItem.CloneOf))
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.CloneOf, ExcludeFields)))
                             state += datItem.CloneOf;
                         state += "¬";
-                        if (!ExcludeFields[(int)Field.CloneOf] && string.IsNullOrWhiteSpace(datItem.CloneOf))
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.CloneOf, ExcludeFields)))
                             state += datItem.CloneOf;
                         state += $"¬{datItem.GetField(Field.MachineName, ExcludeFields)}";
                         if (string.IsNullOrWhiteSpace(datItem.MachineDescription))

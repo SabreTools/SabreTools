@@ -565,9 +565,9 @@ namespace SabreTools.Library.DatItems
         #region Accessors
 
         /// <summary>
-        /// Get the value associated with a field as a string, if not removed
+        /// Get the value of that field as a string, if possible
         /// </summary>
-        public object GetField(Field field, bool[] excludeFields)
+        public string GetField(Field field, bool[] excludeFields)
         {
             // If the field is to be excluded, return empty string
             if (excludeFields[(int)field])
@@ -582,11 +582,11 @@ namespace SabreTools.Library.DatItems
                 case Field.PartInterface:
                     return this.PartInterface;
                 case Field.Features:
-                    return this.Features;
+                    return string.Join(", ", this.Features.Select(f => $"{f.Item1}={f.Item2}"));
                 case Field.AreaName:
                     return this.AreaName;
                 case Field.AreaSize:
-                    return this.AreaSize;
+                    return this.AreaSize?.ToString() ?? string.Empty;
 
                 case Field.MachineName:
                     return this.MachineName;
@@ -607,29 +607,29 @@ namespace SabreTools.Library.DatItems
                 case Field.SampleOf:
                     return this.SampleOf;
                 case Field.Supported:
-                    return this.Supported;
+                    return this.Supported?.ToString() ?? string.Empty;
                 case Field.SourceFile:
                     return this.SourceFile;
                 case Field.Runnable:
-                    return this.Runnable;
+                    return this.Runnable?.ToString() ?? string.Empty;
                 case Field.Board:
                     return this.Board;
                 case Field.RebuildTo:
                     return this.RebuildTo;
                 case Field.Devices:
-                    return this.Devices;
+                    return string.Join(", ", this.Devices);
                 case Field.SlotOptions:
-                    return this.SlotOptions;
+                    return string.Join(", ", this.SlotOptions);
                 case Field.Infos:
-                    return this.Infos;
+                    return string.Join(", ", this.Infos.Select(i => $"{i.Item1}={i.Item2}"));
                 case Field.MachineType:
-                    return this.MachineType;
+                    return this.MachineType.ToString();
 
                 case Field.Default:
                     if (ItemType == ItemType.BiosSet)
-                        return (this as BiosSet).Default;
+                        return (this as BiosSet).Default?.ToString() ?? string.Empty;
                     else if (ItemType == ItemType.Release)
-                        return (this as Release).Default;
+                        return (this as Release).Default?.ToString() ?? string.Empty;
                     break;
                 case Field.BiosDescription:
                     if (ItemType == ItemType.BiosSet)
@@ -692,19 +692,19 @@ namespace SabreTools.Library.DatItems
                     break;
                 case Field.Writable:
                     if (ItemType == ItemType.Disk)
-                        return (this as Disk).Writable;
+                        return (this as Disk).Writable?.ToString() ?? string.Empty;
                     break;
                 case Field.Optional:
                     if (ItemType == ItemType.Disk)
-                        return (this as Disk).Optional;
+                        return (this as Disk).Optional?.ToString() ?? string.Empty;
                     else if (ItemType == ItemType.Rom)
-                        return (this as Rom).Optional;
+                        return (this as Rom).Optional?.ToString() ?? string.Empty;
                     break;
                 case Field.Status:
                     if (ItemType == ItemType.Disk)
-                        return (this as Disk).ItemStatus;
+                        return (this as Disk).ItemStatus.ToString();
                     else if (ItemType == ItemType.Rom)
-                        return (this as Rom).ItemStatus;
+                        return (this as Rom).ItemStatus.ToString();
                     break;
 
                 case Field.Language:
@@ -724,7 +724,7 @@ namespace SabreTools.Library.DatItems
                     break;
                 case Field.Size:
                     if (ItemType == ItemType.Rom)
-                        return (this as Rom).Size;
+                        return (this as Rom).Size.ToString();
                     break;
                 case Field.CRC:
                     if (ItemType == ItemType.Rom)

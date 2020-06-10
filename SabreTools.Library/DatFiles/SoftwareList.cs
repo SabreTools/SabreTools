@@ -726,7 +726,7 @@ namespace SabreTools.Library.DatFiles
                 datItem.MachineName = datItem.MachineName.TrimStart(Path.DirectorySeparatorChar);
 
                 // Build the state based on excluded fields
-                string state = $"\t<software name=\"{WebUtility.HtmlEncode(datItem.GetField(Field.MachineName, ExcludeFields) as string)}\"";
+                string state = $"\t<software name=\"{WebUtility.HtmlEncode(datItem.GetField(Field.MachineName, ExcludeFields))}\"";
                 if (!ExcludeFields[(int)Field.CloneOf] && !string.IsNullOrWhiteSpace(datItem.CloneOf) && !string.Equals(datItem.MachineName, datItem.CloneOf, StringComparison.OrdinalIgnoreCase))
                     state += $" cloneof=\"{WebUtility.HtmlEncode(datItem.CloneOf)}\"";
                 if (!ExcludeFields[(int)Field.Supported])
@@ -808,8 +808,8 @@ namespace SabreTools.Library.DatFiles
                 ProcessItemName(datItem, true);
 
                 // Build the state based on excluded fields
-                state += $"\t\t<part name=\"{WebUtility.HtmlEncode(datItem.GetField(Field.PartName, ExcludeFields) as string)}\"";
-                state += $" interface=\"{WebUtility.HtmlEncode(datItem.GetField(Field.PartInterface, ExcludeFields) as string)}\">\n";
+                state += $"\t\t<part name=\"{WebUtility.HtmlEncode(datItem.GetField(Field.PartName, ExcludeFields))}\"";
+                state += $" interface=\"{WebUtility.HtmlEncode(datItem.GetField(Field.PartInterface, ExcludeFields))}\">\n";
                 if (!ExcludeFields[(int)Field.Features])
                 {
                     foreach (Tuple<string, string> kvp in datItem.Features)
@@ -830,7 +830,7 @@ namespace SabreTools.Library.DatFiles
                         if (!ExcludeFields[(int)Field.AreaSize] && disk.AreaSize != null)
                             state += $" size=\"{disk.AreaSize}\"";
                         state += ">\n";
-                        state += $"\t\t\t\t<disk name=\"{WebUtility.HtmlEncode(disk.GetField(Field.Name, ExcludeFields) as string)}\"";
+                        state += $"\t\t\t\t<disk name=\"{WebUtility.HtmlEncode(disk.GetField(Field.Name, ExcludeFields))}\"";
                         if (!ExcludeFields[(int)Field.MD5] && !string.IsNullOrWhiteSpace(disk.MD5))
                             state += $" md5=\"{disk.MD5.ToLowerInvariant()}\"";
                         if (!ExcludeFields[(int)Field.RIPEMD160] && !string.IsNullOrWhiteSpace(disk.RIPEMD160))
@@ -860,7 +860,7 @@ namespace SabreTools.Library.DatFiles
                         if (!ExcludeFields[(int)Field.AreaSize] && rom.AreaSize != null)
                             state += $" size=\"{rom.AreaSize}\"";
                         state += ">\n";
-                        state += $"\t\t\t\t<rom name=\"{WebUtility.HtmlEncode(rom.GetField(Field.Name, ExcludeFields) as string)}\"";
+                        state += $"\t\t\t\t<rom name=\"{WebUtility.HtmlEncode(rom.GetField(Field.Name, ExcludeFields))}\"";
                         if (!ExcludeFields[(int)Field.Size] && rom.Size != -1)
                             state += $" size=\"{rom.Size}\"";
                         if (!ExcludeFields[(int)Field.CRC] && !string.IsNullOrWhiteSpace(rom.CRC))

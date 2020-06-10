@@ -668,11 +668,11 @@ Generation MSXIDs by www.generation-msx.nl
 
                 // Build the state based on excluded fields
                 string state = "<software>\n";
-                state += $"\t<title>{WebUtility.HtmlEncode(datItem.GetField(Field.MachineName, ExcludeFields) as string)}</title>\n";
+                state += $"\t<title>{WebUtility.HtmlEncode(datItem.GetField(Field.MachineName, ExcludeFields))}</title>\n";
                 // state += $"\t<genmsxid>{msxid}</genmsxid>\n";
                 // state += $"\t<system>{system}</system>\n";
-                state += $"\t<company>{WebUtility.HtmlEncode(datItem.GetField(Field.Manufacturer, ExcludeFields) as string)}</company>\n";
-                state += $"\t<year>{WebUtility.HtmlEncode(datItem.GetField(Field.Year, ExcludeFields) as string)}</year>\n";
+                state += $"\t<company>{WebUtility.HtmlEncode(datItem.GetField(Field.Manufacturer, ExcludeFields))}</company>\n";
+                state += $"\t<year>{WebUtility.HtmlEncode(datItem.GetField(Field.Year, ExcludeFields))}</year>\n";
                 // state += $"\t<country>{country}</country>\n";
 
                 sw.Write(state);

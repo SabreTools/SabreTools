@@ -836,19 +836,18 @@ namespace SabreTools.Library.DatFiles
                 // Build the state based on excluded fields
                 string state = (datItem.MachineType == MachineType.Bios ? "resource" : "game");
                 state += $" (\n\tname \"{datItem.MachineName}\"\n";
-                if (!ExcludeFields[(int)Field.RomOf] && string.IsNullOrWhiteSpace(datItem.RomOf))
                     state += $"\tromof \"{datItem.RomOf}\"\n";
-                if (!ExcludeFields[(int)Field.CloneOf] && string.IsNullOrWhiteSpace(datItem.CloneOf))
+                if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.CloneOf, ExcludeFields)))
                     state += $"\tcloneof \"{datItem.CloneOf}\"\n";
-                if (!ExcludeFields[(int)Field.SampleOf] && string.IsNullOrWhiteSpace(datItem.SampleOf))
+                if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SampleOf, ExcludeFields)))
                     state += $"\tsampleof \"{datItem.SampleOf}\"\n";
-                if (!ExcludeFields[(int)Field.Description] && string.IsNullOrWhiteSpace(datItem.MachineDescription))
+                if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Description, ExcludeFields)))
                     state += $"\tdescription \"{datItem.MachineDescription}\"\n";
-                else if (!ExcludeFields[(int)Field.Description] && string.IsNullOrWhiteSpace(datItem.MachineName))
+                else if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Description, ExcludeFields)))
                     state += $"\tdescription \"{datItem.MachineName}\"\n";
-                if (!ExcludeFields[(int)Field.Year] && string.IsNullOrWhiteSpace(datItem.Year))
+                if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Year, ExcludeFields)))
                     state += $"\tyear \"{datItem.Year}\"\n";
-                if (!ExcludeFields[(int)Field.Manufacturer] && string.IsNullOrWhiteSpace(datItem.Manufacturer))
+                if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Manufacturer, ExcludeFields)))
                     state += $"\tmanufacturer \"{datItem.Manufacturer}\"\n";
 
                 sw.Write(state);
@@ -876,7 +875,7 @@ namespace SabreTools.Library.DatFiles
                 string state = string.Empty;
 
                 // Build the state based on excluded fields
-                if (!ExcludeFields[(int)Field.SampleOf] && string.IsNullOrWhiteSpace(datItem.SampleOf))
+                if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SampleOf, ExcludeFields)))
                     state += $"\tsampleof \"{datItem.SampleOf}\"\n";
 
                 state += ")\n";

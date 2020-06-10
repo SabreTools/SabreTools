@@ -694,7 +694,7 @@ namespace SabreTools.Library.DatFiles
                 datItem.MachineName = datItem.MachineName.TrimStart(Path.DirectorySeparatorChar);
 
                 // Build the state based on excluded fields
-                string state = $"\t<machine name=\"{WebUtility.HtmlEncode(datItem.GetField(Field.MachineName, ExcludeFields) as string)}\"";
+                string state = $"\t<machine name=\"{WebUtility.HtmlEncode(datItem.GetField(Field.MachineName, ExcludeFields))}\"";
                 if (!ExcludeFields[(int)Field.SourceFile] && datItem.SourceFile != null)
                     state += $" sourcefile=\"{datItem.SourceFile}\"";
                 if (!ExcludeFields[(int)Field.MachineType])
@@ -798,7 +798,7 @@ namespace SabreTools.Library.DatFiles
 
                     case ItemType.BiosSet:
                         var biosSet = datItem as BiosSet;
-                        state += $"\t\t<biosset name\"{WebUtility.HtmlEncode(biosSet.GetField(Field.Name, ExcludeFields) as string)}\"";
+                        state += $"\t\t<biosset name\"{WebUtility.HtmlEncode(biosSet.GetField(Field.Name, ExcludeFields))}\"";
                         if (!ExcludeFields[(int)Field.BiosDescription] && !string.IsNullOrWhiteSpace(biosSet.Description))
                             state += $" description=\"{WebUtility.HtmlEncode(biosSet.Description)}\"";
                         if (!ExcludeFields[(int)Field.Default] && biosSet.Default != null)
@@ -808,7 +808,7 @@ namespace SabreTools.Library.DatFiles
 
                     case ItemType.Disk:
                         var disk = datItem as Disk;
-                        state += $"\t\t<disk name\"{WebUtility.HtmlEncode(disk.GetField(Field.Name, ExcludeFields) as string)}\"";
+                        state += $"\t\t<disk name\"{WebUtility.HtmlEncode(disk.GetField(Field.Name, ExcludeFields))}\"";
                         if (!ExcludeFields[(int)Field.MD5] && !string.IsNullOrWhiteSpace(disk.MD5))
                             state += $" md5=\"{disk.MD5.ToLowerInvariant()}\"";
                         if (!ExcludeFields[(int)Field.RIPEMD160] && !string.IsNullOrWhiteSpace(disk.RIPEMD160))
@@ -842,7 +842,7 @@ namespace SabreTools.Library.DatFiles
 
                     case ItemType.Rom:
                         var rom = datItem as Rom;
-                        state += $"\t\t<rom name\"{WebUtility.HtmlEncode(rom.GetField(Field.Name, ExcludeFields) as string)}\"";
+                        state += $"\t\t<rom name\"{WebUtility.HtmlEncode(rom.GetField(Field.Name, ExcludeFields))}\"";
                         if (!ExcludeFields[(int)Field.Size] && rom.Size != -1)
                             state += $" size=\"{rom.Size}\"";
                         if (!ExcludeFields[(int)Field.CRC] && !string.IsNullOrWhiteSpace(rom.CRC))
@@ -875,7 +875,7 @@ namespace SabreTools.Library.DatFiles
                         break;
 
                     case ItemType.Sample:
-                        state += $"\t\t<sample name\"{WebUtility.HtmlEncode(datItem.GetField(Field.Name, ExcludeFields) as string)}\"";
+                        state += $"\t\t<sample name\"{WebUtility.HtmlEncode(datItem.GetField(Field.Name, ExcludeFields))}\"";
                         state += "/>\n";
                         break;
                 }
