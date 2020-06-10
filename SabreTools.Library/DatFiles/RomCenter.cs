@@ -200,13 +200,13 @@ namespace SabreTools.Library.DatFiles
         {
             try
             {
-                Globals.Logger.User("Opening file for writing: {0}", outfile);
+                Globals.Logger.User($"Opening file for writing: {outfile}");
                 FileStream fs = Utilities.TryCreate(outfile);
 
                 // If we get back null for some reason, just log and return
                 if (fs == null)
                 {
-                    Globals.Logger.Warning("File '{0}' could not be created for writing! Please check to see if the file is writable", outfile);
+                    Globals.Logger.Warning($"File '{outfile}' could not be created for writing! Please check to see if the file is writable");
                     return false;
                 }
 
@@ -246,7 +246,7 @@ namespace SabreTools.Library.DatFiles
                             && ((Rom)rom).Size == -1
                             && ((Rom)rom).CRC == "null")
                         {
-                            Globals.Logger.Verbose("Empty folder found: {0}", rom.MachineName);
+                            Globals.Logger.Verbose($"Empty folder found: {rom.MachineName}");
 
                             rom.Name = (rom.Name == "null" ? "-" : rom.Name);
                             ((Rom)rom).Size = Constants.SizeZero;
@@ -289,18 +289,18 @@ namespace SabreTools.Library.DatFiles
         {
             try
             {
-                string header = header = "[CREDITS]\n" +
-                            "author=" + Author + "\n" +
-                            "version=" + Version + "\n" +
-                            "comment=" + Comment + "\n" +
-                            "[DAT]\n" +
-                            "version=2.50\n" +
-                            "split=" + (ForceMerging == ForceMerging.Split ? "1" : "0") + "\n" +
-                            "merge=" + (ForceMerging == ForceMerging.Full || ForceMerging == ForceMerging.Merged ? "1" : "0") + "\n" +
-                            "[EMULATOR]\n" +
-                            "refname=" + Name + "\n" +
-                            "version=" + Description + "\n" +
-                            "[GAMES]\n";
+                string header = "[CREDITS]\n";
+                header += $"author={Author}\n";
+                header += $"version={Version}\n";
+                header += $"comment={Comment}\n";
+                header += "[DAT]\n";
+                header += "version=2.50\n";
+                header += $"split={(ForceMerging == ForceMerging.Split ? "1" : "0")}\n";
+                header += $"merge={(ForceMerging == ForceMerging.Full || ForceMerging == ForceMerging.Merged ? "1" : "0")}\n";
+                header += "[EMULATOR]\n";
+                header += $"refname={Name}\n";
+                header += $"version={Description}\n";
+                header += "[GAMES]\n";
 
                 // Write the header out
                 sw.Write(header);
@@ -319,44 +319,59 @@ namespace SabreTools.Library.DatFiles
         /// Write out DatItem using the supplied StreamWriter
         /// </summary>
         /// <param name="sw">StreamWriter to output to</param>
-        /// <param name="rom">DatItem object to be output</param>
+        /// <param name="datItem">DatItem object to be output</param>
         /// <param name="ignoreblanks">True if blank roms should be skipped on output, false otherwise (default)</param>
         /// <returns>True if the data was written, false on error</returns>
-        private bool WriteDatItem(StreamWriter sw, DatItem rom, bool ignoreblanks = false)
+        private bool WriteDatItem(StreamWriter sw, DatItem datItem, bool ignoreblanks = false)
         {
             // If we are in ignore blanks mode AND we have a blank (0-size) rom, skip
-            if (ignoreblanks
-                && (rom.ItemType == ItemType.Rom
-                && (((Rom)rom).Size == 0 || ((Rom)rom).Size == -1)))
-            {
+            if (ignoreblanks && (datItem.ItemType == ItemType.Rom && ((datItem as Rom).Size == 0 || (datItem as Rom).Size == -1)))
                 return true;
-            }
 
             try
             {
                 string state = string.Empty;
 
                 // Pre-process the item name
-                ProcessItemName(rom, true);
+                ProcessItemName(datItem, true);
 
-                if (rom.ItemType == ItemType.Rom)
+                // Build the state based on excluded fields
+                switch (datItem.ItemType)
                 {
-                    state += "¬" + (!ExcludeFields[(int)Field.CloneOf] && string.IsNullOrWhiteSpace(rom.CloneOf) ? WebUtility.HtmlEncode(rom.CloneOf) : string.Empty) +
-                    "¬" + (!ExcludeFields[(int)Field.CloneOf] && string.IsNullOrWhiteSpace(rom.CloneOf) ? WebUtility.HtmlEncode(rom.CloneOf) : string.Empty) +
-                    "¬" + (!ExcludeFields[(int)Field.MachineName] ? WebUtility.HtmlEncode(rom.MachineName) : string.Empty) +
-                    "¬" + (!ExcludeFields[(int)Field.Description] ? WebUtility.HtmlEncode((string.IsNullOrWhiteSpace(rom.MachineDescription) ? rom.MachineName : rom.MachineDescription)) : string.Empty) +
-                    "¬" + (!ExcludeFields[(int)Field.Name] ? WebUtility.HtmlEncode(rom.Name) : string.Empty) +
-                    "¬" + (!ExcludeFields[(int)Field.CRC] ? ((Rom)rom).CRC.ToLowerInvariant() : string.Empty) +
-                    "¬" + (!ExcludeFields[(int)Field.Size] && ((Rom)rom).Size != -1 ? ((Rom)rom).Size.ToString() : string.Empty) + "¬¬¬\n";
-                }
-                else if (rom.ItemType == ItemType.Disk)
-                {
-                    state += "¬" + (!ExcludeFields[(int)Field.CloneOf] && string.IsNullOrWhiteSpace(rom.CloneOf) ? WebUtility.HtmlEncode(rom.CloneOf) : string.Empty) +
-                    "¬" + (!ExcludeFields[(int)Field.CloneOf] && string.IsNullOrWhiteSpace(rom.CloneOf) ? WebUtility.HtmlEncode(rom.CloneOf) : string.Empty) +
-                    "¬" + (!ExcludeFields[(int)Field.MachineName] ? WebUtility.HtmlEncode(rom.MachineName) : string.Empty) +
-                    "¬" + (!ExcludeFields[(int)Field.Description] ? WebUtility.HtmlEncode((string.IsNullOrWhiteSpace(rom.MachineDescription) ? rom.MachineName : rom.MachineDescription)) : string.Empty) +
-                    "¬" + (!ExcludeFields[(int)Field.Name] ? WebUtility.HtmlEncode(rom.Name) : string.Empty) +
-                    "¬¬¬¬¬\n";
+                    case ItemType.Disk:
+                        state += "¬";
+                        if (!ExcludeFields[(int)Field.CloneOf] && string.IsNullOrWhiteSpace(datItem.CloneOf))
+                            state += datItem.CloneOf;
+                        state += "¬";
+                        if (!ExcludeFields[(int)Field.CloneOf] && string.IsNullOrWhiteSpace(datItem.CloneOf))
+                            state += datItem.CloneOf;
+                        state += $"¬{datItem.GetField(Field.MachineName, ExcludeFields)}";
+                        if (string.IsNullOrWhiteSpace(datItem.MachineDescription))
+                            state += $"¬{datItem.GetField(Field.MachineName, ExcludeFields)}";
+                        else
+                            state += $"¬{datItem.GetField(Field.Description, ExcludeFields)}";
+                        state += $"¬{datItem.GetField(Field.Name, ExcludeFields)}";
+                        state += "¬¬¬¬¬\n";
+                        break;
+
+                    case ItemType.Rom:
+                        var rom = datItem as Rom;
+                        state += "¬";
+                        if (!ExcludeFields[(int)Field.CloneOf] && string.IsNullOrWhiteSpace(datItem.CloneOf))
+                            state += datItem.CloneOf;
+                        state += "¬";
+                        if (!ExcludeFields[(int)Field.CloneOf] && string.IsNullOrWhiteSpace(datItem.CloneOf))
+                            state += datItem.CloneOf;
+                        state += $"¬{datItem.GetField(Field.MachineName, ExcludeFields)}";
+                        if (string.IsNullOrWhiteSpace(datItem.MachineDescription))
+                            state += $"¬{datItem.GetField(Field.MachineName, ExcludeFields)}";
+                        else
+                            state += $"¬{datItem.GetField(Field.Description, ExcludeFields)}";
+                        state += $"¬{datItem.GetField(Field.Name, ExcludeFields)}";
+                        state += $"¬{datItem.GetField(Field.CRC, ExcludeFields)}";
+                        state += $"¬{datItem.GetField(Field.Size, ExcludeFields)}";
+                        state += "¬¬¬\n";
+                        break;
                 }
 
                 sw.Write(state);

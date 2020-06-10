@@ -16,7 +16,7 @@ namespace SabreTools.Library.DatFiles
     internal class Hashfile : DatFile
     {
         // Private instance variables specific to Hashfile DATs
-        Hash _hash;
+        private readonly Hash _hash;
 
         /// <summary>
         /// Constructor designed for casting a base DatFile
@@ -111,13 +111,13 @@ namespace SabreTools.Library.DatFiles
         {
             try
             {
-                Globals.Logger.User("Opening file for writing: {0}", outfile);
+                Globals.Logger.User($"Opening file for writing: {outfile}");
                 FileStream fs = Utilities.TryCreate(outfile);
 
                 // If we get back null for some reason, just log and return
                 if (fs == null)
                 {
-                    Globals.Logger.Warning("File '{0}' could not be created for writing! Please check to see if the file is writable", outfile);
+                    Globals.Logger.Warning($"File '{outfile}' could not be created for writing! Please check to see if the file is writable");
                     return false;
                 }
 
@@ -150,7 +150,7 @@ namespace SabreTools.Library.DatFiles
                             && ((Rom)rom).Size == -1
                             && ((Rom)rom).CRC == "null")
                         {
-                            Globals.Logger.Verbose("Empty folder found: {0}", rom.MachineName);
+                            Globals.Logger.Verbose($"Empty folder found: {rom.MachineName}");
                         }
 
                         // Now, output the rom data
@@ -158,7 +158,7 @@ namespace SabreTools.Library.DatFiles
                     }
                 }
 
-                Globals.Logger.Verbose("File written!" + Environment.NewLine);
+                Globals.Logger.Verbose($"File written!{Environment.NewLine}");
                 sw.Dispose();
                 fs.Dispose();
             }
@@ -175,118 +175,61 @@ namespace SabreTools.Library.DatFiles
         /// Write out DatItem using the supplied StreamWriter
         /// </summary>
         /// <param name="sw">StreamWriter to output to</param>
-        /// <param name="rom">DatItem object to be output</param>
+        /// <param name="datItem">DatItem object to be output</param>
         /// <param name="ignoreblanks">True if blank roms should be skipped on output, false otherwise (default)</param>
         /// <returns>True if the data was written, false on error</returns>
-        private bool WriteDatItem(StreamWriter sw, DatItem rom, bool ignoreblanks = false)
+        private bool WriteDatItem(StreamWriter sw, DatItem datItem, bool ignoreblanks = false)
         {
             // If we are in ignore blanks mode AND we have a blank (0-size) rom, skip
-            if (ignoreblanks
-                && (rom.ItemType == ItemType.Rom
-                && (((Rom)rom).Size == 0 || ((Rom)rom).Size == -1)))
-            {
+            if (ignoreblanks && (datItem.ItemType == ItemType.Rom && ((datItem as Rom).Size == 0 || (datItem as Rom).Size == -1)))
                 return true;
-            }
 
             try
             {
                 string state = string.Empty;
 
                 // Pre-process the item name
-                ProcessItemName(rom, true);
+                ProcessItemName(datItem, true);
 
+                // Build the state based on excluded fields
                 switch (_hash)
                 {
                     case Hash.CRC:
-                        if (rom.ItemType == ItemType.Rom)
+                        if (datItem.ItemType == ItemType.Rom)
                         {
-                            state += (!ExcludeFields[(int)Field.MachineName] && GameName ? rom.MachineName + Path.DirectorySeparatorChar : string.Empty)
-                                + (!ExcludeFields[(int)Field.Name] ? rom.Name : string.Empty)
-                                + " " + (!ExcludeFields[(int)Field.CRC] ? ((Rom)rom).CRC : string.Empty) + "\n";
+                            var rom = datItem as Rom;
+                            if (GameName)
+                                state += $"{rom.GetField(Field.MachineName, ExcludeFields)}{Path.DirectorySeparatorChar}";
+                            state += $"{rom.GetField(Field.Name, ExcludeFields)}";
+                            state += $"{rom.GetField(Field.CRC, ExcludeFields)}";
+                            state += "\n";
                         }
                         break;
+
                     case Hash.MD5:
-                        if (rom.ItemType == ItemType.Rom)
-                        {
-                            state += (!ExcludeFields[(int)Field.MD5] ? ((Rom)rom).MD5 : string.Empty)
-                                + " *" + (!ExcludeFields[(int)Field.MachineName] && GameName ? rom.MachineName + Path.DirectorySeparatorChar : string.Empty)
-                                + (!ExcludeFields[(int)Field.Name] ? rom.Name : string.Empty) + "\n";
-                        }
-                        else if (rom.ItemType == ItemType.Disk)
-                        {
-                            state += (!ExcludeFields[(int)Field.MD5] ? ((Disk)rom).MD5 : string.Empty)
-                                + " *" + (!ExcludeFields[(int)Field.MachineName] && GameName ? rom.MachineName + Path.DirectorySeparatorChar : string.Empty)
-                                + (!ExcludeFields[(int)Field.Name] ? rom.Name : string.Empty) + "\n";
-                        }
-                        break;
                     case Hash.RIPEMD160:
-                        if (rom.ItemType == ItemType.Rom)
-                        {
-                            state += (!ExcludeFields[(int)Field.RIPEMD160] ? ((Rom)rom).RIPEMD160 : string.Empty)
-                                + " *" + (!ExcludeFields[(int)Field.MachineName] && GameName ? rom.MachineName + Path.DirectorySeparatorChar : string.Empty)
-                                + (!ExcludeFields[(int)Field.Name] ? rom.Name : string.Empty) + "\n";
-                        }
-                        else if (rom.ItemType == ItemType.Disk)
-                        {
-                            state += (!ExcludeFields[(int)Field.RIPEMD160] ? ((Disk)rom).RIPEMD160 : string.Empty)
-                                + " *" + (!ExcludeFields[(int)Field.MachineName] && GameName ? rom.MachineName + Path.DirectorySeparatorChar : string.Empty)
-                                + (!ExcludeFields[(int)Field.Name] ? rom.Name : string.Empty) + "\n";
-                        }
-                        break;
                     case Hash.SHA1:
-                        if (rom.ItemType == ItemType.Rom)
-                        {
-                            state += (!ExcludeFields[(int)Field.SHA1] ? ((Rom)rom).SHA1 : string.Empty)
-                                + " *" + (!ExcludeFields[(int)Field.MachineName] && GameName ? rom.MachineName + Path.DirectorySeparatorChar : string.Empty)
-                                + (!ExcludeFields[(int)Field.Name] ? rom.Name : string.Empty) + "\n";
-                        }
-                        else if (rom.ItemType == ItemType.Disk)
-                        {
-                            state += (!ExcludeFields[(int)Field.SHA1] ? ((Disk)rom).SHA1 : string.Empty)
-                                + " *" + (!ExcludeFields[(int)Field.MachineName] && GameName ? rom.MachineName + Path.DirectorySeparatorChar : string.Empty)
-                                + (!ExcludeFields[(int)Field.Name] ? rom.Name : string.Empty) + "\n";
-                        }
-                        break;
                     case Hash.SHA256:
-                        if (rom.ItemType == ItemType.Rom)
-                        {
-                            state += (!ExcludeFields[(int)Field.SHA256] ? ((Rom)rom).SHA256 : string.Empty)
-                                + " *" + (!ExcludeFields[(int)Field.MachineName] && GameName ? rom.MachineName + Path.DirectorySeparatorChar : string.Empty)
-                                + (!ExcludeFields[(int)Field.Name] ? rom.Name : string.Empty) + "\n";
-                        }
-                        else if (rom.ItemType == ItemType.Disk)
-                        {
-                            state += (!ExcludeFields[(int)Field.SHA256] ? ((Disk)rom).SHA256 : string.Empty)
-                                + " *" + (!ExcludeFields[(int)Field.MachineName] && GameName ? rom.MachineName + Path.DirectorySeparatorChar : string.Empty)
-                                + (!ExcludeFields[(int)Field.Name] ? rom.Name : string.Empty) + "\n";
-                        }
-                        break;
                     case Hash.SHA384:
-                        if (rom.ItemType == ItemType.Rom)
-                        {
-                            state += (!ExcludeFields[(int)Field.SHA384] ? ((Rom)rom).SHA384 : string.Empty)
-                                + " *" + (!ExcludeFields[(int)Field.MachineName] && GameName ? rom.MachineName + Path.DirectorySeparatorChar : string.Empty)
-                                + (!ExcludeFields[(int)Field.Name] ? rom.Name : string.Empty) + "\n";
-                        }
-                        else if (rom.ItemType == ItemType.Disk)
-                        {
-                            state += (!ExcludeFields[(int)Field.SHA384] ? ((Disk)rom).SHA384 : string.Empty)
-                                + " *" + (!ExcludeFields[(int)Field.MachineName] && GameName ? rom.MachineName + Path.DirectorySeparatorChar : string.Empty)
-                                + (!ExcludeFields[(int)Field.Name] ? rom.Name : string.Empty) + "\n";
-                        }
-                        break;
                     case Hash.SHA512:
-                        if (rom.ItemType == ItemType.Rom)
+                        Field hashField = Utilities.GetFieldFromHash(_hash);
+                        if (datItem.ItemType == ItemType.Rom)
                         {
-                            state += (!ExcludeFields[(int)Field.SHA512] ? ((Rom)rom).SHA512 : string.Empty)
-                                + " *" + (!ExcludeFields[(int)Field.MachineName] && GameName ? rom.MachineName + Path.DirectorySeparatorChar : string.Empty)
-                                + (!ExcludeFields[(int)Field.Name] ? rom.Name : string.Empty) + "\n";
+                            var rom = datItem as Rom;
+                            state += $"{rom.GetField(hashField, ExcludeFields)}";
+                            if (GameName)
+                                state += $"{rom.GetField(Field.MachineName, ExcludeFields)}{Path.DirectorySeparatorChar}";
+                            state += $"{rom.GetField(Field.Name, ExcludeFields)}";
+                            state += "\n";
                         }
-                        else if (rom.ItemType == ItemType.Disk)
+                        else if (datItem.ItemType == ItemType.Disk)
                         {
-                            state += (!ExcludeFields[(int)Field.SHA512] ? ((Disk)rom).SHA512 : string.Empty)
-                                + " *" + (!ExcludeFields[(int)Field.MachineName] && GameName ? rom.MachineName + Path.DirectorySeparatorChar : string.Empty)
-                                + (!ExcludeFields[(int)Field.Name] ? rom.Name : string.Empty) + "\n";
+                            var disk = datItem as Disk;
+                            state += $"{disk.GetField(hashField, ExcludeFields)}";
+                            if (GameName)
+                                state += $"{disk.GetField(Field.MachineName, ExcludeFields)}{Path.DirectorySeparatorChar}";
+                            state += $"{disk.GetField(Field.Name, ExcludeFields)}";
+                            state += "\n";
                         }
                         break;
                 }

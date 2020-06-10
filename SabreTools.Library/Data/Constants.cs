@@ -2,8 +2,6 @@
 using System.IO;
 using System.Reflection;
 
-using SabreTools.Library.Tools;
-
 namespace SabreTools.Library.Data
 {
     /// <summary>
@@ -14,7 +12,7 @@ namespace SabreTools.Library.Data
         /// <summary>
         /// The current toolset version to be used by all child applications
         /// </summary>
-        public readonly static string Version = "v1.0.0-" + File.GetCreationTime(Assembly.GetExecutingAssembly().Location).ToString("yyyy-MM-dd HH:mm:ss");
+        public readonly static string Version = $"v1.0.0-{File.GetCreationTime(Assembly.GetExecutingAssembly().Location).ToString("yyyy-MM-dd HH:mm:ss")}";
         public const int HeaderHeight = 3;
 
         #region 0-byte file constants
@@ -159,7 +157,7 @@ namespace SabreTools.Library.Data
 
         public const string HeadererDbSchema = "Headerer";
         public static string HeadererFileName = Path.Combine(Globals.ExeDir, "Headerer.sqlite");
-        public static string HeadererConnectionString = "Data Source=" + HeadererFileName + ";Version = 3;";
+        public static string HeadererConnectionString = $"Data Source={HeadererFileName};Version = 3;";
 
         #endregion
 

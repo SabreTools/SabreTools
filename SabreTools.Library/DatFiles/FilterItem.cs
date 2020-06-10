@@ -161,7 +161,7 @@ namespace SabreTools.Library.DatFiles
 
                         // If the straw has no special characters at all (excluding whitespace), treat it as an exact match
                         if (regexStraw == Regex.Escape(regexStraw).Replace("\\ ", " "))
-                            regexStraw = "^" + regexStraw + "$";
+                            regexStraw = $"^{regexStraw}$";
 
                         // Check if a match is found with the regex
                         found |= Regex.IsMatch(needleString, regexStraw, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);

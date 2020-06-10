@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 using SabreTools.Library.Data;
 using SabreTools.Library.Help;
@@ -38,8 +36,8 @@ namespace RombaSharp
         private static int _port;			// Web server port
 
         // Other private variables
-        private static string _config = "config.xml";
-        private static string _dbSchema = "rombasharp";
+        private const string _config = "config.xml";
+        private const string _dbSchema = "rombasharp";
         private static string _connectionString;
         private static Help _help;
 
@@ -97,7 +95,7 @@ namespace RombaSharp
             // Verify that the flag is valid
             if (!_help.TopLevelFlag(featureName))
             {
-                Globals.Logger.User("'{0}' is not valid feature flag", featureName);
+                Globals.Logger.User($"'{featureName}' is not valid feature flag");
                 _help.OutputIndividualFeature(featureName);
                 Globals.Logger.Close();
                 return;

@@ -22,7 +22,7 @@ namespace SabreTools.Library.DatFiles
     internal class SeparatedValue : DatFile
     {
         // Private instance variables specific to Separated Value DATs
-        char _delim;
+        private readonly char _delim;
 
         /// <summary>
         /// Constructor designed for casting a base DatFile
@@ -193,7 +193,7 @@ namespace SabreTools.Library.DatFiles
                 // If the line doesn't have the correct number of columns, we log and skip
                 if (parsedLine.Length != columns.Count)
                 {
-                    Globals.Logger.Warning("Malformed line found in '{0}' at line {1}", filename, linenum);
+                    Globals.Logger.Warning($"Malformed line found in '{filename}' at line {linenum}");
                     continue;
                 }
 
@@ -390,13 +390,13 @@ namespace SabreTools.Library.DatFiles
         {
             try
             {
-                Globals.Logger.User("Opening file for writing: {0}", outfile);
+                Globals.Logger.User($"Opening file for writing: {outfile}");
                 FileStream fs = Utilities.TryCreate(outfile);
 
                 // If we get back null for some reason, just log and return
                 if (fs == null)
                 {
-                    Globals.Logger.Warning("File '{0}' could not be created for writing! Please check to see if the file is writable", outfile);
+                    Globals.Logger.Warning($"File '{outfile}' could not be created for writing! Please check to see if the file is writable");
                     return false;
                 }
 
@@ -432,7 +432,7 @@ namespace SabreTools.Library.DatFiles
                             && ((Rom)rom).Size == -1
                             && ((Rom)rom).CRC == "null")
                         {
-                            Globals.Logger.Verbose("Empty folder found: {0}", rom.MachineName);
+                            Globals.Logger.Verbose($"Empty folder found: {rom.MachineName}");
                         }
 
                         // Now, output the rom data
@@ -482,19 +482,17 @@ namespace SabreTools.Library.DatFiles
         /// Write out DatItem using the supplied StreamWriter
         /// </summary>
         /// <param name="sw">StreamWriter to output to</param>
-        /// <param name="rom">DatItem object to be output</param>
+        /// <param name="datItem">DatItem object to be output</param>
         /// <param name="ignoreblanks">True if blank roms should be skipped on output, false otherwise (default)</param>
         /// <returns>True if the data was written, false on error</returns>
-        private bool WriteDatItem(StreamWriter sw, DatItem rom, bool ignoreblanks = false)
+        private bool WriteDatItem(StreamWriter sw, DatItem datItem, bool ignoreblanks = false)
         {
             // If we are in ignore blanks mode AND we have a blank (0-size) rom, skip
-            if (ignoreblanks
-                && (rom.ItemType == ItemType.Rom
-                && (((Rom)rom).Size == 0 || ((Rom)rom).Size == -1)))
-            {
+            if (ignoreblanks && (datItem.ItemType == ItemType.Rom && ((datItem as Rom).Size == 0 || (datItem as Rom).Size == -1)))
                 return true;
-            }
 
+            // TODO: Clean up this mess and make it more like the other DatFile types
+            // TODO: Specifically, make it so that each ItemType has its own block, if possible
             try
             {
                 // Initialize all strings
@@ -515,56 +513,60 @@ namespace SabreTools.Library.DatFiles
                     status = string.Empty;
 
                 // Separated values should only output Rom and Disk
-                if (rom.ItemType != ItemType.Disk && rom.ItemType != ItemType.Rom)
+                if (datItem.ItemType != ItemType.Disk && datItem.ItemType != ItemType.Rom)
                     return true;
 
-                if (rom.ItemType == ItemType.Rom)
+                if (datItem.ItemType == ItemType.Disk)
                 {
-                    type = "rom";
-                    romname = rom.Name;
-                    size = ((Rom)rom).Size.ToString();
-                    crc = ((Rom)rom).CRC;
-                    md5 = ((Rom)rom).MD5;
-                    ripemd160 = ((Rom)rom).RIPEMD160;
-                    sha1 = ((Rom)rom).SHA1;
-                    sha256 = ((Rom)rom).SHA256;
-                    sha384 = ((Rom)rom).SHA384;
-                    sha512 = ((Rom)rom).SHA512;
-                    status = (((Rom)rom).ItemStatus != ItemStatus.None ? "\"" + ((Rom)rom).ItemStatus.ToString() + "\"" : "\"\"");
-                }
-                else if (rom.ItemType == ItemType.Disk)
-                {
+                    var disk = datItem as Disk;
                     type = "disk";
-                    diskname = rom.Name;
-                    md5 = ((Disk)rom).MD5;
-                    ripemd160 = ((Disk)rom).RIPEMD160;
-                    sha1 = ((Disk)rom).SHA1;
-                    sha256 = ((Disk)rom).SHA256;
-                    sha384 = ((Disk)rom).SHA384;
-                    sha512 = ((Disk)rom).SHA512;
-                    status = (((Disk)rom).ItemStatus != ItemStatus.None ? "\"" + ((Disk)rom).ItemStatus.ToString() + "\"" : "\"\"");
+                    diskname = datItem.Name;
+                    md5 = disk.MD5;
+                    ripemd160 = disk.RIPEMD160;
+                    sha1 = disk.SHA1;
+                    sha256 = disk.SHA256;
+                    sha384 = disk.SHA384;
+                    sha512 = disk.SHA512;
+                    status = (disk.ItemStatus != ItemStatus.None ? $"\"{disk.ItemStatus}\"" : "\"\"");
+                }
+                else if (datItem.ItemType == ItemType.Rom)
+                {
+                    var rom = datItem as Rom;
+                    type = "rom";
+                    romname = datItem.Name;
+                    size = rom.Size.ToString();
+                    crc = rom.CRC;
+                    md5 = rom.MD5;
+                    ripemd160 = rom.RIPEMD160;
+                    sha1 = rom.SHA1;
+                    sha256 = rom.SHA256;
+                    sha384 = rom.SHA384;
+                    sha512 = rom.SHA512;
+                    status = (rom.ItemStatus != ItemStatus.None ? $"\"{rom.ItemStatus}\"" : "\"\"");
                 }
 
-                pre = CreatePrefixPostfix(rom, true);
-                post = CreatePrefixPostfix(rom, false);
-                string inline = string.Format("\"" + FileName + "\""
-                    + "{0}\"" + Name + "\""
-                    + "{0}\"" + Description + "\""
-                    + "{0}\"" + (!ExcludeFields[(int)Field.MachineName] ? rom.MachineName : string.Empty) + "\""
-                    + "{0}\"" + (!ExcludeFields[(int)Field.Description] ? rom.MachineDescription : string.Empty) + "\""
-                    + "{0}\"" + type + "\""
-                    + "{0}\"" + (!ExcludeFields[(int)Field.Name] ? romname : string.Empty) + "\""
-                    + "{0}\"" + (!ExcludeFields[(int)Field.Name] ? diskname : string.Empty) + "\""
-                    + "{0}\"" + (!ExcludeFields[(int)Field.Size] ? size : string.Empty) + "\""
-                    + "{0}\"" + (!ExcludeFields[(int)Field.CRC] ? crc : string.Empty) + "\""
-                    + "{0}\"" + (!ExcludeFields[(int)Field.MD5] ? md5 : string.Empty) + "\""
-                    // + "{0}\"" + (!ExcludeFields[(int)Field.RIPEMD160] ? ripemd160 : string.Empty) + "\""
-                    + "{0}\"" + (!ExcludeFields[(int)Field.SHA1] ? sha1 : string.Empty) + "\""
-                    + "{0}\"" + (!ExcludeFields[(int)Field.SHA256] ? sha256 : string.Empty) + "\""
-                    // + "{0}\"" + (!ExcludeFields[(int)Field.SHA384] ? sha384 : string.Empty) + "\""
-                    // + "{0}\"" + (!ExcludeFields[(int)Field.SHA512] ? sha512 : string.Empty) + "\""
-                    + "{0}" + status, _delim);
-                state += pre + inline + post + "\n";
+                pre = CreatePrefixPostfix(datItem, true);
+                post = CreatePrefixPostfix(datItem, false);
+                string inline = string.Format($"\"{FileName}\""
+                        + $"{0}\"{Name}\""
+                        + $"{0}\"{Description}\""
+                        + $"{0}\"{(!ExcludeFields[(int)Field.MachineName] ? datItem.MachineName : string.Empty)}\""
+                        + $"{0}\"{(!ExcludeFields[(int)Field.Description] ? datItem.MachineDescription : string.Empty)}\""
+                        + $"{0}\"{type}\""
+                        + $"{0}\"{(!ExcludeFields[(int)Field.Name] ? romname : string.Empty)}\""
+                        + $"{0}\"{(!ExcludeFields[(int)Field.Name] ? diskname : string.Empty)}\""
+                        + $"{0}\"{(!ExcludeFields[(int)Field.Size] ? size : string.Empty)}\""
+                        + $"{0}\"{(!ExcludeFields[(int)Field.CRC] ? crc : string.Empty)}\""
+                        + $"{0}\"{(!ExcludeFields[(int)Field.MD5] ? md5 : string.Empty)}\""
+                        // + $"{0}\"{(!ExcludeFields[(int)Field.RIPEMD160] ? ripemd160 : string.Empty)}\""
+                        + $"{0}\"{(!ExcludeFields[(int)Field.SHA1] ? sha1 : string.Empty)}\""
+                        + $"{0}\"{(!ExcludeFields[(int)Field.SHA256] ? sha256 : string.Empty)}\""
+                        // + $"{0}\"{(!ExcludeFields[(int)Field.SHA384] ? sha384 : string.Empty)}\""
+                        // + $"{0}\"{(!ExcludeFields[(int)Field.SHA512] ? sha512 : string.Empty)}\""
+                        + $"{0}\"{(!ExcludeFields[(int)Field.Status] ? status : string.Empty)}\"",
+                    _delim);
+
+                state += $"{pre}{inline}{post}\n";
 
                 sw.Write(state);
                 sw.Flush();

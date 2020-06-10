@@ -277,21 +277,21 @@ namespace SabreTools.Library.FileTypes
             // If we have the romba depot files, just skip them gracefully
             if (datum == ".romba_size" || datum == ".romba_size.backup")
             {
-                Globals.Logger.Verbose("Romba depot file found, skipping: {0}", this.Filename);
+                Globals.Logger.Verbose($"Romba depot file found, skipping: {this.Filename}");
                 return false;
             }
 
             // Check if the name is the right length
             if (!Regex.IsMatch(datum, @"^[0-9a-f]{" + Constants.SHA1Length + @"}\.gz")) // TODO: When updating to SHA-256, this needs to update to Constants.SHA256Length
             {
-                Globals.Logger.Warning("Non SHA-1 filename found, skipping: '{0}'", Path.GetFullPath(this.Filename));
+                Globals.Logger.Warning($"Non SHA-1 filename found, skipping: '{Path.GetFullPath(this.Filename)}'");
                 return false;
             }
 
             // Check if the file is at least the minimum length
             if (filesize < 40 /* bytes */)
             {
-                Globals.Logger.Warning("Possibly corrupt file '{0}' with size {1}", Path.GetFullPath(this.Filename), Utilities.GetBytesReadable(filesize));
+                Globals.Logger.Warning($"Possibly corrupt file '{Path.GetFullPath(this.Filename)}' with size {Utilities.GetBytesReadable(filesize)}");
                 return false;
             }
 
@@ -344,21 +344,21 @@ namespace SabreTools.Library.FileTypes
             // If we have the romba depot files, just skip them gracefully
             if (datum == ".romba_size" || datum == ".romba_size.backup")
             {
-                Globals.Logger.Verbose("Romba depot file found, skipping: {0}", this.Filename);
+                Globals.Logger.Verbose($"Romba depot file found, skipping: {this.Filename}");
                 return null;
             }
 
             // Check if the name is the right length
             if (!Regex.IsMatch(datum, @"^[0-9a-f]{" + Constants.SHA1Length + @"}\.gz")) // TODO: When updating to SHA-256, this needs to update to Constants.SHA256Length
             {
-                Globals.Logger.Warning("Non SHA-1 filename found, skipping: '{0}'", Path.GetFullPath(this.Filename));
+                Globals.Logger.Warning($"Non SHA-1 filename found, skipping: '{Path.GetFullPath(this.Filename)}'");
                 return null;
             }
 
             // Check if the file is at least the minimum length
             if (filesize < 40 /* bytes */)
             {
-                Globals.Logger.Warning("Possibly corrupt file '{0}' with size {1}", Path.GetFullPath(this.Filename), Utilities.GetBytesReadable(filesize));
+                Globals.Logger.Warning($"Possibly corrupt file '{Path.GetFullPath(this.Filename)}' with size {Utilities.GetBytesReadable(filesize)}");
                 return null;
             }
 
@@ -426,7 +426,7 @@ namespace SabreTools.Library.FileTypes
             // Check that the input file exists
             if (!File.Exists(inputFile))
             {
-                Globals.Logger.Warning("File '{0}' does not exist!", inputFile);
+                Globals.Logger.Warning($"File '{inputFile}' does not exist!");
                 return false;
             }
             inputFile = Path.GetFullPath(inputFile);

@@ -61,13 +61,13 @@ namespace SabreTools.Library.DatFiles
         {
             try
             {
-                Globals.Logger.User("Opening file for writing: {0}", outfile);
+                Globals.Logger.User($"Opening file for writing: {outfile}");
                 FileStream fs = Utilities.TryCreate(outfile);
 
                 // If we get back null for some reason, just log and return
                 if (fs == null)
                 {
-                    Globals.Logger.Warning("File '{0}' could not be created for writing! Please check to see if the file is writable", outfile);
+                    Globals.Logger.Warning($"File '{outfile}' could not be created for writing! Please check to see if the file is writable");
                     return false;
                 }
 
@@ -116,7 +116,7 @@ namespace SabreTools.Library.DatFiles
                             && ((Rom)rom).Size == -1
                             && ((Rom)rom).CRC == "null")
                         {
-                            Globals.Logger.Verbose("Empty folder found: {0}", rom.MachineName);
+                            Globals.Logger.Verbose($"Empty folder found: {rom.MachineName}");
 
                             rom.Name = (rom.Name == "null" ? "-" : rom.Name);
                             ((Rom)rom).Size = Constants.SizeZero;
@@ -140,7 +140,7 @@ namespace SabreTools.Library.DatFiles
                 // Write the file footer out
                 WriteFooter(sw);
 
-                Globals.Logger.Verbose("File written!" + Environment.NewLine);
+                Globals.Logger.Verbose($"File written!{Environment.NewLine}");
                 sw.Dispose();
                 fs.Dispose();
             }
@@ -162,15 +162,15 @@ namespace SabreTools.Library.DatFiles
         {
             try
             {
-                string header = "DOSCenter (\n" +
-                            "\tName: " + Name + "\n" +
-                            "\tDescription: " + Description + "\n" +
-                            "\tVersion: " + Version + "\n" +
-                            "\tDate: " + Date + "\n" +
-                            "\tAuthor: " + Author + "\n" +
-                            "\tHomepage: " + Homepage + "\n" +
-                            "\tComment: " + Comment + "\n" +
-                            ")\n";
+                string header = "DOSCenter (\n";
+                header += $"\tName: {Name}\n";
+                header += $"\tDescription: {Description}\n";
+                header += $"\tVersion: {Version}\n";
+                header += $"\tDate: {Date}\n";
+                header += $"\tAuthor: {Author}\n";
+                header += $"\tHomepage: {Homepage}\n";
+                header += $"\tComment: {Comment}\n";
+                header += ")\n";
 
                 // Write the header out
                 sw.Write(header);
@@ -189,16 +189,17 @@ namespace SabreTools.Library.DatFiles
         /// Write out Game start using the supplied StreamWriter
         /// </summary>
         /// <param name="sw">StreamWriter to output to</param>
-        /// <param name="rom">DatItem object to be output</param>
+        /// <param name="datItem">DatItem object to be output</param>
         /// <returns>True if the data was written, false on error</returns>
-        private bool WriteStartGame(StreamWriter sw, DatItem rom)
+        private bool WriteStartGame(StreamWriter sw, DatItem datItem)
         {
             try
             {
                 // No game should start with a path separator
-                rom.MachineName = rom.MachineName.TrimStart(Path.DirectorySeparatorChar);
+                datItem.MachineName = datItem.MachineName.TrimStart(Path.DirectorySeparatorChar);
 
-                string state = "game (\n\tname \"" + (!ExcludeFields[(int)Field.MachineName] ? rom.MachineName + ".zip" : string.Empty) + "\"\n";
+                // Build the state based on excluded fields
+                string state = $"game (\n\tname \"{datItem.GetField(Field.MachineName, ExcludeFields)}.zip\n";
 
                 sw.Write(state);
                 sw.Flush();
@@ -216,13 +217,19 @@ namespace SabreTools.Library.DatFiles
         /// Write out Game end using the supplied StreamWriter
         /// </summary>
         /// <param name="sw">StreamWriter to output to</param>
-        /// <param name="rom">DatItem object to be output</param>
+        /// <param name="datItem">DatItem object to be output</param>
         /// <returns>True if the data was written, false on error</returns>
-        private bool WriteEndGame(StreamWriter sw, DatItem rom)
+        private bool WriteEndGame(StreamWriter sw, DatItem datItem)
         {
             try
             {
-                string state = (!ExcludeFields[(int)Field.SampleOf] && string.IsNullOrWhiteSpace(rom.SampleOf) ? string.Empty : "\tsampleof \"" + rom.SampleOf + "\"\n") + ")\n";
+                string state = string.Empty;
+
+                // Build the state based on excluded fields
+                if (!ExcludeFields[(int)Field.SampleOf] && string.IsNullOrWhiteSpace(datItem.SampleOf))
+                    state += $"\tsampleof \"{datItem.SampleOf}\"\n";
+
+                state += ")\n";
 
                 sw.Write(state);
                 sw.Flush();
@@ -240,27 +247,24 @@ namespace SabreTools.Library.DatFiles
         /// Write out DatItem using the supplied StreamWriter
         /// </summary>
         /// <param name="sw">StreamWriter to output to</param>
-        /// <param name="rom">DatItem object to be output</param>
+        /// <param name="datItem">DatItem object to be output</param>
         /// <param name="ignoreblanks">True if blank roms should be skipped on output, false otherwise (default)</param>
         /// <returns>True if the data was written, false on error</returns>
-        private bool WriteDatItem(StreamWriter sw, DatItem rom, bool ignoreblanks = false)
+        private bool WriteDatItem(StreamWriter sw, DatItem datItem, bool ignoreblanks = false)
         {
             // If we are in ignore blanks mode AND we have a blank (0-size) rom, skip
-            if (ignoreblanks
-                && (rom.ItemType == ItemType.Rom
-                && (((Rom)rom).Size == 0 || ((Rom)rom).Size == -1)))
-            {
+            if (ignoreblanks && (datItem.ItemType == ItemType.Rom && ((datItem as Rom).Size == 0 || (datItem as Rom).Size == -1)))
                 return true;
-            }
 
             try
             {
                 string state = string.Empty;
 
                 // Pre-process the item name
-                ProcessItemName(rom, true);
+                ProcessItemName(datItem, true);
 
-                switch (rom.ItemType)
+                // Build the state based on excluded fields
+                switch (datItem.ItemType)
                 {
                     case ItemType.Archive:
                     case ItemType.BiosSet:
@@ -270,11 +274,15 @@ namespace SabreTools.Library.DatFiles
                         // We don't output these at all for DosCenter
                         break;
                     case ItemType.Rom:
-                        state += "\tfile ( name " + (!ExcludeFields[(int)Field.Name] ? ((Rom)rom).Name : string.Empty)
-                            + (!ExcludeFields[(int)Field.Size] && ((Rom)rom).Size != -1 ? " size " + ((Rom)rom).Size : string.Empty)
-                            + (!ExcludeFields[(int)Field.Date] && !string.IsNullOrWhiteSpace(((Rom)rom).Date) ? " date " + ((Rom)rom).Date : string.Empty)
-                            + (!ExcludeFields[(int)Field.CRC] && !string.IsNullOrWhiteSpace(((Rom)rom).CRC) ? " crc " + ((Rom)rom).CRC.ToLowerInvariant() : string.Empty)
-                            + " )\n";
+                        var rom = datItem as Rom;
+                        state += $"\file ( name \"{datItem.GetField(Field.Name, ExcludeFields)}\"";
+                        if (!ExcludeFields[(int)Field.Size] && rom.Size != -1)
+                            state += $" size \"{rom.Size}\"";
+                        if (!ExcludeFields[(int)Field.Date] && !string.IsNullOrWhiteSpace(rom.Date))
+                            state += $" date \"{rom.Date}\"";
+                        if (!ExcludeFields[(int)Field.CRC] && !string.IsNullOrWhiteSpace(rom.CRC))
+                            state += $" crc \"{rom.CRC.ToLowerInvariant()}\"";
+                        state += " )\n";
                         break;
                 }
 

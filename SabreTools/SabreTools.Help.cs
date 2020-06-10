@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 
 using SabreTools.Library.Data;
 using SabreTools.Library.DatFiles;
@@ -2298,38 +2296,39 @@ Some special strings that can be used:
             /// </summary>
             protected DatHeader GetDatHeader(Dictionary<string, Feature> features)
             {
-                DatHeader datHeader = new DatHeader();
-
-                datHeader.AddExtension = GetString(features, AddExtensionStringValue);
-                datHeader.Author = GetString(features, AuthorStringValue);
-                datHeader.Category = GetString(features, CategoryStringValue);
-                datHeader.Comment = GetString(features, CommentStringValue);
-                datHeader.Date = GetString(features, DateStringValue);
-                datHeader.DedupeRoms = GetDedupeType(features);
-                datHeader.Description = GetString(features, DescriptionStringValue);
-                datHeader.Email = GetString(features, EmailStringValue);
-                datHeader.FileName = GetString(features, FilenameStringValue);
-                datHeader.ForceMerging = Utilities.GetForceMerging(GetString(features, ForceMergingStringInput));
-                datHeader.ForceNodump = Utilities.GetForceNodump(GetString(features, ForceNodumpStringInput));
-                datHeader.ForcePacking = Utilities.GetForcePacking(GetString(features, ForcePackingStringInput));
-                datHeader.GameName = GetBoolean(features, GamePrefixValue);
-                datHeader.Header = GetString(features, HeaderStringValue);
-                datHeader.Homepage = GetString(features, HomepageStringValue);
-                datHeader.KeepEmptyGames = GetBoolean(features, KeepEmptyGamesValue);
-                datHeader.Name = GetString(features, NameStringValue);
-                datHeader.OneRom = GetBoolean(features, OneRomPerGameValue);
-                datHeader.Postfix = GetString(features, PostfixStringValue);
-                datHeader.Prefix = GetString(features, PrefixStringValue);
-                datHeader.Quotes = GetBoolean(features, QuotesValue);
-                datHeader.RemoveExtension = GetBoolean(features, RemoveExtensionsValue);
-                datHeader.ReplaceExtension = GetString(features, ReplaceExtensionStringValue);
-                datHeader.Romba = GetBoolean(features, RombaValue);
-                datHeader.RootDir = GetString(features, RootStringValue);
-                datHeader.SceneDateStrip = GetBoolean(features, SceneDateStripValue);
-                datHeader.Type = GetBoolean(features, SuperdatValue) ? "SuperDAT" : null;
-                datHeader.Url = GetString(features, UrlStringValue);
-                datHeader.UseRomName = GetBoolean(features, RomsValue);
-                datHeader.Version = GetString(features, VersionStringValue);
+                DatHeader datHeader = new DatHeader
+                {
+                    AddExtension = GetString(features, AddExtensionStringValue),
+                    Author = GetString(features, AuthorStringValue),
+                    Category = GetString(features, CategoryStringValue),
+                    Comment = GetString(features, CommentStringValue),
+                    Date = GetString(features, DateStringValue),
+                    DedupeRoms = GetDedupeType(features),
+                    Description = GetString(features, DescriptionStringValue),
+                    Email = GetString(features, EmailStringValue),
+                    FileName = GetString(features, FilenameStringValue),
+                    ForceMerging = Utilities.GetForceMerging(GetString(features, ForceMergingStringInput)),
+                    ForceNodump = Utilities.GetForceNodump(GetString(features, ForceNodumpStringInput)),
+                    ForcePacking = Utilities.GetForcePacking(GetString(features, ForcePackingStringInput)),
+                    GameName = GetBoolean(features, GamePrefixValue),
+                    Header = GetString(features, HeaderStringValue),
+                    Homepage = GetString(features, HomepageStringValue),
+                    KeepEmptyGames = GetBoolean(features, KeepEmptyGamesValue),
+                    Name = GetString(features, NameStringValue),
+                    OneRom = GetBoolean(features, OneRomPerGameValue),
+                    Postfix = GetString(features, PostfixStringValue),
+                    Prefix = GetString(features, PrefixStringValue),
+                    Quotes = GetBoolean(features, QuotesValue),
+                    RemoveExtension = GetBoolean(features, RemoveExtensionsValue),
+                    ReplaceExtension = GetString(features, ReplaceExtensionStringValue),
+                    Romba = GetBoolean(features, RombaValue),
+                    RootDir = GetString(features, RootStringValue),
+                    SceneDateStrip = GetBoolean(features, SceneDateStripValue),
+                    Type = GetBoolean(features, SuperdatValue) ? "SuperDAT" : null,
+                    Url = GetString(features, UrlStringValue),
+                    UseRomName = GetBoolean(features, RomsValue),
+                    Version = GetString(features, VersionStringValue),
+                };
 
                 bool deprecated = GetBoolean(features, DeprecatedValue);
                 foreach (string ot in GetList(features, OutputTypeListValue))
@@ -2586,19 +2585,19 @@ Some special strings that can be used:
 
                 if (GetBoolean(features, UpdateDescriptionValue))
                 {
-                    Globals.Logger.User("This flag '{0}' is deprecated, please use {1} instead", UpdateDescriptionValue, string.Join(", ", _updateFieldListInput.Flags));
+                    Globals.Logger.User($"This flag '{UpdateDescriptionValue}' is deprecated, please use {string.Join(", ", _updateFieldListInput.Flags)} instead");
                     updateFields.Add(Field.Description);
                 }
 
                 if (GetBoolean(features, UpdateGameTypeValue))
                 {
-                    Globals.Logger.User("This flag '{0}' is deprecated, please use {1} instead", UpdateGameTypeValue, string.Join(", ", _updateFieldListInput.Flags));
+                    Globals.Logger.User($"This flag '{UpdateGameTypeValue}' is deprecated, please use {string.Join(", ", _updateFieldListInput.Flags)} instead");
                     updateFields.Add(Field.MachineType);
                 }
 
                 if (GetBoolean(features, UpdateHashesValue))
                 {
-                    Globals.Logger.User("This flag '{0}' is deprecated, please use {1} instead", UpdateHashesValue, string.Join(", ", _updateFieldListInput.Flags));
+                    Globals.Logger.User($"This flag '{UpdateHashesValue}' is deprecated, please use {string.Join(", ", _updateFieldListInput.Flags)} instead");
                     updateFields.Add(Field.CRC);
                     updateFields.Add(Field.MD5);
                     updateFields.Add(Field.RIPEMD160);
@@ -2610,19 +2609,19 @@ Some special strings that can be used:
 
                 if (GetBoolean(features, UpdateManufacturerValue))
                 {
-                    Globals.Logger.User("This flag '{0}' is deprecated, please use {1} instead", UpdateManufacturerValue, string.Join(", ", _updateFieldListInput.Flags));
+                    Globals.Logger.User($"This flag '{UpdateManufacturerValue}' is deprecated, please use {string.Join(", ", _updateFieldListInput.Flags)} instead");
                     updateFields.Add(Field.Manufacturer);
                 }
 
                 if (GetBoolean(features, UpdateNamesValue))
                 {
-                    Globals.Logger.User("This flag '{0}' is deprecated, please use {1} instead", UpdateNamesValue, string.Join(", ", _updateFieldListInput.Flags));
+                    Globals.Logger.User($"This flag '{UpdateNamesValue}' is deprecated, please use {string.Join(", ", _updateFieldListInput.Flags)} instead");
                     updateFields.Add(Field.Name);
                 }
 
                 if (GetBoolean(features, UpdateParentsValue))
                 {
-                    Globals.Logger.User("This flag '{0}' is deprecated, please use {1} instead", UpdateParentsValue, string.Join(", ", _updateFieldListInput.Flags));
+                    Globals.Logger.User($"This flag '{UpdateParentsValue}' is deprecated, please use {string.Join(", ", _updateFieldListInput.Flags)} instead");
                     updateFields.Add(Field.CloneOf);
                     updateFields.Add(Field.RomOf);
                     updateFields.Add(Field.SampleOf);
@@ -2630,7 +2629,7 @@ Some special strings that can be used:
 
                 if (GetBoolean(features, UpdateYearValue))
                 {
-                    Globals.Logger.User("This flag '{0}' is deprecated, please use {1} instead", UpdateYearValue, string.Join(", ", _updateFieldListInput.Flags));
+                    Globals.Logger.User($"This flag '{UpdateYearValue}' is deprecated, please use {string.Join(", ", _updateFieldListInput.Flags)} instead");
                     updateFields.Add(Field.Year);
                 }
 
@@ -3145,8 +3144,11 @@ The following systems have headers that this program can work with:
 
             public override void ProcessFeatures(Dictionary<string, Feature> features)
             {
-                DatFile datfile = new DatFile();
-                datfile.DatFormat = GetDatHeader(features).DatFormat;
+                DatFile datfile = new DatFile
+                {
+                    DatFormat = GetDatHeader(features).DatFormat,
+                };
+
                 datfile.DetermineSplitType(
                     Inputs,
                     GetString(features, OutputDirStringValue),
@@ -3352,10 +3354,10 @@ The stats that are outputted are as follows:
                 // Normalize the extensions
                 datHeader.AddExtension = (string.IsNullOrWhiteSpace(datHeader.AddExtension) || datHeader.AddExtension.StartsWith(".")
                     ? datHeader.AddExtension
-                    : "." + datHeader.AddExtension);
+                    : $".{datHeader.AddExtension}");
                 datHeader.ReplaceExtension = (string.IsNullOrWhiteSpace(datHeader.ReplaceExtension) || datHeader.ReplaceExtension.StartsWith(".")
                     ? datHeader.ReplaceExtension
-                    : "." + datHeader.ReplaceExtension);
+                    : $".{datHeader.ReplaceExtension}");
 
                 // If we're in a special update mode and the names aren't set, set defaults
                 if (updateMode != 0)
@@ -3378,7 +3380,7 @@ The stats that are outputted are as follows:
                             + (datHeader.DedupeRoms != DedupeType.None ? " - deduped" : string.Empty);
 
                         if (!GetBoolean(features, NoAutomaticDateValue))
-                            datHeader.Description += " (" + datHeader.Date + ")";
+                            datHeader.Description += $" ({datHeader.Date})";
                     }
 
                     if (string.IsNullOrWhiteSpace(datHeader.Category) && updateMode != 0)

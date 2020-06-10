@@ -100,7 +100,7 @@ namespace SabreTools.Library.DatFiles
 
                     // If the split is still unsuccessful, log it and skip
                     if (split.Length == 1)
-                        Globals.Logger.Warning("Possibly malformed line: '{0}'", line);
+                        Globals.Logger.Warning($"Possibly malformed line: '{line}'");
 
                     romname = split[0];
                     line = line.Substring(romname.Length);
@@ -211,7 +211,7 @@ namespace SabreTools.Library.DatFiles
                     // If we have something else, it's invalid
                     else
                     {
-                        Globals.Logger.Warning("Invalid line detected: '{0} {1}'", romname, line);
+                        Globals.Logger.Warning($"Invalid line detected: '{romname} {line}'");
                     }
                 }
             }
@@ -228,13 +228,13 @@ namespace SabreTools.Library.DatFiles
         {
             try
             {
-                Globals.Logger.User("Opening file for writing: {0}", outfile);
+                Globals.Logger.User($"Opening file for writing: {outfile}");
                 FileStream fs = Utilities.TryCreate(outfile);
 
                 // If we get back null for some reason, just log and return
                 if (fs == null)
                 {
-                    Globals.Logger.Warning("File '{0}' could not be created for writing! Please check to see if the file is writable", outfile);
+                    Globals.Logger.Warning($"File '{outfile}' could not be created for writing! Please check to see if the file is writable");
                     return false;
                 }
 
@@ -278,7 +278,7 @@ namespace SabreTools.Library.DatFiles
                             && ((Rom)rom).Size == -1
                             && ((Rom)rom).CRC == "null")
                         {
-                            Globals.Logger.Verbose("Empty folder found: {0}", rom.MachineName);
+                            Globals.Logger.Verbose($"Empty folder found: {rom.MachineName}");
 
                             rom.Name = (rom.Name == "null" ? "-" : rom.Name);
                             ((Rom)rom).Size = Constants.SizeZero;
@@ -324,8 +324,9 @@ namespace SabreTools.Library.DatFiles
                 // No game should start with a path separator
                 rom.MachineName = rom.MachineName.TrimStart(Path.DirectorySeparatorChar);
 
-                string state = "ROMs required for driver \"" + (!ExcludeFields[(int)Field.MachineName] ? rom.MachineName : string.Empty) + "\".\n" +
-                            "Name                                   Size Checksum\n";
+                // Build the state based on excluded fields
+                string state = $"ROMs required for driver \"{rom.GetField(Field.MachineName, ExcludeFields)}\".\n";
+                state += "Name                                   Size Checksum\n";
 
                 sw.Write(state);
                 sw.Flush();
@@ -366,88 +367,93 @@ namespace SabreTools.Library.DatFiles
         /// Write out DatItem using the supplied StreamWriter
         /// </summary>
         /// <param name="sw">StreamWriter to output to</param>
-        /// <param name="rom">DatItem object to be output</param>
+        /// <param name="datItem">DatItem object to be output</param>
         /// <param name="ignoreblanks">True if blank roms should be skipped on output, false otherwise (default)</param>
         /// <returns>True if the data was written, false on error</returns>
-        private bool WriteDatItem(StreamWriter sw, DatItem rom, bool ignoreblanks = false)
+        private bool WriteDatItem(StreamWriter sw, DatItem datItem, bool ignoreblanks = false)
         {
             // If we are in ignore blanks mode AND we have a blank (0-size) rom, skip
-            if (ignoreblanks
-                && (rom.ItemType == ItemType.Rom
-                && (((Rom)rom).Size == 0 || ((Rom)rom).Size == -1)))
-            {
+            if (ignoreblanks && (datItem.ItemType == ItemType.Rom && ((datItem as Rom).Size == 0 || (datItem as Rom).Size == -1)))
                 return true;
-            }
 
             try
             {
                 string state = string.Empty;
 
                 // Pre-process the item name
-                ProcessItemName(rom, true);
+                ProcessItemName(datItem, true);
 
-                switch (rom.ItemType)
+                // Build the state based on excluded fields
+                switch (datItem.ItemType)
                 {
                     case ItemType.Archive:
                     case ItemType.BiosSet:
                     case ItemType.Release:
                     case ItemType.Sample:
-                        // We don't output these at all
+                        // We don't output these at all for Listrom
                         break;
+
                     case ItemType.Disk:
+                        var disk = datItem as Disk;
+
                         // The name is padded out to a particular length
-                        if (rom.Name.Length < 43)
-                            state += rom.Name.PadRight(43, ' ');
+                        if (disk.Name.Length < 43)
+                            state += disk.Name.PadRight(43, ' ');
                         else
-                            state += rom.Name + "          ";
+                            state += disk.Name + "          ";
 
                         // If we have a baddump, put the first indicator
-                        if (!ExcludeFields[(int)Field.Status] && ((Disk)rom).ItemStatus == ItemStatus.BadDump)
+                        if (!ExcludeFields[(int)Field.Status] && disk.ItemStatus == ItemStatus.BadDump)
                             state += " BAD";
 
                         // If we have a nodump, write out the indicator
-                        if (!ExcludeFields[(int)Field.Status] && ((Disk)rom).ItemStatus == ItemStatus.Nodump)
+                        if (!ExcludeFields[(int)Field.Status] && disk.ItemStatus == ItemStatus.Nodump)
                             state += " NO GOOD DUMP KNOWN";
 
                         // Otherwise, write out the SHA-1 hash
-                        else if (!ExcludeFields[(int)Field.SHA1])
-                            state += " SHA1(" + ((Disk)rom).SHA1 + ")";
+                        else if (!ExcludeFields[(int)Field.SHA1] && !string.IsNullOrWhiteSpace(disk.SHA1))
+                            state += $" SHA1({disk.SHA1})";
 
                         // If we have a baddump, put the second indicator
-                        if (!ExcludeFields[(int)Field.Status] && ((Disk)rom).ItemStatus == ItemStatus.BadDump)
+                        if (!ExcludeFields[(int)Field.Status] && disk.ItemStatus == ItemStatus.BadDump)
                             state += " BAD_DUMP";
 
                         state += "\n";
                         break;
+
                     case ItemType.Rom:
+                        var rom = datItem as Rom;
+
                         // The name is padded out to a particular length
                         if (rom.Name.Length < 40)
-                            state += rom.Name.PadRight(43 - (((Rom)rom).Size.ToString().Length), ' ');
+                            state += rom.Name.PadRight(43 - rom.Size.ToString().Length, ' ');
                         else
                             state += rom.Name + "          ";
 
                         // If we don't have a nodump, write out the size
-                        if (((Rom)rom).ItemStatus != ItemStatus.Nodump)
-                            state += ((Rom)rom).Size;
+                        if (rom.ItemStatus != ItemStatus.Nodump)
+                            state += rom.Size;
 
                         // If we have a baddump, put the first indicator
-                        if (!ExcludeFields[(int)Field.Status] && ((Rom)rom).ItemStatus == ItemStatus.BadDump)
+                        if (!ExcludeFields[(int)Field.Status] && rom.ItemStatus == ItemStatus.BadDump)
                             state += " BAD";
 
                         // If we have a nodump, write out the indicator
-                        if (!ExcludeFields[(int)Field.Status] && ((Rom)rom).ItemStatus == ItemStatus.Nodump)
+                        if (!ExcludeFields[(int)Field.Status] && rom.ItemStatus == ItemStatus.Nodump)
                         {
                             state += " NO GOOD DUMP KNOWN";
                         }
                         // Otherwise, write out the CRC and SHA-1 hashes
                         else
                         {
-                            state += (!ExcludeFields[(int)Field.CRC] ? " CRC(" + ((Rom)rom).CRC + ")" : string.Empty);
-                            state += (!ExcludeFields[(int)Field.SHA1] ? " SHA1(" + ((Rom)rom).SHA1 + ")" : string.Empty);
+                            if (!ExcludeFields[(int)Field.CRC] && !string.IsNullOrWhiteSpace(rom.CRC))
+                                state += $" CRC({rom.CRC})";
+                            if (!ExcludeFields[(int)Field.SHA1] && !string.IsNullOrWhiteSpace(rom.SHA1))
+                                state += $" SHA1({rom.SHA1})";
                         }
 
                         // If we have a baddump, put the second indicator
-                        if (!ExcludeFields[(int)Field.Status] && ((Rom)rom).ItemStatus == ItemStatus.BadDump)
+                        if (!ExcludeFields[(int)Field.Status] && rom.ItemStatus == ItemStatus.BadDump)
                             state += " BAD_DUMP";
 
                         state += "\n";

@@ -95,7 +95,7 @@ namespace SabreTools.Library.DatFiles
             }
             catch (Exception ex)
             {
-                Globals.Logger.Warning("Exception found while parsing '{0}': {1}", filename, ex);
+                Globals.Logger.Warning($"Exception found while parsing '{filename}': {ex}");
 
                 // For XML errors, just skip the affected node
                 xtr?.Read();
@@ -531,13 +531,13 @@ namespace SabreTools.Library.DatFiles
         {
             try
             {
-                Globals.Logger.User("Opening file for writing: {0}", outfile);
+                Globals.Logger.User($"Opening file for writing: {outfile}");
                 FileStream fs = Utilities.TryCreate(outfile);
 
                 // If we get back null for some reason, just log and return
                 if (fs == null)
                 {
-                    Globals.Logger.Warning("File '{0}' could not be created for writing! Please check to see if the file is writable", outfile);
+                    Globals.Logger.Warning($"File '{outfile}' could not be created for writing! Please check to see if the file is writable");
                     return false;
                 }
 
@@ -584,7 +584,7 @@ namespace SabreTools.Library.DatFiles
                             && ((Rom)rom).Size == -1
                             && ((Rom)rom).CRC == "null")
                         {
-                            Globals.Logger.Verbose("Empty folder found: {0}", rom.MachineName);
+                            Globals.Logger.Verbose($"Empty folder found: {rom.MachineName}");
 
                             lastgame = rom.MachineName;
                             continue;
@@ -623,12 +623,12 @@ namespace SabreTools.Library.DatFiles
         {
             try
             {
-                string header = "<?xml version=\"1.0\"?>\n" +
-                            "<!DOCTYPE softwaredb SYSTEM \"softwaredb1.dtd\">\n" + 
-                            "<softwaredb" +
-                                // " timestamp=\"" + timestamp + "\"" +
-                                ">\n" +
-                                @"<!-- Credits -->
+                string header = "<?xml version=\"1.0\"?>\n";
+                header += "<!DOCTYPE softwaredb SYSTEM \"softwaredb1.dtd\">\n";
+                header += "<softwaredb";
+                // header += $" timestamp=\"{timestamp}\"";
+                header += ">\n";
+                header += @"<!-- Credits -->
 <![CDATA[
 The softwaredb.xml file contains information about rom mapper types
 
@@ -657,22 +657,23 @@ Generation MSXIDs by www.generation-msx.nl
         /// Write out Game start using the supplied StreamWriter
         /// </summary>
         /// <param name="sw">StreamWriter to output to</param>
-        /// <param name="rom">DatItem object to be output</param>
+        /// <param name="datItem">DatItem object to be output</param>
         /// <returns>True if the data was written, false on error</returns>
-        private bool WriteStartGame(StreamWriter sw, DatItem rom)
+        private bool WriteStartGame(StreamWriter sw, DatItem datItem)
         {
             try
             {
                 // No game should start with a path separator
-                rom.MachineName = rom.MachineName.TrimStart(Path.DirectorySeparatorChar);
+                datItem.MachineName = datItem.MachineName.TrimStart(Path.DirectorySeparatorChar);
 
-                string state = "<software>\n"
-                            + "\t<title>" + (!ExcludeFields[(int)Field.MachineName] ? WebUtility.HtmlEncode(rom.MachineName) : string.Empty) + "</title>\n"
-                            // + "\t<genmsxid>" + msxid + "</genmsxid>\n"
-                            // + "\t<system>" + system + "</system>\n"
-                            + "\t<company>" + (!ExcludeFields[(int)Field.Manufacturer] ? rom.Manufacturer : string.Empty) + "</company>\n"
-                            + "\t<year>" + (!ExcludeFields[(int)Field.Year] ? rom.Year : string.Empty) + "</year>\n";
-                            // + "\t<country>" + country + "</country>\n";
+                // Build the state based on excluded fields
+                string state = "<software>\n";
+                state += $"\t<title>{WebUtility.HtmlEncode(datItem.GetField(Field.MachineName, ExcludeFields) as string)}</title>\n";
+                // state += $"\t<genmsxid>{msxid}</genmsxid>\n";
+                // state += $"\t<system>{system}</system>\n";
+                state += $"\t<company>{WebUtility.HtmlEncode(datItem.GetField(Field.Manufacturer, ExcludeFields) as string)}</company>\n";
+                state += $"\t<year>{WebUtility.HtmlEncode(datItem.GetField(Field.Year, ExcludeFields) as string)}</year>\n";
+                // state += $"\t<country>{country}</country>\n";
 
                 sw.Write(state);
                 sw.Flush();
@@ -713,52 +714,36 @@ Generation MSXIDs by www.generation-msx.nl
         /// Write out DatItem using the supplied StreamWriter
         /// </summary>
         /// <param name="sw">StreamWriter to output to</param>
-        /// <param name="rom">DatItem object to be output</param>
+        /// <param name="datItem">DatItem object to be output</param>
         /// <param name="ignoreblanks">True if blank roms should be skipped on output, false otherwise (default)</param>
         /// <returns>True if the data was written, false on error</returns>
-        private bool WriteDatItem(StreamWriter sw, DatItem rom, bool ignoreblanks = false)
+        private bool WriteDatItem(StreamWriter sw, DatItem datItem, bool ignoreblanks = false)
         {
             // If we are in ignore blanks mode AND we have a blank (0-size) rom, skip
-            if (ignoreblanks
-                && (rom.ItemType == ItemType.Rom
-                && (((Rom)rom).Size == 0 || ((Rom)rom).Size == -1)))
-            {
+            if (ignoreblanks && (datItem.ItemType == ItemType.Rom && ((datItem as Rom).Size == 0 || (datItem as Rom).Size == -1)))
                 return true;
-            }
 
             try
             {
                 string state = string.Empty;
 
                 // Pre-process the item name
-                ProcessItemName(rom, true);
+                ProcessItemName(datItem, true);
 
-                switch (rom.ItemType)
+                // Build the state based on excluded fields
+                switch (datItem.ItemType)
                 {
-                    case ItemType.Archive:
-                        break;
-
-                    case ItemType.BiosSet:
-                        break;
-
-                    case ItemType.Disk:
-                        break;
-
-                    case ItemType.Release:
-                        break;
-
                     case ItemType.Rom: // Currently this encapsulates rom, megarom, and sccpluscart
-                        state += "\t\t<dump>"
-                            // + "<original value=\"true\">GoodMSX</original>"
-                            + "<rom>"
-                            + (!ExcludeFields[(int)Field.Offset] && !string.IsNullOrWhiteSpace(((Rom)rom).Offset) ? "<start>" + ((Rom)rom).Offset + "</start>" : string.Empty)
-                            // + "<type>Normal</type>"
-                            + "<hash>" + (!ExcludeFields[(int)Field.SHA1] ? ((Rom)rom).SHA1 : string.Empty) + "</hash>"
-                            // + "<remark></remark>"
-                            + "</rom></dump>\n";
-                            break;
-
-                    case ItemType.Sample:
+                        var rom = datItem as Rom;
+                        state += "\t\t<dump>";
+                        // state += "<original value=\"true\">GoodMSX</original>";
+                        state += "<rom>";
+                        if (!ExcludeFields[(int)Field.Offset] && !string.IsNullOrWhiteSpace(rom.Offset))
+                            state += $"<start>{rom.Offset}</start>";
+                        // state += "<type>Normal</type>";
+                        state += $"<hash>{rom.GetField(Field.SHA1, ExcludeFields) as string}</hash>";
+                        // state += "<remark></remark>";
+                        state += "</rom></dump>\n";
                         break;
                 }
 

@@ -29,19 +29,16 @@ namespace SabreTools.Library.Tools
             SqliteConnection dbc = new SqliteConnection(Constants.HeadererConnectionString);
             dbc.Open();
 
-            string query = @"SELECT * FROM data WHERE sha1='" + SHA1 + "' AND header='" + header + "'";
+            string query = $"SELECT * FROM data WHERE sha1='{SHA1}' AND header='{header}'";
             SqliteCommand slc = new SqliteCommand(query, dbc);
             SqliteDataReader sldr = slc.ExecuteReader();
             exists = sldr.HasRows;
 
             if (!exists)
             {
-                query = @"INSERT INTO data (sha1, header, type) VALUES ('" +
-                SHA1 + "', " +
-                "'" + header + "', " +
-                "'" + source + "')";
+                query = $"INSERT INTO data (sha1, header, type) VALUES ('{SHA1}', '{header}', '{source}')";
                 slc = new SqliteCommand(query, dbc);
-                Globals.Logger.Verbose("Result of inserting header: {0}", slc.ExecuteNonQuery());
+                Globals.Logger.Verbose($"Result of inserting header: {slc.ExecuteNonQuery()}");
             }
 
             // Dispose of database objects
@@ -167,7 +164,7 @@ CREATE TABLE IF NOT EXISTS data (
             // Create the output list of headers
             List<string> headers = new List<string>();
 
-            string query = @"SELECT header, type FROM data WHERE sha1='" + SHA1 + "'";
+            string query = $"SELECT header, type FROM data WHERE sha1='{SHA1}'";
             SqliteCommand slc = new SqliteCommand(query, dbc);
             SqliteDataReader sldr = slc.ExecuteReader();
 
@@ -175,7 +172,7 @@ CREATE TABLE IF NOT EXISTS data (
             {
                 while (sldr.Read())
                 {
-                    Globals.Logger.Verbose("Found match with rom type '{0}'", sldr.GetString(1));
+                    Globals.Logger.Verbose($"Found match with rom type '{sldr.GetString(1)}'");
                     headers.Add(sldr.GetString(0));
                 }
             }

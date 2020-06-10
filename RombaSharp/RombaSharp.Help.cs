@@ -485,9 +485,9 @@ have a current entry in the DAT index.";
                         if (onlyNeeded && !noDb)
                         {
                             string query = "SELECT * FROM crcsha1 JOIN md5sha1 ON crcsha1.sha1=md5sha1.sha1"
-                                        + " WHERE crcsha1.crc=\"" + rom.CRC + "\""
-                                        + " OR md5sha1.md5=\"" + rom.MD5 + "\""
-                                        + " OR md5sha1.sha1=\"" + rom.SHA1 + "\"";
+                                        + $" WHERE crcsha1.crc=\"{rom.CRC}\""
+                                        + $" OR md5sha1.md5=\"{rom.MD5}\""
+                                        + $" OR md5sha1.sha1=\"{rom.SHA1}\"";
                             SqliteCommand slc = new SqliteCommand(query, dbc);
                             SqliteDataReader sldr = slc.ExecuteReader();
 
@@ -495,20 +495,20 @@ have a current entry in the DAT index.";
                             {
                                 // Add to the queries
                                 if (!string.IsNullOrWhiteSpace(rom.CRC))
-                                    crcquery += " (\"" + rom.CRC + "\"),";
+                                    crcquery += $" (\"{rom.CRC}\"),";
 
                                 if (!string.IsNullOrWhiteSpace(rom.MD5))
-                                    md5query += " (\"" + rom.MD5 + "\"),";
+                                    md5query += $" (\"{rom.MD5}\"),";
 
                                 if (!string.IsNullOrWhiteSpace(rom.SHA1))
                                 {
-                                    sha1query += " (\"" + rom.SHA1 + "\", \"" + _depots.Keys.ToList()[0] + "\"),";
+                                    sha1query += $" (\"{rom.SHA1}\", \"{_depots.Keys.ToList()[0]}\"),";
 
                                     if (!string.IsNullOrWhiteSpace(rom.CRC))
-                                        crcsha1query += " (\"" + rom.CRC + "\", \"" + rom.SHA1 + "\"),";
+                                        crcsha1query += $" (\"{rom.CRC}\", \"{rom.SHA1}\"),";
 
                                     if (!string.IsNullOrWhiteSpace(rom.MD5))
-                                        md5sha1query += " (\"" + rom.MD5 + "\", \"" + rom.SHA1 + "\"),";
+                                        md5sha1query += $" (\"{rom.MD5}\", \"{rom.SHA1}\"),";
                                 }
 
                                 // Add to the Dat
@@ -522,20 +522,20 @@ have a current entry in the DAT index.";
                             if (!noDb)
                             {
                                 if (!string.IsNullOrWhiteSpace(rom.CRC))
-                                    crcquery += " (\"" + rom.CRC + "\"),";
+                                    crcquery += $" (\"{rom.CRC}\"),";
 
                                 if (!string.IsNullOrWhiteSpace(rom.MD5))
-                                    md5query += " (\"" + rom.MD5 + "\"),";
+                                    md5query += $" (\"{rom.MD5}\"),";
 
                                 if (!string.IsNullOrWhiteSpace(rom.SHA1))
                                 {
-                                    sha1query += " (\"" + rom.SHA1 + "\", \"" + _depots.Keys.ToList()[0] + "\"),";
+                                    sha1query += $" (\"{rom.SHA1}\", \"{_depots.Keys.ToList()[0]}\"),";
 
                                     if (!string.IsNullOrWhiteSpace(rom.CRC))
-                                        crcsha1query += " (\"" + rom.CRC + "\", \"" + rom.SHA1 + "\"),";
+                                        crcsha1query += $" (\"{rom.CRC}\", \"{rom.SHA1}\"),";
 
                                     if (!string.IsNullOrWhiteSpace(rom.MD5))
-                                        md5sha1query += " (\"" + rom.MD5 + "\", \"" + rom.SHA1 + "\"),";
+                                        md5sha1query += $" (\"{rom.MD5}\", \"{rom.SHA1}\"),";
                                 }
                             }
 
@@ -685,8 +685,7 @@ structure according to the original DAT master directory tree structure.";
                 // If we have no inputs listed, we want to use datroot
                 if (Inputs == null || Inputs.Count == 0)
                 {
-                    Inputs = new List<string>();
-                    Inputs.Add(Path.GetFullPath(_dats));
+                    Inputs = new List<string> { Path.GetFullPath(_dats) };
                 }
 
                 // Now output the stats for all inputs
@@ -716,22 +715,22 @@ structure according to the original DAT master directory tree structure.";
                 // Total number of CRCs
                 string query = "SELECT COUNT(*) FROM crc";
                 SqliteCommand slc = new SqliteCommand(query, dbc);
-                Globals.Logger.User("Total CRCs: {0}", (long)slc.ExecuteScalar());
+                Globals.Logger.User($"Total CRCs: {(long)slc.ExecuteScalar()}");
 
                 // Total number of MD5s
                 query = "SELECT COUNT(*) FROM md5";
                 slc = new SqliteCommand(query, dbc);
-                Globals.Logger.User("Total MD5s: {0}", (long)slc.ExecuteScalar());
+                Globals.Logger.User($"Total MD5s: {(long)slc.ExecuteScalar()}");
 
                 // Total number of SHA1s
                 query = "SELECT COUNT(*) FROM sha1";
                 slc = new SqliteCommand(query, dbc);
-                Globals.Logger.User("Total SHA1s: {0}", (long)slc.ExecuteScalar());
+                Globals.Logger.User($"Total SHA1s: {(long)slc.ExecuteScalar()}");
 
                 // Total number of DATs
                 query = "SELECT COUNT(*) FROM dat";
                 slc = new SqliteCommand(query, dbc);
-                Globals.Logger.User("Total DATs: {0}", (long)slc.ExecuteScalar());
+                Globals.Logger.User($"Total DATs: {(long)slc.ExecuteScalar()}");
 
                 slc.Dispose();
                 dbc.Dispose();
@@ -806,13 +805,13 @@ in -old DAT file. Ignores those entries in -old that are not in -new.";
                 // Check that all required files exist
                 if (!File.Exists(olddat))
                 {
-                    Globals.Logger.Error("File '{0}' does not exist!", olddat);
+                    Globals.Logger.Error($"File '{olddat}' does not exist!");
                     return;
                 }
 
                 if (!File.Exists(newdat))
                 {
-                    Globals.Logger.Error("File '{0}' does not exist!", newdat);
+                    Globals.Logger.Error($"File '{newdat}' does not exist!");
                     return;
                 }
 
@@ -824,10 +823,8 @@ in -old DAT file. Ignores those entries in -old that are not in -new.";
                 };
 
                 // Create the inputs
-                List<string> dats = new List<string>();
-                dats.Add(newdat);
-                List<string> basedats = new List<string>();
-                basedats.Add(olddat);
+                List<string> dats = new List<string> { newdat };
+                List<string> basedats = new List<string> { olddat };
 
                 // Now run the diff on the inputs
                 datfile.DetermineUpdateType(dats, basedats, outdat, UpdateMode.DiffAgainst, false /* inplace */, false /* skip */,
@@ -869,7 +866,7 @@ in -old DAT file. Ignores those entries in -old that are not in -new.";
                 // Check that all required directories exist
                 if (!Directory.Exists(source))
                 {
-                    Globals.Logger.Error("File '{0}' does not exist!", source);
+                    Globals.Logger.Error($"File '{source}' does not exist!");
                     return;
                 }
 
@@ -920,13 +917,13 @@ in -old DAT files. Ignores those entries in -old that are not in -new.";
                 // Check that all required files exist
                 if (!File.Exists(olddat))
                 {
-                    Globals.Logger.Error("File '{0}' does not exist!", olddat);
+                    Globals.Logger.Error($"File '{olddat}' does not exist!");
                     return;
                 }
 
                 if (!File.Exists(newdat))
                 {
-                    Globals.Logger.Error("File '{0}' does not exist!", newdat);
+                    Globals.Logger.Error($"File '{newdat}' does not exist!");
                     return;
                 }
 
@@ -934,10 +931,8 @@ in -old DAT files. Ignores those entries in -old that are not in -new.";
                 DatFile datfile = new DatFile();
 
                 // Create the inputs
-                List<string> dats = new List<string>();
-                dats.Add(newdat);
-                List<string> basedats = new List<string>();
-                basedats.Add(olddat);
+                List<string> dats = new List<string> { newdat };
+                List<string> basedats = new List<string> { olddat };
 
                 // Now run the diff on the inputs
                 datfile.DetermineUpdateType(dats, basedats, outdat, UpdateMode.DiffAgainst, false /* inplace */, false /* skip */,
@@ -979,10 +974,7 @@ in -old DAT files. Ignores those entries in -old that are not in -new.";
                 {
                     while (sldr.Read())
                     {
-                        string line = sldr.GetString(0) + ","
-                                + sldr.GetString(1) + ","
-                                + sldr.GetString(2); // + ","
-                                                     // + sldr.GetString(3);
+                        string line = $"{sldr.GetString(0)},{sldr.GetString(1)},{sldr.GetString(2)}"; // + ",{sldr.GetString(3)}";
                         sw.WriteLine(line);
                     }
                 }
@@ -1129,20 +1121,20 @@ particular DAT.";
 
                         // Loop through the parsed entries
                         if (!string.IsNullOrWhiteSpace(hashes[0]))
-                            crcquery += " (\"" + hashes[0] + "\"),";
+                            crcquery += $" (\"{hashes[0]}\"),";
 
                         if (!string.IsNullOrWhiteSpace(hashes[1]))
-                            md5query += " (\"" + hashes[1] + "\"),";
+                            md5query += $" (\"{hashes[1]}\"),";
 
                         if (!string.IsNullOrWhiteSpace(hashes[2]))
                         {
-                            sha1query += " (\"" + hashes[2] + "\"),";
+                            sha1query += $" (\"{hashes[2]}\"),";
 
                             if (!string.IsNullOrWhiteSpace(hashes[0]))
-                                crcsha1query += " (\"" + hashes[0] + "\", \"" + hashes[2] + "\"),";
+                                crcsha1query += $" (\"{hashes[0]}\", \"{hashes[2]}\"),";
 
                             if (!string.IsNullOrWhiteSpace(hashes[1]))
-                                md5sha1query += " (\"" + hashes[1] + "\", \"" + hashes[2] + "\"),";
+                                md5sha1query += $" (\"{hashes[1]}\", \"{hashes[2]}\"),";
                         }
                     }
 
@@ -1250,7 +1242,7 @@ particular DAT.";
                 // Now, search for each of them and return true or false for each
                 foreach (string input in crc)
                 {
-                    string query = "SELECT * FROM crc WHERE crc=\"" + input + "\"";
+                    string query = $"SELECT * FROM crc WHERE crc=\"{input}\"";
                     SqliteCommand slc = new SqliteCommand(query, dbc);
                     SqliteDataReader sldr = slc.ExecuteReader();
                     if (sldr.HasRows)
@@ -1261,11 +1253,11 @@ particular DAT.";
                             count++;
                         }
 
-                        Globals.Logger.User("For hash '{0}' there were {1} matches in the database", input, count);
+                        Globals.Logger.User($"For hash '{input}' there were {count} matches in the database");
                     }
                     else
                     {
-                        Globals.Logger.User("Hash '{0}' had no matches in the database", input);
+                        Globals.Logger.User($"Hash '{input}' had no matches in the database");
                     }
 
                     sldr.Dispose();
@@ -1273,7 +1265,7 @@ particular DAT.";
                 }
                 foreach (string input in md5)
                 {
-                    string query = "SELECT * FROM md5 WHERE md5=\"" + input + "\"";
+                    string query = $"SELECT * FROM md5 WHERE md5=\"{input}\"";
                     SqliteCommand slc = new SqliteCommand(query, dbc);
                     SqliteDataReader sldr = slc.ExecuteReader();
                     if (sldr.HasRows)
@@ -1284,11 +1276,11 @@ particular DAT.";
                             count++;
                         }
 
-                        Globals.Logger.User("For hash '{0}' there were {1} matches in the database", input, count);
+                        Globals.Logger.User($"For hash '{input}' there were {count} matches in the database");
                     }
                     else
                     {
-                        Globals.Logger.User("Hash '{0}' had no matches in the database", input);
+                        Globals.Logger.User($"Hash '{input}' had no matches in the database");
                     }
 
                     sldr.Dispose();
@@ -1296,7 +1288,7 @@ particular DAT.";
                 }
                 foreach (string input in sha1)
                 {
-                    string query = "SELECT * FROM sha1 WHERE sha1=\"" + input + "\"";
+                    string query = $"SELECT * FROM sha1 WHERE sha1=\"{input}\"";
                     SqliteCommand slc = new SqliteCommand(query, dbc);
                     SqliteDataReader sldr = slc.ExecuteReader();
                     if (sldr.HasRows)
@@ -1307,11 +1299,11 @@ particular DAT.";
                             count++;
                         }
 
-                        Globals.Logger.User("For hash '{0}' there were {1} matches in the database", input, count);
+                        Globals.Logger.User($"For hash '{input}' there were {count} matches in the database");
                     }
                     else
                     {
-                        Globals.Logger.User("Hash '{0}' had no matches in the database", input);
+                        Globals.Logger.User($"Hash '{input}' had no matches in the database");
                     }
 
                     sldr.Dispose();
@@ -1568,7 +1560,7 @@ contents of any changed dats.";
                 if (string.IsNullOrWhiteSpace(_db))
                 {
                     _db = "db.sqlite";
-                    _connectionString = "Data Source=" + _db + ";Version = 3;";
+                    _connectionString = $"Data Source={_db};Version = 3;";
                 }
 
                 // Make sure the file exists
@@ -1645,7 +1637,7 @@ contents of any changed dats.";
                     query = "DELETE FROM dat WHERE";
                     foreach (string dathash in unneeded)
                     {
-                        query += " OR hash=\"" + dathash + "\"";
+                        query += $" OR hash=\"{dathash}\"";
                     }
 
                     query = query.Replace("WHERE OR", "WHERE");
@@ -1684,14 +1676,14 @@ contents of any changed dats.";
                     // Check that it's a valid depot first
                     if (!_depots.ContainsKey(depotname))
                     {
-                        Globals.Logger.User("'{0}' is not a recognized depot. Please add it to your configuration file and try again", depotname);
+                        Globals.Logger.User($"'{depotname}' is not a recognized depot. Please add it to your configuration file and try again");
                         return;
                     }
 
                     // Then check that the depot is online
                     if (!Directory.Exists(depotname))
                     {
-                        Globals.Logger.User("'{0}' does not appear to be online. Please check its status and try again", depotname);
+                        Globals.Logger.User($"'{depotname}' does not appear to be online. Please check its status and try again");
                         return;
                     }
 
@@ -1701,7 +1693,7 @@ contents of any changed dats.";
 
                     // If we have it, then check for all hashes that are in that depot
                     List<string> hashes = new List<string>();
-                    string query = "SELECT sha1 FROM sha1 WHERE depot=\"" + depotname + "\"";
+                    string query = $"SELECT sha1 FROM sha1 WHERE depot=\"{depotname}\"";
                     SqliteCommand slc = new SqliteCommand(query, dbc);
                     SqliteDataReader sldr = slc.ExecuteReader();
                     if (sldr.HasRows)
@@ -1741,20 +1733,20 @@ contents of any changed dats.";
                             else if (!dupehashes.Contains(rom.SHA1))
                             {
                                 if (!string.IsNullOrWhiteSpace(rom.CRC))
-                                    crcquery += " (\"" + rom.CRC + "\"),";
+                                    crcquery += $" (\"{rom.CRC}\"),";
 
                                 if (!string.IsNullOrWhiteSpace(rom.MD5))
-                                    md5query += " (\"" + rom.MD5 + "\"),";
+                                    md5query += $" (\"{rom.MD5}\"),";
 
                                 if (!string.IsNullOrWhiteSpace(rom.SHA1))
                                 {
-                                    sha1query += " (\"" + rom.SHA1 + "\", \"" + depotname + "\"),";
+                                    sha1query += $" (\"{rom.SHA1}\", \"{depotname}\"),";
 
                                     if (!string.IsNullOrWhiteSpace(rom.CRC))
-                                        crcsha1query += " (\"" + rom.CRC + "\", \"" + rom.SHA1 + "\"),";
+                                        crcsha1query += $" (\"{rom.CRC}\", \"{rom.SHA1}\"),";
 
                                     if (!string.IsNullOrWhiteSpace(rom.MD5))
-                                        md5sha1query += " (\"" + rom.MD5 + "\", \"" + rom.SHA1 + "\"),";
+                                        md5sha1query += $" (\"{rom.MD5}\", \"{rom.SHA1}\"),";
                                 }
                             }
                         }
@@ -1801,7 +1793,8 @@ JOIN crc
     ON crcsha1.crc=crc.crc
 JOIN md5
     ON md5sha1.md5=md5.md5
-WHERE sha1.sha1 IN (string.Empty" + string.Join("\",\"", hashes) + "\")";
+WHERE sha1.sha1 IN ";
+                    query += $"({string.Join("\",\"", hashes)}\")";
                     slc = new SqliteCommand(query, dbc);
                     slc.ExecuteNonQuery();
 
@@ -1863,7 +1856,7 @@ WHERE sha1.sha1 IN (string.Empty" + string.Join("\",\"", hashes) + "\")";
 
             public override void ProcessFeatures(Dictionary<string, Feature> features)
             {
-                Globals.Logger.User("RombaSharp version: {0}", Constants.Version);
+                Globals.Logger.User($"RombaSharp version: {Constants.Version}");
             }
         }
 

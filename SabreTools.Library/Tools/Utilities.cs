@@ -209,7 +209,7 @@ namespace SabreTools.Library.Tools
         /// <returns>The cleaned name</returns>
         public static string CleanGameName(string[] game)
         {
-            game[game.Length - 1] = CleanGameName(game[game.Length - 1]);
+            game[game.Length - 1] = CleanGameName(game.Last());
             string outgame = string.Join(Path.DirectorySeparatorChar.ToString(), game);
             outgame = outgame.TrimStart().TrimEnd();
             return outgame;
@@ -424,7 +424,7 @@ namespace SabreTools.Library.Tools
                 return archive;
 
             // Create the archive based on the type
-            Globals.Logger.Verbose("Found archive of type: {0}", at);
+            Globals.Logger.Verbose($"Found archive of type: {at}");
             switch (at)
             {
                 case FileType.GZipArchive:
@@ -1257,12 +1257,12 @@ namespace SabreTools.Library.Tools
             string ext = GetExtension(filename);
 
             // Read the input file, if possible
-            Globals.Logger.Verbose("Attempting to read file to get format: {0}", filename);
+            Globals.Logger.Verbose($"Attempting to read file to get format: {filename}");
 
             // Check if file exists
             if (!File.Exists(filename))
             {
-                Globals.Logger.Warning("File '{0}' could not read from!", filename);
+                Globals.Logger.Warning($"File '{filename}' could not read from!");
                 return 0;
             }
 
@@ -1699,7 +1699,7 @@ namespace SabreTools.Library.Tools
             // Create the output directory if it doesn't exist
             EnsureOutputDirectory(outDir, create: true);
 
-            Globals.Logger.User("\nGetting skipper information for '{0}'", file);
+            Globals.Logger.User($"\nGetting skipper information for '{file}'");
 
             // Get the skipper rule that matches the file, if any
             SkipperRule rule = Skipper.GetMatchingRule(file, string.Empty);
@@ -1755,11 +1755,11 @@ namespace SabreTools.Library.Tools
                     {
                         try
                         {
-                            outputs.Add(Path.GetFullPath(file) + (appendparent ? "¬" + Path.GetFullPath(input) : string.Empty));
+                            outputs.Add(Path.GetFullPath(file) + (appendparent ? $"¬{Path.GetFullPath(input)}" : string.Empty));
                         }
                         catch (PathTooLongException)
                         {
-                            Globals.Logger.Warning("The path for '{0}' was too long", file);
+                            Globals.Logger.Warning($"The path for '{file}' was too long");
                         }
                         catch (Exception ex)
                         {
@@ -1771,11 +1771,11 @@ namespace SabreTools.Library.Tools
                 {
                     try
                     {
-                        outputs.Add(Path.GetFullPath(input) + (appendparent ? "¬" + Path.GetFullPath(input) : string.Empty));
+                        outputs.Add(Path.GetFullPath(input) + (appendparent ? $"¬{Path.GetFullPath(input)}" : string.Empty));
                     }
                     catch (PathTooLongException)
                     {
-                        Globals.Logger.Warning("The path for '{0}' was too long", input);
+                        Globals.Logger.Warning($"The path for '{input}' was too long");
                     }
                     catch (Exception ex)
                     {
@@ -1805,11 +1805,11 @@ namespace SabreTools.Library.Tools
                     {
                         try
                         {
-                            outputs.Add(Path.GetFullPath(dir) + (appendparent ? "¬" + Path.GetFullPath(input) : string.Empty));
+                            outputs.Add(Path.GetFullPath(dir) + (appendparent ? $"¬{Path.GetFullPath(input)}" : string.Empty));
                         }
                         catch (PathTooLongException)
                         {
-                            Globals.Logger.Warning("The path for '{0}' was too long", dir);
+                            Globals.Logger.Warning($"The path for '{dir}' was too long");
                         }
                         catch (Exception ex)
                         {
@@ -1829,12 +1829,12 @@ namespace SabreTools.Library.Tools
         /// <returns>The XmlTextReader representing the (possibly converted) file, null otherwise</returns>
         public static XmlReader GetXmlTextReader(string filename)
         {
-            Globals.Logger.Verbose("Attempting to read file: {0}", filename);
+            Globals.Logger.Verbose($"Attempting to read file: {filename}");
 
             // Check if file exists
             if (!File.Exists(filename))
             {
-                Globals.Logger.Warning("File '{0}' could not read from!", filename);
+                Globals.Logger.Warning($"File '{filename}' could not read from!");
                 return null;
             }
 
@@ -1876,10 +1876,9 @@ namespace SabreTools.Library.Tools
             // Now loop through and create the reheadered files, if possible
             for (int i = 0; i < headers.Count; i++)
             {
-                Globals.Logger.User("Creating reheadered file: " +
-                        (string.IsNullOrWhiteSpace(outDir) ? Path.GetFullPath(file) + ".new" : Path.Combine(outDir, Path.GetFileName(file))) + i);
-                AppendBytesToFile(file,
-                    (string.IsNullOrWhiteSpace(outDir) ? Path.GetFullPath(file) + ".new" : Path.Combine(outDir, Path.GetFileName(file))) + i, headers[i], string.Empty);
+                string outputFile = (string.IsNullOrWhiteSpace(outDir) ? $"{Path.GetFullPath(file)}.new" : Path.Combine(outDir, Path.GetFileName(file))) + i;
+                Globals.Logger.User($"Creating reheadered file: {outputFile}");
+                AppendBytesToFile(file, outputFile, headers[i], string.Empty);
                 Globals.Logger.User("Reheadered file created!");
             }
 
@@ -2478,18 +2477,37 @@ namespace SabreTools.Library.Tools
         {
             // Check that we have a combined path first
             if (!path.Contains("¬"))
-                return Path.GetFileName(path).Replace('/', '-').Replace('\\', '-');
+            {
+                string filename = Path.GetFileName(path);
+                if (sanitize)
+                    filename.Replace(Path.DirectorySeparatorChar, '-').Replace(Path.AltDirectorySeparatorChar, '-');
+
+                return filename;
+            }
 
             // First separate out the parts
             string child = path.Split('¬')[0];
             string parent = path.Split('¬')[1];
 
             // If the parts are the same, return the filename from the first part
-            if (child == parent)
-                return Path.GetFileName(child).Replace('/', '-').Replace('\\', '-');
+            if (string.Equals(child, parent, StringComparison.Ordinal))
+            {
+                string filename = Path.GetFileName(child);
+                if (sanitize)
+                    filename.Replace(Path.DirectorySeparatorChar, '-').Replace(Path.AltDirectorySeparatorChar, '-');
+
+                return filename;
+            }
 
             // Otherwise, remove the parent from the child and return the remainder
-            return child.Remove(0, parent.Length + 1).Replace('/', '-').Replace('\\', '-');
+            else
+            {
+                string filename = child.Remove(0, parent.Length + 1);
+                if (sanitize)
+                    filename.Replace(Path.DirectorySeparatorChar, '-').Replace(Path.AltDirectorySeparatorChar, '-');
+
+                return filename;
+            }
         }
 
         /// <summary>
@@ -2917,7 +2935,7 @@ namespace SabreTools.Library.Tools
             }
 
             // Divide by 1024 to get fractional value
-            readable = (readable / 1024);
+            readable /= 1024;
 
             // Return formatted number with suffix
             return readable.ToString("0.### ") + suffix;
@@ -3123,6 +3141,33 @@ namespace SabreTools.Library.Tools
         public static bool IsNullOrWhiteSpace(this Array array)
         {
             return (array == null || array.Length == 0);
+        }
+
+        /// <summary>
+        /// Get the field associated with each hash type
+        /// </summary>
+        public static Field GetFieldFromHash(Hash hash)
+        {
+            switch (hash)
+            {
+                case Hash.CRC:
+                    return Field.CRC;
+                case Hash.MD5:
+                    return Field.MD5;
+                case Hash.RIPEMD160:
+                    return Field.RIPEMD160;
+                case Hash.SHA1:
+                    return Field.SHA1;
+                case Hash.SHA256:
+                    return Field.SHA256;
+                case Hash.SHA384:
+                    return Field.SHA384;
+                case Hash.SHA512:
+                    return Field.SHA512;
+
+                default:
+                    return Field.NULL;
+            }
         }
 
         #endregion

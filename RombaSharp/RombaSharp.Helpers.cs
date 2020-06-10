@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -38,7 +37,7 @@ namespace RombaSharp
                 }
                 else
                 {
-                    Globals.Logger.Warning("The file '{0}' could not be found in the DAT root", input);
+                    Globals.Logger.Warning($"The file '{input}' could not be found in the DAT root");
                 }
             }
 
@@ -198,8 +197,8 @@ namespace RombaSharp
             if (!Directory.Exists(dats))
                 Directory.CreateDirectory(dats);
             
-            db = Path.GetFileNameWithoutExtension(db) + ".sqlite";
-            connectionString = "Data Source=" + db + ";Version = 3;";
+            db = $"{Path.GetFileNameWithoutExtension(db)}.sqlite";
+            connectionString = $"Data Source={db};Version = 3;";
             foreach (string key in depots.Keys)
             {
                 if (!Directory.Exists(key))
@@ -250,7 +249,7 @@ namespace RombaSharp
             string fullpath = Path.Combine(_dats, (dat.MachineName == "dats" ? string.Empty : dat.MachineName), dat.Name);
 
             // Parse the Dat if possible
-            Globals.Logger.User("Adding from '" + dat.Name + "'");
+            Globals.Logger.User($"Adding from '{dat.Name}'");
             DatFile tempdat = new DatFile();
             tempdat.Parse(fullpath, 0, 0);
 
@@ -269,27 +268,27 @@ namespace RombaSharp
                 {
                     foreach (DatItem datItem in tempdat[romkey])
                     {
-                        Globals.Logger.Verbose("Checking and adding file '{0}'", datItem.Name);
+                        Globals.Logger.Verbose($"Checking and adding file '{datItem.Name}'");
 
                         if (datItem.ItemType == ItemType.Rom)
                         {
                             Rom rom = (Rom)datItem;
 
                             if (!string.IsNullOrWhiteSpace(rom.CRC))
-                                crcquery += " (\"" + rom.CRC + "\"),";
+                                crcquery += $" (\"{rom.CRC}\"),";
                             
                             if (!string.IsNullOrWhiteSpace(rom.MD5))
-                                md5query += " (\"" + rom.MD5 + "\"),";
+                                md5query += $" (\"{rom.MD5}\"),";
 
                             if (!string.IsNullOrWhiteSpace(rom.SHA1))
                             {
-                                sha1query += " (\"" + rom.SHA1 + "\"),";
+                                sha1query += $" (\"{rom.SHA1}\"),";
 
                                 if (!string.IsNullOrWhiteSpace(rom.CRC))
-                                    crcsha1query += " (\"" + rom.CRC + "\", \"" + rom.SHA1 + "\"),";
+                                    crcsha1query += $" (\"{rom.CRC}\", \"{rom.SHA1}\"),";
 
                                 if (!string.IsNullOrWhiteSpace(rom.MD5))
-                                    md5sha1query += " (\"" + rom.MD5 + "\", \"" + rom.SHA1 + "\"),";
+                                    md5sha1query += $" (\"{rom.MD5}\", \"{rom.SHA1}\"),";
                             }
                         }
                         else if (datItem.ItemType == ItemType.Disk)
@@ -297,14 +296,14 @@ namespace RombaSharp
                             Disk disk = (Disk)datItem;
 
                             if (!string.IsNullOrWhiteSpace(disk.MD5))
-                                md5query += " (\"" + disk.MD5 + "\"),";
+                                md5query += $" (\"{disk.MD5}\"),";
 
                             if (!string.IsNullOrWhiteSpace(disk.SHA1))
                             {
-                                sha1query += " (\"" + disk.SHA1 + "\"),";
+                                sha1query += $" (\"{disk.SHA1}\"),";
 
                                 if (!string.IsNullOrWhiteSpace(disk.MD5))
-                                    md5sha1query += " (\"" + disk.MD5 + "\", \"" + disk.SHA1 + "\"),";
+                                    md5sha1query += $" (\"{disk.MD5}\", \"{disk.SHA1}\"),";
                             }
                         }
                     }
@@ -342,7 +341,7 @@ namespace RombaSharp
                 }
             }
 
-            string datquery = "INSERT OR IGNORE INTO dat (hash) VALUES (\"" + dat.SHA1 + "\")";
+            string datquery = $"INSERT OR IGNORE INTO dat (hash) VALUES (\"{dat.SHA1}\")";
             slc = new SqliteCommand(datquery, dbc);
             slc.ExecuteNonQuery();
             slc.Dispose();

@@ -1,5 +1,4 @@
-﻿using System;
-using SabreTools.Library.Data;
+﻿using SabreTools.Library.Data;
 using SabreTools.Library.DatItems;
 
 namespace SabreTools.Library.DatFiles
@@ -14,7 +13,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Object used to lock stats updates
         /// </summary>
-        private object _lockObject = new object();
+        private readonly object _lockObject = new object();
 
         #endregion
 

@@ -51,14 +51,14 @@ namespace SabreTools.Library.Skippers
             // If the input file doesn't exist, fail
             if (!File.Exists(input))
             {
-                Globals.Logger.Error("I'm sorry but '{0}' doesn't exist!", input);
+                Globals.Logger.Error($"I'm sorry but '{input}' doesn't exist!");
                 return false;
             }
 
             // Create the output directory if it doesn't already
             Utilities.EnsureOutputDirectory(Path.GetDirectoryName(output));
 
-            Globals.Logger.User("Attempting to apply rule to '{0}'", input);
+            Globals.Logger.User($"Attempting to apply rule to '{input}'");
             success = TransformStream(Utilities.TryOpenRead(input), Utilities.TryCreate(output));
 
             // If the output file has size 0, delete it

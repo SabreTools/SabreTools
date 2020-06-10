@@ -45,19 +45,19 @@ namespace SabreTools.Library.Reports
         public override void Write(long game = -1)
         {
             string line = "\t\t\t<tr" + (_datFile.FileName.StartsWith("DIR: ")
-                            ? " class=\"dir\"><td>" + WebUtility.HtmlEncode(_datFile.FileName.Remove(0, 5))
-                            : "><td>" + WebUtility.HtmlEncode(_datFile.FileName)) + "</td>"
-                        + "<td align=\"right\">" + Utilities.GetBytesReadable(_datFile.TotalSize) + "</td>"
-                        + "<td align=\"right\">" + (game == -1 ? _datFile.Keys.Count() : game) + "</td>"
-                        + "<td align=\"right\">" + _datFile.RomCount + "</td>"
-                        + "<td align=\"right\">" + _datFile.DiskCount + "</td>"
-                        + "<td align=\"right\">" + _datFile.CRCCount + "</td>"
-                        + "<td align=\"right\">" + _datFile.MD5Count + "</td>"
-                        + "<td align=\"right\">" + _datFile.RIPEMD160Count + "</td>"
-                        + "<td align=\"right\">" + _datFile.SHA1Count + "</td>"
-                        + "<td align=\"right\">" + _datFile.SHA256Count + "</td>"
-                        + (_baddumpCol ? "<td align=\"right\">" + _datFile.BaddumpCount + "</td>" : string.Empty)
-                        + (_nodumpCol ? "<td align=\"right\">" + _datFile.NodumpCount + "</td>" : string.Empty)
+                            ? $" class=\"dir\"><td>{WebUtility.HtmlEncode(_datFile.FileName.Remove(0, 5))}"
+                            : $"><td>{WebUtility.HtmlEncode(_datFile.FileName)}") + "</td>"
+                        + $"<td align=\"right\">{Utilities.GetBytesReadable(_datFile.TotalSize)}</td>"
+                        + $"<td align=\"right\">{(game == -1 ? _datFile.Keys.Count() : game)}</td>"
+                        + $"<td align=\"right\">{_datFile.RomCount}</td>"
+                        + $"<td align=\"right\">{_datFile.DiskCount}</td>"
+                        + $"<td align=\"right\">{_datFile.CRCCount}</td>"
+                        + $"<td align=\"right\">{_datFile.MD5Count}</td>"
+                        + $"<td align=\"right\">{_datFile.RIPEMD160Count}</td>"
+                        + $"<td align=\"right\">{_datFile.SHA1Count}</td>"
+                        + $"<td align=\"right\">{_datFile.SHA256Count}</td>"
+                        + (_baddumpCol ? $"<td align=\"right\">{_datFile.BaddumpCount}</td>" : string.Empty)
+                        + (_nodumpCol ? $"<td align=\"right\">{_datFile.NodumpCount}</td>" : string.Empty)
                         + "</tr>\n";
             _writer.Write(line);
             _writer.Flush();

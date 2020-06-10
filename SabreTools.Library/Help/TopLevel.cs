@@ -29,7 +29,7 @@ namespace SabreTools.Library.Help
                 // Verify that the current flag is proper for the feature
                 if (!ValidateInput(args[i]))
                 {
-                    Globals.Logger.Error("Invalid input detected: {0}", args[i]);
+                    Globals.Logger.Error($"Invalid input detected: {args[i]}");
                     help.OutputIndividualFeature(this.Name);
                     Globals.Logger.Close();
                     return false;

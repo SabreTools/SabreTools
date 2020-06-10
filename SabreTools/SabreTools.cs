@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 using SabreTools.Library.Data;
-using SabreTools.Library.DatFiles;
 using SabreTools.Library.Help;
 using SabreTools.Library.Tools;
 
@@ -71,7 +68,7 @@ namespace SabreTools
             // Verify that the flag is valid
             if (!_help.TopLevelFlag(featureName))
             {
-                Globals.Logger.User("'{0}' is not valid feature flag", featureName);
+                Globals.Logger.User($"'{featureName}' is not valid feature flag");
                 _help.OutputIndividualFeature(featureName);
                 Globals.Logger.Close();
                 return;

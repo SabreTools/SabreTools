@@ -7,6 +7,7 @@ using SabreTools.Library.Data;
 using SabreTools.Library.DatFiles;
 using SabreTools.Library.Tools;
 using NaturalSort;
+using System.Runtime.CompilerServices;
 
 namespace SabreTools.Library.DatItems
 {
@@ -561,6 +562,189 @@ namespace SabreTools.Library.DatItems
 
         #region Instance Methods
 
+        #region Accessors
+
+        /// <summary>
+        /// Get the value associated with a field as a string, if not removed
+        /// </summary>
+        public object GetField(Field field, bool[] excludeFields)
+        {
+            // If the field is to be excluded, return empty string
+            if (excludeFields[(int)field])
+                return string.Empty;
+
+            switch (field)
+            {
+                case Field.Name:
+                    return this.Name;
+                case Field.PartName:
+                    return this.PartName;
+                case Field.PartInterface:
+                    return this.PartInterface;
+                case Field.Features:
+                    return this.Features;
+                case Field.AreaName:
+                    return this.AreaName;
+                case Field.AreaSize:
+                    return this.AreaSize;
+
+                case Field.MachineName:
+                    return this.MachineName;
+                case Field.Comment:
+                    return this.Comment;
+                case Field.Description:
+                    return this.MachineDescription;
+                case Field.Year:
+                    return this.Year;
+                case Field.Manufacturer:
+                    return this.Manufacturer;
+                case Field.Publisher:
+                    return this.Publisher;
+                case Field.RomOf:
+                    return this.RomOf;
+                case Field.CloneOf:
+                    return this.CloneOf;
+                case Field.SampleOf:
+                    return this.SampleOf;
+                case Field.Supported:
+                    return this.Supported;
+                case Field.SourceFile:
+                    return this.SourceFile;
+                case Field.Runnable:
+                    return this.Runnable;
+                case Field.Board:
+                    return this.Board;
+                case Field.RebuildTo:
+                    return this.RebuildTo;
+                case Field.Devices:
+                    return this.Devices;
+                case Field.SlotOptions:
+                    return this.SlotOptions;
+                case Field.Infos:
+                    return this.Infos;
+                case Field.MachineType:
+                    return this.MachineType;
+
+                case Field.Default:
+                    if (ItemType == ItemType.BiosSet)
+                        return (this as BiosSet).Default;
+                    else if (ItemType == ItemType.Release)
+                        return (this as Release).Default;
+                    break;
+                case Field.BiosDescription:
+                    if (ItemType == ItemType.BiosSet)
+                        return (this as BiosSet).Description;
+                    break;
+
+                case Field.MD5:
+                    if (ItemType == ItemType.Disk)
+                        return (this as Disk).MD5;
+                    else if (ItemType == ItemType.Rom)
+                        return (this as Rom).MD5;
+                    break;
+                case Field.RIPEMD160:
+                    if (ItemType == ItemType.Disk)
+                        return (this as Disk).RIPEMD160;
+                    else if (ItemType == ItemType.Rom)
+                        return (this as Rom).RIPEMD160;
+                    break;
+                case Field.SHA1:
+                    if (ItemType == ItemType.Disk)
+                        return (this as Disk).SHA1;
+                    else if (ItemType == ItemType.Rom)
+                        return (this as Rom).SHA1;
+                    break;
+                case Field.SHA256:
+                    if (ItemType == ItemType.Disk)
+                        return (this as Disk).SHA256;
+                    else if (ItemType == ItemType.Rom)
+                        return (this as Rom).SHA256;
+                    break;
+                case Field.SHA384:
+                    if (ItemType == ItemType.Disk)
+                        return (this as Disk).SHA384;
+                    else if (ItemType == ItemType.Rom)
+                        return (this as Rom).SHA384;
+                    break;
+                case Field.SHA512:
+                    if (ItemType == ItemType.Disk)
+                        return (this as Disk).SHA512;
+                    else if (ItemType == ItemType.Rom)
+                        return (this as Rom).SHA512;
+                    break;
+                case Field.Merge:
+                    if (ItemType == ItemType.Disk)
+                        return (this as Disk).MergeTag;
+                    else if (ItemType == ItemType.Rom)
+                        return (this as Rom).MergeTag;
+                    break;
+                case Field.Region:
+                    if (ItemType == ItemType.Disk)
+                        return (this as Disk).Region;
+                    else if (ItemType == ItemType.Release)
+                        return (this as Release).Region;
+                    else if (ItemType == ItemType.Rom)
+                        return (this as Rom).Region;
+                    break;
+                case Field.Index:
+                    if (ItemType == ItemType.Disk)
+                        return (this as Disk).Index;
+                    break;
+                case Field.Writable:
+                    if (ItemType == ItemType.Disk)
+                        return (this as Disk).Writable;
+                    break;
+                case Field.Optional:
+                    if (ItemType == ItemType.Disk)
+                        return (this as Disk).Optional;
+                    else if (ItemType == ItemType.Rom)
+                        return (this as Rom).Optional;
+                    break;
+                case Field.Status:
+                    if (ItemType == ItemType.Disk)
+                        return (this as Disk).ItemStatus;
+                    else if (ItemType == ItemType.Rom)
+                        return (this as Rom).ItemStatus;
+                    break;
+
+                case Field.Language:
+                    if (ItemType == ItemType.Release)
+                        return (this as Release).Language;
+                    break;
+                case Field.Date:
+                    if (ItemType == ItemType.Release)
+                        return (this as Release).Date;
+                    else if (ItemType == ItemType.Rom)
+                        return (this as Rom).Date;
+                    break;
+
+                case Field.Bios:
+                    if (ItemType == ItemType.Rom)
+                        return (this as Rom).Bios;
+                    break;
+                case Field.Size:
+                    if (ItemType == ItemType.Rom)
+                        return (this as Rom).Size;
+                    break;
+                case Field.CRC:
+                    if (ItemType == ItemType.Rom)
+                        return (this as Rom).CRC;
+                    break;
+                case Field.Offset:
+                    if (ItemType == ItemType.Rom)
+                        return (this as Rom).Offset;
+                    break;
+
+                case Field.NULL:
+                default:
+                    return string.Empty;
+            }
+
+            return string.Empty;
+        }
+
+        #endregion
+
         #region Cloning Methods
 
         /// <summary>
@@ -943,37 +1127,18 @@ namespace SabreTools.Library.DatItems
                 // If the current item exactly matches the last item, then we don't add it
                 if ((datItem.GetDuplicateStatus(lastItem) & DupeType.All) != 0)
                 {
-                    Globals.Logger.Verbose("Exact duplicate found for '{0}'", datItem.Name);
+                    Globals.Logger.Verbose($"Exact duplicate found for '{datItem.Name}'");
                     continue;
                 }
 
                 // If the current name matches the previous name, rename the current item
                 else if (datItem.Name == lastItem.Name)
                 {
-                    Globals.Logger.Verbose("Name duplicate found for '{0}'", datItem.Name);
+                    Globals.Logger.Verbose($"Name duplicate found for '{datItem.Name}'");
 
-                    if (datItem.ItemType == ItemType.Disk)
+                    if (datItem.ItemType == ItemType.Disk || datItem.ItemType == ItemType.Rom)
                     {
-                        Disk disk = (Disk)datItem;
-                        disk.Name += "_" + (!string.IsNullOrWhiteSpace(disk.MD5)
-                            ? disk.MD5
-                            : !string.IsNullOrWhiteSpace(disk.SHA1)
-                                ? disk.SHA1
-                                : "1");
-                        datItem = disk;
-                        lastrenamed = lastrenamed ?? datItem.Name;
-                    }
-                    else if (datItem.ItemType == ItemType.Rom)
-                    {
-                        Rom rom = (Rom)datItem;
-                        rom.Name += "_" + (!string.IsNullOrWhiteSpace(rom.CRC)
-                            ? rom.CRC
-                            : !string.IsNullOrWhiteSpace(rom.MD5)
-                                ? rom.MD5
-                                : !string.IsNullOrWhiteSpace(rom.SHA1)
-                                    ? rom.SHA1
-                                    : "1");
-                        datItem = rom;
+                        datItem.Name += GetDuplicateSuffix(datItem);
                         lastrenamed = lastrenamed ?? datItem.Name;
                     }
 
@@ -1008,6 +1173,39 @@ namespace SabreTools.Library.DatItems
             Sort(ref output, true);
 
             return output;
+        }
+
+        /// <summary>
+        /// Get duplicate suffix based on the item type
+        /// </summary>
+        private static string GetDuplicateSuffix(DatItem datItem)
+        {
+            if (datItem.ItemType == ItemType.Disk)
+            {
+                Disk disk = datItem as Disk;
+
+                if (string.IsNullOrWhiteSpace(disk.MD5))
+                    return $"_{disk.MD5}";
+                else if (string.IsNullOrWhiteSpace(disk.SHA1))
+                    return $"_{disk.SHA1}";
+                else
+                    return "_1";
+            }
+            else if (datItem.ItemType == ItemType.Rom)
+            {
+                Rom rom = datItem as Rom;
+
+                if (string.IsNullOrWhiteSpace(rom.CRC))
+                    return $"_{rom.CRC}";
+                else if (string.IsNullOrWhiteSpace(rom.MD5))
+                    return $"_{rom.MD5}";
+                else if (string.IsNullOrWhiteSpace(rom.SHA1))
+                    return $"_{rom.SHA1}";
+                else
+                    return "_1";
+            }
+
+            return "_1";
         }
 
         /// <summary>

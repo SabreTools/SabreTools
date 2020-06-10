@@ -207,14 +207,14 @@ namespace SabreTools.Library.Help
             // If we have a real name found, append all available subflags recursively
             if (realname != null)
             {
-                output.Add("Available options for " + realname + ":");
+                output.Add($"Available options for {realname}:");
                 output.AddRange(_features[realname].OutputRecursive(0, pre: 2, midpoint: 30, includeLongDescription: includeLongDescription));
             }
 
             // If no name was found but we have possible matches, show them
             else if (startsWith.Count > 0)
             {
-                output.Add("\"" + featurename + "\" not found. Did you mean:");
+                output.Add($"\"{featurename}\" not found. Did you mean:");
                 foreach (string possible in startsWith)
                 {
                     output.AddRange(_features[possible].Output(pre: 2, midpoint: 30, includeLongDescription: includeLongDescription));

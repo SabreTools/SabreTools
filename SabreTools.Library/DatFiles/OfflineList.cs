@@ -93,7 +93,7 @@ namespace SabreTools.Library.DatFiles
             }
             catch (Exception ex)
             {
-                Globals.Logger.Warning("Exception found while parsing '{0}': {1}", filename, ex);
+                Globals.Logger.Warning($"Exception found while parsing '{filename}': {ex}");
 
                 // For XML errors, just skip the affected node
                 xtr?.Read();
@@ -761,13 +761,13 @@ namespace SabreTools.Library.DatFiles
         {
             try
             {
-                Globals.Logger.User("Opening file for writing: {0}", outfile);
+                Globals.Logger.User($"Opening file for writing: {outfile}");
                 FileStream fs = Utilities.TryCreate(outfile);
 
                 // If we get back null for some reason, just log and return
                 if (fs == null)
                 {
-                    Globals.Logger.Warning("File '{0}' could not be created for writing! Please check to see if the file is writable", outfile);
+                    Globals.Logger.Warning($"File '{outfile}' could not be created for writing! Please check to see if the file is writable");
                     return false;
                 }
 
@@ -810,7 +810,7 @@ namespace SabreTools.Library.DatFiles
                             && ((Rom)rom).Size == -1
                             && ((Rom)rom).CRC == "null")
                         {
-                            Globals.Logger.Verbose("Empty folder found: {0}", rom.MachineName);
+                            Globals.Logger.Verbose($"Empty folder found: {rom.MachineName}");
 
                             rom.Name = (rom.Name == "null" ? "-" : rom.Name);
                             ((Rom)rom).Size = Constants.SizeZero;
@@ -856,48 +856,48 @@ namespace SabreTools.Library.DatFiles
         {
             try
             {
-                string header = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-                            + "<dat xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"datas.xsd\">\n"
-                            + "\t<configuration>\n"
-                            + "\t\t<datName>" + WebUtility.HtmlEncode(Name) + "</datName>\n"
-                            + "\t\t<datVersion>" + Count + "</datVersion>\n"
-                            + "\t\t<system>none</system>\n"
-                            + "\t\t<screenshotsWidth>240</screenshotsWidth>\n"
-                            + "\t\t<screenshotsHeight>160</screenshotsHeight>\n"
-                            + "\t\t<infos>\n"
-                            + "\t\t\t<title visible=\"false\" inNamingOption=\"true\" default=\"false\"/>\n"
-                            + "\t\t\t<location visible=\"true\" inNamingOption=\"true\" default=\"true\"/>\n"
-                            + "\t\t\t<publisher visible=\"true\" inNamingOption=\"true\" default=\"true\"/>\n"
-                            + "\t\t\t<sourceRom visible=\"true\" inNamingOption=\"true\" default=\"true\"/>\n"
-                            + "\t\t\t<saveType visible=\"true\" inNamingOption=\"true\" default=\"true\"/>\n"
-                            + "\t\t\t<romSize visible=\"true\" inNamingOption=\"true\" default=\"true\"/>\n"
-                            + "\t\t\t<releaseNumber visible=\"true\" inNamingOption=\"true\" default=\"false\"/>\n"
-                            + "\t\t\t<languageNumber visible=\"true\" inNamingOption=\"true\" default=\"false\"/>\n"
-                            + "\t\t\t<comment visible=\"true\" inNamingOption=\"true\" default=\"false\"/>\n"
-                            + "\t\t\t<romCRC visible=\"true\" inNamingOption=\"true\" default=\"false\"/>\n"
-                            + "\t\t\t<im1CRC visible=\"false\" inNamingOption=\"false\" default=\"false\"/>\n"
-                            + "\t\t\t<im2CRC visible=\"false\" inNamingOption=\"false\" default=\"false\"/>\n"
-                            + "\t\t\t<languages visible=\"true\" inNamingOption=\"true\" default=\"true\"/>\n"
-                            + "\t\t</infos>\n"
-                            + "\t\t<canOpen>\n"
-                            + "\t\t\t<extension>.bin</extension>\n"
-                            + "\t\t</canOpen>\n"
-                            + "\t\t<newDat>\n"
-                            + "\t\t\t<datVersionURL>" + WebUtility.HtmlEncode(Url) + "</datVersionURL>\n"
-                            + "\t\t\t<datURL fileName=\"" + WebUtility.HtmlEncode(FileName) + ".zip\">" + WebUtility.HtmlEncode(Url) + "</datURL>\n"
-                            + "\t\t\t<imURL>" + WebUtility.HtmlEncode(Url) + "</imURL>\n"
-                            + "\t\t</newDat>\n"
-                            + "\t\t<search>\n"
-                            + "\t\t\t<to value=\"location\" default=\"true\" auto=\"true\"/>\n"
-                            + "\t\t\t<to value=\"romSize\" default=\"true\" auto=\"false\"/>\n"
-                            + "\t\t\t<to value=\"languages\" default=\"true\" auto=\"true\"/>\n"
-                            + "\t\t\t<to value=\"saveType\" default=\"false\" auto=\"false\"/>\n"
-                            + "\t\t\t<to value=\"publisher\" default=\"false\" auto=\"true\"/>\n"
-                            + "\t\t\t<to value=\"sourceRom\" default=\"false\" auto=\"true\"/>\n"
-                            + "\t\t</search>\n"
-                            + "\t\t<romTitle >%u - %n</romTitle>\n"
-                            + "\t</configuration>\n"
-                            + "\t<games>\n";
+                string header = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n";
+                header += "<dat xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"datas.xsd\">\n";
+                header += "\t<configuration>\n";
+                header += $"\t\t<datName>{WebUtility.HtmlEncode(Name)}</datName>\n";
+                header += $"\t\t<datVersion>{Count}</datVersion>\n";
+                header += "\t\t<system>none</system>\n";
+                header += "\t\t<screenshotsWidth>240</screenshotsWidth>\n";
+                header += "\t\t<screenshotsHeight>160</screenshotsHeight>\n";
+                header += "\t\t<infos>\n";
+                header += "\t\t\t<title visible=\"false\" inNamingOption=\"true\" default=\"false\"/>\n";
+                header += "\t\t\t<location visible=\"true\" inNamingOption=\"true\" default=\"true\"/>\n";
+                header += "\t\t\t<publisher visible=\"true\" inNamingOption=\"true\" default=\"true\"/>\n";
+                header += "\t\t\t<sourceRom visible=\"true\" inNamingOption=\"true\" default=\"true\"/>\n";
+                header += "\t\t\t<saveType visible=\"true\" inNamingOption=\"true\" default=\"true\"/>\n";
+                header += "\t\t\t<romSize visible=\"true\" inNamingOption=\"true\" default=\"true\"/>\n";
+                header += "\t\t\t<releaseNumber visible=\"true\" inNamingOption=\"true\" default=\"false\"/>\n";
+                header += "\t\t\t<languageNumber visible=\"true\" inNamingOption=\"true\" default=\"false\"/>\n";
+                header += "\t\t\t<comment visible=\"true\" inNamingOption=\"true\" default=\"false\"/>\n";
+                header += "\t\t\t<romCRC visible=\"true\" inNamingOption=\"true\" default=\"false\"/>\n";
+                header += "\t\t\t<im1CRC visible=\"false\" inNamingOption=\"false\" default=\"false\"/>\n";
+                header += "\t\t\t<im2CRC visible=\"false\" inNamingOption=\"false\" default=\"false\"/>\n";
+                header += "\t\t\t<languages visible=\"true\" inNamingOption=\"true\" default=\"true\"/>\n";
+                header += "\t\t</infos>\n";
+                header += "\t\t<canOpen>\n";
+                header += "\t\t\t<extension>.bin</extension>\n";
+                header += "\t\t</canOpen>\n";
+                header += "\t\t<newDat>\n";
+                header += $"\t\t\t<datVersionURL>{WebUtility.HtmlEncode(Url)}</datVersionURL>\n";
+                header += $"\t\t\t<datURL fileName=\"{WebUtility.HtmlEncode(FileName)}.zip\">{WebUtility.HtmlEncode(Url)}</datURL>\n";
+                header += $"\t\t\t<imURL>{WebUtility.HtmlEncode(Url)}</imURL>\n";
+                header += "\t\t</newDat>\n";
+                header += "\t\t<search>\n";
+                header += "\t\t\t<to value=\"location\" default=\"true\" auto=\"true\"/>\n";
+                header += "\t\t\t<to value=\"romSize\" default=\"true\" auto=\"false\"/>\n";
+                header += "\t\t\t<to value=\"languages\" default=\"true\" auto=\"true\"/>\n";
+                header += "\t\t\t<to value=\"saveType\" default=\"false\" auto=\"false\"/>\n";
+                header += "\t\t\t<to value=\"publisher\" default=\"false\" auto=\"true\"/>\n";
+                header += "\t\t\t<to value=\"sourceRom\" default=\"false\" auto=\"true\"/>\n";
+                header += "\t\t</search>\n";
+                header += "\t\t<romTitle >%u - %n</romTitle>\n";
+                header += "\t</configuration>\n";
+                header += "\t<games>\n";
 
                 // Write the header out
                 sw.Write(header);
@@ -939,66 +939,70 @@ namespace SabreTools.Library.DatFiles
         /// Write out DatItem using the supplied StreamWriter
         /// </summary>
         /// <param name="sw">StreamWriter to output to</param>
-        /// <param name="rom">DatItem object to be output</param>
+        /// <param name="datItem">DatItem object to be output</param>
         /// <param name="ignoreblanks">True if blank roms should be skipped on output, false otherwise (default)</param>
         /// <returns>True if the data was written, false on error</returns>
-        private bool WriteDatItem(StreamWriter sw, DatItem rom, bool ignoreblanks = false)
+        private bool WriteDatItem(StreamWriter sw, DatItem datItem, bool ignoreblanks = false)
         {
             // If we are in ignore blanks mode AND we have a blank (0-size) rom, skip
-            if (ignoreblanks
-                && (rom.ItemType == ItemType.Rom
-                && (((Rom)rom).Size == 0 || ((Rom)rom).Size == -1)))
-            {
+            if (ignoreblanks && (datItem.ItemType == ItemType.Rom && ((datItem as Rom).Size == 0 || (datItem as Rom).Size == -1)))
                 return true;
-            }
 
             try
             {
                 string state = string.Empty;
 
                 // Pre-process the item name
-                ProcessItemName(rom, true);
+                ProcessItemName(datItem, true);
 
-                state += "\t\t<game>\n"
-                            + "\t\t\t<imageNumber>1</imageNumber>\n"
-                            + "\t\t\t<releaseNumber>1</releaseNumber>\n"
-                            + "\t\t\t<title>" + (!ExcludeFields[(int)Field.Name] ? WebUtility.HtmlEncode(rom.Name) : string.Empty) + "</title>\n"
-                            + "\t\t\t<saveType>None</saveType>\n";
+                // Build the state based on excluded fields
+                state += "\t\t<game>\n";
+                state += "\t\t\t<imageNumber>1</imageNumber>\n";
+                state += "\t\t\t<releaseNumber>1</releaseNumber>\n";
+                state += $"\t\t\t<title>{WebUtility.HtmlEncode(datItem.GetField(Field.Name, ExcludeFields) as string)}</title>\n";
+                state += "\t\t\t<saveType>None</saveType>\n"; ;
 
-                if (rom.ItemType == ItemType.Rom)
-                    state += "\t\t\t<romSize>" + (!ExcludeFields[(int)Field.Size] ? ((Rom)rom).Size.ToString() : string.Empty) + "</romSize>\n";
-
-                state += "\t\t\t<publisher>None</publisher>\n"
-                    + "\t\t\t<location>0</location>\n"
-                    + "\t\t\t<sourceRom>None</sourceRom>\n"
-                    + "\t\t\t<language>0</language>\n";
-
-                if (rom.ItemType == ItemType.Disk)
+                if (datItem.ItemType == ItemType.Rom)
                 {
-                    state += "\t\t\t<files>\n"
-                        + (((Disk)rom).MD5 != null
-                            ? "\t\t\t\t<romMD5 extension=\".chd\">" + (!ExcludeFields[(int)Field.MD5] ? ((Disk)rom).MD5.ToUpperInvariant() : string.Empty) + "</romMD5>\n"
-                            : "\t\t\t\t<romSHA1 extension=\".chd\">" + (!ExcludeFields[(int)Field.SHA1] ? ((Disk)rom).SHA1.ToUpperInvariant() : string.Empty) + "</romSHA1>\n")
-                        + "\t\t\t</files>\n";
-                }
-                else if (rom.ItemType == ItemType.Rom)
-                {
-                    string tempext = "." + Utilities.GetExtension(((Rom)rom).Name);
-
-                    state += "\t\t\t<files>\n"
-                        + (((Rom)rom).CRC != null
-                            ? "\t\t\t\t<romCRC extension=\"" + tempext + "\">" + (!ExcludeFields[(int)Field.CRC] ? ((Rom)rom).CRC.ToUpperInvariant() : string.Empty) + "</romCRC>\n"
-                            : ((Rom)rom).MD5 != null
-                                ? "\t\t\t\t<romMD5 extension=\"" + tempext + "\">" + (!ExcludeFields[(int)Field.MD5] ? ((Rom)rom).MD5.ToUpperInvariant() : string.Empty) + "</romMD5>\n"
-                                : "\t\t\t\t<romSHA1 extension=\"" + tempext + "\">" + (!ExcludeFields[(int)Field.SHA1] ? ((Rom)rom).SHA1.ToUpperInvariant() : string.Empty) + "</romSHA1>\n")
-                        + "\t\t\t</files>\n";
+                    var rom = datItem as Rom;
+                    state += $"\t\t\t<romSize>{datItem.GetField(Field.Size, ExcludeFields)}</romSize>\n";
                 }
 
-                state += "\t\t\t<im1CRC>00000000</im1CRC>\n"
-                    + "\t\t\t<im2CRC>00000000</im2CRC>\n"
-                    + "\t\t\t<comment></comment>\n"
-                    + "\t\t\t<duplicateID>0</duplicateID>\n"
-                    + "\t\t</game>\n";
+                state += "\t\t\t<publisher>None</publisher>\n";
+                state += "\t\t\t<location>0</location>\n";
+                state += "\t\t\t<sourceRom>None</sourceRom>\n";
+                state += "\t\t\t<language>0</language>\n";
+
+                if (datItem.ItemType == ItemType.Disk)
+                {
+                    var disk = datItem as Disk;
+                    state += "\t\t\t<files>\n";
+                    if (!ExcludeFields[(int)Field.MD5] && !string.IsNullOrWhiteSpace(disk.MD5))
+                        state += $"\t\t\t\t<romMD5 extension=\".chd\">{disk.MD5.ToUpperInvariant()}</romMD5>\n";
+                    else if (!ExcludeFields[(int)Field.SHA1] && !string.IsNullOrWhiteSpace(disk.SHA1))
+                        state += $"\t\t\t\t<romSHA1 extension=\".chd\">{disk.SHA1.ToUpperInvariant()}</romSHA1>\n";
+                    state += "\t\t\t</files>\n";
+                }
+                else if (datItem.ItemType == ItemType.Rom)
+                {
+                    var rom = datItem as Rom;
+                    string tempext = "." + Utilities.GetExtension(rom.Name);
+
+                    state += "\t\t\t<files>\n";
+                    if (!ExcludeFields[(int)Field.CRC] && !string.IsNullOrWhiteSpace(rom.CRC))
+                        state += $"\t\t\t\t<romCRC extension=\"{tempext}\">{rom.CRC.ToUpperInvariant()}</romCRC>\n";
+                    else if (!ExcludeFields[(int)Field.MD5] && !string.IsNullOrWhiteSpace(rom.MD5))
+                        state += $"\t\t\t\t<romMD5 extension=\"{tempext}\">{rom.MD5.ToUpperInvariant()}</romMD5>\n";
+                    else if (!ExcludeFields[(int)Field.SHA1] && !string.IsNullOrWhiteSpace(rom.SHA1))
+                        state += $"\t\t\t\t<romSHA1 extension=\"{tempext}\">{rom.SHA1.ToUpperInvariant()}</romSHA1>\n";
+                    state += "\t\t\t</files>\n";
+                }
+
+                state += "\t\t\t<im1CRC>00000000</im1CRC>\n";
+                state += "\t\t\t<im2CRC>00000000</im2CRC>\n";
+                state += "\t\t\t<comment></comment>\n";
+                state += "\t\t\t<duplicateID>0</duplicateID>\n";
+                state += "\t\t</game>\n";
 
                 sw.Write(state);
                 sw.Flush();
@@ -1021,15 +1025,15 @@ namespace SabreTools.Library.DatFiles
         {
             try
             {
-                string footer = "\t\t</game>"
-                            + "\t</games>\n"
-                            + "\t<gui>\n"
-                            + "\t\t<images width=\"487\" height=\"162\">\n"
-                            + "\t\t\t<image x=\"0\" y=\"0\" width=\"240\" height=\"160\"/>\n"
-                            + "\t\t\t<image x=\"245\" y=\"0\" width=\"240\" height=\"160\"/>\n"
-                            + "\t\t</images>\n"
-                            + "\t</gui>\n"
-                            + "</dat>";
+                string footer = "\t\t</game>";
+                footer += "\t</games>\n";
+                footer += "\t<gui>\n";
+                footer += "\t\t<images width=\"487\" height=\"162\">\n";
+                footer += "\t\t\t<image x=\"0\" y=\"0\" width=\"240\" height=\"160\"/>\n";
+                footer += "\t\t\t<image x=\"245\" y=\"0\" width=\"240\" height=\"160\"/>\n";
+                footer += "\t\t</images>\n";
+                footer += "\t</gui>\n";
+                footer += "</dat>";
 
                 // Write the footer out
                 sw.Write(footer);

@@ -1,4 +1,5 @@
 ﻿using System;
+
 using SabreTools.Library.Data;
 
 namespace SabreTools.Library.DatFiles

@@ -95,13 +95,13 @@ namespace SabreTools.Library.DatFiles
         {
             try
             {
-                Globals.Logger.User("Opening file for writing: {0}", outfile);
+                Globals.Logger.User($"Opening file for writing: {outfile}");
                 FileStream fs = Utilities.TryCreate(outfile);
 
                 // If we get back null for some reason, just log and return
                 if (fs == null)
                 {
-                    Globals.Logger.Warning("File '{0}' could not be created for writing! Please check to see if the file is writable", outfile);
+                    Globals.Logger.Warning($"File '{outfile}' could not be created for writing! Please check to see if the file is writable");
                     return false;
                 }
 
@@ -134,7 +134,7 @@ namespace SabreTools.Library.DatFiles
                             && ((Rom)item).Size == -1
                             && ((Rom)item).CRC == "null")
                         {
-                            Globals.Logger.Verbose("Empty folder found: {0}", item.MachineName);
+                            Globals.Logger.Verbose($"Empty folder found: {item.MachineName}");
 
                             item.Name = (item.Name == "null" ? "-" : item.Name);
                             ((Rom)item).Size = Constants.SizeZero;
@@ -144,7 +144,7 @@ namespace SabreTools.Library.DatFiles
                     }
                 }
 
-                Globals.Logger.Verbose("File written!" + Environment.NewLine);
+                Globals.Logger.Verbose($"File written!{Environment.NewLine}");
                 sw.Dispose();
                 fs.Dispose();
             }
@@ -161,34 +161,46 @@ namespace SabreTools.Library.DatFiles
         /// Write out Game start using the supplied StreamWriter
         /// </summary>
         /// <param name="sw">StreamWriter to output to</param>
-        /// <param name="rom">DatItem object to be output</param>
+        /// <param name="datItem">DatItem object to be output</param>
         /// <returns>True if the data was written, false on error</returns>
-        private bool WriteDatItem(StreamWriter sw, DatItem rom, bool ignoreblanks = false)
+        private bool WriteDatItem(StreamWriter sw, DatItem datItem, bool ignoreblanks = false)
         {
             // If we are in ignore blanks mode AND we have a blank (0-size) rom, skip
-            if (ignoreblanks
-                && (rom.ItemType == ItemType.Rom
-                && (((Rom)rom).Size == 0 || ((Rom)rom).Size == -1)))
-            {
+            if (ignoreblanks && (datItem.ItemType == ItemType.Rom && ((datItem as Rom).Size == 0 || (datItem as Rom).Size == -1)))
                 return true;
-            }
 
             try
             {
                 // No game should start with a path separator
-                rom.MachineName = rom.MachineName.TrimStart(Path.DirectorySeparatorChar);
+                datItem.MachineName = datItem.MachineName.TrimStart(Path.DirectorySeparatorChar);
 
-                // If the DatItem isn't a rom, we don't output it
-                if (rom.ItemType != ItemType.Rom)
-                    return true;
+                // Pre-process the item name
+                ProcessItemName(datItem, true);
 
-                Rom temp = rom as Rom;
-                string state = (!ExcludeFields[(int)Field.SHA256] ? temp.SHA256 : string.Empty) + "\t"
-                            + (!ExcludeFields[(int)Field.MachineName] ? temp.MachineName + "/" : string.Empty)
-                            + temp.Name + "\t"
-                            + (!ExcludeFields[(int)Field.SHA1] ? temp.SHA1 : string.Empty) + "\t"
-                            + (!ExcludeFields[(int)Field.MD5] ? temp.MD5 : string.Empty) + "\t"
-                            + (!ExcludeFields[(int)Field.CRC] ? temp.CRC : string.Empty) + "\n";
+                string state = string.Empty;
+
+                // Build the state based on excluded fields
+                switch (datItem.ItemType)
+                {
+                    case ItemType.Archive:
+                    case ItemType.BiosSet:
+                    case ItemType.Disk:
+                    case ItemType.Release:
+                    case ItemType.Sample:
+                        // We don't output these at all for Everdrive SMDB
+                        break;
+
+                    case ItemType.Rom:
+                        var rom = datItem as Rom;
+                        state += $"{rom.GetField(Field.SHA256, ExcludeFields)}\t";
+                        state += $"{rom.GetField(Field.MachineName, ExcludeFields)}/\t";
+                        state += $"{rom.GetField(Field.Name, ExcludeFields)}\t";
+                        state += $"{rom.GetField(Field.SHA1, ExcludeFields)}\t";
+                        state += $"{rom.GetField(Field.MD5, ExcludeFields)}\t";
+                        state += $"{rom.GetField(Field.CRC, ExcludeFields)}";
+                        state += "\n";
+                        break;
+                }
 
                 sw.Write(state);
                 sw.Flush();

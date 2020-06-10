@@ -360,7 +360,7 @@ namespace SabreTools.Library.Skippers
             // If the file doesn't exist, return a blank skipper rule
             if (!File.Exists(input))
             {
-                Globals.Logger.Error("The file '{0}' does not exist so it cannot be tested", input);
+                Globals.Logger.Error($"The file '{input}' does not exist so it cannot be tested");
                 return new SkipperRule();
             }
 

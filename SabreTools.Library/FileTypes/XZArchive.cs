@@ -235,7 +235,7 @@ namespace SabreTools.Library.FileTypes
         public override bool Write(Stream inputStream, string outDir, Rom rom, bool date = false, bool romba = false)
         {
             bool success = false;
-            string tempFile = Path.Combine(outDir, "tmp" + Guid.NewGuid().ToString());
+            string tempFile = Path.Combine(outDir, $"tmp{Guid.NewGuid()}");
 
             // If either input is null or empty, return
             if (inputStream == null || rom == null || rom.Name == null)
@@ -431,7 +431,7 @@ namespace SabreTools.Library.FileTypes
         public override bool Write(List<string> inputFiles, string outDir, List<Rom> roms, bool date = false, bool romba = false)
         {
             bool success = false;
-            string tempFile = Path.Combine(outDir, "tmp" + Guid.NewGuid().ToString());
+            string tempFile = Path.Combine(outDir, $"tmp{Guid.NewGuid()}");
 
             // If either list of roms is null or empty, return
             if (inputFiles == null || roms == null || inputFiles.Count == 0 || roms.Count == 0)

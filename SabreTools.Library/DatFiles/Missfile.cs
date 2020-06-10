@@ -58,13 +58,13 @@ namespace SabreTools.Library.DatFiles
         {
             try
             {
-                Globals.Logger.User("Opening file for writing: {0}", outfile);
+                Globals.Logger.User($"Opening file for writing: {outfile}");
                 FileStream fs = Utilities.TryCreate(outfile);
 
                 // If we get back null for some reason, just log and return
                 if (fs == null)
                 {
-                    Globals.Logger.Warning("File '{0}' could not be created for writing! Please check to see if the file is writable", outfile);
+                    Globals.Logger.Warning($"File '{outfile}' could not be created for writing! Please check to see if the file is writable");
                     return false;
                 }
 
@@ -100,7 +100,7 @@ namespace SabreTools.Library.DatFiles
                             && ((Rom)rom).Size == -1
                             && ((Rom)rom).CRC == "null")
                         {
-                            Globals.Logger.Verbose("Empty folder found: {0}", rom.MachineName);
+                            Globals.Logger.Verbose($"Empty folder found: {rom.MachineName}");
                             lastgame = rom.MachineName;
                             continue;
                         }
@@ -130,43 +130,39 @@ namespace SabreTools.Library.DatFiles
         /// Write out DatItem using the supplied StreamWriter
         /// </summary>
         /// <param name="sw">StreamWriter to output to</param>
-        /// <param name="rom">DatItem object to be output</param>
+        /// <param name="datItem">DatItem object to be output</param>
         /// <param name="lastgame">The name of the last game to be output</param>
         /// <param name="ignoreblanks">True if blank roms should be skipped on output, false otherwise (default)</param>
         /// <returns>True if the data was written, false on error</returns>
-        private bool WriteDatItem(StreamWriter sw, DatItem rom, string lastgame, bool ignoreblanks = false)
+        private bool WriteDatItem(StreamWriter sw, DatItem datItem, string lastgame, bool ignoreblanks = false)
         {
             // If we are in ignore blanks mode AND we have a blank (0-size) rom, skip
-            if (ignoreblanks
-                && (rom.ItemType == ItemType.Rom
-                && (((Rom)rom).Size == 0 || ((Rom)rom).Size == -1)))
-            {
+            if (ignoreblanks && (datItem.ItemType == ItemType.Rom && ((datItem as Rom).Size == 0 || (datItem as Rom).Size == -1)))
                 return true;
-            }
 
             try
             {
                 string state = string.Empty;
 
                 // Process the item name
-                ProcessItemName(rom, false, forceRomName: false);
+                ProcessItemName(datItem, false, forceRomName: false);
 
                 // If we're in Romba mode, the state is consistent
                 if (Romba)
                 {
-                    state += (!ExcludeFields[(int)Field.Name] ? rom.Name : string.Empty) + "\n";
+                    state += $"{datItem.GetField(Field.SHA1, ExcludeFields)}\n";
                 }
                 // Otherwise, use any flags
                 else
                 {
-                    if (!UseRomName && rom.MachineName != lastgame)
+                    if (!UseRomName && datItem.MachineName != lastgame)
                     {
-                        state += (!ExcludeFields[(int)Field.Name] ? rom.Name : string.Empty) + "\n";
-                        lastgame = rom.MachineName;
+                        state += $"{datItem.GetField(Field.MachineName, ExcludeFields)}\n";
+                        lastgame = datItem.MachineName;
                     }
                     else if (UseRomName)
                     {
-                        state += (!ExcludeFields[(int)Field.Name] ? rom.Name : string.Empty) + "\n";
+                        state += $"{datItem.GetField(Field.Name, ExcludeFields)}\n";
                     }
                 }
 
