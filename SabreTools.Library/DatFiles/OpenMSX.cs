@@ -624,7 +624,7 @@ namespace SabreTools.Library.DatFiles
             try
             {
                 xtw.WriteStartDocument();
-                xtw.WriteDocType("softwaredb", "SYSTEM", "softwaredb1.dtd", null);
+                xtw.WriteDocType("softwaredb", null, "softwaredb1.dtd", null);
 
                 xtw.WriteStartElement("softwaredb");
                 //xtw.WriteAttributeString("timestamp", timestamp);
