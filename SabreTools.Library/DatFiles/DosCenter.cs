@@ -278,9 +278,9 @@ namespace SabreTools.Library.DatFiles
                         state += $"\file ( name \"{datItem.GetField(Field.Name, ExcludeFields)}\"";
                         if (!ExcludeFields[(int)Field.Size] && rom.Size != -1)
                             state += $" size \"{rom.Size}\"";
-                        if (!ExcludeFields[(int)Field.Date] && !string.IsNullOrWhiteSpace(rom.Date))
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Date, ExcludeFields)))
                             state += $" date \"{rom.Date}\"";
-                        if (!ExcludeFields[(int)Field.CRC] && !string.IsNullOrWhiteSpace(rom.CRC))
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.CRC, ExcludeFields)))
                             state += $" crc \"{rom.CRC.ToLowerInvariant()}\"";
                         state += " )\n";
                         break;

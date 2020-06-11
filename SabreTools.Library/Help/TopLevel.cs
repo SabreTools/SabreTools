@@ -55,7 +55,7 @@ namespace SabreTools.Library.Help
         /// </summary>
         protected bool GetBoolean(Dictionary<string, Feature> features, string key)
         {
-            if (!GetBoolean(features, key))
+            if (!features.ContainsKey(key))
                 return false;
 
             return true;
@@ -66,7 +66,7 @@ namespace SabreTools.Library.Help
         /// </summary>
         protected int GetInt32(Dictionary<string, Feature> features, string key)
         {
-            if (!GetBoolean(features, key))
+            if (!features.ContainsKey(key))
                 return Int32.MinValue;
 
             return features[key].GetInt32Value();
@@ -77,7 +77,7 @@ namespace SabreTools.Library.Help
         /// </summary>
         protected long GetInt64(Dictionary<string, Feature> features, string key)
         {
-            if (!GetBoolean(features, key))
+            if (!features.ContainsKey(key))
                 return Int64.MinValue;
 
             return features[key].GetInt64Value();
@@ -88,7 +88,7 @@ namespace SabreTools.Library.Help
         /// </summary>
         protected List<string> GetList(Dictionary<string, Feature> features, string key)
         {
-            if (!GetBoolean(features, key))
+            if (!features.ContainsKey(key))
                 return new List<string>();
 
             return features[key].GetListValue() ?? new List<string>();
@@ -99,7 +99,7 @@ namespace SabreTools.Library.Help
         /// </summary>
         protected string GetString(Dictionary<string, Feature> features, string key)
         {
-            if (!GetBoolean(features, key))
+            if (!features.ContainsKey(key))
                 return null;
 
             return features[key].GetStringValue();

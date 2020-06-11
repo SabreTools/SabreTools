@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Xml;
 
@@ -567,10 +566,11 @@ namespace SabreTools.Library.DatFiles
                     return false;
                 }
 
-                StreamWriter sw = new StreamWriter(fs, new UTF8Encoding(false));
+                XmlTextWriter xtw = new XmlTextWriter(fs, new UTF8Encoding(false));
+                xtw.Formatting = Formatting.Indented;
 
                 // Write out the header
-                WriteHeader(sw);
+                WriteHeader(xtw);
 
                 // Write out each of the machines and roms
                 int depth = 2, last = -1;
@@ -603,11 +603,11 @@ namespace SabreTools.Library.DatFiles
 
                         // If we have a different game and we're not at the start of the list, output the end of last item
                         if (lastgame != null && lastgame.ToLowerInvariant() != rom.MachineName.ToLowerInvariant())
-                            depth = WriteEndGame(sw, splitpath, newsplit, depth, out last);
+                            depth = WriteEndGame(xtw, splitpath, newsplit, depth, out last);
 
                         // If we have a new game, output the beginning of the new item
                         if (lastgame == null || lastgame.ToLowerInvariant() != rom.MachineName.ToLowerInvariant())
-                            depth = WriteStartGame(sw, rom, newsplit, lastgame, depth, last);
+                            depth = WriteStartGame(xtw, rom, newsplit, lastgame, depth, last);
 
                         // If we have a "null" game (created by DATFromDir or something similar), log it to file
                         if (rom.ItemType == ItemType.Rom
@@ -622,7 +622,7 @@ namespace SabreTools.Library.DatFiles
                         }
 
                         // Now, output the rom data
-                        WriteDatItem(sw, rom, depth, ignoreblanks);
+                        WriteDatItem(xtw, rom, depth, ignoreblanks);
 
                         // Set the new data to compare against
                         splitpath = newsplit;
@@ -631,10 +631,10 @@ namespace SabreTools.Library.DatFiles
                 }
 
                 // Write the file footer out
-                WriteFooter(sw, depth);
+                WriteFooter(xtw, depth);
 
                 Globals.Logger.Verbose("File written!" + Environment.NewLine);
-                sw.Dispose();
+                xtw.Dispose();
                 fs.Dispose();
             }
             catch (Exception ex)
@@ -649,76 +649,119 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Write out DAT header using the supplied StreamWriter
         /// </summary>
-        /// <param name="sw">StreamWriter to output to</param>
+        /// <param name="xtw">XmlTextWriter to output to</param>
         /// <returns>True if the data was written, false on error</returns>
-        private bool WriteHeader(StreamWriter sw)
+        private bool WriteHeader(XmlTextWriter xtw)
         {
             try
             {
-                string header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-                header += "<!DOCTYPE sabredat SYSTEM \"newdat.xsd\">\n\n";
-                header += "<datafile>\n";
-                header += "\t<header>\n";
-                header += $"\t\t<name>{WebUtility.HtmlEncode(Name)}</name>\n";
-                header += $"\t\t<description>{WebUtility.HtmlEncode(Description)}</description>\n";
+                xtw.WriteStartDocument();
+                xtw.WriteDocType("sabredat", null, "newdat.xsd", null);
+
+                xtw.WriteStartElement("datafile");
+
+                xtw.WriteStartElement("header");
+
+                xtw.WriteElementString("name", Name);
+                xtw.WriteElementString("description", Description);
                 if (!string.IsNullOrWhiteSpace(RootDir))
-                    header += $"\t\t<rootdir>{WebUtility.HtmlEncode(RootDir)}</rootdir>\n";
+                    xtw.WriteElementString("rootdir", RootDir);
                 if (!string.IsNullOrWhiteSpace(Category))
-                    header += $"\t\t<category>{WebUtility.HtmlEncode(Category)}</category>\n";
-                header += $"\t\t<version>{WebUtility.HtmlEncode(Version)}</version>\n";
+                    xtw.WriteElementString("category", Category);
+                xtw.WriteElementString("version", Version);
                 if (!string.IsNullOrWhiteSpace(Date))
-                    header += $"\t\t<date>{WebUtility.HtmlEncode(Date)}</date>\n";
-                header += $"\t\t<author>{WebUtility.HtmlEncode(Author)}</author>\n";
+                    xtw.WriteElementString("date", Date);
+                xtw.WriteElementString("author", Author);
                 if (!string.IsNullOrWhiteSpace(Comment))
-                    header += $"\t\t<comment>{WebUtility.HtmlEncode(Comment)}</comment>\n";
+                    xtw.WriteElementString("comment", Comment);
                 if (!string.IsNullOrWhiteSpace(Type) || ForcePacking != ForcePacking.None || ForceMerging != ForceMerging.None || ForceNodump != ForceNodump.None)
                 {
-                    header += "\t\t<flags>\n";
+                    xtw.WriteStartElement("flags");
+
                     if (!string.IsNullOrWhiteSpace(Type))
-                        header += $"\t\t\t<flag name=\"type\" value=\"{WebUtility.HtmlEncode(Type)}\"/>\n";
+                    {
+                        xtw.WriteStartElement("flag");
+                        xtw.WriteAttributeString("name", "type");
+                        xtw.WriteAttributeString("value", Type);
+                        xtw.WriteEndElement();
+                    }
+                    
                     switch (ForcePacking)
                     {
                         case ForcePacking.Unzip:
-                            header += "\t\t\t<flag name=\"forcepacking\" value=\"unzip\"/>\n";
+                            xtw.WriteStartElement("flag");
+                            xtw.WriteAttributeString("name", "forcepacking");
+                            xtw.WriteAttributeString("value", "unzip");
+                            xtw.WriteEndElement();
                             break;
                         case ForcePacking.Zip:
-                            header += "\t\t\t<flag name=\"forcepacking\" value=\"zip\"/>\n";
+                            xtw.WriteStartElement("flag");
+                            xtw.WriteAttributeString("name", "forcepacking");
+                            xtw.WriteAttributeString("value", "zip");
+                            xtw.WriteEndElement();
                             break;
                     }
+                    
                     switch (ForceMerging)
                     {
                         case ForceMerging.Full:
-                            header += "\t\t\t<flag name=\"forcemerging\" value=\"full\"/>\n";
+                            xtw.WriteStartElement("flag");
+                            xtw.WriteAttributeString("name", "forcemerging");
+                            xtw.WriteAttributeString("value", "full");
+                            xtw.WriteEndElement();
                             break;
                         case ForceMerging.Split:
-                            header += "\t\t\t<flag name=\"forcemerging\" value=\"split\"/>\n";
+                            xtw.WriteStartElement("flag");
+                            xtw.WriteAttributeString("name", "forcemerging");
+                            xtw.WriteAttributeString("value", "split");
+                            xtw.WriteEndElement();
                             break;
                         case ForceMerging.Merged:
-                            header += "\t\t\t<flag name=\"forcemerging\" value=\"merged\"/>\n";
+                            xtw.WriteStartElement("flag");
+                            xtw.WriteAttributeString("name", "forcemerging");
+                            xtw.WriteAttributeString("value", "merged");
+                            xtw.WriteEndElement();
                             break;
                         case ForceMerging.NonMerged:
-                            header += "\t\t\t<flag name=\"forcemerging\" value=\"nonmerged\"/>\n";
+                            xtw.WriteStartElement("flag");
+                            xtw.WriteAttributeString("name", "forcemerging");
+                            xtw.WriteAttributeString("value", "nonmerged");
+                            xtw.WriteEndElement();
                             break;
                     }
+                    
                     switch (ForceNodump)
                     {
                         case ForceNodump.Ignore:
-                            header += "\t\t\t<flag name=\"forcenodump\" value=\"ignore\"/>\n";
+                            xtw.WriteStartElement("flag");
+                            xtw.WriteAttributeString("name", "forcenodump");
+                            xtw.WriteAttributeString("value", "ignore");
+                            xtw.WriteEndElement();
                             break;
                         case ForceNodump.Obsolete:
-                            header += "\t\t\t<flag name=\"forcenodump\" value=\"obsolete\"/>\n";
+                            xtw.WriteStartElement("flag");
+                            xtw.WriteAttributeString("name", "forcenodump");
+                            xtw.WriteAttributeString("value", "obsolete");
+                            xtw.WriteEndElement();
                             break;
                         case ForceNodump.Required:
-                            header += "\t\t\t<flag name=\"forcenodump\" value=\"required\"/>\n";
+                            xtw.WriteStartElement("flag");
+                            xtw.WriteAttributeString("name", "forcenodump");
+                            xtw.WriteAttributeString("value", "required");
+                            xtw.WriteEndElement();
                             break;
                     }
-                    header += "\t\t</flags>\n";
-                }
-                header += "\t<data>\n";
 
-                // Write the header out
-                sw.Write(header);
-                sw.Flush();
+                    // End flags
+                    xtw.WriteEndElement();
+                }
+
+                // End header
+                xtw.WriteEndElement();
+
+                xtw.WriteStartElement("data");
+
+                xtw.Flush();
             }
             catch (Exception ex)
             {
@@ -732,39 +775,31 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Write out Game start using the supplied StreamWriter
         /// </summary>
-        /// <param name="sw">StreamWriter to output to</param>
+        /// <param name="xtw">XmlTextWriter to output to</param>
         /// <param name="datItem">DatItem object to be output</param>
         /// <param name="newsplit">Split path representing the parent game (SabreDAT only)</param>
         /// <param name="lastgame">The name of the last game to be output</param>
         /// <param name="depth">Current depth to output file at (SabreDAT only)</param>
         /// <param name="last">Last known depth to cycle back from (SabreDAT only)</param>
         /// <returns>The new depth of the tag</returns>
-        private int WriteStartGame(StreamWriter sw, DatItem datItem, List<string> newsplit, string lastgame, int depth, int last)
+        private int WriteStartGame(XmlTextWriter xtw, DatItem datItem, List<string> newsplit, string lastgame, int depth, int last)
         {
             try
             {
                 // No game should start with a path separator
                 datItem.MachineName = datItem.MachineName.TrimStart(Path.DirectorySeparatorChar);
 
-                string state = string.Empty;
-
                 // Build the state based on excluded fields
                 for (int i = (last == -1 ? 0 : last); i < newsplit.Count; i++)
                 {
-                    for (int j = 0; j < depth - last + i - (lastgame == null ? 1 : 0); j++)
-                    {
-                        state += "\t";
-                    }
-
-                    state += $"<directory";
-                    state += $" name=\"{(!ExcludeFields[(int)Field.MachineName] ? WebUtility.HtmlEncode(newsplit[i]) : string.Empty)}\"";
-                    state += $" description=\"{(!ExcludeFields[(int)Field.MachineName] ? WebUtility.HtmlEncode(newsplit[i]) : string.Empty)}\">\n";
+                    xtw.WriteStartElement("directory");
+                    xtw.WriteAttributeString("name", !ExcludeFields[(int)Field.MachineName] ? newsplit[i] : string.Empty);
+                    xtw.WriteAttributeString("description", !ExcludeFields[(int)Field.MachineName] ? newsplit[i] : string.Empty);
                 }
 
                 depth = depth - (last == -1 ? 0 : last) + newsplit.Count;
 
-                sw.Write(state);
-                sw.Flush();
+                xtw.Flush();
             }
             catch (Exception ex)
             {
@@ -778,19 +813,18 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Write out Game start using the supplied StreamWriter
         /// </summary>
-        /// <param name="sw">StreamWriter to output to</param>
+        /// <param name="xtw">XmlTextWriter to output to</param>
         /// <param name="splitpath">Split path representing last kwown parent game (SabreDAT only)</param>
         /// <param name="newsplit">Split path representing the parent game (SabreDAT only)</param>
         /// <param name="depth">Current depth to output file at (SabreDAT only)</param>
         /// <param name="last">Last known depth to cycle back from (SabreDAT only)</param>
         /// <returns>The new depth of the tag</returns>
-        private int WriteEndGame(StreamWriter sw, List<string> splitpath, List<string> newsplit, int depth, out int last)
+        private int WriteEndGame(XmlTextWriter xtw, List<string> splitpath, List<string> newsplit, int depth, out int last)
         {
             last = 0;
 
             try
             {
-                string state = string.Empty;
                 if (splitpath != null)
                 {
                     for (int i = 0; i < newsplit.Count && i < splitpath.Count; i++)
@@ -806,21 +840,15 @@ namespace SabreTools.Library.DatFiles
                     // Now that we have the last known position, take down all open folders
                     for (int i = depth - 1; i > last + 1; i--)
                     {
-                        // Print out the number of tabs and the end folder
-                        for (int j = 0; j < i; j++)
-                        {
-                            state += "\t";
-                        }
-
-                        state += "</directory>\n";
+                        // End directory
+                        xtw.WriteEndElement();
                     }
 
                     // Reset the current depth
                     depth = 2 + last;
                 }
 
-                sw.Write(state);
-                sw.Flush();
+                xtw.Flush();
             }
             catch (Exception ex)
             {
@@ -834,12 +862,12 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Write out DatItem using the supplied StreamWriter
         /// </summary>
-        /// <param name="sw">StreamWriter to output to</param>
+        /// <param name="xtw">XmlTextWriter to output to</param>
         /// <param name="datItem">DatItem object to be output</param>
         /// <param name="depth">Current depth to output file at (SabreDAT only)</param>
         /// <param name="ignoreblanks">True if blank roms should be skipped on output, false otherwise (default)</param>
         /// <returns>True if the data was written, false on error</returns>
-        private bool WriteDatItem(StreamWriter sw, DatItem datItem, int depth, bool ignoreblanks = false)
+        private bool WriteDatItem(XmlTextWriter xtw, DatItem datItem, int depth, bool ignoreblanks = false)
         {
             // If we are in ignore blanks mode AND we have a blank (0-size) rom, skip
             if (ignoreblanks && (datItem.ItemType == ItemType.Rom && ((datItem as Rom).Size == 0 || (datItem as Rom).Size == -1)))
@@ -847,122 +875,126 @@ namespace SabreTools.Library.DatFiles
 
             try
             {
-                string state = string.Empty, prefix = string.Empty;
-
                 // Pre-process the item name
                 ProcessItemName(datItem, true);
-
-                for (int i = 0; i < depth; i++)
-                {
-                    prefix += "\t";
-                }
-
-                state += prefix;
 
                 // Build the state based on excluded fields
                 switch (datItem.ItemType)
                 {
                     case ItemType.Archive:
-                        state += $"<file type=\"archive\" name=\"{WebUtility.HtmlEncode(datItem.GetField(Field.Name, ExcludeFields))}\"";
-                        state += "/>\n";
+                        xtw.WriteStartElement("file");
+                        xtw.WriteAttributeString("type", "archive");
+                        xtw.WriteAttributeString("name", datItem.GetField(Field.Name, ExcludeFields));
+                        xtw.WriteEndElement();
                         break;
 
                     case ItemType.BiosSet:
                         var biosSet = datItem as BiosSet;
-                        state += $"<file type=\"biosset\" name\"{WebUtility.HtmlEncode(biosSet.GetField(Field.Name, ExcludeFields))}\"";
-                        if (!ExcludeFields[(int)Field.BiosDescription] && !string.IsNullOrWhiteSpace(biosSet.Description))
-                            state += $" description=\"{WebUtility.HtmlEncode(biosSet.Description)}\"";
+                        xtw.WriteStartElement("file");
+                        xtw.WriteAttributeString("type", "biosset");
+                        xtw.WriteAttributeString("name", biosSet.GetField(Field.Name, ExcludeFields));
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.BiosDescription, ExcludeFields)))
+                            xtw.WriteAttributeString("description", biosSet.Description);
                         if (!ExcludeFields[(int)Field.Default] && biosSet.Default != null)
-                            state += $" default=\"{biosSet.Default.ToString().ToLowerInvariant()}\"";
-                        state += "/>\n";
+                            xtw.WriteAttributeString("default", biosSet.Default.ToString().ToLowerInvariant());
+                        xtw.WriteEndElement();
                         break;
 
                     case ItemType.Disk:
                         var disk = datItem as Disk;
-                        state += $"<file type=\"disk\" name=\"{WebUtility.HtmlEncode(disk.GetField(Field.Name, ExcludeFields))}\"";
-                        if (!ExcludeFields[(int)Field.MD5] && !string.IsNullOrWhiteSpace(disk.MD5))
-                            state += $" md5=\"{disk.MD5.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.RIPEMD160] && !string.IsNullOrWhiteSpace(disk.RIPEMD160))
-                            state += $" ripemd160=\"{disk.RIPEMD160.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.SHA1] && !string.IsNullOrWhiteSpace(disk.SHA1))
-                            state += $" sha1=\"{disk.SHA1.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.SHA256] && !string.IsNullOrWhiteSpace(disk.SHA256))
-                            state += $" sha256=\"{disk.SHA256.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.SHA384] && !string.IsNullOrWhiteSpace(disk.SHA384))
-                            state += $" sha384=\"{disk.SHA384.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.SHA512] && !string.IsNullOrWhiteSpace(disk.SHA512))
-                            state += $" sha512=\"{disk.SHA512.ToLowerInvariant()}\"";
+                        xtw.WriteStartElement("file");
+                        xtw.WriteAttributeString("type", "disk");
+                        xtw.WriteAttributeString("name", disk.GetField(Field.Name, ExcludeFields));
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.MD5, ExcludeFields)))
+                            xtw.WriteAttributeString("md5", disk.MD5.ToLowerInvariant());
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.RIPEMD160, ExcludeFields)))
+                            xtw.WriteAttributeString("ripemd160", disk.RIPEMD160.ToLowerInvariant());
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA1, ExcludeFields)))
+                            xtw.WriteAttributeString("sha1", disk.SHA1.ToLowerInvariant());
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA256, ExcludeFields)))
+                            xtw.WriteAttributeString("sha256", disk.SHA256.ToLowerInvariant());
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA384, ExcludeFields)))
+                            xtw.WriteAttributeString("sha384", disk.SHA384.ToLowerInvariant());
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA512, ExcludeFields)))
+                            xtw.WriteAttributeString("sha512", disk.SHA512.ToLowerInvariant());
                         if (!ExcludeFields[(int)Field.Status] && disk.ItemStatus != ItemStatus.None)
                         {
-                            state = $"{prefix}/>\n";
-                            state += $"{prefix}\t<flags>\n";
-                            state += $"{prefix}\t\t<flag name=\"status\" value=\"{disk.ItemStatus.ToString().ToLowerInvariant()}\"/>\n";
-                            state += $"{prefix}\t</flags>\n";
-                            state += $"{prefix}</file>\n";
+                            xtw.WriteStartElement("flags");
+
+                            xtw.WriteStartElement("flag");
+                            xtw.WriteAttributeString("name", "status");
+                            xtw.WriteAttributeString("value", disk.ItemStatus.ToString().ToLowerInvariant());
+                            xtw.WriteEndElement();
+
+                            // End flags
+                            xtw.WriteEndElement();
                         }
-                        else
-                        {
-                            state += "/>\n";
-                        }
+                        xtw.WriteEndElement();
                         break;
 
                     case ItemType.Release:
                         var release = datItem as Release;
-                        state += $"<file type=\"release\" name\"{WebUtility.HtmlEncode(release.GetField(Field.Name, ExcludeFields))}\"";
-                        if (!ExcludeFields[(int)Field.Region] && !string.IsNullOrWhiteSpace(release.Region))
-                            state += $" region=\"{WebUtility.HtmlEncode(release.Region)}\"";
-                        if (!ExcludeFields[(int)Field.Language] && !string.IsNullOrWhiteSpace(release.Language))
-                            state += $" language=\"{WebUtility.HtmlEncode(release.Language)}\"";
-                        if (!ExcludeFields[(int)Field.Date] && !string.IsNullOrWhiteSpace(release.Date))
-                            state += $" date=\"{WebUtility.HtmlEncode(release.Date)}\"";
+                        xtw.WriteStartElement("file");
+                        xtw.WriteAttributeString("type", "release");
+                        xtw.WriteAttributeString("name", release.GetField(Field.Name, ExcludeFields));
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Region, ExcludeFields)))
+                            xtw.WriteAttributeString("region", release.Region);
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Language, ExcludeFields)))
+                            xtw.WriteAttributeString("language", release.Language);
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Date, ExcludeFields)))
+                            xtw.WriteAttributeString("date", release.Date);
                         if (!ExcludeFields[(int)Field.Default] && release.Default != null)
-                            state += $" default=\"{release.Default.ToString().ToLowerInvariant()}\"";
-                        state += "/>\n";
+                            xtw.WriteAttributeString("default", release.Default.ToString().ToLowerInvariant());
+                        xtw.WriteEndElement();
                         break;
 
                     case ItemType.Rom:
                         var rom = datItem as Rom;
-                        state += $"<file type=\"rom\" name=\"{WebUtility.HtmlEncode(rom.GetField(Field.Name, ExcludeFields))}\"";
+                        xtw.WriteStartElement("file");
+                        xtw.WriteAttributeString("type", "rom");
+                        xtw.WriteAttributeString("name", rom.GetField(Field.Name, ExcludeFields));
                         if (!ExcludeFields[(int)Field.Size] && rom.Size != -1)
-                            state += $" size=\"{rom.Size}\"";
-                        if (!ExcludeFields[(int)Field.CRC] && !string.IsNullOrWhiteSpace(rom.CRC))
-                            state += $" crc=\"{rom.CRC.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.MD5] && !string.IsNullOrWhiteSpace(rom.MD5))
-                            state += $" md5=\"{rom.MD5.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.RIPEMD160] && !string.IsNullOrWhiteSpace(rom.RIPEMD160))
-                            state += $" ripemd160=\"{rom.RIPEMD160.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.SHA1] && !string.IsNullOrWhiteSpace(rom.SHA1))
-                            state += $" sha1=\"{rom.SHA1.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.SHA256] && !string.IsNullOrWhiteSpace(rom.SHA256))
-                            state += $" sha256=\"{rom.SHA256.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.SHA384] && !string.IsNullOrWhiteSpace(rom.SHA384))
-                            state += $" sha384=\"{rom.SHA384.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.SHA512] && !string.IsNullOrWhiteSpace(rom.SHA512))
-                            state += $" sha512=\"{rom.SHA512.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.Date] && !string.IsNullOrWhiteSpace(rom.Date))
-                            state += $" date=\"{WebUtility.HtmlEncode(rom.Date)}\"";
+                            xtw.WriteAttributeString("size", rom.Size.ToString());
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.CRC, ExcludeFields)))
+                            xtw.WriteAttributeString("crc", rom.CRC.ToLowerInvariant());
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.MD5, ExcludeFields)))
+                            xtw.WriteAttributeString("md5", rom.MD5.ToLowerInvariant());
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.RIPEMD160, ExcludeFields)))
+                            xtw.WriteAttributeString("ripemd160", rom.RIPEMD160.ToLowerInvariant());
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA1, ExcludeFields)))
+                            xtw.WriteAttributeString("sha1", rom.SHA1.ToLowerInvariant());
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA256, ExcludeFields)))
+                            xtw.WriteAttributeString("sha256", rom.SHA256.ToLowerInvariant());
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA384, ExcludeFields)))
+                            xtw.WriteAttributeString("sha384", rom.SHA384.ToLowerInvariant());
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA512, ExcludeFields)))
+                            xtw.WriteAttributeString("sha512", rom.SHA512.ToLowerInvariant());
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Date, ExcludeFields)))
+                            xtw.WriteAttributeString("date", rom.Date);
                         if (!ExcludeFields[(int)Field.Status] && rom.ItemStatus != ItemStatus.None)
                         {
-                            state = $"{prefix}/>\n";
-                            state += $"{prefix}\t<flags>\n";
-                            state += $"{prefix}\t\t<flag name=\"status\" value=\"{rom.ItemStatus.ToString().ToLowerInvariant()}\"/>\n";
-                            state += $"{prefix}\t</flags>\n";
-                            state += $"{prefix}</file>\n";
+                            xtw.WriteStartElement("flags");
+
+                            xtw.WriteStartElement("flag");
+                            xtw.WriteAttributeString("name", "status");
+                            xtw.WriteAttributeString("value", rom.ItemStatus.ToString().ToLowerInvariant());
+                            xtw.WriteEndElement();
+
+                            // End flags
+                            xtw.WriteEndElement();
                         }
-                        else
-                        {
-                            state += "/>\n";
-                        }
+                        xtw.WriteEndElement();
                         break;
 
                     case ItemType.Sample:
-                        state += $"<file type=\"sample\" name=\"{WebUtility.HtmlEncode(datItem.GetField(Field.Name, ExcludeFields))}\"";
-                        state += "/>\n";
+                        xtw.WriteStartElement("file");
+                        xtw.WriteAttributeString("type", "sample");
+                        xtw.WriteAttributeString("name", datItem.GetField(Field.Name, ExcludeFields));
+                        xtw.WriteEndElement();
                         break;
                 }
 
-                sw.Write(state);
-                sw.Flush();
+                xtw.Flush();
             }
             catch (Exception ex)
             {
@@ -976,30 +1008,26 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Write out DAT footer using the supplied StreamWriter
         /// </summary>
-        /// <param name="sw">StreamWriter to output to</param>
+        /// <param name="xtw">XmlTextWriter to output to</param>
         /// <param name="depth">Current depth to output file at (SabreDAT only)</param>
         /// <returns>True if the data was written, false on error</returns>
-        private bool WriteFooter(StreamWriter sw, int depth)
+        private bool WriteFooter(XmlTextWriter xtw, int depth)
         {
             try
             {
-                string footer = string.Empty;
                 for (int i = depth - 1; i >= 2; i--)
                 {
-                    // Print out the number of tabs and the end folder
-                    for (int j = 0; j < i; j++)
-                    {
-                        footer += "\t";
-                    }
-
-                    footer += "</directory>\n";
+                    // End directory
+                    xtw.WriteEndElement();
                 }
 
-                footer += "\t</data>\n</datafile>\n";
+                // End data
+                xtw.WriteEndElement();
 
-                // Write the footer out
-                sw.Write(footer);
-                sw.Flush();
+                // End datafile
+                xtw.WriteEndElement();
+
+                xtw.Flush();
             }
             catch (Exception ex)
             {

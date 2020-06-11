@@ -411,7 +411,7 @@ namespace SabreTools.Library.DatFiles
                             state += " NO GOOD DUMP KNOWN";
 
                         // Otherwise, write out the SHA-1 hash
-                        else if (!ExcludeFields[(int)Field.SHA1] && !string.IsNullOrWhiteSpace(disk.SHA1))
+                        else if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA1, ExcludeFields)))
                             state += $" SHA1({disk.SHA1})";
 
                         // If we have a baddump, put the second indicator
@@ -446,9 +446,9 @@ namespace SabreTools.Library.DatFiles
                         // Otherwise, write out the CRC and SHA-1 hashes
                         else
                         {
-                            if (!ExcludeFields[(int)Field.CRC] && !string.IsNullOrWhiteSpace(rom.CRC))
+                            if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.CRC, ExcludeFields)))
                                 state += $" CRC({rom.CRC})";
-                            if (!ExcludeFields[(int)Field.SHA1] && !string.IsNullOrWhiteSpace(rom.SHA1))
+                            if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA1, ExcludeFields)))
                                 state += $" SHA1({rom.SHA1})";
                         }
 

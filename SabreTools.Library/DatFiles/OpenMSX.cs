@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using System.Text;
 using System.Xml;
 
@@ -541,10 +540,11 @@ namespace SabreTools.Library.DatFiles
                     return false;
                 }
 
-                StreamWriter sw = new StreamWriter(fs, new UTF8Encoding(false));
+                XmlTextWriter xtw = new XmlTextWriter(fs, new UTF8Encoding(false));
+                xtw.Formatting = Formatting.Indented;
 
                 // Write out the header
-                WriteHeader(sw);
+                WriteHeader(xtw);
 
                 // Write out each of the machines and roms
                 string lastgame = null;
@@ -573,11 +573,11 @@ namespace SabreTools.Library.DatFiles
 
                         // If we have a different game and we're not at the start of the list, output the end of last item
                         if (lastgame != null && lastgame.ToLowerInvariant() != rom.MachineName.ToLowerInvariant())
-                            WriteEndGame(sw);
+                            WriteEndGame(xtw);
 
                         // If we have a new game, output the beginning of the new item
                         if (lastgame == null || lastgame.ToLowerInvariant() != rom.MachineName.ToLowerInvariant())
-                            WriteStartGame(sw, rom);
+                            WriteStartGame(xtw, rom);
 
                         // If we have a "null" game (created by DATFromDir or something similar), log it to file
                         if (rom.ItemType == ItemType.Rom
@@ -591,7 +591,7 @@ namespace SabreTools.Library.DatFiles
                         }
 
                         // Now, output the rom data
-                        WriteDatItem(sw, rom, ignoreblanks);
+                        WriteDatItem(xtw, rom, ignoreblanks);
 
                         // Set the new data to compare against
                         lastgame = rom.MachineName;
@@ -599,10 +599,10 @@ namespace SabreTools.Library.DatFiles
                 }
 
                 // Write the file footer out
-                WriteFooter(sw);
+                WriteFooter(xtw);
 
                 Globals.Logger.Verbose("File written!" + Environment.NewLine);
-                sw.Dispose();
+                xtw.Dispose();
                 fs.Dispose();
             }
             catch (Exception ex)
@@ -617,32 +617,28 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Write out DAT header using the supplied StreamWriter
         /// </summary>
-        /// <param name="sw">StreamWriter to output to</param>
+        /// <param name="xtw">XmlTextWriter to output to</param>
         /// <returns>True if the data was written, false on error</returns>
-        private bool WriteHeader(StreamWriter sw)
+        private bool WriteHeader(XmlTextWriter xtw)
         {
             try
             {
-                string header = "<?xml version=\"1.0\"?>\n";
-                header += "<!DOCTYPE softwaredb SYSTEM \"softwaredb1.dtd\">\n";
-                header += "<softwaredb";
-                // header += $" timestamp=\"{timestamp}\"";
-                header += ">\n";
-                header += @"<!-- Credits -->
-<![CDATA[
-The softwaredb.xml file contains information about rom mapper types
+                xtw.WriteStartDocument();
+                xtw.WriteDocType("softwaredb", "SYSTEM", "softwaredb1.dtd", null);
 
-Copyright 2003 Nicolas Beyaert (Initial Database)
-Copyright 2004-2013 BlueMSX Team
-Copyright 2005-2018 openMSX Team
-Generation MSXIDs by www.generation-msx.nl
+                xtw.WriteStartElement("softwaredb");
+                //xtw.WriteAttributeString("timestamp", timestamp);
 
-]]>
-";
+                // TODO: Figure out how to fix the issue with removed formatting after this point
+                //xtw.WriteComment("Credits");
+                //xtw.WriteCData(@"The softwaredb.xml file contains information about rom mapper types
 
-                // Write the header out
-                sw.Write(header);
-                sw.Flush();
+//Copyright 2003 Nicolas Beyaert (Initial Database)
+//Copyright 2004-2013 BlueMSX Team
+//Copyright 2005-2018 openMSX Team
+//Generation MSXIDs by www.generation-msx.nl");
+
+                xtw.Flush();
             }
             catch (Exception ex)
             {
@@ -656,10 +652,10 @@ Generation MSXIDs by www.generation-msx.nl
         /// <summary>
         /// Write out Game start using the supplied StreamWriter
         /// </summary>
-        /// <param name="sw">StreamWriter to output to</param>
+        /// <param name="xtw">XmlTextWriter to output to</param>
         /// <param name="datItem">DatItem object to be output</param>
         /// <returns>True if the data was written, false on error</returns>
-        private bool WriteStartGame(StreamWriter sw, DatItem datItem)
+        private bool WriteStartGame(XmlTextWriter xtw, DatItem datItem)
         {
             try
             {
@@ -667,16 +663,15 @@ Generation MSXIDs by www.generation-msx.nl
                 datItem.MachineName = datItem.MachineName.TrimStart(Path.DirectorySeparatorChar);
 
                 // Build the state based on excluded fields
-                string state = "<software>\n";
-                state += $"\t<title>{WebUtility.HtmlEncode(datItem.GetField(Field.MachineName, ExcludeFields))}</title>\n";
-                // state += $"\t<genmsxid>{msxid}</genmsxid>\n";
-                // state += $"\t<system>{system}</system>\n";
-                state += $"\t<company>{WebUtility.HtmlEncode(datItem.GetField(Field.Manufacturer, ExcludeFields))}</company>\n";
-                state += $"\t<year>{WebUtility.HtmlEncode(datItem.GetField(Field.Year, ExcludeFields))}</year>\n";
-                // state += $"\t<country>{country}</country>\n";
+                xtw.WriteStartElement("software");
+                xtw.WriteElementString("title", datItem.GetField(Field.MachineName, ExcludeFields));
+                //xtw.WriteElementString("genmsxid", msxid);
+                //xtw.WriteElementString("system", system));
+                xtw.WriteElementString("company", datItem.GetField(Field.Manufacturer, ExcludeFields));
+                xtw.WriteElementString("year", datItem.GetField(Field.Year, ExcludeFields));
+                //xtw.WriteElementString("country", country);
 
-                sw.Write(state);
-                sw.Flush();
+                xtw.Flush();
             }
             catch (Exception ex)
             {
@@ -690,16 +685,16 @@ Generation MSXIDs by www.generation-msx.nl
         /// <summary>
         /// Write out Game start using the supplied StreamWriter
         /// </summary>
-        /// <param name="sw">StreamWriter to output to</param>
+        /// <param name="xtw">XmlTextWriter to output to</param>
         /// <returns>True if the data was written, false on error</returns>
-        private bool WriteEndGame(StreamWriter sw)
+        private bool WriteEndGame(XmlTextWriter xtw)
         {
             try
             {
-                string state = "</software>\n";
+                // End software
+                xtw.WriteEndElement();
 
-                sw.Write(state);
-                sw.Flush();
+                xtw.Flush();
             }
             catch (Exception ex)
             {
@@ -713,11 +708,11 @@ Generation MSXIDs by www.generation-msx.nl
         /// <summary>
         /// Write out DatItem using the supplied StreamWriter
         /// </summary>
-        /// <param name="sw">StreamWriter to output to</param>
+        /// <param name="xtw">XmlTextWriter to output to</param>
         /// <param name="datItem">DatItem object to be output</param>
         /// <param name="ignoreblanks">True if blank roms should be skipped on output, false otherwise (default)</param>
         /// <returns>True if the data was written, false on error</returns>
-        private bool WriteDatItem(StreamWriter sw, DatItem datItem, bool ignoreblanks = false)
+        private bool WriteDatItem(XmlTextWriter xtw, DatItem datItem, bool ignoreblanks = false)
         {
             // If we are in ignore blanks mode AND we have a blank (0-size) rom, skip
             if (ignoreblanks && (datItem.ItemType == ItemType.Rom && ((datItem as Rom).Size == 0 || (datItem as Rom).Size == -1)))
@@ -725,8 +720,6 @@ Generation MSXIDs by www.generation-msx.nl
 
             try
             {
-                string state = string.Empty;
-
                 // Pre-process the item name
                 ProcessItemName(datItem, true);
 
@@ -735,20 +728,29 @@ Generation MSXIDs by www.generation-msx.nl
                 {
                     case ItemType.Rom: // Currently this encapsulates rom, megarom, and sccpluscart
                         var rom = datItem as Rom;
-                        state += "\t\t<dump>";
-                        // state += "<original value=\"true\">GoodMSX</original>";
-                        state += "<rom>";
-                        if (!ExcludeFields[(int)Field.Offset] && !string.IsNullOrWhiteSpace(rom.Offset))
-                            state += $"<start>{rom.Offset}</start>";
-                        // state += "<type>Normal</type>";
-                        state += $"<hash>{rom.GetField(Field.SHA1, ExcludeFields) as string}</hash>";
-                        // state += "<remark></remark>";
-                        state += "</rom></dump>\n";
+                        xtw.WriteStartElement("dump");
+
+                        //xtw.WriteStartElement("original");
+                        //xtw.WriteAttributeString("value", "true");
+                        //xtw.WriteString("GoodMSX");
+                        //xtw.WriteEndElement();
+
+                        xtw.WriteStartElement("rom");
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Offset, ExcludeFields)))
+                            xtw.WriteElementString("start", rom.Offset);
+                        //xtw.WriteElementString("type", "Normal");
+                        xtw.WriteElementString("hash", rom.GetField(Field.SHA1, ExcludeFields).ToLowerInvariant());
+                        //xtw.WriteElementString("remark", "");
+
+                        // End rom
+                        xtw.WriteEndElement();
+
+                        // End dump
+                        xtw.WriteEndElement();
                         break;
                 }
 
-                sw.Write(state);
-                sw.Flush();
+                xtw.Flush();
             }
             catch (Exception ex)
             {
@@ -762,17 +764,19 @@ Generation MSXIDs by www.generation-msx.nl
         /// <summary>
         /// Write out DAT footer using the supplied StreamWriter
         /// </summary>
-        /// <param name="sw">StreamWriter to output to</param>
+        /// <param name="xtw">XmlTextWriter to output to</param>
         /// <returns>True if the data was written, false on error</returns>
-        private bool WriteFooter(StreamWriter sw)
+        private bool WriteFooter(XmlTextWriter xtw)
         {
             try
             {
-                string footer = "</software>\n</softwaredb>\n";
+                // End software
+                xtw.WriteEndElement();
 
-                // Write the footer out
-                sw.Write(footer);
-                sw.Flush();
+                // End softwaredb
+                xtw.WriteEndElement();
+
+                xtw.Flush();
             }
             catch (Exception ex)
             {

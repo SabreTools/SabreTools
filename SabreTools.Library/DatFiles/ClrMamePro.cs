@@ -924,7 +924,7 @@ namespace SabreTools.Library.DatFiles
                     case ItemType.BiosSet:
                         var biosSet = datItem as BiosSet;
                         state += $"\tbiosset ( name\"{datItem.GetField(Field.Name, ExcludeFields)}\"";
-                        if (!ExcludeFields[(int)Field.BiosDescription] && !string.IsNullOrWhiteSpace(biosSet.Description))
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.BiosDescription, ExcludeFields)))
                             state += $" description \"{biosSet.Description}\"";
                         if (!ExcludeFields[(int)Field.Default] && biosSet.Default != null)
                             state += $" default \"{biosSet.Default.ToString().ToLowerInvariant()}\"";
@@ -934,17 +934,17 @@ namespace SabreTools.Library.DatFiles
                     case ItemType.Disk:
                         var disk = datItem as Disk;
                         state += $"\tdisk ( name \"{datItem.GetField(Field.Name, ExcludeFields)}\"";
-                        if (!ExcludeFields[(int)Field.MD5] && !string.IsNullOrWhiteSpace(disk.MD5))
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.MD5, ExcludeFields)))
                             state += $" md5 \"{disk.MD5.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.RIPEMD160] && !string.IsNullOrWhiteSpace(disk.RIPEMD160))
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.RIPEMD160, ExcludeFields)))
                             state += $" ripemd160 \"{disk.RIPEMD160.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.SHA1] && !string.IsNullOrWhiteSpace(disk.SHA1))
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA1, ExcludeFields)))
                             state += $" sha1 \"{disk.SHA1.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.SHA256] && !string.IsNullOrWhiteSpace(disk.SHA256))
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA256, ExcludeFields)))
                             state += $" sha256 \"{disk.SHA256.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.SHA384] && !string.IsNullOrWhiteSpace(disk.SHA384))
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA384, ExcludeFields)))
                             state += $" sha384 \"{disk.SHA384.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.SHA512] && !string.IsNullOrWhiteSpace(disk.SHA512))
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA512, ExcludeFields)))
                             state += $" sha512 \"{disk.SHA512.ToLowerInvariant()}\"";
                         if (!ExcludeFields[(int)Field.Status] && disk.ItemStatus != ItemStatus.None)
                             state += $" flags \"{disk.ItemStatus.ToString().ToLowerInvariant()}\"";
@@ -954,11 +954,11 @@ namespace SabreTools.Library.DatFiles
                     case ItemType.Release:
                         var release = datItem as Release;
                         state += $"\trelease ( name\"{datItem.GetField(Field.Name, ExcludeFields)}\"";
-                        if (!ExcludeFields[(int)Field.Region] && !string.IsNullOrWhiteSpace(release.Region))
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Region, ExcludeFields)))
                             state += $" region \"{release.Region}\"";
-                        if (!ExcludeFields[(int)Field.Language] && !string.IsNullOrWhiteSpace(release.Language))
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Language, ExcludeFields)))
                             state += $" language \"{release.Language}\"";
-                        if (!ExcludeFields[(int)Field.Date] && !string.IsNullOrWhiteSpace(release.Date))
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Date, ExcludeFields)))
                             state += $" date \"{release.Date}\"";
                         if (!ExcludeFields[(int)Field.Default] && release.Default != null)
                             state += $" default \"{release.Default.ToString().ToLowerInvariant()}\"";
@@ -970,21 +970,21 @@ namespace SabreTools.Library.DatFiles
                         state += $"\trom ( name \"{datItem.GetField(Field.Name, ExcludeFields)}\"";
                         if (!ExcludeFields[(int)Field.Size] && rom.Size != -1)
                             state += $" size \"{rom.Size}\"";
-                        if (!ExcludeFields[(int)Field.CRC] && !string.IsNullOrWhiteSpace(rom.CRC))
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.CRC, ExcludeFields)))
                             state += $" crc \"{rom.CRC.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.MD5] && !string.IsNullOrWhiteSpace(rom.MD5))
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.MD5, ExcludeFields)))
                             state += $" md5 \"{rom.MD5.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.RIPEMD160] && !string.IsNullOrWhiteSpace(rom.RIPEMD160))
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.RIPEMD160, ExcludeFields)))
                             state += $" ripemd160 \"{rom.RIPEMD160.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.SHA1] && !string.IsNullOrWhiteSpace(rom.SHA1))
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA1, ExcludeFields)))
                             state += $" sha1 \"{rom.SHA1.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.SHA256] && !string.IsNullOrWhiteSpace(rom.SHA256))
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA256, ExcludeFields)))
                             state += $" sha256 \"{rom.SHA256.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.SHA384] && !string.IsNullOrWhiteSpace(rom.SHA384))
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA384, ExcludeFields)))
                             state += $" sha384 \"{rom.SHA384.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.SHA512] && !string.IsNullOrWhiteSpace(rom.SHA512))
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA512, ExcludeFields)))
                             state += $" sha512 \"{rom.SHA512.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.Date] && !string.IsNullOrWhiteSpace(rom.Date))
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Date, ExcludeFields)))
                             state += $" date \"{rom.Date}\"";
                         if (!ExcludeFields[(int)Field.Status] && rom.ItemStatus != ItemStatus.None)
                             state += $" flags \"{rom.ItemStatus.ToString().ToLowerInvariant()}\"";

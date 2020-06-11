@@ -377,6 +377,8 @@ namespace SabreTools.Library.Data
 
         #endregion
 
+        // TODO: Add JSON output. Just for kicks
+
         // Specialty combinations
         ALL = Int32.MaxValue,
     }

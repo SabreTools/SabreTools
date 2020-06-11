@@ -2423,7 +2423,10 @@ Some special strings that can be used:
                 filter.Root.Neutral = GetString(features, RootDirStringValue);
 
                 // Runnable
-                filter.Runnable.Neutral = GetBoolean(features, NotRunnableValue);
+                if (GetBoolean(features, NotRunnableValue))
+                    filter.Runnable.Neutral = false;
+                if (GetBoolean(features, RunnableValue))
+                    filter.Runnable.Neutral = true;
 
                 // SHA-1
                 filter.SHA1.NegativeSet.AddRange(GetList(features, NotSha1ListValue));

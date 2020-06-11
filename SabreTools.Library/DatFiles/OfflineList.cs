@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using System.Text;
 using System.Xml;
 
@@ -771,10 +770,11 @@ namespace SabreTools.Library.DatFiles
                     return false;
                 }
 
-                StreamWriter sw = new StreamWriter(fs, new UTF8Encoding(false));
+                XmlTextWriter xtw = new XmlTextWriter(fs, new UTF8Encoding(false));
+                xtw.Formatting = Formatting.Indented;
 
                 // Write out the header
-                WriteHeader(sw);
+                WriteHeader(xtw);
 
                 // Write out each of the machines and roms
                 string lastgame = null;
@@ -801,10 +801,6 @@ namespace SabreTools.Library.DatFiles
                             continue;
                         }
 
-                        // If we have a different game and we're not at the start of the list, output the end of last item
-                        if (lastgame != null && lastgame.ToLowerInvariant() != rom.MachineName.ToLowerInvariant())
-                            WriteEndGame(sw);
-
                         // If we have a "null" game (created by DATFromDir or something similar), log it to file
                         if (rom.ItemType == ItemType.Rom
                             && ((Rom)rom).Size == -1
@@ -824,7 +820,7 @@ namespace SabreTools.Library.DatFiles
                         }
 
                         // Now, output the rom data
-                        WriteDatItem(sw, rom, ignoreblanks);
+                        WriteDatItem(xtw, rom, ignoreblanks);
 
                         // Set the new data to compare against
                         lastgame = rom.MachineName;
@@ -832,10 +828,10 @@ namespace SabreTools.Library.DatFiles
                 }
 
                 // Write the file footer out
-                WriteFooter(sw);
+                WriteFooter(xtw);
 
                 Globals.Logger.Verbose("File written!" + Environment.NewLine);
-                sw.Dispose();
+                xtw.Dispose();
                 fs.Dispose();
             }
             catch (Exception ex)
@@ -850,81 +846,174 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Write out DAT header using the supplied StreamWriter
         /// </summary>
-        /// <param name="sw">StreamWriter to output to</param>
+        /// <param name="xtw">XmlTextWriter to output to</param>
         /// <returns>True if the data was written, false on error</returns>
-        private bool WriteHeader(StreamWriter sw)
+        private bool WriteHeader(XmlTextWriter xtw)
         {
             try
             {
-                string header = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n";
-                header += "<dat xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"datas.xsd\">\n";
-                header += "\t<configuration>\n";
-                header += $"\t\t<datName>{WebUtility.HtmlEncode(Name)}</datName>\n";
-                header += $"\t\t<datVersion>{Count}</datVersion>\n";
-                header += "\t\t<system>none</system>\n";
-                header += "\t\t<screenshotsWidth>240</screenshotsWidth>\n";
-                header += "\t\t<screenshotsHeight>160</screenshotsHeight>\n";
-                header += "\t\t<infos>\n";
-                header += "\t\t\t<title visible=\"false\" inNamingOption=\"true\" default=\"false\"/>\n";
-                header += "\t\t\t<location visible=\"true\" inNamingOption=\"true\" default=\"true\"/>\n";
-                header += "\t\t\t<publisher visible=\"true\" inNamingOption=\"true\" default=\"true\"/>\n";
-                header += "\t\t\t<sourceRom visible=\"true\" inNamingOption=\"true\" default=\"true\"/>\n";
-                header += "\t\t\t<saveType visible=\"true\" inNamingOption=\"true\" default=\"true\"/>\n";
-                header += "\t\t\t<romSize visible=\"true\" inNamingOption=\"true\" default=\"true\"/>\n";
-                header += "\t\t\t<releaseNumber visible=\"true\" inNamingOption=\"true\" default=\"false\"/>\n";
-                header += "\t\t\t<languageNumber visible=\"true\" inNamingOption=\"true\" default=\"false\"/>\n";
-                header += "\t\t\t<comment visible=\"true\" inNamingOption=\"true\" default=\"false\"/>\n";
-                header += "\t\t\t<romCRC visible=\"true\" inNamingOption=\"true\" default=\"false\"/>\n";
-                header += "\t\t\t<im1CRC visible=\"false\" inNamingOption=\"false\" default=\"false\"/>\n";
-                header += "\t\t\t<im2CRC visible=\"false\" inNamingOption=\"false\" default=\"false\"/>\n";
-                header += "\t\t\t<languages visible=\"true\" inNamingOption=\"true\" default=\"true\"/>\n";
-                header += "\t\t</infos>\n";
-                header += "\t\t<canOpen>\n";
-                header += "\t\t\t<extension>.bin</extension>\n";
-                header += "\t\t</canOpen>\n";
-                header += "\t\t<newDat>\n";
-                header += $"\t\t\t<datVersionURL>{WebUtility.HtmlEncode(Url)}</datVersionURL>\n";
-                header += $"\t\t\t<datURL fileName=\"{WebUtility.HtmlEncode(FileName)}.zip\">{WebUtility.HtmlEncode(Url)}</datURL>\n";
-                header += $"\t\t\t<imURL>{WebUtility.HtmlEncode(Url)}</imURL>\n";
-                header += "\t\t</newDat>\n";
-                header += "\t\t<search>\n";
-                header += "\t\t\t<to value=\"location\" default=\"true\" auto=\"true\"/>\n";
-                header += "\t\t\t<to value=\"romSize\" default=\"true\" auto=\"false\"/>\n";
-                header += "\t\t\t<to value=\"languages\" default=\"true\" auto=\"true\"/>\n";
-                header += "\t\t\t<to value=\"saveType\" default=\"false\" auto=\"false\"/>\n";
-                header += "\t\t\t<to value=\"publisher\" default=\"false\" auto=\"true\"/>\n";
-                header += "\t\t\t<to value=\"sourceRom\" default=\"false\" auto=\"true\"/>\n";
-                header += "\t\t</search>\n";
-                header += "\t\t<romTitle >%u - %n</romTitle>\n";
-                header += "\t</configuration>\n";
-                header += "\t<games>\n";
+                xtw.WriteStartDocument(false);
 
-                // Write the header out
-                sw.Write(header);
-                sw.Flush();
-            }
-            catch (Exception ex)
-            {
-                Globals.Logger.Error(ex.ToString());
-                return false;
-            }
+                xtw.WriteStartElement("dat");
+                xtw.WriteAttributeString("xsi", "xmlns", "http://www.w3.org/2001/XMLSchema-instance");
+                xtw.WriteAttributeString("noNamespaceSchemaLocation", "xsi", "datas.xsd");
 
-            return true;
-        }
+                xtw.WriteStartElement("configuration");
+                xtw.WriteElementString("datName", Name);
+                xtw.WriteElementString("datVersion", Count.ToString());
+                xtw.WriteElementString("system", "none");
+                xtw.WriteElementString("screenshotsWidth", "240");
+                xtw.WriteElementString("screenshotsHeight", "160");
 
-        /// <summary>
-        /// Write out Game start using the supplied StreamWriter
-        /// </summary>
-        /// <param name="sw">StreamWriter to output to</param>
-        /// <returns>True if the data was written, false on error</returns>
-        private bool WriteEndGame(StreamWriter sw)
-        {
-            try
-            {
-                string state = "\t\t</game>\n";
+                xtw.WriteStartElement("infos");
 
-                sw.Write(state);
-                sw.Flush();
+                xtw.WriteStartElement("title");
+                xtw.WriteAttributeString("visible", "false");
+                xtw.WriteAttributeString("inNamingOption", "true");
+                xtw.WriteAttributeString("default", "false");
+                xtw.WriteEndElement();
+
+                xtw.WriteStartElement("location");
+                xtw.WriteAttributeString("visible", "true");
+                xtw.WriteAttributeString("inNamingOption", "true");
+                xtw.WriteAttributeString("default", "true");
+                xtw.WriteEndElement();
+
+                xtw.WriteStartElement("publisher");
+                xtw.WriteAttributeString("visible", "true");
+                xtw.WriteAttributeString("inNamingOption", "true");
+                xtw.WriteAttributeString("default", "true");
+                xtw.WriteEndElement();
+
+                xtw.WriteStartElement("sourceRom");
+                xtw.WriteAttributeString("visible", "true");
+                xtw.WriteAttributeString("inNamingOption", "true");
+                xtw.WriteAttributeString("default", "true");
+                xtw.WriteEndElement();
+
+                xtw.WriteStartElement("saveType");
+                xtw.WriteAttributeString("visible", "true");
+                xtw.WriteAttributeString("inNamingOption", "true");
+                xtw.WriteAttributeString("default", "true");
+                xtw.WriteEndElement();
+
+                xtw.WriteStartElement("romSize");
+                xtw.WriteAttributeString("visible", "true");
+                xtw.WriteAttributeString("inNamingOption", "true");
+                xtw.WriteAttributeString("default", "true");
+                xtw.WriteEndElement();
+
+                xtw.WriteStartElement("releaseNumber");
+                xtw.WriteAttributeString("visible", "true");
+                xtw.WriteAttributeString("inNamingOption", "true");
+                xtw.WriteAttributeString("default", "false");
+                xtw.WriteEndElement();
+
+                xtw.WriteStartElement("languageNumber");
+                xtw.WriteAttributeString("visible", "true");
+                xtw.WriteAttributeString("inNamingOption", "true");
+                xtw.WriteAttributeString("default", "false");
+                xtw.WriteEndElement();
+
+                xtw.WriteStartElement("comment");
+                xtw.WriteAttributeString("visible", "true");
+                xtw.WriteAttributeString("inNamingOption", "true");
+                xtw.WriteAttributeString("default", "false");
+                xtw.WriteEndElement();
+
+                xtw.WriteStartElement("romCRC");
+                xtw.WriteAttributeString("visible", "true");
+                xtw.WriteAttributeString("inNamingOption", "true");
+                xtw.WriteAttributeString("default", "false");
+                xtw.WriteEndElement();
+
+                xtw.WriteStartElement("im1CRC");
+                xtw.WriteAttributeString("visible", "false");
+                xtw.WriteAttributeString("inNamingOption", "false");
+                xtw.WriteAttributeString("default", "false");
+                xtw.WriteEndElement();
+
+                xtw.WriteStartElement("im2CRC");
+                xtw.WriteAttributeString("visible", "false");
+                xtw.WriteAttributeString("inNamingOption", "false");
+                xtw.WriteAttributeString("default", "false");
+                xtw.WriteEndElement();
+
+                xtw.WriteStartElement("languages");
+                xtw.WriteAttributeString("visible", "true");
+                xtw.WriteAttributeString("inNamingOption", "true");
+                xtw.WriteAttributeString("default", "true");
+                xtw.WriteEndElement();
+
+                // End infos
+                xtw.WriteEndElement();
+
+                xtw.WriteStartElement("canOpen");
+                xtw.WriteElementString("extension", ".bin");
+                xtw.WriteEndElement();
+
+                xtw.WriteStartElement("newDat");
+                xtw.WriteElementString("datVersionURL", Url);
+
+                xtw.WriteStartElement("datUrl");
+                xtw.WriteAttributeString("fileName", $"{FileName}.zip");
+                xtw.WriteString(Url);
+                xtw.WriteEndElement();
+
+                xtw.WriteElementString("imURL", Url);
+
+                // End newDat
+                xtw.WriteEndElement();
+
+                xtw.WriteStartElement("search");
+
+                xtw.WriteStartElement("to");
+                xtw.WriteAttributeString("value", "location");
+                xtw.WriteAttributeString("default", "true");
+                xtw.WriteAttributeString("auto", "true");
+                xtw.WriteEndElement();
+
+                xtw.WriteStartElement("to");
+                xtw.WriteAttributeString("value", "romSize");
+                xtw.WriteAttributeString("default", "true");
+                xtw.WriteAttributeString("auto", "false");
+                xtw.WriteEndElement();
+
+                xtw.WriteStartElement("to");
+                xtw.WriteAttributeString("value", "languages");
+                xtw.WriteAttributeString("default", "true");
+                xtw.WriteAttributeString("auto", "true");
+                xtw.WriteEndElement();
+
+                xtw.WriteStartElement("to");
+                xtw.WriteAttributeString("value", "saveType");
+                xtw.WriteAttributeString("default", "false");
+                xtw.WriteAttributeString("auto", "false");
+                xtw.WriteEndElement();
+
+                xtw.WriteStartElement("to");
+                xtw.WriteAttributeString("value", "publisher");
+                xtw.WriteAttributeString("default", "false");
+                xtw.WriteAttributeString("auto", "true");
+                xtw.WriteEndElement();
+
+                xtw.WriteStartElement("to");
+                xtw.WriteAttributeString("value", "sourceRom");
+                xtw.WriteAttributeString("default", "false");
+                xtw.WriteAttributeString("auto", "true");
+                xtw.WriteEndElement();
+
+                // End search
+                xtw.WriteEndElement();
+
+                xtw.WriteElementString("romTitle", "%u - %n");
+
+                // End configuration
+                xtw.WriteEndElement();
+
+                xtw.WriteStartElement("games");
+
+                xtw.Flush();
             }
             catch (Exception ex)
             {
@@ -938,11 +1027,11 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Write out DatItem using the supplied StreamWriter
         /// </summary>
-        /// <param name="sw">StreamWriter to output to</param>
+        /// <param name="xtw">XmlTextWriter to output to</param>
         /// <param name="datItem">DatItem object to be output</param>
         /// <param name="ignoreblanks">True if blank roms should be skipped on output, false otherwise (default)</param>
         /// <returns>True if the data was written, false on error</returns>
-        private bool WriteDatItem(StreamWriter sw, DatItem datItem, bool ignoreblanks = false)
+        private bool WriteDatItem(XmlTextWriter xtw, DatItem datItem, bool ignoreblanks = false)
         {
             // If we are in ignore blanks mode AND we have a blank (0-size) rom, skip
             if (ignoreblanks && (datItem.ItemType == ItemType.Rom && ((datItem as Rom).Size == 0 || (datItem as Rom).Size == -1)))
@@ -956,56 +1045,86 @@ namespace SabreTools.Library.DatFiles
                 ProcessItemName(datItem, true);
 
                 // Build the state based on excluded fields
-                state += "\t\t<game>\n";
-                state += "\t\t\t<imageNumber>1</imageNumber>\n";
-                state += "\t\t\t<releaseNumber>1</releaseNumber>\n";
-                state += $"\t\t\t<title>{WebUtility.HtmlEncode(datItem.GetField(Field.Name, ExcludeFields))}</title>\n";
-                state += "\t\t\t<saveType>None</saveType>\n"; ;
+                xtw.WriteStartElement("game");
+                xtw.WriteElementString("imageNumber", "1");
+                xtw.WriteElementString("releaseNumber", "1");
+                xtw.WriteElementString("title", datItem.GetField(Field.Name, ExcludeFields));
+                xtw.WriteElementString("saveType", "None");
 
                 if (datItem.ItemType == ItemType.Rom)
                 {
                     var rom = datItem as Rom;
-                    state += $"\t\t\t<romSize>{datItem.GetField(Field.Size, ExcludeFields)}</romSize>\n";
+                    xtw.WriteElementString("romSize", datItem.GetField(Field.Size, ExcludeFields));
                 }
 
-                state += "\t\t\t<publisher>None</publisher>\n";
-                state += "\t\t\t<location>0</location>\n";
-                state += "\t\t\t<sourceRom>None</sourceRom>\n";
-                state += "\t\t\t<language>0</language>\n";
+                xtw.WriteElementString("publisher", "None");
+                xtw.WriteElementString("location", "0");
+                xtw.WriteElementString("sourceRom", "None");
+                xtw.WriteElementString("language", "0");
 
                 if (datItem.ItemType == ItemType.Disk)
                 {
                     var disk = datItem as Disk;
-                    state += "\t\t\t<files>\n";
-                    if (!ExcludeFields[(int)Field.MD5] && !string.IsNullOrWhiteSpace(disk.MD5))
-                        state += $"\t\t\t\t<romMD5 extension=\".chd\">{disk.MD5.ToUpperInvariant()}</romMD5>\n";
-                    else if (!ExcludeFields[(int)Field.SHA1] && !string.IsNullOrWhiteSpace(disk.SHA1))
-                        state += $"\t\t\t\t<romSHA1 extension=\".chd\">{disk.SHA1.ToUpperInvariant()}</romSHA1>\n";
-                    state += "\t\t\t</files>\n";
+                    xtw.WriteStartElement("files");
+                    if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.MD5, ExcludeFields)))
+                    {
+                        xtw.WriteStartElement("romMD5");
+                        xtw.WriteAttributeString("extension", ".chd");
+                        xtw.WriteString(disk.MD5.ToUpperInvariant());
+                        xtw.WriteEndElement();
+                    }
+                    else if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA1, ExcludeFields)))
+                    {
+                        xtw.WriteStartElement("romSHA1");
+                        xtw.WriteAttributeString("extension", ".chd");
+                        xtw.WriteString(disk.SHA1.ToUpperInvariant());
+                        xtw.WriteEndElement();
+                    }
+
+                    // End files
+                    xtw.WriteEndElement();
                 }
                 else if (datItem.ItemType == ItemType.Rom)
                 {
                     var rom = datItem as Rom;
                     string tempext = "." + Utilities.GetExtension(rom.Name);
 
-                    state += "\t\t\t<files>\n";
-                    if (!ExcludeFields[(int)Field.CRC] && !string.IsNullOrWhiteSpace(rom.CRC))
-                        state += $"\t\t\t\t<romCRC extension=\"{tempext}\">{rom.CRC.ToUpperInvariant()}</romCRC>\n";
-                    else if (!ExcludeFields[(int)Field.MD5] && !string.IsNullOrWhiteSpace(rom.MD5))
-                        state += $"\t\t\t\t<romMD5 extension=\"{tempext}\">{rom.MD5.ToUpperInvariant()}</romMD5>\n";
-                    else if (!ExcludeFields[(int)Field.SHA1] && !string.IsNullOrWhiteSpace(rom.SHA1))
-                        state += $"\t\t\t\t<romSHA1 extension=\"{tempext}\">{rom.SHA1.ToUpperInvariant()}</romSHA1>\n";
-                    state += "\t\t\t</files>\n";
+                    xtw.WriteStartElement("files");
+                    if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.CRC, ExcludeFields)))
+                    {
+                        xtw.WriteStartElement("romCRC");
+                        xtw.WriteAttributeString("extension", tempext);
+                        xtw.WriteString(rom.CRC.ToUpperInvariant());
+                        xtw.WriteEndElement();
+                    }
+                    else if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.MD5, ExcludeFields)))
+                    {
+                        xtw.WriteStartElement("romMD5");
+                        xtw.WriteAttributeString("extension", tempext);
+                        xtw.WriteString(rom.MD5.ToUpperInvariant());
+                        xtw.WriteEndElement();
+                    }
+                    else if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA1, ExcludeFields)))
+                    {
+                        xtw.WriteStartElement("romSHA1");
+                        xtw.WriteAttributeString("extension", tempext);
+                        xtw.WriteString(rom.SHA1.ToUpperInvariant());
+                        xtw.WriteEndElement();
+                    }
+
+                    // End files
+                    xtw.WriteEndElement();
                 }
 
-                state += "\t\t\t<im1CRC>00000000</im1CRC>\n";
-                state += "\t\t\t<im2CRC>00000000</im2CRC>\n";
-                state += "\t\t\t<comment></comment>\n";
-                state += "\t\t\t<duplicateID>0</duplicateID>\n";
-                state += "\t\t</game>\n";
+                xtw.WriteElementString("im1CRC", "00000000");
+                xtw.WriteElementString("im2CRC", "00000000");
+                xtw.WriteElementString("comment", "");
+                xtw.WriteElementString("duplicateID", "0");
+                
+                // End game
+                xtw.WriteEndElement();
 
-                sw.Write(state);
-                sw.Flush();
+                xtw.Flush();
             }
             catch (Exception ex)
             {
@@ -1019,25 +1138,45 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Write out DAT footer using the supplied StreamWriter
         /// </summary>
-        /// <param name="sw">StreamWriter to output to</param>
+        /// <param name="xtw">XmlTextWriter to output to</param>
         /// <returns>True if the data was written, false on error</returns>
-        private bool WriteFooter(StreamWriter sw)
+        private bool WriteFooter(XmlTextWriter xtw)
         {
             try
             {
-                string footer = "\t\t</game>";
-                footer += "\t</games>\n";
-                footer += "\t<gui>\n";
-                footer += "\t\t<images width=\"487\" height=\"162\">\n";
-                footer += "\t\t\t<image x=\"0\" y=\"0\" width=\"240\" height=\"160\"/>\n";
-                footer += "\t\t\t<image x=\"245\" y=\"0\" width=\"240\" height=\"160\"/>\n";
-                footer += "\t\t</images>\n";
-                footer += "\t</gui>\n";
-                footer += "</dat>";
+                // End games
+                xtw.WriteEndElement();
 
-                // Write the footer out
-                sw.Write(footer);
-                sw.Flush();
+                xtw.WriteStartElement("gui");
+
+                xtw.WriteStartElement("images");
+                xtw.WriteAttributeString("width", "487");
+                xtw.WriteAttributeString("height", "162");
+
+                xtw.WriteStartElement("image");
+                xtw.WriteAttributeString("x", "0");
+                xtw.WriteAttributeString("y", "0");
+                xtw.WriteAttributeString("width", "240");
+                xtw.WriteAttributeString("height", "160");
+                xtw.WriteEndElement();
+
+                xtw.WriteStartElement("image");
+                xtw.WriteAttributeString("x", "245");
+                xtw.WriteAttributeString("y", "0");
+                xtw.WriteAttributeString("width", "240");
+                xtw.WriteAttributeString("height", "160");
+                xtw.WriteEndElement();
+
+                // End images
+                xtw.WriteEndElement();
+
+                // End gui
+                xtw.WriteEndElement();
+
+                // End dat
+                xtw.WriteEndElement();
+
+                xtw.Flush();
             }
             catch (Exception ex)
             {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using System.Text;
 using System.Xml;
 
@@ -579,10 +578,11 @@ namespace SabreTools.Library.DatFiles
                     return false;
                 }
 
-                StreamWriter sw = new StreamWriter(fs, new UTF8Encoding(false));
+                XmlTextWriter xtw = new XmlTextWriter(fs, new UTF8Encoding(false));
+                xtw.Formatting = Formatting.Indented;
 
                 // Write out the header
-                WriteHeader(sw);
+                WriteHeader(xtw);
 
                 // Write out each of the machines and roms
                 string lastgame = null;
@@ -611,11 +611,11 @@ namespace SabreTools.Library.DatFiles
 
                         // If we have a different game and we're not at the start of the list, output the end of last item
                         if (lastgame != null && lastgame.ToLowerInvariant() != rom.MachineName.ToLowerInvariant())
-                            WriteEndGame(sw);
+                            WriteEndGame(xtw);
 
                         // If we have a new game, output the beginning of the new item
                         if (lastgame == null || lastgame.ToLowerInvariant() != rom.MachineName.ToLowerInvariant())
-                            WriteStartGame(sw, rom);
+                            WriteStartGame(xtw, rom);
 
                         // If we have a "null" game (created by DATFromDir or something similar), log it to file
                         if (rom.ItemType == ItemType.Rom
@@ -629,7 +629,7 @@ namespace SabreTools.Library.DatFiles
                         }
 
                         // Now, output the rom data
-                        WriteDatItem(sw, rom, ignoreblanks);
+                        WriteDatItem(xtw, rom, ignoreblanks);
 
                         // Set the new data to compare against
                         lastgame = rom.MachineName;
@@ -637,10 +637,10 @@ namespace SabreTools.Library.DatFiles
                 }
 
                 // Write the file footer out
-                WriteFooter(sw);
+                WriteFooter(xtw);
 
                 Globals.Logger.Verbose("File written!" + Environment.NewLine);
-                sw.Dispose();
+                xtw.Dispose();
                 fs.Dispose();
             }
             catch (Exception ex)
@@ -655,21 +655,20 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Write out DAT header using the supplied StreamWriter
         /// </summary>
-        /// <param name="sw">StreamWriter to output to</param>
+        /// <param name="xtw">XmlTextWriter to output to</param>
         /// <returns>True if the data was written, false on error</returns>
-        private bool WriteHeader(StreamWriter sw)
+        private bool WriteHeader(XmlTextWriter xtw)
         {
             try
             {
-                string header = "<?xml version=\"1.0\"?>\n";
-                header += $"<mame build=\"{WebUtility.HtmlEncode(Name)}\"";
-                //header += $" debug=\"{Debug}\"";
-                //header += $" mameconfig=\"{MameConfig}\"";
-                header += ">\n\n";
+                xtw.WriteStartDocument();
 
-                // Write the header out
-                sw.Write(header);
-                sw.Flush();
+                xtw.WriteStartElement("mame");
+                xtw.WriteAttributeString("build", Name);
+                //xtw.WriteAttributeString("debug", Debug);
+                //xtw.WriteAttributeString("mameconfig", MameConfig);
+
+                xtw.Flush();
             }
             catch (Exception ex)
             {
@@ -683,10 +682,10 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Write out Game start using the supplied StreamWriter
         /// </summary>
-        /// <param name="sw">StreamWriter to output to</param>
+        /// <param name="xtw">XmlTextWriter to output to</param>
         /// <param name="datItem">DatItem object to be output</param>
         /// <returns>True if the data was written, false on error</returns>
-        private bool WriteStartGame(StreamWriter sw, DatItem datItem)
+        private bool WriteStartGame(XmlTextWriter xtw, DatItem datItem)
         {
             try
             {
@@ -694,48 +693,55 @@ namespace SabreTools.Library.DatFiles
                 datItem.MachineName = datItem.MachineName.TrimStart(Path.DirectorySeparatorChar);
 
                 // Build the state based on excluded fields
-                string state = $"\t<machine name=\"{WebUtility.HtmlEncode(datItem.GetField(Field.MachineName, ExcludeFields))}\"";
-                if (!ExcludeFields[(int)Field.SourceFile] && datItem.SourceFile != null)
-                    state += $" sourcefile=\"{datItem.SourceFile}\"";
+                xtw.WriteStartElement("machine");
+                xtw.WriteAttributeString("name", datItem.GetField(Field.MachineName, ExcludeFields));
+                if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SourceFile, ExcludeFields)))
+                    xtw.WriteElementString("sourcefile", datItem.SourceFile);
+                
                 if (!ExcludeFields[(int)Field.MachineType])
                 {
                     if ((datItem.MachineType & MachineType.Bios) != 0)
-                        state += " isbios=\"yes\"";
+                        xtw.WriteAttributeString("isbios", "yes");
                     if ((datItem.MachineType & MachineType.Device) != 0)
-                        state += " isdevice=\"yes\"";
+                        xtw.WriteAttributeString("isdevice", "yes");
                     if ((datItem.MachineType & MachineType.Mechanical) != 0)
-                        state += " ismechanical=\"yes\"";
+                        xtw.WriteAttributeString("ismechanical", "yes");
                 }
+
                 if (!ExcludeFields[(int)Field.Runnable])
                 {
                     if (datItem.Runnable == true)
-                        state += " runnable=\"yes\"";
+                        xtw.WriteAttributeString("runnable", "yes");
                     else if (datItem.Runnable == false)
-                        state += " runnable=\"no\"";
+                        xtw.WriteAttributeString("runnable", "no");
                 }
-                if (!ExcludeFields[(int)Field.CloneOf] && !string.IsNullOrWhiteSpace(datItem.CloneOf) && !string.Equals(datItem.MachineName, datItem.CloneOf, StringComparison.OrdinalIgnoreCase))
-                    state += $" cloneof=\"{WebUtility.HtmlEncode(datItem.CloneOf)}\"";
-                if (!ExcludeFields[(int)Field.RomOf] && !string.IsNullOrWhiteSpace(datItem.RomOf) && !string.Equals(datItem.MachineName, datItem.RomOf, StringComparison.OrdinalIgnoreCase))
-                    state += $" romof=\"{WebUtility.HtmlEncode(datItem.RomOf)}\"";
-                if (!ExcludeFields[(int)Field.SampleOf] && !string.IsNullOrWhiteSpace(datItem.SampleOf) && !string.Equals(datItem.MachineName, datItem.SampleOf, StringComparison.OrdinalIgnoreCase))
-                    state += $" sampleof=\"{WebUtility.HtmlEncode(datItem.SampleOf)}\"";
-                state += ">\n";
-                if (!ExcludeFields[(int)Field.Description] && !string.IsNullOrWhiteSpace(datItem.MachineDescription))
-                    state += $"\t\t<description>{WebUtility.HtmlEncode(datItem.MachineDescription)}</description>\n";
-                if (!ExcludeFields[(int)Field.Year] && !string.IsNullOrWhiteSpace(datItem.Year))
-                    state += $"\t\t<year>{WebUtility.HtmlEncode(datItem.Year)}</year>\n";
-                if (!ExcludeFields[(int)Field.Publisher] && !string.IsNullOrWhiteSpace(datItem.Publisher))
-                    state += $"\t\t<publisher>{WebUtility.HtmlEncode(datItem.Publisher)}</publisher>\n";
+
+                if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.CloneOf, ExcludeFields)) && !string.Equals(datItem.MachineName, datItem.CloneOf, StringComparison.OrdinalIgnoreCase))
+                    xtw.WriteAttributeString("cloneof", datItem.CloneOf);
+                if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.RomOf, ExcludeFields)) && !string.Equals(datItem.MachineName, datItem.RomOf, StringComparison.OrdinalIgnoreCase))
+                    xtw.WriteAttributeString("romof", datItem.RomOf);
+                if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SampleOf, ExcludeFields)) && !string.Equals(datItem.MachineName, datItem.SampleOf, StringComparison.OrdinalIgnoreCase))
+                    xtw.WriteAttributeString("sampleof", datItem.SampleOf);
+
+                if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Description, ExcludeFields)))
+                    xtw.WriteElementString("description", datItem.MachineDescription);
+                if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Year, ExcludeFields)))
+                    xtw.WriteElementString("year", datItem.Year);
+                if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Publisher, ExcludeFields)))
+                    xtw.WriteElementString("publisher", datItem.Publisher);
+                
                 if (!ExcludeFields[(int)Field.Infos] && datItem.Infos != null && datItem.Infos.Count > 0)
                 {
                     foreach (Tuple<string, string> kvp in datItem.Infos)
                     {
-                        state += $"\t\t<info name=\"{WebUtility.HtmlEncode(kvp.Item1)}\" value=\"{WebUtility.HtmlEncode(kvp.Item2)}\" />\n";
+                        xtw.WriteStartElement("info");
+                        xtw.WriteAttributeString("name", kvp.Item1);
+                        xtw.WriteAttributeString("value", kvp.Item2);
+                        xtw.WriteEndElement();
                     }
                 }
 
-                sw.Write(state);
-                sw.Flush();
+                xtw.Flush();
             }
             catch (Exception ex)
             {
@@ -749,16 +755,16 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Write out Game start using the supplied StreamWriter
         /// </summary>
-        /// <param name="sw">StreamWriter to output to</param>
+        /// <param name="xtw">XmlTextWriter to output to</param>
         /// <returns>True if the data was written, false on error</returns>
-        private bool WriteEndGame(StreamWriter sw)
+        private bool WriteEndGame(XmlTextWriter xtw)
         {
             try
             {
-                string state = "\t</machine>\n";
+                // End machine
+                xtw.WriteEndElement();
 
-                sw.Write(state);
-                sw.Flush();
+                xtw.Flush();
             }
             catch (Exception ex)
             {
@@ -772,11 +778,11 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Write out DatItem using the supplied StreamWriter
         /// </summary>
-        /// <param name="sw">StreamWriter to output to</param>
+        /// <param name="xtw">XmlTextWriter to output to</param>
         /// <param name="datItem">DatItem object to be output</param>
         /// <param name="ignoreblanks">True if blank roms should be skipped on output, false otherwise (default)</param>
         /// <returns>True if the data was written, false on error</returns>
-        private bool WriteDatItem(StreamWriter sw, DatItem datItem, bool ignoreblanks = false)
+        private bool WriteDatItem(XmlTextWriter xtw, DatItem datItem, bool ignoreblanks = false)
         {
             // If we are in ignore blanks mode AND we have a blank (0-size) rom, skip
             if (ignoreblanks && (datItem.ItemType == ItemType.Rom && ((datItem as Rom).Size == 0 || (datItem as Rom).Size == -1)))
@@ -784,104 +790,97 @@ namespace SabreTools.Library.DatFiles
 
             try
             {
-                string state = string.Empty;
-
                 // Pre-process the item name
                 ProcessItemName(datItem, true);
 
                 // Build the state based on excluded fields
                 switch (datItem.ItemType)
                 {
-                    case ItemType.Archive:
-                        //TODO: Am I missing this?
-                        break;
-
                     case ItemType.BiosSet:
                         var biosSet = datItem as BiosSet;
-                        state += $"\t\t<biosset name\"{WebUtility.HtmlEncode(biosSet.GetField(Field.Name, ExcludeFields))}\"";
-                        if (!ExcludeFields[(int)Field.BiosDescription] && !string.IsNullOrWhiteSpace(biosSet.Description))
-                            state += $" description=\"{WebUtility.HtmlEncode(biosSet.Description)}\"";
+                        xtw.WriteStartElement("biosset");
+                        xtw.WriteAttributeString("name", biosSet.GetField(Field.Name, ExcludeFields));
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.BiosDescription, ExcludeFields)))
+                            xtw.WriteAttributeString("description", biosSet.Description);
                         if (!ExcludeFields[(int)Field.Default] && biosSet.Default != null)
-                            state += $" default=\"{WebUtility.HtmlEncode(biosSet.Default.ToString().ToLowerInvariant())}\"";
-                        state += "/>\n";
+                            xtw.WriteAttributeString("default", biosSet.Default.ToString().ToLowerInvariant());
+                        xtw.WriteEndElement();
                         break;
 
                     case ItemType.Disk:
                         var disk = datItem as Disk;
-                        state += $"\t\t<disk name\"{WebUtility.HtmlEncode(disk.GetField(Field.Name, ExcludeFields))}\"";
-                        if (!ExcludeFields[(int)Field.MD5] && !string.IsNullOrWhiteSpace(disk.MD5))
-                            state += $" md5=\"{disk.MD5.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.RIPEMD160] && !string.IsNullOrWhiteSpace(disk.RIPEMD160))
-                            state += $" ripemd160=\"{disk.RIPEMD160.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.SHA1] && !string.IsNullOrWhiteSpace(disk.SHA1))
-                            state += $" sha1=\"{disk.SHA1.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.SHA256] && !string.IsNullOrWhiteSpace(disk.SHA256))
-                            state += $" sha256=\"{disk.SHA256.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.SHA384] && !string.IsNullOrWhiteSpace(disk.SHA384))
-                            state += $" sha384=\"{disk.SHA384.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.SHA512] && !string.IsNullOrWhiteSpace(disk.SHA512))
-                            state += $" sha512=\"{disk.SHA512.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.Merge] && !string.IsNullOrWhiteSpace(disk.MergeTag))
-                            state += $" merge=\"{WebUtility.HtmlEncode(disk.MergeTag)}\"";
-                        if (!ExcludeFields[(int)Field.Region] && !string.IsNullOrWhiteSpace(disk.Region))
-                            state += $" region=\"{WebUtility.HtmlEncode(disk.Region)}\"";
-                        if (!ExcludeFields[(int)Field.Index] && !string.IsNullOrWhiteSpace(disk.Index))
-                            state += $" index=\"{WebUtility.HtmlEncode(disk.Index)}\"";
+                        xtw.WriteStartElement("disk");
+                        xtw.WriteAttributeString("name", disk.GetField(Field.Name, ExcludeFields));
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.MD5, ExcludeFields)))
+                            xtw.WriteAttributeString("md5", disk.MD5.ToLowerInvariant());
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.RIPEMD160, ExcludeFields)))
+                            xtw.WriteAttributeString("ripemd160", disk.RIPEMD160.ToLowerInvariant());
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA1, ExcludeFields)))
+                            xtw.WriteAttributeString("sha1", disk.SHA1.ToLowerInvariant());
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA256, ExcludeFields)))
+                            xtw.WriteAttributeString("sha256", disk.SHA256.ToLowerInvariant());
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA384, ExcludeFields)))
+                            xtw.WriteAttributeString("sha384", disk.SHA384.ToLowerInvariant());
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA512, ExcludeFields)))
+                            xtw.WriteAttributeString("sha512", disk.SHA512.ToLowerInvariant());
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Merge, ExcludeFields)))
+                            xtw.WriteAttributeString("merge", disk.MergeTag);
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Region, ExcludeFields)))
+                            xtw.WriteAttributeString("region", disk.Region);
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Index, ExcludeFields)))
+                            xtw.WriteAttributeString("index", disk.Index);
                         if (!ExcludeFields[(int)Field.Writable] && disk.Writable != null)
-                            state += $" writable=\"{(disk.Writable == true ? "yes" : "no")}\"";
+                            xtw.WriteAttributeString("writable", disk.Writable == true ? "yes" : "no");
                         if (!ExcludeFields[(int)Field.Status] && disk.ItemStatus != ItemStatus.None)
-                            state += $" status=\"{disk.ItemStatus.ToString().ToLowerInvariant()}\"";
+                            xtw.WriteAttributeString("status", disk.ItemStatus.ToString());
                         if (!ExcludeFields[(int)Field.Optional] && disk.Optional != null)
-                            state += $" optional=\"{(disk.Optional == true ? "yes" : "no")}\"";
-                        state += "/>\n";
-                        break;
-
-                    case ItemType.Release:
-                        //TODO: Am I missing this?
+                            xtw.WriteAttributeString("optional", disk.Optional == true ? "yes" : "no");
+                        xtw.WriteEndElement();
                         break;
 
                     case ItemType.Rom:
                         var rom = datItem as Rom;
-                        state += $"\t\t<rom name\"{WebUtility.HtmlEncode(rom.GetField(Field.Name, ExcludeFields))}\"";
+                        xtw.WriteStartElement("rom");
+                        xtw.WriteAttributeString("name", rom.GetField(Field.Name, ExcludeFields));
                         if (!ExcludeFields[(int)Field.Size] && rom.Size != -1)
-                            state += $" size=\"{rom.Size}\"";
-                        if (!ExcludeFields[(int)Field.CRC] && !string.IsNullOrWhiteSpace(rom.CRC))
-                            state += $" crc=\"{rom.CRC.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.MD5] && !string.IsNullOrWhiteSpace(rom.MD5))
-                            state += $" md5=\"{rom.MD5.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.RIPEMD160] && !string.IsNullOrWhiteSpace(rom.RIPEMD160))
-                            state += $" ripemd160=\"{rom.RIPEMD160.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.SHA1] && !string.IsNullOrWhiteSpace(rom.SHA1))
-                            state += $" sha1=\"{rom.SHA1.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.SHA256] && !string.IsNullOrWhiteSpace(rom.SHA256))
-                            state += $" sha256=\"{rom.SHA256.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.SHA384] && !string.IsNullOrWhiteSpace(rom.SHA384))
-                            state += $" sha384=\"{rom.SHA384.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.SHA512] && !string.IsNullOrWhiteSpace(rom.SHA512))
-                            state += $" sha512=\"{rom.SHA512.ToLowerInvariant()}\"";
-                        if (!ExcludeFields[(int)Field.Bios] && !string.IsNullOrWhiteSpace(rom.Bios))
-                            state += $" bios=\"{WebUtility.HtmlEncode(rom.Bios)}\"";
-                        if (!ExcludeFields[(int)Field.Merge] && !string.IsNullOrWhiteSpace(rom.MergeTag))
-                            state += $" merge=\"{WebUtility.HtmlEncode(rom.MergeTag)}\"";
-                        if (!ExcludeFields[(int)Field.Region] && !string.IsNullOrWhiteSpace(rom.Region))
-                            state += $" region=\"{WebUtility.HtmlEncode(rom.Region)}\"";
-                        if (!ExcludeFields[(int)Field.Offset] && !string.IsNullOrWhiteSpace(rom.Offset))
-                            state += $" offset=\"{rom.Offset}\"";
+                            xtw.WriteAttributeString("size", rom.Size.ToString());
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.MD5, ExcludeFields)))
+                            xtw.WriteAttributeString("crc", rom.CRC.ToLowerInvariant());
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.MD5, ExcludeFields)))
+                            xtw.WriteAttributeString("md5", rom.MD5.ToLowerInvariant());
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.RIPEMD160, ExcludeFields)))
+                            xtw.WriteAttributeString("ripemd160", rom.RIPEMD160.ToLowerInvariant());
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA1, ExcludeFields)))
+                            xtw.WriteAttributeString("sha1", rom.SHA1.ToLowerInvariant());
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA256, ExcludeFields)))
+                            xtw.WriteAttributeString("sha256", rom.SHA256.ToLowerInvariant());
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA384, ExcludeFields)))
+                            xtw.WriteAttributeString("sha384", rom.SHA384.ToLowerInvariant());
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA512, ExcludeFields)))
+                            xtw.WriteAttributeString("sha512", rom.SHA512.ToLowerInvariant());
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Bios, ExcludeFields)))
+                            xtw.WriteAttributeString("bios", rom.Bios);
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Merge, ExcludeFields)))
+                            xtw.WriteAttributeString("merge", rom.MergeTag);
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Region, ExcludeFields)))
+                            xtw.WriteAttributeString("region", rom.Region);
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Offset, ExcludeFields)))
+                            xtw.WriteAttributeString("offset", rom.Offset);
                         if (!ExcludeFields[(int)Field.Status] && rom.ItemStatus != ItemStatus.None)
-                            state += $" status=\"{rom.ItemStatus.ToString().ToLowerInvariant()}\"";
+                            xtw.WriteAttributeString("status", rom.ItemStatus.ToString().ToLowerInvariant());
                         if (!ExcludeFields[(int)Field.Optional] && rom.Optional != null)
-                            state += $" optional=\"{(rom.Optional == true ? "yes" : "no")}\"";
-                        state += "/>\n";
+                            xtw.WriteAttributeString("optional", rom.Optional == true ? "yes" : "no");
+                        xtw.WriteEndElement();
                         break;
 
                     case ItemType.Sample:
-                        state += $"\t\t<sample name\"{WebUtility.HtmlEncode(datItem.GetField(Field.Name, ExcludeFields))}\"";
-                        state += "/>\n";
+                        xtw.WriteStartElement("sample");
+                        xtw.WriteAttributeString("name", datItem.GetField(Field.Name, ExcludeFields));
+                        xtw.WriteEndElement();
                         break;
                 }
 
-                sw.Write(state);
-                sw.Flush();
+                xtw.Flush();
             }
             catch (Exception ex)
             {
@@ -895,17 +894,19 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Write out DAT footer using the supplied StreamWriter
         /// </summary>
-        /// <param name="sw">StreamWriter to output to</param>
+        /// <param name="xtw">XmlTextWriter to output to</param>
         /// <returns>True if the data was written, false on error</returns>
-        private bool WriteFooter(StreamWriter sw)
+        private bool WriteFooter(XmlTextWriter xtw)
         {
             try
             {
-                string footer = "\t</machine>\n</mame>\n";
+                // End machine
+                xtw.WriteEndElement();
 
-                // Write the footer out
-                sw.Write(footer);
-                sw.Flush();
+                // End mame
+                xtw.WriteEndElement();
+
+                xtw.Flush();
             }
             catch (Exception ex)
             {
