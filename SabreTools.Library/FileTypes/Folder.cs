@@ -43,6 +43,54 @@ namespace SabreTools.Library.FileTypes
             this.Type = FileType.Folder;
         }
 
+        /// <summary>
+        /// Create an folder object of the specified type, if possible
+        /// </summary>
+        /// <param name="outputFormat">SabreTools.Library.Data.OutputFormat representing the archive to create</param>
+        /// <returns>Archive object representing the inputs</returns>
+        public static Folder Create(OutputFormat outputFormat)
+        {
+            switch (outputFormat)
+            {
+                case OutputFormat.Folder:
+                    return new Folder();
+
+                case OutputFormat.TapeArchive:
+                    return new TapeArchive();
+
+                case OutputFormat.Torrent7Zip:
+                    return new SevenZipArchive();
+
+                case OutputFormat.TorrentGzip:
+                case OutputFormat.TorrentGzipRomba:
+                    return new GZipArchive();
+
+                case OutputFormat.TorrentLRZip:
+                    return new LRZipArchive();
+
+                case OutputFormat.TorrentLZ4:
+                    return new LZ4Archive();
+
+                case OutputFormat.TorrentRar:
+                    return new RarArchive();
+
+                case OutputFormat.TorrentXZ:
+                    return new XZArchive();
+
+                case OutputFormat.TorrentZip:
+                    return new ZipArchive();
+
+                case OutputFormat.TorrentZPAQ:
+                    return new ZPAQArchive();
+
+                case OutputFormat.TorrentZstd:
+                    return new ZstdArchive();
+
+                default:
+                    return null;
+            }
+        }
+
         #endregion
 
         #region Extraction
@@ -129,7 +177,7 @@ namespace SabreTools.Library.FileTypes
                 Directory.CreateDirectory(outDir);
 
                 // Get all files from the input directory
-                List<string> files = Utilities.RetrieveFiles(this.Filename, new List<string>());
+                List<string> files = DirectoryExtensions.GetFilesOrdered(this.Filename);
 
                 // Now sort through to find the first file that matches
                 string match = files.Where(s => s.EndsWith(entryName)).FirstOrDefault();
@@ -168,7 +216,7 @@ namespace SabreTools.Library.FileTypes
                 Directory.CreateDirectory(this.Filename);
 
                 // Get all files from the input directory
-                List<string> files = Utilities.RetrieveFiles(this.Filename, new List<string>());
+                List<string> files = DirectoryExtensions.GetFilesOrdered(this.Filename);
 
                 // Now sort through to find the first file that matches
                 string match = files.Where(s => s.EndsWith(entryName)).FirstOrDefault();
@@ -176,7 +224,7 @@ namespace SabreTools.Library.FileTypes
                 // If we had a file, copy that over to the new name
                 if (!string.IsNullOrWhiteSpace(match))
                 {
-                    Utilities.TryOpenRead(match).CopyTo(ms);
+                    FileExtensions.TryOpenRead(match).CopyTo(ms);
                     realentry = match;
                 }
             }
@@ -207,7 +255,7 @@ namespace SabreTools.Library.FileTypes
                 _children = new List<BaseFile>();
                 foreach (string file in Directory.EnumerateFiles(this.Filename, "*", SearchOption.TopDirectoryOnly))
                 {
-                    BaseFile nf = Utilities.GetFileInfo(file, omitFromScan: omitFromScan, date: date);
+                    BaseFile nf = FileExtensions.GetInfo(file, omitFromScan: omitFromScan, date: date);
                     _children.Add(nf);
                 }
 
@@ -228,7 +276,7 @@ namespace SabreTools.Library.FileTypes
         /// <returns>List of empty folders in the folder</returns>
         public virtual List<string> GetEmptyFolders()
         {
-            return Utilities.GetEmptyDirectories(this.Filename).ToList();
+            return DirectoryExtensions.ListEmpty(this.Filename);
         }
 
         #endregion
@@ -247,7 +295,7 @@ namespace SabreTools.Library.FileTypes
         /// <remarks>This works for now, but it can be sped up by using Ionic.Zip or another zlib wrapper that allows for header values built-in. See edc's code.</remarks>
         public virtual bool Write(string inputFile, string outDir, Rom rom, bool date = false, bool romba = false)
         {
-            FileStream fs = Utilities.TryOpenRead(inputFile);
+            FileStream fs = FileExtensions.TryOpenRead(inputFile);
             return Write(fs, outDir, rom, date, romba);
         }
 
@@ -281,7 +329,7 @@ namespace SabreTools.Library.FileTypes
             FileStream outputStream = null;
 
             // Get the output folder name from the first rebuild rom
-            string fileName = Path.Combine(outDir, Utilities.RemovePathUnsafeCharacters(rom.MachineName), Utilities.RemovePathUnsafeCharacters(rom.Name));
+            string fileName = Path.Combine(outDir, Sanitizer.RemovePathUnsafeCharacters(rom.MachineName), Sanitizer.RemovePathUnsafeCharacters(rom.Name));
 
             try
             {
@@ -292,7 +340,7 @@ namespace SabreTools.Library.FileTypes
                 }
 
                 // Overwrite output files by default
-                outputStream = Utilities.TryCreate(fileName);
+                outputStream = FileExtensions.TryCreate(fileName);
 
                 // If the output stream isn't null
                 if (outputStream != null)

@@ -80,10 +80,12 @@ namespace SabreTools.Library.DatFiles
         /// </summary>
         public long MD5Count { get; set; } = 0;
 
+#if NET_FRAMEWORK
         /// <summary>
         /// Number of items with a RIPEMD160 hash
         /// </summary>
         public long RIPEMD160Count { get; set; } = 0;
+#endif
 
         /// <summary>
         /// Number of items with a SHA-1 hash
@@ -155,7 +157,9 @@ namespace SabreTools.Library.DatFiles
                         if (((Disk)item).ItemStatus != ItemStatus.Nodump)
                         {
                             this.MD5Count += (string.IsNullOrWhiteSpace(((Disk)item).MD5) ? 0 : 1);
+#if NET_FRAMEWORK
                             this.RIPEMD160Count += (string.IsNullOrWhiteSpace(((Disk)item).RIPEMD160) ? 0 : 1);
+#endif
                             this.SHA1Count += (string.IsNullOrWhiteSpace(((Disk)item).SHA1) ? 0 : 1);
                             this.SHA256Count += (string.IsNullOrWhiteSpace(((Disk)item).SHA256) ? 0 : 1);
                             this.SHA384Count += (string.IsNullOrWhiteSpace(((Disk)item).SHA384) ? 0 : 1);
@@ -177,7 +181,9 @@ namespace SabreTools.Library.DatFiles
                             this.TotalSize += ((Rom)item).Size;
                             this.CRCCount += (string.IsNullOrWhiteSpace(((Rom)item).CRC) ? 0 : 1);
                             this.MD5Count += (string.IsNullOrWhiteSpace(((Rom)item).MD5) ? 0 : 1);
+#if NET_FRAMEWORK
                             this.RIPEMD160Count += (string.IsNullOrWhiteSpace(((Rom)item).RIPEMD160) ? 0 : 1);
+#endif
                             this.SHA1Count += (string.IsNullOrWhiteSpace(((Rom)item).SHA1) ? 0 : 1);
                             this.SHA256Count += (string.IsNullOrWhiteSpace(((Rom)item).SHA256) ? 0 : 1);
                             this.SHA384Count += (string.IsNullOrWhiteSpace(((Rom)item).SHA384) ? 0 : 1);
@@ -218,7 +224,9 @@ namespace SabreTools.Library.DatFiles
             // Individual hash counts
             this.CRCCount += stats.CRCCount;
             this.MD5Count += stats.MD5Count;
+#if NET_FRAMEWORK
             this.RIPEMD160Count += stats.RIPEMD160Count;
+#endif
             this.SHA1Count += stats.SHA1Count;
             this.SHA256Count += stats.SHA256Count;
             this.SHA384Count += stats.SHA384Count;
@@ -229,7 +237,7 @@ namespace SabreTools.Library.DatFiles
             this.GoodCount += stats.GoodCount;
             this.NodumpCount += stats.NodumpCount;
             this.VerifiedCount += stats.VerifiedCount;
-    }
+        }
 
         /// <summary>
         /// Remove from the statistics given a DatItem
@@ -257,7 +265,9 @@ namespace SabreTools.Library.DatFiles
                         if (((Disk)item).ItemStatus != ItemStatus.Nodump)
                         {
                             this.MD5Count -= (string.IsNullOrWhiteSpace(((Disk)item).MD5) ? 0 : 1);
+#if NET_FRAMEWORK
                             this.RIPEMD160Count -= (string.IsNullOrWhiteSpace(((Disk)item).RIPEMD160) ? 0 : 1);
+#endif
                             this.SHA1Count -= (string.IsNullOrWhiteSpace(((Disk)item).SHA1) ? 0 : 1);
                             this.SHA256Count -= (string.IsNullOrWhiteSpace(((Disk)item).SHA256) ? 0 : 1);
                             this.SHA384Count -= (string.IsNullOrWhiteSpace(((Disk)item).SHA384) ? 0 : 1);
@@ -279,7 +289,9 @@ namespace SabreTools.Library.DatFiles
                             this.TotalSize -= ((Rom)item).Size;
                             this.CRCCount -= (string.IsNullOrWhiteSpace(((Rom)item).CRC) ? 0 : 1);
                             this.MD5Count -= (string.IsNullOrWhiteSpace(((Rom)item).MD5) ? 0 : 1);
+#if NET_FRAMEWORK
                             this.RIPEMD160Count -= (string.IsNullOrWhiteSpace(((Rom)item).RIPEMD160) ? 0 : 1);
+#endif
                             this.SHA1Count -= (string.IsNullOrWhiteSpace(((Rom)item).SHA1) ? 0 : 1);
                             this.SHA256Count -= (string.IsNullOrWhiteSpace(((Rom)item).SHA256) ? 0 : 1);
                             this.SHA384Count -= (string.IsNullOrWhiteSpace(((Rom)item).SHA384) ? 0 : 1);
@@ -318,7 +330,9 @@ namespace SabreTools.Library.DatFiles
 
             this.CRCCount = 0;
             this.MD5Count = 0;
+#if NET_FRAMEWORK
             this.RIPEMD160Count = 0;
+#endif
             this.SHA1Count = 0;
             this.SHA256Count = 0;
             this.SHA384Count = 0;

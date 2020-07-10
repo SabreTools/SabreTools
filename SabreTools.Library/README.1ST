@@ -179,6 +179,7 @@ Options:
 	  -nr160, --skip-ripemd160	Don't include RIPEMD160 in output
 		  This allows the user to skip calculating the RIPEMD160 for each of
 		  the files which will speed up the creation of the DAT.
+		  .NET Framework 4.8 only.
 
 	  -ns, --skip-sha1			Don't include SHA-1 in output
 		  This allows the user to skip calculating the SHA-1 for each of the
@@ -227,7 +228,7 @@ Options:
 		  msx, openmsx		- openMSX Software List
 		  ol, offlinelist	- OfflineList XML
 		  rc, romcenter		- RomCenter
-		  ripemd160         - RIPEMD160
+		  ripemd160         - RIPEMD160 (.NET Framework 4.8 only)
 		  sd, sabredat		- SabreDat XML
 		  sfv				- SFV
 		  sha1				- SHA1
@@ -423,13 +424,13 @@ Options:
 		  Include only items with this RIPEMD160 hash in the output.
 		  Additionally, the user can specify an exact match or full C#-style
 		  regex for pattern matching. Multiple instances of this flag are
-		  allowed.
+		  allowed. .NET Framework 4.8 only.
 
 	  -nripemd160=, --not-ripemd160=	Filter by not RIPEMD160 hash
 		  Include only items without this RIPEMD160 hash in the output.
 		  Additionally, the user can specify an exact match or full C#-style
 		  regex for pattern matching. Multiple instances of this flag are
-		  allowed.
+		  allowed. .NET Framework 4.8 only
 
 	  -sha1=, --sha1=			 Filter by SHA-1 hash
 		  Include only items with this SHA-1 hash in the output. Additionally,
@@ -766,7 +767,7 @@ Options:
 		  msx, openmsx		- openMSX Software List
 		  ol, offlinelist	- OfflineList XML
 		  rc, romcenter		- RomCenter
-		  ripemd160			- RIPEMD160
+		  ripemd160			- RIPEMD160 (.NET Framework 4.8 only)
 		  sd, sabredat		- SabreDat XML
 		  sfv				- SFV
 		  sha1				- SHA1
@@ -941,7 +942,7 @@ Options:
 		  msx, openmsx		- openMSX Software List
 		  ol, offlinelist	- OfflineList XML
 		  rc, romcenter		- RomCenter
-		  ripemd160			- RIPEMD160
+		  ripemd160			- RIPEMD160 (.NET Framework 4.8 only)
 		  sd, sabredat		- SabreDat XML
 		  sfv				- SFV
 		  sha1				- SHA1
@@ -967,7 +968,7 @@ Options:
 			  - %publisher% - Replaced with game Publisher
 			  - %crc% - Replaced with the CRC
 			  - %md5% - Replaced with the MD5
-			  - %ripemd160% - Replaced with the RIPEMD160
+			  - %ripemd160% - Replaced with the RIPEMD160 (.NET Framework 4.8 only)
 			  - %sha1% - Replaced with the SHA-1
 			  - %sha256% - Replaced with the SHA-256
 			  - %sha384% - Replaced with the SHA-384
@@ -1381,13 +1382,13 @@ Options:
 		  Include only items with this RIPEMD160 hash in the output.
 		  Additionally, the user can specify an exact match or full C#-style
 		  regex for pattern matching. Multiple instances of this flag are
-		  allowed.
+		  allowed. .NET Framework 4.8 only.
 
 	  -nripemd160=, --not-ripemd160=  Filter by not RIPEMD160 hash
 		  Include only items without this RIPEMD160 hash in the output.
 		  Additionally, the user can specify an exact match or full C#-style
 		  regex for pattern matching. Multiple instances of this flag are
-		  allowed.
+		  allowed. .NET Framework 4.8 only.
 
 	  -sha1=, --sha1=			 Filter by SHA-1 hash
 		  Include only items with this SHA-1 hash in the output. Additionally,
@@ -1638,13 +1639,13 @@ Options:
 		  Include only items with this RIPEMD160 hash in the output.
 		  Additionally, the user can specify an exact match or full C#-style
 		  regex for pattern matching. Multiple instances of this flag are
-		  allowed.
+		  allowed. .NET Framework 4.8 only.
 
 	  -nripemd160=, --not-ripemd160=  Filter by not RIPEMD160 hash
 		  Include only items without this RIPEMD160 hash in the output.
 		  Additionally, the user can specify an exact match or full C#-style
 		  regex for pattern matching. Multiple instances of this flag are
-		  allowed.
+		  allowed. .NET Framework 4.8 only.
 
 	  -sha1=, --sha1=			 Filter by SHA-1 hash
 		  Include only items with this SHA-1 hash in the output. Additionally,

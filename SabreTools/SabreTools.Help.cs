@@ -5,6 +5,7 @@ using System.IO;
 using SabreTools.Library.Data;
 using SabreTools.Library.DatFiles;
 using SabreTools.Library.Help;
+using SabreTools.Library.Skippers;
 using SabreTools.Library.Tools;
 
 namespace SabreTools
@@ -14,7 +15,7 @@ namespace SabreTools
         #region Private Flag features
 
         public const string AddBlankFilesValue = "add-blank-files";
-        private static Feature _addBlankFilesFlag
+        private static Feature addBlankFilesFlag
         {
             get
             {
@@ -28,7 +29,7 @@ namespace SabreTools
         }
 
         public const string AddDateValue = "add-date";
-        private static Feature _addDateFlag
+        private static Feature addDateFlag
         {
             get
             {
@@ -42,7 +43,7 @@ namespace SabreTools
         }
 
         public const string ArchivesAsFilesValue = "archives-as-files";
-        private static Feature _archivesAsFilesFlag
+        private static Feature archivesAsFilesFlag
         {
             get
             {
@@ -56,7 +57,7 @@ namespace SabreTools
         }
 
         public const string BaddumpColumnValue = "baddump-column";
-        private static Feature _baddumpColumnFlag
+        private static Feature baddumpColumnFlag
         {
             get
             {
@@ -70,7 +71,7 @@ namespace SabreTools
         }
 
         public const string BaseValue = "base";
-        private static Feature _baseFlag
+        private static Feature baseFlag
         {
             get
             {
@@ -84,7 +85,7 @@ namespace SabreTools
         }
 
         public const string BaseReplaceValue = "base-replace";
-        private static Feature _baseReplaceFlag
+        private static Feature baseReplaceFlag
         {
             get
             {
@@ -98,7 +99,7 @@ namespace SabreTools
         }
 
         public const string ChdsAsFilesValue = "chds-as-files";
-        private static Feature _chdsAsFilesFlag
+        private static Feature chdsAsFilesFlag
         {
             get
             {
@@ -112,7 +113,7 @@ namespace SabreTools
         }
 
         public const string CleanValue = "clean";
-        private static Feature _cleanFlag
+        private static Feature cleanFlag
         {
             get
             {
@@ -126,7 +127,7 @@ namespace SabreTools
         }
 
         public const string CopyFilesValue = "copy-files";
-        private static Feature _copyFilesFlag
+        private static Feature copyFilesFlag
         {
             get
             {
@@ -140,7 +141,7 @@ namespace SabreTools
         }
 
         public const string DatDeviceNonMergedValue = "dat-device-non-merged";
-        private static Feature _datDeviceNonMergedFlag
+        private static Feature datDeviceNonMergedFlag
         {
             get
             {
@@ -154,7 +155,7 @@ namespace SabreTools
         }
 
         public const string DatFullNonMergedValue = "dat-full-non-merged";
-        private static Feature _datFullNonMergedFlag
+        private static Feature datFullNonMergedFlag
         {
             get
             {
@@ -168,7 +169,7 @@ namespace SabreTools
         }
 
         public const string DatMergedValue = "dat-merged";
-        private static Feature _datMergedFlag
+        private static Feature datMergedFlag
         {
             get
             {
@@ -182,7 +183,7 @@ namespace SabreTools
         }
 
         public const string DatNonMergedValue = "dat-non-merged";
-        private static Feature _datNonMergedFlag
+        private static Feature datNonMergedFlag
         {
             get
             {
@@ -196,7 +197,7 @@ namespace SabreTools
         }
 
         public const string DatSplitValue = "dat-split";
-        private static Feature _datSplitFlag
+        private static Feature datSplitFlag
         {
             get
             {
@@ -210,7 +211,7 @@ namespace SabreTools
         }
 
         public const string DedupValue = "dedup";
-        private static Feature _dedupFlag
+        private static Feature dedupFlag
         {
             get
             {
@@ -224,7 +225,7 @@ namespace SabreTools
         }
 
         public const string DeleteValue = "delete";
-        private static Feature _deleteFlag
+        private static Feature deleteFlag
         {
             get
             {
@@ -238,7 +239,7 @@ namespace SabreTools
         }
 
         public const string DepotValue = "depot";
-        private static Feature _depotFlag
+        private static Feature depotFlag
         {
             get
             {
@@ -252,7 +253,7 @@ namespace SabreTools
         }
 
         public const string DeprecatedValue = "deprecated";
-        private static Feature _deprecatedFlag
+        private static Feature deprecatedFlag
         {
             get
             {
@@ -266,7 +267,7 @@ namespace SabreTools
         }
 
         public const string DescriptionAsNameValue = "description-as-name";
-        private static Feature _descriptionAsNameFlag
+        private static Feature descriptionAsNameFlag
         {
             get
             {
@@ -280,7 +281,7 @@ namespace SabreTools
         }
 
         public const string DiffAgainstValue = "diff-against";
-        private static Feature _diffAgainstFlag
+        private static Feature diffAgainstFlag
         {
             get
             {
@@ -294,7 +295,7 @@ namespace SabreTools
         }
 
         public const string DiffAllValue = "diff-all";
-        private static Feature _diffAllFlag
+        private static Feature diffAllFlag
         {
             get
             {
@@ -308,7 +309,7 @@ namespace SabreTools
         }
 
         public const string DiffCascadeValue = "diff-cascade";
-        private static Feature _diffCascadeFlag
+        private static Feature diffCascadeFlag
         {
             get
             {
@@ -322,7 +323,7 @@ namespace SabreTools
         }
 
         public const string DiffDuplicatesValue = "diff-duplicates";
-        private static Feature _diffDuplicatesFlag
+        private static Feature diffDuplicatesFlag
         {
             get
             {
@@ -336,7 +337,7 @@ namespace SabreTools
         }
 
         public const string DiffIndividualsValue = "diff-individuals";
-        private static Feature _diffIndividualsFlag
+        private static Feature diffIndividualsFlag
         {
             get
             {
@@ -350,7 +351,7 @@ namespace SabreTools
         }
 
         public const string DiffNoDuplicatesValue = "diff-no-duplicates";
-        private static Feature _diffNoDuplicatesFlag
+        private static Feature diffNoDuplicatesFlag
         {
             get
             {
@@ -364,7 +365,7 @@ namespace SabreTools
         }
 
         public const string DiffReverseCascadeValue = "diff-reverse-cascade";
-        private static Feature _diffReverseCascadeFlag
+        private static Feature diffReverseCascadeFlag
         {
             get
             {
@@ -378,7 +379,7 @@ namespace SabreTools
         }
 
         public const string ExtensionValue = "extension";
-        private static Feature _extensionFlag
+        private static Feature extensionFlag
         {
             get
             {
@@ -392,7 +393,7 @@ namespace SabreTools
         }
 
         public const string GameDedupValue = "game-dedup";
-        private static Feature _gameDedupFlag
+        private static Feature gameDedupFlag
         {
             get
             {
@@ -406,7 +407,7 @@ namespace SabreTools
         }
 
         public const string GamePrefixValue = "game-prefix";
-        private static Feature _gamePrefixFlag
+        private static Feature gamePrefixFlag
         {
             get
             {
@@ -420,7 +421,7 @@ namespace SabreTools
         }
 
         public const string HashValue = "hash";
-        private static Feature _hashFlag
+        private static Feature hashFlag
         {
             get
             {
@@ -434,7 +435,7 @@ namespace SabreTools
         }
 
         public const string HashOnlyValue = "hash-only";
-        private static Feature _hashOnlyFlag
+        private static Feature hashOnlyFlag
         {
             get
             {
@@ -448,7 +449,7 @@ namespace SabreTools
         }
 
         public const string IndividualValue = "individual";
-        private static Feature _individualFlag
+        private static Feature individualFlag
         {
             get
             {
@@ -462,7 +463,7 @@ namespace SabreTools
         }
 
         public const string InplaceValue = "inplace";
-        private static Feature _inplaceFlag
+        private static Feature inplaceFlag
         {
             get
             {
@@ -476,7 +477,7 @@ namespace SabreTools
         }
 
         public const string InverseValue = "inverse";
-        private static Feature _inverseFlag
+        private static Feature inverseFlag
         {
             get
             {
@@ -490,7 +491,7 @@ namespace SabreTools
         }
 
         public const string KeepEmptyGamesValue = "keep-empty-games";
-        private static Feature _keepEmptyGamesFlag
+        private static Feature keepEmptyGamesFlag
         {
             get
             {
@@ -504,7 +505,7 @@ namespace SabreTools
         }
 
         public const string LevelValue = "level";
-        private static Feature _levelFlag
+        private static Feature levelFlag
         {
             get
             {
@@ -518,7 +519,7 @@ namespace SabreTools
         }
 
         public const string MatchOfTagsValue = "match-of-tags";
-        private static Feature _matchOfTagsFlag
+        private static Feature matchOfTagsFlag
         {
             get
             {
@@ -532,7 +533,7 @@ namespace SabreTools
         }
 
         public const string MergeValue = "merge";
-        private static Feature _mergeFlag
+        private static Feature mergeFlag
         {
             get
             {
@@ -546,7 +547,7 @@ namespace SabreTools
         }
 
         public const string NoAutomaticDateValue = "no-automatic-date";
-        private static Feature _noAutomaticDateFlag
+        private static Feature noAutomaticDateFlag
         {
             get
             {
@@ -560,7 +561,7 @@ namespace SabreTools
         }
 
         public const string NodumpColumnValue = "nodump-column";
-        private static Feature _nodumpColumnFlag
+        private static Feature nodumpColumnFlag
         {
             get
             {
@@ -574,7 +575,7 @@ namespace SabreTools
         }
 
         public const string NoStoreHeaderValue = "no-store-header";
-        private static Feature _noStoreHeaderFlag
+        private static Feature noStoreHeaderFlag
         {
             get
             {
@@ -588,7 +589,7 @@ namespace SabreTools
         }
 
         public const string NotRunnableValue = "not-runnable";
-        private static Feature _notRunnableFlag
+        private static Feature notRunnableFlag
         {
             get
             {
@@ -602,7 +603,7 @@ namespace SabreTools
         }
 
         public const string OneRomPerGameValue = "one-rom-per-game";
-        private static Feature _oneRomPerGameFlag
+        private static Feature oneRomPerGameFlag
         {
             get
             {
@@ -616,7 +617,7 @@ namespace SabreTools
         }
 
         public const string OnlySameValue = "only-same";
-        private static Feature _onlySameFlag
+        private static Feature onlySameFlag
         {
             get
             {
@@ -630,7 +631,7 @@ namespace SabreTools
         }
 
         public const string QuickValue = "quick";
-        private static Feature _quickFlag
+        private static Feature quickFlag
         {
             get
             {
@@ -644,7 +645,7 @@ namespace SabreTools
         }
 
         public const string QuotesValue = "quotes";
-        private static Feature _quotesFlag
+        private static Feature quotesFlag
         {
             get
             {
@@ -658,7 +659,7 @@ namespace SabreTools
         }
 
         public const string RemoveExtensionsValue = "remove-extensions";
-        private static Feature _removeExtensionsFlag
+        private static Feature removeExtensionsFlag
         {
             get
             {
@@ -672,7 +673,7 @@ namespace SabreTools
         }
 
         public const string RemoveUnicodeValue = "remove-unicode";
-        private static Feature _removeUnicodeFlag
+        private static Feature removeUnicodeFlag
         {
             get
             {
@@ -686,7 +687,7 @@ namespace SabreTools
         }
 
         public const string ReverseBaseReplaceValue = "reverse-base-replace";
-        private static Feature _reverseBaseReplaceFlag
+        private static Feature reverseBaseReplaceFlag
         {
             get
             {
@@ -700,7 +701,7 @@ namespace SabreTools
         }
 
         public const string RombaValue = "romba";
-        private static Feature _rombaFlag
+        private static Feature rombaFlag
         {
             get
             {
@@ -714,7 +715,7 @@ namespace SabreTools
         }
 
         public const string RomsValue = "roms";
-        private static Feature _romsFlag
+        private static Feature romsFlag
         {
             get
             {
@@ -728,7 +729,7 @@ namespace SabreTools
         }
 
         public const string RunnableValue = "runnable";
-        private static Feature _runnableFlag
+        private static Feature runnableFlag
         {
             get
             {
@@ -742,7 +743,7 @@ namespace SabreTools
         }
 
         public const string ScanAllValue = "scan-all";
-        private static Feature _scanAllFlag
+        private static Feature scanAllFlag
         {
             get
             {
@@ -756,7 +757,7 @@ namespace SabreTools
         }
 
         public const string SceneDateStripValue = "scene-date-strip";
-        private static Feature _sceneDateStripFlag
+        private static Feature sceneDateStripFlag
         {
             get
             {
@@ -770,7 +771,7 @@ namespace SabreTools
         }
 
         public const string ShortValue = "short";
-        private static Feature _shortFlag
+        private static Feature shortFlag
         {
             get
             {
@@ -784,7 +785,7 @@ namespace SabreTools
         }
 
         public const string SingleSetValue = "single-set";
-        private static Feature _singleSetFlag
+        private static Feature singleSetFlag
         {
             get
             {
@@ -798,7 +799,7 @@ namespace SabreTools
         }
 
         public const string SizeValue = "size";
-        private static Feature _sizeFlag
+        private static Feature sizeFlag
         {
             get
             {
@@ -812,7 +813,7 @@ namespace SabreTools
         }
 
         public const string SkipArchivesValue = "skip-archives";
-        private static Feature _skipArchivesFlag
+        private static Feature skipArchivesFlag
         {
             get
             {
@@ -826,7 +827,7 @@ namespace SabreTools
         }
 
         public const string SkipFilesValue = "skip-files";
-        private static Feature _skipFilesFlag
+        private static Feature skipFilesFlag
         {
             get
             {
@@ -840,7 +841,7 @@ namespace SabreTools
         }
 
         public const string SkipFirstOutputValue = "skip-first-output";
-        private static Feature _skipFirstOutputFlag
+        private static Feature skipFirstOutputFlag
         {
             get
             {
@@ -854,7 +855,7 @@ namespace SabreTools
         }
 
         public const string SkipMd5Value = "skip-md5";
-        private static Feature _skipMd5Flag
+        private static Feature skipMd5Flag
         {
             get
             {
@@ -867,8 +868,9 @@ namespace SabreTools
             }
         }
 
+#if NET_FRAMEWORK
         public const string SkipRipeMd160Value = "skip-ripemd160";
-        private static Feature _skipRipeMd160Flag
+        private static Feature skipRipeMd160Flag
         {
             get
             {
@@ -880,9 +882,10 @@ namespace SabreTools
                     longDescription: "This allows the user to skip calculating the RIPEMD160 for each of the files which will speed up the creation of the DAT.");
             }
         }
+#endif
 
         public const string SkipSha1Value = "skip-sha1";
-        private static Feature _skipSha1Flag
+        private static Feature skipSha1Flag
         {
             get
             {
@@ -896,7 +899,7 @@ namespace SabreTools
         }
 
         public const string SkipSha256Value = "skip-sha256";
-        private static Feature _skipSha256Flag
+        private static Feature skipSha256Flag
         {
             get
             {
@@ -910,7 +913,7 @@ namespace SabreTools
         }
 
         public const string SkipSha384Value = "skip-sha384";
-        private static Feature _skipSha384Flag
+        private static Feature skipSha384Flag
         {
             get
             {
@@ -924,7 +927,7 @@ namespace SabreTools
         }
 
         public const string SkipSha512Value = "skip-sha512";
-        private static Feature _skipSha512Flag
+        private static Feature skipSha512Flag
         {
             get
             {
@@ -938,7 +941,7 @@ namespace SabreTools
         }
 
         public const string SuperdatValue = "superdat";
-        private static Feature _superdatFlag
+        private static Feature superdatFlag
         {
             get
             {
@@ -952,7 +955,7 @@ namespace SabreTools
         }
 
         public const string TarValue = "tar";
-        private static Feature _tarFlag
+        private static Feature tarFlag
         {
             get
             {
@@ -966,7 +969,7 @@ namespace SabreTools
         }
 
         public const string Torrent7zipValue = "torrent-7zip";
-        private static Feature _torrent7zipFlag
+        private static Feature torrent7zipFlag
         {
             get
             {
@@ -980,7 +983,7 @@ namespace SabreTools
         }
 
         public const string TorrentGzipValue = "torrent-gzip";
-        private static Feature _torrentGzipFlag
+        private static Feature torrentGzipFlag
         {
             get
             {
@@ -994,7 +997,7 @@ namespace SabreTools
         }
 
         public const string TorrentLrzipValue = "torrent-lrzip";
-        private static Feature _torrentLrzipFlag
+        private static Feature torrentLrzipFlag
         {
             get
             {
@@ -1008,7 +1011,7 @@ namespace SabreTools
         }
         
         public const string TorrentLz4Value = "torrent-lz4";
-        private static Feature _torrentLz4Flag
+        private static Feature torrentLz4Flag
         {
             get
             {
@@ -1022,7 +1025,7 @@ namespace SabreTools
         }
 
         public const string TorrentRarValue = "torrent-rar";
-        private static Feature _torrentRarFlag
+        private static Feature torrentRarFlag
         {
             get
             {
@@ -1036,7 +1039,7 @@ namespace SabreTools
         }
 
         public const string TorrentXzValue = "torrent-xz";
-        private static Feature _torrentXzFlag
+        private static Feature torrentXzFlag
         {
             get
             {
@@ -1050,7 +1053,7 @@ namespace SabreTools
         }
 
         public const string TorrentZipValue = "torrent-zip";
-        private static Feature _torrentZipFlag
+        private static Feature torrentZipFlag
         {
             get
             {
@@ -1064,7 +1067,7 @@ namespace SabreTools
         }
 
         public const string TorrentZpaqValue = "torrent-zpaq";
-        private static Feature _torrentZpaqFlag
+        private static Feature torrentZpaqFlag
         {
             get
             {
@@ -1078,7 +1081,7 @@ namespace SabreTools
         }
 
         public const string TorrentZstdValue = "torrent-zstd";
-        private static Feature _torrentZstdFlag
+        private static Feature torrentZstdFlag
         {
             get
             {
@@ -1092,7 +1095,7 @@ namespace SabreTools
         }
 
         public const string TrimValue = "trim";
-        private static Feature _trimFlag
+        private static Feature trimFlag
         {
             get
             {
@@ -1106,7 +1109,7 @@ namespace SabreTools
         }
 
         public const string TypeValue = "type";
-        private static Feature _typeFlag
+        private static Feature typeFlag
         {
             get
             {
@@ -1120,7 +1123,7 @@ namespace SabreTools
         }
 
         public const string UpdateDatValue = "update-dat";
-        private static Feature _updateDatFlag
+        private static Feature updateDatFlag
         {
             get
             {
@@ -1134,7 +1137,7 @@ namespace SabreTools
         }
 
         public const string UpdateDescriptionValue = "update-description";
-        private static Feature _updateDescriptionFlag
+        private static Feature updateDescriptionFlag
         {
             get
             {
@@ -1148,7 +1151,7 @@ namespace SabreTools
         }
 
         public const string UpdateGameTypeValue = "update-game-type";
-        private static Feature _updateGameTypeFlag
+        private static Feature updateGameTypeFlag
         {
             get
             {
@@ -1162,7 +1165,7 @@ namespace SabreTools
         }
 
         public const string UpdateHashesValue = "update-hashes";
-        private static Feature _updateHashesFlag
+        private static Feature updateHashesFlag
         {
             get
             {
@@ -1176,7 +1179,7 @@ namespace SabreTools
         }
 
         public const string UpdateManufacturerValue = "update-manufacturer";
-        private static Feature _updateManufacturerFlag
+        private static Feature updateManufacturerFlag
         {
             get
             {
@@ -1190,7 +1193,7 @@ namespace SabreTools
         }
 
         public const string UpdateNamesValue = "update-names";
-        private static Feature _updateNamesFlag
+        private static Feature updateNamesFlag
         {
             get
             {
@@ -1204,7 +1207,7 @@ namespace SabreTools
         }
 
         public const string UpdateParentsValue = "update-parents";
-        private static Feature _updateParentsFlag
+        private static Feature updateParentsFlag
         {
             get
             {
@@ -1218,7 +1221,7 @@ namespace SabreTools
         }
 
         public const string UpdateYearValue = "update-year";
-        private static Feature _updateYearFlag
+        private static Feature updateYearFlag
         {
             get
             {
@@ -1231,12 +1234,12 @@ namespace SabreTools
             }
         }
 
-        #endregion
+#endregion
 
         #region Private Int32 features
 
         public const string GzInt32Value = "gz";
-        private static Feature _gzInt32Input
+        private static Feature gzInt32Input
         {
             get
             {
@@ -1253,7 +1256,7 @@ namespace SabreTools
         }
 
         public const string RarInt32Value = "rar";
-        private static Feature _rarInt32Input
+        private static Feature rarInt32Input
         {
             get
             {
@@ -1270,7 +1273,7 @@ namespace SabreTools
         }
 
         public const string SevenZipInt32Value = "7z";
-        private static Feature _sevenZipInt32Input
+        private static Feature sevenZipInt32Input
         {
             get
             {
@@ -1287,7 +1290,7 @@ namespace SabreTools
         }
 
         public const string ThreadsInt32Value = "threads";
-        private static Feature _threadsInt32Input
+        private static Feature threadsInt32Input
         {
             get
             {
@@ -1301,7 +1304,7 @@ namespace SabreTools
         }
 
         public const string ZipInt32Value = "zip";
-        private static Feature _zipInt32Input
+        private static Feature zipInt32Input
         {
             get
             {
@@ -1322,7 +1325,7 @@ namespace SabreTools
         #region Private Int64 features
 
         public const string RadixInt64Value = "radix";
-        private static Feature _radixInt64Input
+        private static Feature radixInt64Input
         {
             get
             {
@@ -1340,7 +1343,7 @@ namespace SabreTools
         #region Private List<string> features
 
         public const string BaseDatListValue = "base-dat";
-        private static Feature _baseDatListInput
+        private static Feature baseDatListInput
         {
             get
             {
@@ -1354,7 +1357,7 @@ namespace SabreTools
         }
 
         public const string CrcListValue = "crc";
-        private static Feature _crcListInput
+        private static Feature crcListInput
         {
             get
             {
@@ -1368,7 +1371,7 @@ namespace SabreTools
         }
 
         public const string DatListValue = "dat";
-        private static Feature _datListInput
+        private static Feature datListInput
         {
             get
             {
@@ -1382,7 +1385,7 @@ namespace SabreTools
         }
 
         public const string ExcludeFieldListValue = "exclude-field";
-        private static Feature _excludeFieldListInput 
+        private static Feature excludeFieldListInput 
         {
             get
             {
@@ -1396,7 +1399,7 @@ namespace SabreTools
         }
         
         public const string ExtAListValue = "exta";
-        private static Feature _extaListInput
+        private static Feature extaListInput
         {
             get
             {
@@ -1410,7 +1413,7 @@ namespace SabreTools
         }
 
         public const string ExtBListValue = "extb";
-        private static Feature _extbListInput
+        private static Feature extbListInput
         {
             get
             {
@@ -1424,7 +1427,7 @@ namespace SabreTools
         }
 
         public const string GameDescriptionListValue = "game-description";
-        private static Feature _gameDescriptionListInput
+        private static Feature gameDescriptionListInput
         {
             get
             {
@@ -1438,7 +1441,7 @@ namespace SabreTools
         }
 
         public const string GameNameListValue = "game-name";
-        private static Feature _gameNameListInput
+        private static Feature gameNameListInput
         {
             get
             {
@@ -1452,7 +1455,7 @@ namespace SabreTools
         }
 
         public const string GameTypeListValue = "game-type";
-        private static Feature _gameTypeListInput
+        private static Feature gameTypeListInput
         {
             get
             {
@@ -1467,7 +1470,7 @@ Possible values are: None, Bios, Device, Mechanical");
         }
 
         public const string ItemNameListValue = "item-name";
-        private static Feature _itemNameListInput
+        private static Feature itemNameListInput
         {
             get
             {
@@ -1481,7 +1484,7 @@ Possible values are: None, Bios, Device, Mechanical");
         }
 
         public const string ItemTypeListValue = "item-type";
-        private static Feature _itemTypeListInput
+        private static Feature itemTypeListInput
         {
             get
             {
@@ -1495,7 +1498,7 @@ Possible values are: None, Bios, Device, Mechanical");
         }
 
         public const string Md5ListValue = "md5";
-        private static Feature _md5ListInput
+        private static Feature md5ListInput
         {
             get
             {
@@ -1509,7 +1512,7 @@ Possible values are: None, Bios, Device, Mechanical");
         }
 
         public const string NotCrcListValue = "not-crc";
-        private static Feature _notCrcListInput
+        private static Feature notCrcListInput
         {
             get
             {
@@ -1523,7 +1526,7 @@ Possible values are: None, Bios, Device, Mechanical");
         }
 
         public const string NotGameDescriptionListValue = "not-game-description";
-        private static Feature _notGameDescriptionListInput
+        private static Feature notGameDescriptionListInput
         {
             get
             {
@@ -1537,7 +1540,7 @@ Possible values are: None, Bios, Device, Mechanical");
         }
 
         public const string NotGameNameListValue = "not-game-name";
-        private static Feature _notGameNameListInput
+        private static Feature notGameNameListInput
         {
             get
             {
@@ -1551,7 +1554,7 @@ Possible values are: None, Bios, Device, Mechanical");
         }
 
         public const string NotGameTypeListValue = "not-game-type";
-        private static Feature _notGameTypeListInput
+        private static Feature notGameTypeListInput
         {
             get
             {
@@ -1566,7 +1569,7 @@ Possible values are: None, Bios, Device, Mechanical");
         }
 
         public const string NotItemNameListValue = "not-item-name";
-        private static Feature _notItemNameListInput
+        private static Feature notItemNameListInput
         {
             get
             {
@@ -1580,7 +1583,7 @@ Possible values are: None, Bios, Device, Mechanical");
         }
 
         public const string NotItemTypeListValue = "not-item-type";
-        private static Feature _notItemTypeListInput
+        private static Feature notItemTypeListInput
         {
             get
             {
@@ -1594,7 +1597,7 @@ Possible values are: None, Bios, Device, Mechanical");
         }
 
         public const string NotMd5ListValue = "not-md5";
-        private static Feature _notMd5ListInput
+        private static Feature notMd5ListInput
         {
             get
             {
@@ -1607,8 +1610,9 @@ Possible values are: None, Bios, Device, Mechanical");
             }
         }
 
+#if NET_FRAMEWORK
         public const string NotRipeMd160ListValue = "not-ripemd160";
-        private static Feature _notRipeMd160ListInput
+        private static Feature notRipeMd160ListInput
         {
             get
             {
@@ -1620,9 +1624,10 @@ Possible values are: None, Bios, Device, Mechanical");
                     longDescription: "Include only items without this RIPEMD160 hash in the output. Additionally, the user can specify an exact match or full C#-style regex for pattern matching. Multiple instances of this flag are allowed.");
             }
         }
+#endif
 
         public const string NotSha1ListValue = "not-sha1";
-        private static Feature _notSha1ListInput
+        private static Feature notSha1ListInput
         {
             get
             {
@@ -1636,7 +1641,7 @@ Possible values are: None, Bios, Device, Mechanical");
         }
 
         public const string NotSha256ListValue = "not-sha256";
-        private static Feature _notSha256ListInput
+        private static Feature notSha256ListInput
         {
             get
             {
@@ -1650,7 +1655,7 @@ Possible values are: None, Bios, Device, Mechanical");
         }
 
         public const string NotSha384ListValue = "not-sha384";
-        private static Feature _notSha384ListInput
+        private static Feature notSha384ListInput
         {
             get
             {
@@ -1664,7 +1669,7 @@ Possible values are: None, Bios, Device, Mechanical");
         }
 
         public const string NotSha512ListValue = "not-sha512";
-        private static Feature _notSha512ListInput
+        private static Feature notSha512ListInput
         {
             get
             {
@@ -1678,7 +1683,7 @@ Possible values are: None, Bios, Device, Mechanical");
         }
 
         public const string NotStatusListValue = "not-status";
-        private static Feature _notStatusListInput
+        private static Feature notStatusListInput
         {
             get
             {
@@ -1693,7 +1698,7 @@ Possible values are: None, Good, BadDump, Nodump, Verified");
         }
 
         public const string OutputTypeListValue = "output-type";
-        private static Feature _outputTypeListInput
+        private static Feature outputTypeListInput
         {
             get
             {
@@ -1717,8 +1722,12 @@ Possible values are:
     md5              - MD5
     msx, openmsx     - openMSX Software List
     ol, offlinelist  - OfflineList XML
-    rc, romcenter    - RomCenter
-    ripemd160        - RIPEMD160
+    rc, romcenter    - RomCenter"
+#if NET_FRAMEWORK
++ @"
+    ripemd160        - RIPEMD160"
+#endif
++ @"
     sd, sabredat     - SabreDat XML
     sfv              - SFV
     sha1             - SHA1
@@ -1734,7 +1743,7 @@ Possible values are:
         }
 
         public const string ReportTypeListValue = "report-type";
-        private static Feature _reportTypeListInput
+        private static Feature reportTypeListInput
         {
             get
             {
@@ -1755,8 +1764,9 @@ Possible values are:
             }
         }
 
+#if NET_FRAMEWORK
         public const string RipeMd160ListValue = "ripemd160";
-        private static Feature _ripeMd160ListInput
+        private static Feature ripeMd160ListInput
         {
             get
             {
@@ -1768,9 +1778,10 @@ Possible values are:
                     longDescription: "Include only items with this RIPEMD160 hash in the output. Additionally, the user can specify an exact match or full C#-style regex for pattern matching. Multiple instances of this flag are allowed.");
             }
         }
+#endif
 
         public const string Sha1ListValue = "sha1";
-        private static Feature _sha1ListInput
+        private static Feature sha1ListInput
         {
             get
             {
@@ -1784,7 +1795,7 @@ Possible values are:
         }
 
         public const string Sha256ListValue = "sha256";
-        private static Feature _sha256ListInput
+        private static Feature sha256ListInput
         {
             get
             {
@@ -1798,7 +1809,7 @@ Possible values are:
         }
 
         public const string Sha384ListValue = "sha384";
-        private static Feature _sha384ListInput
+        private static Feature sha384ListInput
         {
             get
             {
@@ -1812,7 +1823,7 @@ Possible values are:
         }
 
         public const string Sha512ListValue = "sha512";
-        private static Feature _sha512ListInput
+        private static Feature sha512ListInput
         {
             get
             {
@@ -1826,7 +1837,7 @@ Possible values are:
         }
 
         public const string StatusListValue = "status";
-        private static Feature _statusListInput
+        private static Feature statusListInput
         {
             get
             {
@@ -1841,7 +1852,7 @@ Possible values are: None, Good, BadDump, Nodump, Verified");
         }
 
         public const string UpdateFieldListValue = "update-field";
-        private static Feature _updateFieldListInput
+        private static Feature updateFieldListInput
         {
             get
             {
@@ -1859,7 +1870,7 @@ Possible values are: None, Good, BadDump, Nodump, Verified");
         #region Private String features
 
         public const string AddExtensionStringValue = "add-extension";
-        private static Feature _addExtensionStringInput
+        private static Feature addExtensionStringInput
         {
             get
             {
@@ -1873,7 +1884,7 @@ Possible values are: None, Good, BadDump, Nodump, Verified");
         }
 
         public const string AuthorStringValue = "author";
-        private static Feature _authorStringInput
+        private static Feature authorStringInput
         {
             get
             {
@@ -1887,7 +1898,7 @@ Possible values are: None, Good, BadDump, Nodump, Verified");
         }
 
         public const string CategoryStringValue = "category";
-        private static Feature _categoryStringInput
+        private static Feature categoryStringInput
         {
             get
             {
@@ -1901,7 +1912,7 @@ Possible values are: None, Good, BadDump, Nodump, Verified");
         }
 
         public const string CommentStringValue = "comment";
-        private static Feature _commentStringInput
+        private static Feature commentStringInput
         {
             get
             {
@@ -1915,7 +1926,7 @@ Possible values are: None, Good, BadDump, Nodump, Verified");
         }
 
         public const string DateStringValue = "date";
-        private static Feature _dateStringInput
+        private static Feature dateStringInput
         {
             get
             {
@@ -1929,7 +1940,7 @@ Possible values are: None, Good, BadDump, Nodump, Verified");
         }
 
         public const string DescriptionStringValue = "description";
-        private static Feature _descriptionStringInput
+        private static Feature descriptionStringInput
         {
             get
             {
@@ -1943,7 +1954,7 @@ Possible values are: None, Good, BadDump, Nodump, Verified");
         }
 
         public const string EmailStringValue = "email";
-        private static Feature _emailStringInput
+        private static Feature emailStringInput
         {
             get
             {
@@ -1957,7 +1968,7 @@ Possible values are: None, Good, BadDump, Nodump, Verified");
         }
 
         public const string EqualStringValue = "equal";
-        private static Feature _equalStringInput
+        private static Feature equalStringInput
         {
             get
             {
@@ -1971,7 +1982,7 @@ Possible values are: None, Good, BadDump, Nodump, Verified");
         }
 
         public const string FilenameStringValue = "filename";
-        private static Feature _filenameStringInput
+        private static Feature filenameStringInput
         {
             get
             {
@@ -1985,7 +1996,7 @@ Possible values are: None, Good, BadDump, Nodump, Verified");
         }
 
         public const string ForceMergingStringInput = "forcemerging";
-        private static Feature _forcemergingStringInput
+        private static Feature forcemergingStringInput
         {
             get
             {
@@ -2000,7 +2011,7 @@ Possible values are: None, Split, Merged, Nonmerged, Full");
         }
 
         public const string ForceNodumpStringInput = "forcenodump";
-        private static Feature _forcenodumpStringInput
+        private static Feature forcenodumpStringInput
         {
             get
             {
@@ -2015,7 +2026,7 @@ Possible values are: None, Obsolete, Required, Ignore");
         }
 
         public const string ForcePackingStringInput = "forcepacking";
-        private static Feature _forcepackingStringInput
+        private static Feature forcepackingStringInput
         {
             get
             {
@@ -2030,7 +2041,7 @@ Possible values are: None, Zip, Unzip");
         }
 
         public const string GreaterStringValue = "greater";
-        private static Feature _greaterStringInput
+        private static Feature greaterStringInput
         {
             get
             {
@@ -2044,7 +2055,7 @@ Possible values are: None, Zip, Unzip");
         }
 
         public const string HeaderStringValue = "header";
-        private static Feature _headerStringInput
+        private static Feature headerStringInput
         {
             get
             {
@@ -2059,7 +2070,7 @@ Possible values are: None, Zip, Unzip");
         }
 
         public const string HomepageStringValue = "homepage";
-        private static Feature _homepageStringInput
+        private static Feature homepageStringInput
         {
             get
             {
@@ -2073,7 +2084,7 @@ Possible values are: None, Zip, Unzip");
         }
 
         public const string LessStringValue = "less";
-        private static Feature _lessStringInput
+        private static Feature lessStringInput
         {
             get
             {
@@ -2087,7 +2098,7 @@ Possible values are: None, Zip, Unzip");
         }
 
         public const string NameStringValue = "name";
-        private static Feature _nameStringInput
+        private static Feature nameStringInput
         {
             get
             {
@@ -2101,7 +2112,7 @@ Possible values are: None, Zip, Unzip");
         }
 
         public const string OutputDirStringValue = "output-dir";
-        private static Feature _outputDirStringInput
+        private static Feature outputDirStringInput
         {
             get
             {
@@ -2115,7 +2126,7 @@ Possible values are: None, Zip, Unzip");
         }
 
         public const string PostfixStringValue = "postfix";
-        private static Feature _postfixStringInput
+        private static Feature postfixStringInput
         {
             get
             {
@@ -2132,8 +2143,12 @@ Some special strings that can be used:
 - %manufacturer% - Replaced with game Manufacturer
 - %publisher% - Replaced with game Publisher
 - %crc% - Replaced with the CRC
-- %md5% - Replaced with the MD5
-- %ripemd160% - Replaced with the RIPEMD160
+- %md5% - Replaced with the MD5"
+#if NET_FRAMEWORK
++ @"
+- %ripemd160% - Replaced with the RIPEMD160"
+#endif
++ @"
 - %sha1% - Replaced with the SHA-1
 - %sha256% - Replaced with the SHA-256
 - %sha384% - Replaced with the SHA-384
@@ -2143,7 +2158,7 @@ Some special strings that can be used:
         }
 
         public const string PrefixStringValue = "prefix";
-        private static Feature _prefixStringInput
+        private static Feature prefixStringInput
         {
             get
             {
@@ -2170,7 +2185,7 @@ Some special strings that can be used:
         }
 
         public const string ReplaceExtensionStringValue = "replace-extension";
-        private static Feature _replaceExtensionStringInput
+        private static Feature replaceExtensionStringInput
         {
             get
             {
@@ -2184,7 +2199,7 @@ Some special strings that can be used:
         }
 
         public const string RootStringValue = "root";
-        private static Feature _rootStringInput
+        private static Feature rootStringInput
         {
             get
             {
@@ -2198,7 +2213,7 @@ Some special strings that can be used:
         }
 
         public const string RootDirStringValue = "root-dir";
-        private static Feature _rootDirStringInput
+        private static Feature rootDirStringInput
         {
             get
             {
@@ -2212,7 +2227,7 @@ Some special strings that can be used:
         }
 
         public const string TempStringValue = "temp";
-        private static Feature _tempStringInput
+        private static Feature tempStringInput
         {
             get
             {
@@ -2226,7 +2241,7 @@ Some special strings that can be used:
         }
 
         public const string UrlStringValue = "url";
-        private static Feature _urlStringInput
+        private static Feature urlStringInput
         {
             get
             {
@@ -2240,7 +2255,7 @@ Some special strings that can be used:
         }
 
         public const string VersionStringValue = "version";
-        private static Feature _versionStringInput
+        private static Feature versionStringInput
         {
             get
             {
@@ -2308,9 +2323,9 @@ Some special strings that can be used:
                     Description = GetString(features, DescriptionStringValue),
                     Email = GetString(features, EmailStringValue),
                     FileName = GetString(features, FilenameStringValue),
-                    ForceMerging = Utilities.GetForceMerging(GetString(features, ForceMergingStringInput)),
-                    ForceNodump = Utilities.GetForceNodump(GetString(features, ForceNodumpStringInput)),
-                    ForcePacking = Utilities.GetForcePacking(GetString(features, ForcePackingStringInput)),
+                    ForceMerging = GetString(features, ForceMergingStringInput).AsForceMerging(),
+                    ForceNodump = GetString(features, ForceNodumpStringInput).AsForceNodump(),
+                    ForcePacking = GetString(features, ForcePackingStringInput).AsForcePacking(),
                     GameName = GetBoolean(features, GamePrefixValue),
                     Header = GetString(features, HeaderStringValue),
                     Homepage = GetString(features, HomepageStringValue),
@@ -2334,16 +2349,16 @@ Some special strings that can be used:
                 bool deprecated = GetBoolean(features, DeprecatedValue);
                 foreach (string ot in GetList(features, OutputTypeListValue))
                 {
-                    DatFormat dftemp = Utilities.GetDatFormat(ot);
+                    DatFormat dftemp = ot.AsDatFormat();
                     if (dftemp == DatFormat.Logiqx && deprecated)
                         datHeader.DatFormat |= DatFormat.LogiqxDeprecated;
                     else
                         datHeader.DatFormat |= dftemp;
                 }
 
-                foreach (string field in GetList(features, ExcludeFieldListValue))
+                foreach (string fieldName in GetList(features, ExcludeFieldListValue))
                 {
-                    datHeader.ExcludeFields[(int)Utilities.GetField(field)] = true;
+                    datHeader.ExcludeFields[(int)fieldName.AsField()] = true;
                 }
 
                 return datHeader;
@@ -2383,11 +2398,11 @@ Some special strings that can be used:
                 // Item status
                 foreach (string stat in GetList(features, NotStatusListValue))
                 {
-                    filter.ItemStatuses.Negative |= Utilities.GetItemStatus(stat);
+                    filter.ItemStatuses.Negative |= stat.AsItemStatus();
                 }
                 foreach (string stat in GetList(features, StatusListValue))
                 {
-                    filter.ItemStatuses.Positive |= Utilities.GetItemStatus(stat);
+                    filter.ItemStatuses.Positive |= stat.AsItemStatus();
                 }
 
                 // Item type
@@ -2405,20 +2420,22 @@ Some special strings that can be used:
                 // Machine type
                 foreach (string mach in GetList(features, NotGameTypeListValue))
                 {
-                    filter.MachineTypes.Negative |= Utilities.GetMachineType(mach);
+                    filter.MachineTypes.Negative |= mach.AsMachineType();
                 }
                 foreach (string mach in GetList(features, GameTypeListValue))
                 {
-                    filter.MachineTypes.Positive |= Utilities.GetMachineType(mach);
+                    filter.MachineTypes.Positive |= mach.AsMachineType();
                 }
 
                 // MD5
                 filter.MD5.NegativeSet.AddRange(GetList(features, NotMd5ListValue));
                 filter.MD5.PositiveSet.AddRange(GetList(features, Md5ListValue));
 
+#if NET_FRAMEWORK
                 // RIPEMD160
                 filter.RIPEMD160.NegativeSet.AddRange(GetList(features, NotRipeMd160ListValue));
                 filter.RIPEMD160.PositiveSet.AddRange(GetList(features, RipeMd160ListValue));
+#endif
 
                 // Root directory
                 filter.Root.Neutral = GetString(features, RootDirStringValue);
@@ -2449,9 +2466,9 @@ Some special strings that can be used:
                 filter.Single.Neutral = GetBoolean(features, SingleSetValue);
 
                 // Size
-                filter.Size.Negative = Utilities.GetSizeFromString(GetString(features, LessStringValue));
-                filter.Size.Neutral = Utilities.GetSizeFromString(GetString(features, EqualStringValue));
-                filter.Size.Positive = Utilities.GetSizeFromString(GetString(features, GreaterStringValue));
+                filter.Size.Negative = Sanitizer.ToSize(GetString(features, LessStringValue));
+                filter.Size.Neutral = Sanitizer.ToSize(GetString(features, EqualStringValue));
+                filter.Size.Positive = Sanitizer.ToSize(GetString(features, GreaterStringValue));
 
                 // Trim to NTFS length
                 filter.Trim.Neutral = GetBoolean(features, TrimValue);
@@ -2468,8 +2485,10 @@ Some special strings that can be used:
 
                 if (GetBoolean(features, SkipMd5Value))
                     omitFromScan |= Hash.MD5;
+#if NET_FRAMEWORK
                 if (GetBoolean(features, SkipRipeMd160Value))
                     omitFromScan &= ~Hash.RIPEMD160; // TODO: This needs to be inverted later
+#endif
                 if (GetBoolean(features, SkipSha1Value))
                     omitFromScan |= Hash.SHA1;
                 if (GetBoolean(features, SkipSha256Value))
@@ -2574,7 +2593,7 @@ Some special strings that can be used:
 
                 foreach (string rt in GetList(features, ReportTypeListValue))
                 {
-                    statDatFormat |= Utilities.GetStatFormat(rt);
+                    statDatFormat |= rt.AsStatReportFormat();
                 }
 
                 return statDatFormat;
@@ -2589,22 +2608,24 @@ Some special strings that can be used:
 
                 if (GetBoolean(features, UpdateDescriptionValue))
                 {
-                    Globals.Logger.User($"This flag '{UpdateDescriptionValue}' is deprecated, please use {string.Join(", ", _updateFieldListInput.Flags)} instead");
+                    Globals.Logger.User($"This flag '{UpdateDescriptionValue}' is deprecated, please use {string.Join(", ", updateFieldListInput.Flags)} instead");
                     updateFields.Add(Field.Description);
                 }
 
                 if (GetBoolean(features, UpdateGameTypeValue))
                 {
-                    Globals.Logger.User($"This flag '{UpdateGameTypeValue}' is deprecated, please use {string.Join(", ", _updateFieldListInput.Flags)} instead");
+                    Globals.Logger.User($"This flag '{UpdateGameTypeValue}' is deprecated, please use {string.Join(", ", updateFieldListInput.Flags)} instead");
                     updateFields.Add(Field.MachineType);
                 }
 
                 if (GetBoolean(features, UpdateHashesValue))
                 {
-                    Globals.Logger.User($"This flag '{UpdateHashesValue}' is deprecated, please use {string.Join(", ", _updateFieldListInput.Flags)} instead");
+                    Globals.Logger.User($"This flag '{UpdateHashesValue}' is deprecated, please use {string.Join(", ", updateFieldListInput.Flags)} instead");
                     updateFields.Add(Field.CRC);
                     updateFields.Add(Field.MD5);
+#if NET_FRAMEWORK
                     updateFields.Add(Field.RIPEMD160);
+#endif
                     updateFields.Add(Field.SHA1);
                     updateFields.Add(Field.SHA256);
                     updateFields.Add(Field.SHA384);
@@ -2613,19 +2634,19 @@ Some special strings that can be used:
 
                 if (GetBoolean(features, UpdateManufacturerValue))
                 {
-                    Globals.Logger.User($"This flag '{UpdateManufacturerValue}' is deprecated, please use {string.Join(", ", _updateFieldListInput.Flags)} instead");
+                    Globals.Logger.User($"This flag '{UpdateManufacturerValue}' is deprecated, please use {string.Join(", ", updateFieldListInput.Flags)} instead");
                     updateFields.Add(Field.Manufacturer);
                 }
 
                 if (GetBoolean(features, UpdateNamesValue))
                 {
-                    Globals.Logger.User($"This flag '{UpdateNamesValue}' is deprecated, please use {string.Join(", ", _updateFieldListInput.Flags)} instead");
+                    Globals.Logger.User($"This flag '{UpdateNamesValue}' is deprecated, please use {string.Join(", ", updateFieldListInput.Flags)} instead");
                     updateFields.Add(Field.Name);
                 }
 
                 if (GetBoolean(features, UpdateParentsValue))
                 {
-                    Globals.Logger.User($"This flag '{UpdateParentsValue}' is deprecated, please use {string.Join(", ", _updateFieldListInput.Flags)} instead");
+                    Globals.Logger.User($"This flag '{UpdateParentsValue}' is deprecated, please use {string.Join(", ", updateFieldListInput.Flags)} instead");
                     updateFields.Add(Field.CloneOf);
                     updateFields.Add(Field.RomOf);
                     updateFields.Add(Field.SampleOf);
@@ -2633,13 +2654,13 @@ Some special strings that can be used:
 
                 if (GetBoolean(features, UpdateYearValue))
                 {
-                    Globals.Logger.User($"This flag '{UpdateYearValue}' is deprecated, please use {string.Join(", ", _updateFieldListInput.Flags)} instead");
+                    Globals.Logger.User($"This flag '{UpdateYearValue}' is deprecated, please use {string.Join(", ", updateFieldListInput.Flags)} instead");
                     updateFields.Add(Field.Year);
                 }
 
-                foreach (string field in GetList(features, UpdateFieldListValue))
+                foreach (string fieldName in GetList(features, UpdateFieldListValue))
                 {
-                    updateFields.Add(Utilities.GetField(field));
+                    updateFields.Add(fieldName.AsField());
                 }
 
                 return updateFields;
@@ -2733,74 +2754,78 @@ Some special strings that can be used:
                 this.LongDescription = "Create a DAT file from an input directory or set of files. By default, this will output a DAT named based on the input directory and the current date. It will also treat all archives as possible games and add all three hashes (CRC, MD5, SHA-1) for each file.";
                 this.Features = new Dictionary<string, Feature>();
 
-                AddFeature(_skipMd5Flag);
-                AddFeature(_skipRipeMd160Flag);
-                AddFeature(_skipSha1Flag);
-                AddFeature(_skipSha256Flag);
-                AddFeature(_skipSha384Flag);
-                AddFeature(_skipSha512Flag);
-                AddFeature(_noAutomaticDateFlag);
-                AddFeature(_forcepackingStringInput);
-                AddFeature(_archivesAsFilesFlag);
-                AddFeature(_outputTypeListInput);
-                    this[_outputTypeListInput].AddFeature(_deprecatedFlag);
-                AddFeature(_rombaFlag);
-                AddFeature(_skipArchivesFlag);
-                AddFeature(_skipFilesFlag);
-                AddFeature(_filenameStringInput);
-                AddFeature(_nameStringInput);
-                AddFeature(_descriptionStringInput);
-                AddFeature(_categoryStringInput);
-                AddFeature(_versionStringInput);
-                AddFeature(_authorStringInput);
-                AddFeature(_emailStringInput);
-                AddFeature(_homepageStringInput);
-                AddFeature(_urlStringInput);
-                AddFeature(_commentStringInput);
-                AddFeature(_superdatFlag);
-                AddFeature(_excludeFieldListInput);
-                AddFeature(_oneRomPerGameFlag);
-                AddFeature(_sceneDateStripFlag);
-                AddFeature(_addBlankFilesFlag);
-                AddFeature(_addDateFlag);
-                AddFeature(_copyFilesFlag);
-                AddFeature(_headerStringInput);
-                AddFeature(_chdsAsFilesFlag);
-                AddFeature(_gameNameListInput);
-                AddFeature(_notGameNameListInput);
-                AddFeature(_gameDescriptionListInput);
-                AddFeature(_notGameDescriptionListInput);
-                AddFeature(_matchOfTagsFlag);
-                AddFeature(_itemNameListInput);
-                AddFeature(_notItemNameListInput);
-                AddFeature(_itemTypeListInput);
-                AddFeature(_notItemTypeListInput);
-                AddFeature(_greaterStringInput);
-                AddFeature(_lessStringInput);
-                AddFeature(_equalStringInput);
-                AddFeature(_crcListInput);
-                AddFeature(_notCrcListInput);
-                AddFeature(_md5ListInput);
-                AddFeature(_notMd5ListInput);
-                AddFeature(_ripeMd160ListInput);
-                AddFeature(_notRipeMd160ListInput);
-                AddFeature(_sha1ListInput);
-                AddFeature(_notSha1ListInput);
-                AddFeature(_sha256ListInput);
-                AddFeature(_notSha256ListInput);
-                AddFeature(_sha384ListInput);
-                AddFeature(_notSha384ListInput);
-                AddFeature(_sha512ListInput);
-                AddFeature(_notSha512ListInput);
-                AddFeature(_statusListInput);
-                AddFeature(_notStatusListInput);
-                AddFeature(_gameTypeListInput);
-                AddFeature(_notGameTypeListInput);
-                AddFeature(_runnableFlag);
-                AddFeature(_notRunnableFlag);
-                AddFeature(_tempStringInput);
-                AddFeature(_outputDirStringInput);
-                AddFeature(_threadsInt32Input);
+                AddFeature(skipMd5Flag);
+#if NET_FRAMEWORK
+                AddFeature(skipRipeMd160Flag);
+#endif
+                AddFeature(skipSha1Flag);
+                AddFeature(skipSha256Flag);
+                AddFeature(skipSha384Flag);
+                AddFeature(skipSha512Flag);
+                AddFeature(noAutomaticDateFlag);
+                AddFeature(forcepackingStringInput);
+                AddFeature(archivesAsFilesFlag);
+                AddFeature(outputTypeListInput);
+                    this[outputTypeListInput].AddFeature(deprecatedFlag);
+                AddFeature(rombaFlag);
+                AddFeature(skipArchivesFlag);
+                AddFeature(skipFilesFlag);
+                AddFeature(filenameStringInput);
+                AddFeature(nameStringInput);
+                AddFeature(descriptionStringInput);
+                AddFeature(categoryStringInput);
+                AddFeature(versionStringInput);
+                AddFeature(authorStringInput);
+                AddFeature(emailStringInput);
+                AddFeature(homepageStringInput);
+                AddFeature(urlStringInput);
+                AddFeature(commentStringInput);
+                AddFeature(superdatFlag);
+                AddFeature(excludeFieldListInput);
+                AddFeature(oneRomPerGameFlag);
+                AddFeature(sceneDateStripFlag);
+                AddFeature(addBlankFilesFlag);
+                AddFeature(addDateFlag);
+                AddFeature(copyFilesFlag);
+                AddFeature(headerStringInput);
+                AddFeature(chdsAsFilesFlag);
+                AddFeature(gameNameListInput);
+                AddFeature(notGameNameListInput);
+                AddFeature(gameDescriptionListInput);
+                AddFeature(notGameDescriptionListInput);
+                AddFeature(matchOfTagsFlag);
+                AddFeature(itemNameListInput);
+                AddFeature(notItemNameListInput);
+                AddFeature(itemTypeListInput);
+                AddFeature(notItemTypeListInput);
+                AddFeature(greaterStringInput);
+                AddFeature(lessStringInput);
+                AddFeature(equalStringInput);
+                AddFeature(crcListInput);
+                AddFeature(notCrcListInput);
+                AddFeature(md5ListInput);
+                AddFeature(notMd5ListInput);
+#if NET_FRAMEWORK
+                AddFeature(ripeMd160ListInput);
+                AddFeature(notRipeMd160ListInput);
+#endif
+                AddFeature(sha1ListInput);
+                AddFeature(notSha1ListInput);
+                AddFeature(sha256ListInput);
+                AddFeature(notSha256ListInput);
+                AddFeature(sha384ListInput);
+                AddFeature(notSha384ListInput);
+                AddFeature(sha512ListInput);
+                AddFeature(notSha512ListInput);
+                AddFeature(statusListInput);
+                AddFeature(notStatusListInput);
+                AddFeature(gameTypeListInput);
+                AddFeature(notGameTypeListInput);
+                AddFeature(runnableFlag);
+                AddFeature(notRunnableFlag);
+                AddFeature(tempStringInput);
+                AddFeature(outputDirStringInput);
+                AddFeature(threadsInt32Input);
             }
 
             public override void ProcessFeatures(Dictionary<string, Feature> features)
@@ -2885,8 +2910,8 @@ The following systems have headers that this program can work with:
   - Nintendo Super Famicom / Super Nintendo Entertainment System SPC";
                 this.Features = new Dictionary<string, Feature>();
 
-                AddFeature(_outputDirStringInput);
-                AddFeature(_noStoreHeaderFlag);
+                AddFeature(outputDirStringInput);
+                AddFeature(noStoreHeaderFlag);
             }
 
             public override void ProcessFeatures(Dictionary<string, Feature> features)
@@ -2896,10 +2921,10 @@ The following systems have headers that this program can work with:
                 string outDir = GetString(features, OutputDirStringValue);
 
                 // Get only files from the inputs
-                List<string> files = Utilities.GetOnlyFilesFromInputs(Inputs);
+                List<string> files = DirectoryExtensions.GetFilesOnly(Inputs);
                 foreach (string file in files)
                 {
-                    Utilities.DetectSkipperAndTransform(file, outDir, nostore);
+                    Skipper.DetectTransformStore(file, outDir, nostore);
                 }
             }
         }
@@ -2959,7 +2984,7 @@ The following systems have headers that this program can work with:
   - Nintendo Super Famicom / Super Nintendo Entertainment System SPC";
                 this.Features = new Dictionary<string, Feature>();
 
-                AddFeature(_outputDirStringInput);
+                AddFeature(outputDirStringInput);
             }
 
             public override void ProcessFeatures(Dictionary<string, Feature> features)
@@ -2968,10 +2993,10 @@ The following systems have headers that this program can work with:
                 string outDir = GetString(features, OutputDirStringValue);
 
                 // Get only files from the inputs
-                List<string> files = Utilities.GetOnlyFilesFromInputs(Inputs);
+                List<string> files = DirectoryExtensions.GetFilesOnly(Inputs);
                 foreach (string file in files)
                 {
-                    Utilities.RestoreHeader(file, outDir);
+                    Skipper.RestoreHeader(file, outDir);
                 }
             }
         }
@@ -3004,39 +3029,39 @@ The following systems have headers that this program can work with:
                 this.LongDescription = "This feature allows the user to quickly rebuild based on a supplied DAT file(s). By default all files will be rebuilt to uncompressed folders in the output directory.";
                 this.Features = new Dictionary<string, Feature>();
 
-                AddFeature(_datListInput);
-                AddFeature(_outputDirStringInput);
-                AddFeature(_depotFlag);
-                AddFeature(_deleteFlag);
-                AddFeature(_inverseFlag);
-                AddFeature(_quickFlag);
-                AddFeature(_chdsAsFilesFlag);
-                AddFeature(_addDateFlag);
-                AddFeature(_individualFlag);
-                AddFeature(_torrent7zipFlag);
-                AddFeature(_tarFlag);
-                AddFeature(_torrentGzipFlag);
-                    this[_torrentGzipFlag].AddFeature(_rombaFlag);
-                AddFeature(_torrentLrzipFlag);
-                AddFeature(_torrentLz4Flag);
-                AddFeature(_torrentRarFlag);
-                AddFeature(_torrentXzFlag);
-                AddFeature(_torrentZipFlag);
-                AddFeature(_torrentZpaqFlag);
-                AddFeature(_torrentZstdFlag);
-                AddFeature(_headerStringInput);
-                AddFeature(_sevenZipInt32Input);
-                AddFeature(_gzInt32Input);
-                AddFeature(_rarInt32Input);
-                AddFeature(_zipInt32Input);
-                AddFeature(_scanAllFlag);
-                AddFeature(_datMergedFlag);
-                AddFeature(_datSplitFlag);
-                AddFeature(_datNonMergedFlag);
-                AddFeature(_datDeviceNonMergedFlag);
-                AddFeature(_datFullNonMergedFlag);
-                AddFeature(_updateDatFlag);
-                AddFeature(_threadsInt32Input);
+                AddFeature(datListInput);
+                AddFeature(outputDirStringInput);
+                AddFeature(depotFlag);
+                AddFeature(deleteFlag);
+                AddFeature(inverseFlag);
+                AddFeature(quickFlag);
+                AddFeature(chdsAsFilesFlag);
+                AddFeature(addDateFlag);
+                AddFeature(individualFlag);
+                AddFeature(torrent7zipFlag);
+                AddFeature(tarFlag);
+                AddFeature(torrentGzipFlag);
+                    this[torrentGzipFlag].AddFeature(rombaFlag);
+                AddFeature(torrentLrzipFlag);
+                AddFeature(torrentLz4Flag);
+                AddFeature(torrentRarFlag);
+                AddFeature(torrentXzFlag);
+                AddFeature(torrentZipFlag);
+                AddFeature(torrentZpaqFlag);
+                AddFeature(torrentZstdFlag);
+                AddFeature(headerStringInput);
+                AddFeature(sevenZipInt32Input);
+                AddFeature(gzInt32Input);
+                AddFeature(rarInt32Input);
+                AddFeature(zipInt32Input);
+                AddFeature(scanAllFlag);
+                AddFeature(datMergedFlag);
+                AddFeature(datSplitFlag);
+                AddFeature(datNonMergedFlag);
+                AddFeature(datDeviceNonMergedFlag);
+                AddFeature(datFullNonMergedFlag);
+                AddFeature(updateDatFlag);
+                AddFeature(threadsInt32Input);
             }
 
             public override void ProcessFeatures(Dictionary<string, Feature> features)
@@ -3076,7 +3101,7 @@ The following systems have headers that this program can work with:
 
                 // Get a list of files from the input datfiles
                 var datfiles = GetList(features, DatListValue);
-                datfiles = Utilities.GetOnlyFilesFromInputs(datfiles);
+                datfiles = DirectoryExtensions.GetFilesOnly(datfiles);
 
                 // If we are in individual mode, process each DAT on their own, appending the DAT name to the output dir
                 if (GetBoolean(features, IndividualValue))
@@ -3130,20 +3155,20 @@ The following systems have headers that this program can work with:
                 this.LongDescription = "This feature allows the user to split input DATs by a number of different possible criteria. See the individual input information for details. More than one split type is allowed at a time.";
                 this.Features = new Dictionary<string, Feature>();
 
-                AddFeature(_outputTypeListInput);
-                    this[_outputTypeListInput].AddFeature(_deprecatedFlag);
-                AddFeature(_outputDirStringInput);
-                AddFeature(_inplaceFlag);
-                AddFeature(_extensionFlag);
-                    this[_extensionFlag].AddFeature(_extaListInput);
-                    this[_extensionFlag].AddFeature(_extbListInput);
-                AddFeature(_hashFlag);
-                AddFeature(_levelFlag);
-                    this[_levelFlag].AddFeature(_shortFlag);
-                    this[_levelFlag].AddFeature(_baseFlag);
-                AddFeature(_sizeFlag);
-                    this[_sizeFlag].AddFeature(_radixInt64Input);
-                AddFeature(_typeFlag);
+                AddFeature(outputTypeListInput);
+                    this[outputTypeListInput].AddFeature(deprecatedFlag);
+                AddFeature(outputDirStringInput);
+                AddFeature(inplaceFlag);
+                AddFeature(extensionFlag);
+                    this[extensionFlag].AddFeature(extaListInput);
+                    this[extensionFlag].AddFeature(extbListInput);
+                AddFeature(hashFlag);
+                AddFeature(levelFlag);
+                    this[levelFlag].AddFeature(shortFlag);
+                    this[levelFlag].AddFeature(baseFlag);
+                AddFeature(sizeFlag);
+                    this[sizeFlag].AddFeature(radixInt64Input);
+                AddFeature(typeFlag);
             }
 
             public override void ProcessFeatures(Dictionary<string, Feature> features)
@@ -3192,12 +3217,12 @@ The stats that are outputted are as follows:
 - Items with Nodump status";
                 this.Features = new Dictionary<string, Feature>();
 
-                AddFeature(_reportTypeListInput);
-                AddFeature(_filenameStringInput);
-                AddFeature(_outputDirStringInput);
-                AddFeature(_baddumpColumnFlag);
-                AddFeature(_nodumpColumnFlag);
-                AddFeature(_individualFlag);
+                AddFeature(reportTypeListInput);
+                AddFeature(filenameStringInput);
+                AddFeature(outputDirStringInput);
+                AddFeature(baddumpColumnFlag);
+                AddFeature(nodumpColumnFlag);
+                AddFeature(individualFlag);
             }
 
             public override void ProcessFeatures(Dictionary<string, Feature> features)
@@ -3226,126 +3251,128 @@ The stats that are outputted are as follows:
                 this.LongDescription = "This is the multitool part of the program, allowing for almost every manipulation to a DAT, or set of DATs. This is also a combination of many different programs that performed DAT manipulation that work better together.";
                 this.Features = new Dictionary<string, Feature>();
 
-                AddFeature(_outputTypeListInput);
-                    this[_outputTypeListInput].AddFeature(_prefixStringInput);
-                    this[_outputTypeListInput].AddFeature(_postfixStringInput);
-                    this[_outputTypeListInput].AddFeature(_quotesFlag);
-                    this[_outputTypeListInput].AddFeature(_romsFlag);
-                    this[_outputTypeListInput].AddFeature(_gamePrefixFlag);
-                    this[_outputTypeListInput].AddFeature(_addExtensionStringInput);
-                    this[_outputTypeListInput].AddFeature(_replaceExtensionStringInput);
-                    this[_outputTypeListInput].AddFeature(_removeExtensionsFlag);
-                    this[_outputTypeListInput].AddFeature(_rombaFlag);
-                    this[_outputTypeListInput].AddFeature(_deprecatedFlag);
-                AddFeature(_filenameStringInput);
-                AddFeature(_nameStringInput);
-                AddFeature(_descriptionStringInput);
-                AddFeature(_rootStringInput);
-                AddFeature(_categoryStringInput);
-                AddFeature(_versionStringInput);
-                AddFeature(_dateStringInput);
-                AddFeature(_authorStringInput);
-                AddFeature(_emailStringInput);
-                AddFeature(_homepageStringInput);
-                AddFeature(_urlStringInput);
-                AddFeature(_commentStringInput);
-                AddFeature(_headerStringInput);
-                AddFeature(_superdatFlag);
-                AddFeature(_forcemergingStringInput);
-                AddFeature(_forcenodumpStringInput);
-                AddFeature(_forcepackingStringInput);
-                AddFeature(_excludeFieldListInput);
-                AddFeature(_oneRomPerGameFlag);
-                AddFeature(_keepEmptyGamesFlag);
-                AddFeature(_sceneDateStripFlag);
-                AddFeature(_cleanFlag);
-                AddFeature(_removeUnicodeFlag);
-                AddFeature(_descriptionAsNameFlag);
-                AddFeature(_datMergedFlag);
-                AddFeature(_datSplitFlag);
-                AddFeature(_datNonMergedFlag);
-                AddFeature(_datDeviceNonMergedFlag);
-                AddFeature(_datFullNonMergedFlag);
-                AddFeature(_trimFlag);
-                    this[_trimFlag].AddFeature(_rootDirStringInput);
-                AddFeature(_singleSetFlag);
-                AddFeature(_dedupFlag);
-                AddFeature(_gameDedupFlag);
-                AddFeature(_mergeFlag);
-                    this[_mergeFlag].AddFeature(_noAutomaticDateFlag);
-                AddFeature(_diffAllFlag);
-                    this[_diffAllFlag].AddFeature(_noAutomaticDateFlag);
-                AddFeature(_diffDuplicatesFlag);
-                    this[_diffDuplicatesFlag].AddFeature(_noAutomaticDateFlag);
-                AddFeature(_diffIndividualsFlag);
-                    this[_diffIndividualsFlag].AddFeature(_noAutomaticDateFlag);
-                AddFeature(_diffNoDuplicatesFlag);
-                    this[_diffNoDuplicatesFlag].AddFeature(_noAutomaticDateFlag);
-                AddFeature(_diffAgainstFlag);
-                    this[_diffAgainstFlag].AddFeature(_baseDatListInput);
-                AddFeature(_baseReplaceFlag);
-                    this[_baseReplaceFlag].AddFeature(_baseDatListInput);
-                    this[_baseReplaceFlag].AddFeature(_updateFieldListInput);
-                        this[_baseReplaceFlag][_updateFieldListInput].AddFeature(_onlySameFlag);
-                    this[_baseReplaceFlag].AddFeature(_updateNamesFlag);
-                    this[_baseReplaceFlag].AddFeature(_updateHashesFlag);
-                    this[_baseReplaceFlag].AddFeature(_updateDescriptionFlag);
-                        this[_baseReplaceFlag][_updateDescriptionFlag].AddFeature(_onlySameFlag);
-                    this[_baseReplaceFlag].AddFeature(_updateGameTypeFlag);
-                    this[_baseReplaceFlag].AddFeature(_updateYearFlag);
-                    this[_baseReplaceFlag].AddFeature(_updateManufacturerFlag);
-                    this[_baseReplaceFlag].AddFeature(_updateParentsFlag);
-                AddFeature(_reverseBaseReplaceFlag);
-                    this[_reverseBaseReplaceFlag].AddFeature(_baseDatListInput);
-                    this[_baseReplaceFlag].AddFeature(_updateFieldListInput);
-                        this[_baseReplaceFlag][_updateFieldListInput].AddFeature(_onlySameFlag);
-                    this[_reverseBaseReplaceFlag].AddFeature(_updateNamesFlag);
-                    this[_reverseBaseReplaceFlag].AddFeature(_updateHashesFlag);
-                    this[_reverseBaseReplaceFlag].AddFeature(_updateDescriptionFlag);
-                        this[_reverseBaseReplaceFlag][_updateDescriptionFlag].AddFeature(_onlySameFlag);
-                    this[_reverseBaseReplaceFlag].AddFeature(_updateGameTypeFlag);
-                    this[_reverseBaseReplaceFlag].AddFeature(_updateYearFlag);
-                    this[_reverseBaseReplaceFlag].AddFeature(_updateManufacturerFlag);
-                    this[_reverseBaseReplaceFlag].AddFeature(_updateParentsFlag);
-                AddFeature(_diffCascadeFlag);
-                    this[_diffCascadeFlag].AddFeature(_skipFirstOutputFlag);
-                AddFeature(_diffReverseCascadeFlag);
-                    this[_diffReverseCascadeFlag].AddFeature(_skipFirstOutputFlag);
-                AddFeature(_gameNameListInput);
-                AddFeature(_notGameNameListInput);
-                AddFeature(_gameDescriptionListInput);
-                AddFeature(_notGameDescriptionListInput);
-                AddFeature(_matchOfTagsFlag);
-                AddFeature(_itemNameListInput);
-                AddFeature(_notItemNameListInput);
-                AddFeature(_itemTypeListInput);
-                AddFeature(_notItemTypeListInput);
-                AddFeature(_greaterStringInput);
-                AddFeature(_lessStringInput);
-                AddFeature(_equalStringInput);
-                AddFeature(_crcListInput);
-                AddFeature(_notCrcListInput);
-                AddFeature(_md5ListInput);
-                AddFeature(_notMd5ListInput);
-                AddFeature(_ripeMd160ListInput);
-                AddFeature(_notRipeMd160ListInput);
-                AddFeature(_sha1ListInput);
-                AddFeature(_notSha1ListInput);
-                AddFeature(_sha256ListInput);
-                AddFeature(_notSha256ListInput);
-                AddFeature(_sha384ListInput);
-                AddFeature(_notSha384ListInput);
-                AddFeature(_sha512ListInput);
-                AddFeature(_notSha512ListInput);
-                AddFeature(_statusListInput);
-                AddFeature(_notStatusListInput);
-                AddFeature(_gameTypeListInput);
-                AddFeature(_notGameTypeListInput);
-                AddFeature(_runnableFlag);
-                AddFeature(_notRunnableFlag);
-                AddFeature(_outputDirStringInput);
-                AddFeature(_inplaceFlag);
-                AddFeature(_threadsInt32Input);
+                AddFeature(outputTypeListInput);
+                    this[outputTypeListInput].AddFeature(prefixStringInput);
+                    this[outputTypeListInput].AddFeature(postfixStringInput);
+                    this[outputTypeListInput].AddFeature(quotesFlag);
+                    this[outputTypeListInput].AddFeature(romsFlag);
+                    this[outputTypeListInput].AddFeature(gamePrefixFlag);
+                    this[outputTypeListInput].AddFeature(addExtensionStringInput);
+                    this[outputTypeListInput].AddFeature(replaceExtensionStringInput);
+                    this[outputTypeListInput].AddFeature(removeExtensionsFlag);
+                    this[outputTypeListInput].AddFeature(rombaFlag);
+                    this[outputTypeListInput].AddFeature(deprecatedFlag);
+                AddFeature(filenameStringInput);
+                AddFeature(nameStringInput);
+                AddFeature(descriptionStringInput);
+                AddFeature(rootStringInput);
+                AddFeature(categoryStringInput);
+                AddFeature(versionStringInput);
+                AddFeature(dateStringInput);
+                AddFeature(authorStringInput);
+                AddFeature(emailStringInput);
+                AddFeature(homepageStringInput);
+                AddFeature(urlStringInput);
+                AddFeature(commentStringInput);
+                AddFeature(headerStringInput);
+                AddFeature(superdatFlag);
+                AddFeature(forcemergingStringInput);
+                AddFeature(forcenodumpStringInput);
+                AddFeature(forcepackingStringInput);
+                AddFeature(excludeFieldListInput);
+                AddFeature(oneRomPerGameFlag);
+                AddFeature(keepEmptyGamesFlag);
+                AddFeature(sceneDateStripFlag);
+                AddFeature(cleanFlag);
+                AddFeature(removeUnicodeFlag);
+                AddFeature(descriptionAsNameFlag);
+                AddFeature(datMergedFlag);
+                AddFeature(datSplitFlag);
+                AddFeature(datNonMergedFlag);
+                AddFeature(datDeviceNonMergedFlag);
+                AddFeature(datFullNonMergedFlag);
+                AddFeature(trimFlag);
+                    this[trimFlag].AddFeature(rootDirStringInput);
+                AddFeature(singleSetFlag);
+                AddFeature(dedupFlag);
+                AddFeature(gameDedupFlag);
+                AddFeature(mergeFlag);
+                    this[mergeFlag].AddFeature(noAutomaticDateFlag);
+                AddFeature(diffAllFlag);
+                    this[diffAllFlag].AddFeature(noAutomaticDateFlag);
+                AddFeature(diffDuplicatesFlag);
+                    this[diffDuplicatesFlag].AddFeature(noAutomaticDateFlag);
+                AddFeature(diffIndividualsFlag);
+                    this[diffIndividualsFlag].AddFeature(noAutomaticDateFlag);
+                AddFeature(diffNoDuplicatesFlag);
+                    this[diffNoDuplicatesFlag].AddFeature(noAutomaticDateFlag);
+                AddFeature(diffAgainstFlag);
+                    this[diffAgainstFlag].AddFeature(baseDatListInput);
+                AddFeature(baseReplaceFlag);
+                    this[baseReplaceFlag].AddFeature(baseDatListInput);
+                    this[baseReplaceFlag].AddFeature(updateFieldListInput);
+                        this[baseReplaceFlag][updateFieldListInput].AddFeature(onlySameFlag);
+                    this[baseReplaceFlag].AddFeature(updateNamesFlag);
+                    this[baseReplaceFlag].AddFeature(updateHashesFlag);
+                    this[baseReplaceFlag].AddFeature(updateDescriptionFlag);
+                        this[baseReplaceFlag][updateDescriptionFlag].AddFeature(onlySameFlag);
+                    this[baseReplaceFlag].AddFeature(updateGameTypeFlag);
+                    this[baseReplaceFlag].AddFeature(updateYearFlag);
+                    this[baseReplaceFlag].AddFeature(updateManufacturerFlag);
+                    this[baseReplaceFlag].AddFeature(updateParentsFlag);
+                AddFeature(reverseBaseReplaceFlag);
+                    this[reverseBaseReplaceFlag].AddFeature(baseDatListInput);
+                    this[baseReplaceFlag].AddFeature(updateFieldListInput);
+                        this[baseReplaceFlag][updateFieldListInput].AddFeature(onlySameFlag);
+                    this[reverseBaseReplaceFlag].AddFeature(updateNamesFlag);
+                    this[reverseBaseReplaceFlag].AddFeature(updateHashesFlag);
+                    this[reverseBaseReplaceFlag].AddFeature(updateDescriptionFlag);
+                        this[reverseBaseReplaceFlag][updateDescriptionFlag].AddFeature(onlySameFlag);
+                    this[reverseBaseReplaceFlag].AddFeature(updateGameTypeFlag);
+                    this[reverseBaseReplaceFlag].AddFeature(updateYearFlag);
+                    this[reverseBaseReplaceFlag].AddFeature(updateManufacturerFlag);
+                    this[reverseBaseReplaceFlag].AddFeature(updateParentsFlag);
+                AddFeature(diffCascadeFlag);
+                    this[diffCascadeFlag].AddFeature(skipFirstOutputFlag);
+                AddFeature(diffReverseCascadeFlag);
+                    this[diffReverseCascadeFlag].AddFeature(skipFirstOutputFlag);
+                AddFeature(gameNameListInput);
+                AddFeature(notGameNameListInput);
+                AddFeature(gameDescriptionListInput);
+                AddFeature(notGameDescriptionListInput);
+                AddFeature(matchOfTagsFlag);
+                AddFeature(itemNameListInput);
+                AddFeature(notItemNameListInput);
+                AddFeature(itemTypeListInput);
+                AddFeature(notItemTypeListInput);
+                AddFeature(greaterStringInput);
+                AddFeature(lessStringInput);
+                AddFeature(equalStringInput);
+                AddFeature(crcListInput);
+                AddFeature(notCrcListInput);
+                AddFeature(md5ListInput);
+                AddFeature(notMd5ListInput);
+#if NET_FRAMEWORK
+                AddFeature(ripeMd160ListInput);
+                AddFeature(notRipeMd160ListInput);
+#endif
+                AddFeature(sha1ListInput);
+                AddFeature(notSha1ListInput);
+                AddFeature(sha256ListInput);
+                AddFeature(notSha256ListInput);
+                AddFeature(sha384ListInput);
+                AddFeature(notSha384ListInput);
+                AddFeature(sha512ListInput);
+                AddFeature(notSha512ListInput);
+                AddFeature(statusListInput);
+                AddFeature(notStatusListInput);
+                AddFeature(gameTypeListInput);
+                AddFeature(notGameTypeListInput);
+                AddFeature(runnableFlag);
+                AddFeature(notRunnableFlag);
+                AddFeature(outputDirStringInput);
+                AddFeature(inplaceFlag);
+                AddFeature(threadsInt32Input);
             }
 
             public override void ProcessFeatures(Dictionary<string, Feature> features)
@@ -3431,58 +3458,60 @@ The stats that are outputted are as follows:
                 this.LongDescription = "When used, this will use an input DAT or set of DATs to blindly check against an input folder. The base of the folder is considered the base for the combined DATs and games are either the directories or archives within. This will only do a direct verification of the items within and will create a fixdat afterwards for missing files.";
                 this.Features = new Dictionary<string, Feature>();
 
-                AddFeature(_datListInput);
-                AddFeature(_depotFlag);
-                AddFeature(_tempStringInput);
-                AddFeature(_hashOnlyFlag);
-                AddFeature(_quickFlag);
-                AddFeature(_headerStringInput);
-                AddFeature(_chdsAsFilesFlag);
-                AddFeature(_individualFlag);
-                AddFeature(_datMergedFlag);
-                AddFeature(_datSplitFlag);
-                AddFeature(_datDeviceNonMergedFlag);
-                AddFeature(_datNonMergedFlag);
-                AddFeature(_datFullNonMergedFlag);
-                AddFeature(_gameNameListInput);
-                AddFeature(_notGameNameListInput);
-                AddFeature(_gameDescriptionListInput);
-                AddFeature(_notGameDescriptionListInput);
-                AddFeature(_matchOfTagsFlag);
-                AddFeature(_itemNameListInput);
-                AddFeature(_notItemNameListInput);
-                AddFeature(_itemTypeListInput);
-                AddFeature(_notItemTypeListInput);
-                AddFeature(_greaterStringInput);
-                AddFeature(_lessStringInput);
-                AddFeature(_equalStringInput);
-                AddFeature(_crcListInput);
-                AddFeature(_notCrcListInput);
-                AddFeature(_md5ListInput);
-                AddFeature(_notMd5ListInput);
-                AddFeature(_ripeMd160ListInput);
-                AddFeature(_notRipeMd160ListInput);
-                AddFeature(_sha1ListInput);
-                AddFeature(_notSha1ListInput);
-                AddFeature(_sha256ListInput);
-                AddFeature(_notSha256ListInput);
-                AddFeature(_sha384ListInput);
-                AddFeature(_notSha384ListInput);
-                AddFeature(_sha512ListInput);
-                AddFeature(_notSha512ListInput);
-                AddFeature(_statusListInput);
-                AddFeature(_notStatusListInput);
-                AddFeature(_gameTypeListInput);
-                AddFeature(_notGameTypeListInput);
-                AddFeature(_runnableFlag);
-                AddFeature(_notRunnableFlag);
+                AddFeature(datListInput);
+                AddFeature(depotFlag);
+                AddFeature(tempStringInput);
+                AddFeature(hashOnlyFlag);
+                AddFeature(quickFlag);
+                AddFeature(headerStringInput);
+                AddFeature(chdsAsFilesFlag);
+                AddFeature(individualFlag);
+                AddFeature(datMergedFlag);
+                AddFeature(datSplitFlag);
+                AddFeature(datDeviceNonMergedFlag);
+                AddFeature(datNonMergedFlag);
+                AddFeature(datFullNonMergedFlag);
+                AddFeature(gameNameListInput);
+                AddFeature(notGameNameListInput);
+                AddFeature(gameDescriptionListInput);
+                AddFeature(notGameDescriptionListInput);
+                AddFeature(matchOfTagsFlag);
+                AddFeature(itemNameListInput);
+                AddFeature(notItemNameListInput);
+                AddFeature(itemTypeListInput);
+                AddFeature(notItemTypeListInput);
+                AddFeature(greaterStringInput);
+                AddFeature(lessStringInput);
+                AddFeature(equalStringInput);
+                AddFeature(crcListInput);
+                AddFeature(notCrcListInput);
+                AddFeature(md5ListInput);
+                AddFeature(notMd5ListInput);
+#if NET_FRAMEWORK
+                AddFeature(ripeMd160ListInput);
+                AddFeature(notRipeMd160ListInput);
+#endif
+                AddFeature(sha1ListInput);
+                AddFeature(notSha1ListInput);
+                AddFeature(sha256ListInput);
+                AddFeature(notSha256ListInput);
+                AddFeature(sha384ListInput);
+                AddFeature(notSha384ListInput);
+                AddFeature(sha512ListInput);
+                AddFeature(notSha512ListInput);
+                AddFeature(statusListInput);
+                AddFeature(notStatusListInput);
+                AddFeature(gameTypeListInput);
+                AddFeature(notGameTypeListInput);
+                AddFeature(runnableFlag);
+                AddFeature(notRunnableFlag);
             }
 
             public override void ProcessFeatures(Dictionary<string, Feature> features)
             {
                 // Get a list of files from the input datfiles
                 var datfiles = GetList(features, DatListValue);
-                datfiles = Utilities.GetOnlyFilesFromInputs(datfiles);
+                datfiles = DirectoryExtensions.GetFilesOnly(datfiles);
 
                 // Get feature flags
                 bool chdsAsFiles = GetBoolean(features, ChdsAsFilesValue);

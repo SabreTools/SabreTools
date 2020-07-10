@@ -53,7 +53,9 @@ namespace SabreTools.Library.Reports
                         + $"<td align=\"right\">{_datFile.DiskCount}</td>"
                         + $"<td align=\"right\">{_datFile.CRCCount}</td>"
                         + $"<td align=\"right\">{_datFile.MD5Count}</td>"
+#if NET_FRAMEWORK
                         + $"<td align=\"right\">{_datFile.RIPEMD160Count}</td>"
+#endif
                         + $"<td align=\"right\">{_datFile.SHA1Count}</td>"
                         + $"<td align=\"right\">{_datFile.SHA256Count}</td>"
                         + (_baddumpCol ? $"<td align=\"right\">{_datFile.BaddumpCount}</td>" : string.Empty)

@@ -51,8 +51,8 @@ namespace SabreTools.Library.DatFiles
             bool remUnicode)
         {
             // Open a file reader
-            Encoding enc = Utilities.GetEncoding(filename);
-            StreamReader sr = new StreamReader(Utilities.TryOpenRead(filename), enc);
+            Encoding enc = FileExtensions.GetEncoding(filename);
+            StreamReader sr = new StreamReader(FileExtensions.TryOpenRead(filename), enc);
 
             while (!sr.EndOfStream)
             {
@@ -80,13 +80,15 @@ namespace SabreTools.Library.DatFiles
                 {
                     Name = name,
                     Size = -1,
-                    CRC = ((_hash & Hash.CRC) != 0 ? Utilities.CleanHashData(hash, Constants.CRCLength) : null),
-                    MD5 = ((_hash & Hash.MD5) != 0 ? Utilities.CleanHashData(hash, Constants.MD5Length) : null),
-                    RIPEMD160 = ((_hash & Hash.RIPEMD160) != 0 ? Utilities.CleanHashData(hash, Constants.RIPEMD160Length) : null),
-                    SHA1 = ((_hash & Hash.SHA1) != 0 ? Utilities.CleanHashData(hash, Constants.SHA1Length) : null),
-                    SHA256 = ((_hash & Hash.SHA256) != 0 ? Utilities.CleanHashData(hash, Constants.SHA256Length) : null),
-                    SHA384 = ((_hash & Hash.SHA384) != 0 ? Utilities.CleanHashData(hash, Constants.SHA384Length) : null),
-                    SHA512 = ((_hash & Hash.SHA512) != 0 ? Utilities.CleanHashData(hash, Constants.SHA512Length) : null),
+                    CRC = ((_hash & Hash.CRC) != 0 ? Sanitizer.CleanCRC32(hash) : null),
+                    MD5 = ((_hash & Hash.MD5) != 0 ? Sanitizer.CleanMD5(hash) : null),
+#if NET_FRAMEWORK
+                    RIPEMD160 = ((_hash & Hash.RIPEMD160) != 0 ? Sanitizer.CleanRIPEMD160(hash) : null),
+#endif
+                    SHA1 = ((_hash & Hash.SHA1) != 0 ? Sanitizer.CleanSHA1(hash) : null),
+                    SHA256 = ((_hash & Hash.SHA256) != 0 ? Sanitizer.CleanSHA256(hash) : null),
+                    SHA384 = ((_hash & Hash.SHA384) != 0 ? Sanitizer.CleanSHA384(hash) : null),
+                    SHA512 = ((_hash & Hash.SHA512) != 0 ? Sanitizer.CleanSHA512(hash) : null),
                     ItemStatus = ItemStatus.None,
 
                     MachineName = Path.GetFileNameWithoutExtension(filename),
@@ -113,7 +115,7 @@ namespace SabreTools.Library.DatFiles
             try
             {
                 Globals.Logger.User($"Opening file for writing: {outfile}");
-                FileStream fs = Utilities.TryCreate(outfile);
+                FileStream fs = FileExtensions.TryCreate(outfile);
 
                 // If we get back null for some reason, just log and return
                 if (fs == null)
@@ -122,10 +124,12 @@ namespace SabreTools.Library.DatFiles
                     return false;
                 }
 
-                SeparatedValueWriter svw = new SeparatedValueWriter(fs, new UTF8Encoding(false));
-                svw.Quotes = false;
-                svw.Separator = ' ';
-                svw.VerifyFieldCount = true;
+                SeparatedValueWriter svw = new SeparatedValueWriter(fs, new UTF8Encoding(false))
+                {
+                    Quotes = false,
+                    Separator = ' ',
+                    VerifyFieldCount = true
+                };
 
                 // Get a properly sorted set of keys
                 List<string> keys = Keys;
@@ -209,12 +213,14 @@ namespace SabreTools.Library.DatFiles
                         break;
 
                     case Hash.MD5:
+#if NET_FRAMEWORK
                     case Hash.RIPEMD160:
+#endif
                     case Hash.SHA1:
                     case Hash.SHA256:
                     case Hash.SHA384:
                     case Hash.SHA512:
-                        Field hashField = Utilities.GetFieldFromHash(_hash);
+                        Field hashField = _hash.AsField();
 
                         switch (datItem.ItemType)
                         {

@@ -49,8 +49,7 @@ namespace SabreTools.Library.DatFiles
             bool remUnicode)
         {
             // Prepare all internal variables
-            Encoding enc = Utilities.GetEncoding(filename);
-            XmlReader xtr = Utilities.GetXmlTextReader(filename);
+            XmlReader xtr = filename.GetXmlTextReader();
 
             // If we got a null reader, just return
             if (xtr == null)
@@ -356,7 +355,7 @@ namespace SabreTools.Library.DatFiles
                 Name = machine.Name + "_" + diskno + (!string.IsNullOrWhiteSpace(remark) ? " " + remark : string.Empty),
                 Offset = offset,
                 Size = -1,
-                SHA1 = Utilities.CleanHashData(hash, Constants.SHA1Length),
+                SHA1 = Sanitizer.CleanSHA1(hash),
             };
 
             rom.CopyMachineInformation(machine);
@@ -436,7 +435,7 @@ namespace SabreTools.Library.DatFiles
                 Name = machine.Name + "_" + diskno + (!string.IsNullOrWhiteSpace(remark) ? " " + remark : string.Empty),
                 Offset = offset,
                 Size = -1,
-                SHA1 = Utilities.CleanHashData(hash, Constants.SHA1Length),
+                SHA1 = Sanitizer.CleanSHA1(hash),
             };
 
             rom.CopyMachineInformation(machine);
@@ -511,7 +510,7 @@ namespace SabreTools.Library.DatFiles
             {
                 Name = machine.Name + "_" + diskno + (!string.IsNullOrWhiteSpace(remark) ? " " + remark : string.Empty),
                 Size = -1,
-                SHA1 = Utilities.CleanHashData(hash, Constants.SHA1Length),
+                SHA1 = Sanitizer.CleanSHA1(hash),
             };
 
             rom.CopyMachineInformation(machine);
@@ -531,7 +530,7 @@ namespace SabreTools.Library.DatFiles
             try
             {
                 Globals.Logger.User($"Opening file for writing: {outfile}");
-                FileStream fs = Utilities.TryCreate(outfile);
+                FileStream fs = FileExtensions.TryCreate(outfile);
 
                 // If we get back null for some reason, just log and return
                 if (fs == null)

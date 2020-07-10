@@ -104,7 +104,7 @@ namespace SabreTools.Library.FileTypes
 				Directory.CreateDirectory(Path.GetDirectoryName(realEntry));
 
 				// Now open and write the file if possible
-				FileStream fs = Utilities.TryCreate(realEntry);
+				FileStream fs = FileExtensions.TryCreate(realEntry);
 				if (fs != null)
 				{
 					ms.Seek(0, SeekOrigin.Begin);
@@ -183,7 +183,7 @@ namespace SabreTools.Library.FileTypes
 
 			try
 			{
-				SharpCompress.Archives.Rar.RarArchive ra = SharpCompress.Archives.Rar.RarArchive.Open(Utilities.TryOpenRead(this.Filename));
+				SharpCompress.Archives.Rar.RarArchive ra = SharpCompress.Archives.Rar.RarArchive.Open(FileExtensions.TryOpenRead(this.Filename));
 				foreach (RarArchiveEntry entry in ra.Entries.Where(e => e != null && !e.IsDirectory))
 				{
 					// If secure hashes are disabled, do a quickscan
@@ -203,7 +203,7 @@ namespace SabreTools.Library.FileTypes
 					else
 					{
 						Stream entryStream = entry.OpenEntryStream();
-						BaseFile rarEntryRom = Utilities.GetStreamInfo(entryStream, entry.Size, omitFromScan);
+						BaseFile rarEntryRom = entryStream.GetInfo(entry.Size, omitFromScan);
 						rarEntryRom.Filename = entry.Key;
 						rarEntryRom.Parent = gamename;
 						rarEntryRom.Date = entry.LastModifiedTime?.ToString("yyyy/MM/dd hh:mm:ss");
@@ -222,223 +222,6 @@ namespace SabreTools.Library.FileTypes
 			}
 
 			return found;
-		}
-
-		/// <summary>
-		/// (INCOMPLETE) Retrieve file information for a RAR file
-		/// </summary>
-		/// TODO: Write the rest of this RAR file handling
-		public void GetRarFileInfo()
-		{
-			if (!File.Exists(this.Filename))
-			{
-				return;
-			}
-
-			BinaryReader br = new BinaryReader(Utilities.TryOpenRead(this.Filename));
-
-			// Check for the signature first (Skipping the SFX Module)
-			byte[] signature = br.ReadBytes(8);
-			int startpos = 0;
-			while (startpos < Constants.MibiByte && !signature.StartsWith(Constants.RarSignature, exact: true) && !signature.StartsWith(Constants.RarFiveSignature, exact: true))
-			{
-				startpos++;
-				br.BaseStream.Position = startpos;
-				signature = br.ReadBytes(8);
-			}
-			if (!signature.StartsWith(Constants.RarSignature, exact: true) && !signature.StartsWith(Constants.RarFiveSignature, exact: true))
-			{
-				return;
-			}
-
-			CoreRarArchive cra = new CoreRarArchive();
-			if (startpos > 0)
-			{
-				br.BaseStream.Position = 0;
-				cra.SFX = br.ReadBytes(startpos);
-			}
-
-			// Get all archive header information
-			cra.HeaderCRC32 = br.ReadUInt32();
-			cra.HeaderSize = br.ReadUInt32();
-			uint headerType = br.ReadUInt32();
-
-			// Special encryption information
-			bool hasEncryptionHeader = false;
-
-			// If it's encrypted
-			if (headerType == (uint)RarHeaderType.ArchiveEncryption)
-			{
-				hasEncryptionHeader = true;
-				cra.EncryptionHeaderCRC32 = cra.HeaderCRC32;
-				cra.EncryptionHeaderSize = cra.HeaderSize;
-				cra.EncryptionHeaderFlags = (RarHeaderFlags)br.ReadUInt32();
-				cra.EncryptionVersion = br.ReadUInt32();
-				cra.EncryptionFlags = br.ReadUInt32();
-				cra.KDFCount = br.ReadByte();
-				cra.Salt = br.ReadBytes(16);
-				cra.CheckValue = br.ReadBytes(12);
-
-				cra.HeaderCRC32 = br.ReadUInt32();
-				cra.HeaderSize = br.ReadUInt32();
-				headerType = br.ReadUInt32();
-			}
-
-			cra.HeaderFlags = (RarHeaderFlags)br.ReadUInt32();
-			if ((cra.HeaderFlags & RarHeaderFlags.ExtraAreaPresent) != 0)
-			{
-				cra.ExtraAreaSize = br.ReadUInt32();
-			}
-			cra.ArchiveFlags = (RarArchiveFlags)br.ReadUInt32();
-			if ((cra.ArchiveFlags & RarArchiveFlags.VolumeNumberField) != 0)
-			{
-				cra.VolumeNumber = br.ReadUInt32();
-			}
-			if (((cra.HeaderFlags & RarHeaderFlags.ExtraAreaPresent) != 0) && cra.ExtraAreaSize != 0)
-			{
-				cra.ExtraArea = br.ReadBytes((int)cra.ExtraAreaSize);
-			}
-
-			// Archive Comment Service Header
-
-			// Now for file headers
-			for (; ; )
-			{
-				CoreRarArchiveEntry crae = new CoreRarArchiveEntry();
-				crae.HeaderCRC32 = br.ReadUInt32();
-				crae.HeaderSize = br.ReadUInt32();
-				crae.HeaderType = (RarHeaderType)br.ReadUInt32();
-
-				if (crae.HeaderType == RarHeaderType.EndOfArchive)
-				{
-					break;
-				}
-
-				crae.HeaderFlags = (RarHeaderFlags)br.ReadUInt32();
-				if ((crae.HeaderFlags & RarHeaderFlags.ExtraAreaPresent) != 0)
-				{
-					crae.ExtraAreaSize = br.ReadUInt32();
-				}
-				if ((crae.HeaderFlags & RarHeaderFlags.DataAreaPresent) != 0)
-				{
-					crae.DataAreaSize = br.ReadUInt32();
-				}
-				crae.FileFlags = (RarFileFlags)br.ReadUInt32();
-				crae.UnpackedSize = br.ReadUInt32();
-				if ((crae.FileFlags & RarFileFlags.UnpackedSizeUnknown) != 0)
-				{
-					crae.UnpackedSize = 0;
-				}
-				crae.Attributes = br.ReadUInt32();
-				crae.mtime = br.ReadUInt32();
-				crae.DataCRC32 = br.ReadUInt32();
-				crae.CompressionInformation = br.ReadUInt32();
-				crae.HostOS = br.ReadUInt32();
-				crae.NameLength = br.ReadUInt32();
-				crae.Name = br.ReadBytes((int)crae.NameLength);
-				if ((crae.HeaderFlags & RarHeaderFlags.ExtraAreaPresent) != 0)
-				{
-					uint extraSize = br.ReadUInt32();
-					switch (br.ReadUInt32()) // Extra Area Type
-					{
-						case 0x01: // File encryption information
-							crae.EncryptionSize = extraSize;
-							crae.EncryptionFlags = (RarEncryptionFlags)br.ReadUInt32();
-							crae.KDFCount = br.ReadByte();
-							crae.Salt = br.ReadBytes(16);
-							crae.IV = br.ReadBytes(16);
-							crae.CheckValue = br.ReadBytes(12);
-							break;
-
-						case 0x02: // File data hash
-							crae.HashSize = extraSize;
-							crae.HashType = br.ReadUInt32();
-							crae.HashData = br.ReadBytes(32);
-							break;
-
-						case 0x03: // High precision file time
-							crae.TimeSize = extraSize;
-							crae.TimeFlags = (RarTimeFlags)br.ReadUInt32();
-							if ((crae.TimeFlags & RarTimeFlags.TimeInUnixFormat) != 0)
-							{
-								if ((crae.TimeFlags & RarTimeFlags.ModificationTimePresent) != 0)
-								{
-									crae.TimeMtime64 = br.ReadUInt64();
-								}
-								if ((crae.TimeFlags & RarTimeFlags.CreationTimePresent) != 0)
-								{
-									crae.TimeCtime64 = br.ReadUInt64();
-								}
-								if ((crae.TimeFlags & RarTimeFlags.LastAccessTimePresent) != 0)
-								{
-									crae.TimeLtime64 = br.ReadUInt64();
-								}
-							}
-							else
-							{
-								if ((crae.TimeFlags & RarTimeFlags.ModificationTimePresent) != 0)
-								{
-									crae.TimeMtime = br.ReadUInt32();
-								}
-								if ((crae.TimeFlags & RarTimeFlags.CreationTimePresent) != 0)
-								{
-									crae.TimeCtime = br.ReadUInt32();
-								}
-								if ((crae.TimeFlags & RarTimeFlags.LastAccessTimePresent) != 0)
-								{
-									crae.TimeLtime = br.ReadUInt32();
-								}
-							}
-							break;
-
-						case 0x04: // File version number
-							crae.VersionSize = extraSize;
-							/* crae.VersionFlags = */
-							br.ReadUInt32();
-							crae.VersionNumber = br.ReadUInt32();
-							break;
-
-						case 0x05: // File system redirection
-							crae.RedirectionSize = extraSize;
-							crae.RedirectionType = (RarRedirectionType)br.ReadUInt32();
-							crae.RedirectionFlags = br.ReadUInt32();
-							crae.RedirectionNameLength = br.ReadUInt32();
-							crae.RedirectionName = br.ReadBytes((int)crae.RedirectionNameLength);
-							break;
-
-						case 0x06: // Unix owner and group information
-							crae.UnixOwnerSize = extraSize;
-							crae.UnixOwnerFlags = (RarUnixOwnerRecordFlags)br.ReadUInt32();
-							if ((crae.UnixOwnerFlags & RarUnixOwnerRecordFlags.UserNameStringIsPresent) != 0)
-							{
-								crae.UnixOwnerUserNameLength = br.ReadUInt32();
-								crae.UnixOwnerUserName = br.ReadBytes((int)crae.UnixOwnerUserNameLength);
-							}
-							if ((crae.UnixOwnerFlags & RarUnixOwnerRecordFlags.GroupNameStringIsPresent) != 0)
-							{
-								crae.UnixOwnerGroupNameLength = br.ReadUInt32();
-								crae.UnixOwnerGroupName = br.ReadBytes((int)crae.UnixOwnerGroupNameLength);
-							}
-							if ((crae.UnixOwnerFlags & RarUnixOwnerRecordFlags.NumericUserIdIsPresent) != 0)
-							{
-								crae.UnixOwnerUserId = br.ReadUInt32();
-							}
-							if ((crae.UnixOwnerFlags & RarUnixOwnerRecordFlags.NumericGroupIdIsPresent) != 0)
-							{
-								crae.UnixOwnerGroupId = br.ReadUInt32();
-							}
-							break;
-
-						case 0x07: // Service header data array
-
-							break;
-					}
-				}
-				if ((crae.HeaderFlags & RarHeaderFlags.DataAreaPresent) != 0)
-				{
-					crae.DataArea = br.ReadBytes((int)crae.DataAreaSize);
-				}
-			}
 		}
 
 		/// <summary>
@@ -505,7 +288,7 @@ namespace SabreTools.Library.FileTypes
 		public override bool Write(string inputFile, string outDir, Rom rom, bool date = false, bool romba = false)
 		{
 			// Get the file stream for the file and write out
-			return Write(Utilities.TryOpenRead(inputFile), outDir, rom, date, romba);
+			return Write(FileExtensions.TryOpenRead(inputFile), outDir, rom, date, romba);
 		}
 
 		/// <summary>

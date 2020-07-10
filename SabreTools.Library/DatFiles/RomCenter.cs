@@ -47,8 +47,8 @@ namespace SabreTools.Library.DatFiles
             bool remUnicode)
         {
             // Prepare all intenral variables
-            Encoding enc = Utilities.GetEncoding(filename);
-            IniReader ir = Utilities.GetIniReader(filename, false);
+            Encoding enc = FileExtensions.GetEncoding(filename);
+            IniReader ir = filename.GetIniReader(false);
 
             // If we got a null reader, just return
             if (ir == null)
@@ -349,7 +349,7 @@ namespace SabreTools.Library.DatFiles
                 {
                     Name = rominfo[5],
                     Size = size,
-                    CRC = Utilities.CleanHashData(rominfo[6], Constants.CRCLength),
+                    CRC = Sanitizer.CleanCRC32(rominfo[6]),
                     ItemStatus = ItemStatus.None,
 
                     MachineName = rominfo[3],
@@ -380,7 +380,7 @@ namespace SabreTools.Library.DatFiles
             try
             {
                 Globals.Logger.User($"Opening file for writing: {outfile}");
-                FileStream fs = Utilities.TryCreate(outfile);
+                FileStream fs = FileExtensions.TryCreate(outfile);
 
                 // If we get back null for some reason, just log and return
                 if (fs == null)
@@ -431,7 +431,9 @@ namespace SabreTools.Library.DatFiles
                             ((Rom)rom).Size = Constants.SizeZero;
                             ((Rom)rom).CRC = ((Rom)rom).CRC == "null" ? Constants.CRCZero : null;
                             ((Rom)rom).MD5 = ((Rom)rom).MD5 == "null" ? Constants.MD5Zero : null;
+#if NET_FRAMEWORK
                             ((Rom)rom).RIPEMD160 = ((Rom)rom).RIPEMD160 == "null" ? Constants.RIPEMD160Zero : null;
+#endif
                             ((Rom)rom).SHA1 = ((Rom)rom).SHA1 == "null" ? Constants.SHA1Zero : null;
                             ((Rom)rom).SHA256 = ((Rom)rom).SHA256 == "null" ? Constants.SHA256Zero : null;
                             ((Rom)rom).SHA384 = ((Rom)rom).SHA384 == "null" ? Constants.SHA384Zero : null;

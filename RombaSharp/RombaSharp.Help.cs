@@ -631,7 +631,7 @@ structure according to the original DAT master directory tree structure.";
 
                     // Create the new output directory if it doesn't exist
                     string outputFolder = Path.Combine(outdat, Path.GetFileNameWithoutExtension(foundDats[key]));
-                    Utilities.EnsureOutputDirectory(outputFolder, create: true);
+                    DirectoryExtensions.Ensure(outputFolder, create: true);
 
                     // Get all online depots
                     List<string> onlineDepots = _depots.Where(d => d.Value.Item2).Select(d => d.Key).ToList();
@@ -799,7 +799,7 @@ in -old DAT file. Ignores those entries in -old that are not in -new.";
                 string outdat = GetString(features, OutStringValue);
 
                 // Ensure the output directory
-                Utilities.EnsureOutputDirectory(outdat, create: true);
+                DirectoryExtensions.Ensure(outdat, create: true);
 
                 // Check that all required files exist
                 if (!File.Exists(olddat))
@@ -860,7 +860,7 @@ in -old DAT file. Ignores those entries in -old that are not in -new.";
                 string outdat = GetString(features, OutStringValue);
 
                 // Ensure the output directory
-                Utilities.EnsureOutputDirectory(outdat, create: true);
+                DirectoryExtensions.Ensure(outdat, create: true);
 
                 // Check that all required directories exist
                 if (!Directory.Exists(source))
@@ -911,7 +911,7 @@ in -old DAT files. Ignores those entries in -old that are not in -new.";
                 string newdat = GetString(features, NewStringValue);
 
                 // Ensure the output directory
-                Utilities.EnsureOutputDirectory(outdat, create: true);
+                DirectoryExtensions.Ensure(outdat, create: true);
 
                 // Check that all required files exist
                 if (!File.Exists(olddat))
@@ -960,7 +960,7 @@ in -old DAT files. Ignores those entries in -old that are not in -new.";
             {
                 SqliteConnection dbc = new SqliteConnection(_connectionString);
                 dbc.Open();
-                StreamWriter sw = new StreamWriter(Utilities.TryCreate("export.csv"));
+                StreamWriter sw = new StreamWriter(FileExtensions.TryCreate("export.csv"));
 
                 // First take care of all file hashes
                 sw.WriteLine("CRC,MD5,SHA-1"); // ,Depot
@@ -1087,7 +1087,7 @@ particular DAT.";
                 Globals.Logger.Error("This feature is not yet implemented: import");
 
                 // First ensure the inputs and database connection
-                Inputs = Utilities.GetOnlyFilesFromInputs(Inputs);
+                Inputs = DirectoryExtensions.GetFilesOnly(Inputs);
                 SqliteConnection dbc = new SqliteConnection(_connectionString);
                 SqliteCommand slc = new SqliteCommand();
                 dbc.Open();
@@ -1095,7 +1095,7 @@ particular DAT.";
                 // Now, for each of these files, attempt to add the data found inside
                 foreach (string input in Inputs)
                 {
-                    StreamReader sr = new StreamReader(Utilities.TryOpenRead(input));
+                    StreamReader sr = new StreamReader(FileExtensions.TryOpenRead(input));
 
                     // The first line should be the hash header
                     string line = sr.ReadLine();
@@ -1211,7 +1211,7 @@ particular DAT.";
                     string temp = string.Empty;
                     if (input.Length == Constants.CRCLength)
                     {
-                        temp = Utilities.CleanHashData(input, Constants.CRCLength);
+                        temp = Sanitizer.CleanCRC32(input);
                         if (!string.IsNullOrWhiteSpace(temp))
                         {
                             crc.Add(temp);
@@ -1219,7 +1219,7 @@ particular DAT.";
                     }
                     else if (input.Length == Constants.MD5Length)
                     {
-                        temp = Utilities.CleanHashData(input, Constants.MD5Length);
+                        temp = Sanitizer.CleanMD5(input);
                         if (!string.IsNullOrWhiteSpace(temp))
                         {
                             md5.Add(temp);
@@ -1227,7 +1227,7 @@ particular DAT.";
                     }
                     else if (input.Length == Constants.SHA1Length)
                     {
-                        temp = Utilities.CleanHashData(input, Constants.SHA1Length);
+                        temp = Sanitizer.CleanSHA1(input);
                         if (!string.IsNullOrWhiteSpace(temp))
                         {
                             sha1.Add(temp);
@@ -1364,7 +1364,7 @@ particular DAT.";
                 Globals.Logger.Error("This feature is not yet implemented: merge");
 
                 // Verify that the inputs are valid directories
-                Inputs = Utilities.GetOnlyDirectoriesFromInputs(Inputs);
+                Inputs = DirectoryExtensions.GetDirectoriesOnly(Inputs);
 
                 // Loop over all input directories
                 foreach (string input in Inputs)
@@ -1419,7 +1419,7 @@ particular DAT.";
                 Dictionary<string, string> foundDats = GetValidDats(Inputs);
 
                 // Create the new output directory if it doesn't exist
-                Utilities.EnsureOutputDirectory(Path.Combine(Globals.ExeDir, "out"), create: true);
+                DirectoryExtensions.Ensure(Path.Combine(Globals.ExeDir, "out"), create: true);
 
                 // Now that we have the dictionary, we can loop through and output to a new folder for each
                 foreach (string key in foundDats.Keys)

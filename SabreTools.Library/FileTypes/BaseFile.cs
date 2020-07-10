@@ -17,7 +17,9 @@ namespace SabreTools.Library.FileTypes
         public long? Size { get; set; }
         public byte[] CRC { get; set; }
         public byte[] MD5 { get; set; }
+#if NET_FRAMEWORK
         public byte[] RIPEMD160 { get; set; }
+#endif
         public byte[] SHA1 { get; set; }
         public byte[] SHA256 { get; set; }
         public byte[] SHA384 { get; set; }
@@ -45,14 +47,16 @@ namespace SabreTools.Library.FileTypes
 
             if (getHashes)
             {
-                BaseFile temp = Utilities.GetFileInfo(this.Filename);
+                BaseFile temp = FileExtensions.GetInfo(this.Filename);
                 if (temp != null)
                 {
                     this.Parent = temp.Parent;
                     this.Date = temp.Date;
                     this.CRC = temp.CRC;
                     this.MD5 = temp.MD5;
+#if NET_FRAMEWORK
                     this.RIPEMD160 = temp.RIPEMD160;
+#endif
                     this.SHA1 = temp.SHA1;
                     this.SHA256 = temp.SHA256;
                     this.SHA384 = temp.SHA384;
@@ -73,21 +77,23 @@ namespace SabreTools.Library.FileTypes
 
             if (getHashes)
             {
-                BaseFile temp = Utilities.GetStreamInfo(stream, stream.Length);
-                if(temp != null)
+                BaseFile temp = stream.GetInfo();
+                if (temp != null)
                 {
                     this.Parent = temp.Parent;
                     this.Date = temp.Date;
                     this.CRC = temp.CRC;
                     this.MD5 = temp.MD5;
+#if NET_FRAMEWORK
                     this.RIPEMD160 = temp.RIPEMD160;
+#endif
                     this.SHA1 = temp.SHA1;
                     this.SHA256 = temp.SHA256;
                     this.SHA384 = temp.SHA384;
                     this.SHA512 = temp.SHA512;
                 }
             }
-                
+
         }
 
         #endregion

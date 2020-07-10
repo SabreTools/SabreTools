@@ -14,8 +14,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-using SabreTools.Library.Tools;
-
 namespace NaturalSort
 {
 	public class NaturalReversedComparer : Comparer<string>, IDisposable
@@ -77,12 +75,12 @@ namespace NaturalSort
 		{
 			if (!long.TryParse(left, out long x))
 			{
-				return Utilities.CompareNumeric(right, left);
+				return NaturalComparerUtil.CompareNumeric(right, left);
 			}
 
 			if (!long.TryParse(right, out long y))
 			{
-				return Utilities.CompareNumeric(right, left);
+				return NaturalComparerUtil.CompareNumeric(right, left);
 			}
 
 			// If we have an equal part, then make sure that "longer" ones are taken into account

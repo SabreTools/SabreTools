@@ -53,7 +53,9 @@ namespace SabreTools.Library.Reports
                     + "\"" + _datFile.DiskCount + "\"{0}"
                     + "\"" + _datFile.CRCCount + "\"{0}"
                     + "\"" + _datFile.MD5Count + "\"{0}"
+#if NET_FRAMEWORK
                     + "\"" + _datFile.RIPEMD160Count + "\"{0}"
+#endif
                     + "\"" + _datFile.SHA1Count + "\"{0}"
                     + "\"" + _datFile.SHA256Count + "\"{0}"
                     + "\"" + _datFile.SHA384Count + "\"{0}"
@@ -61,7 +63,7 @@ namespace SabreTools.Library.Reports
                     + (_baddumpCol ? "{0}\"" + _datFile.BaddumpCount + "\"" : string.Empty)
                     + (_nodumpCol ? "{0}\"" + _datFile.BaddumpCount + "\"" : string.Empty)
                     + "\n", _separator);
-            
+
             _writer.Write(line);
             _writer.Flush();
         }

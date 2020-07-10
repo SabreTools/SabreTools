@@ -12,27 +12,29 @@ namespace SabreTools.Library.Data
         /// <summary>
         /// The current toolset version to be used by all child applications
         /// </summary>
-        public readonly static string Version = $"v1.0.0-{File.GetCreationTime(Assembly.GetExecutingAssembly().Location).ToString("yyyy-MM-dd HH:mm:ss")}";
+        public readonly static string Version = $"v1.0.0-{File.GetCreationTime(Assembly.GetExecutingAssembly().Location):yyyy-MM-dd HH:mm:ss}";
         public const int HeaderHeight = 3;
 
         #region 0-byte file constants
 
         public const long SizeZero = 0;
         public const string CRCZero = "00000000";
-        public static readonly byte[] CRCZeroBytes =	    { 0x00, 0x00, 0x00, 0x00 };
+        public static readonly byte[] CRCZeroBytes =        { 0x00, 0x00, 0x00, 0x00 };
         public const string MD5Zero = "d41d8cd98f00b204e9800998ecf8427e";
-        public static readonly byte[] MD5ZeroBytes =	    { 0xd4, 0x1d, 0x8c, 0xd9,
+        public static readonly byte[] MD5ZeroBytes =        { 0xd4, 0x1d, 0x8c, 0xd9,
                                                               0x8f, 0x00, 0xb2, 0x04,
                                                               0xe9, 0x80, 0x09, 0x98,
                                                               0xec, 0xf8, 0x42, 0x7e };
+#if NET_FRAMEWORK
         public const string RIPEMD160Zero = "9c1185a5c5e9fc54612808977ee8f548b2258d31";
         public static readonly byte[] RIPEMD160ZeroBytes =  { 0x9c, 0x11, 0x85, 0xa5,
                                                               0xc5, 0xe9, 0xfc, 0x54,
                                                               0x61, 0x28, 0x08, 0x97,
                                                               0x7e, 0xe8, 0xf5, 0x48,
                                                               0xb2, 0x25, 0x8d, 0x31 };
+#endif
         public const string SHA1Zero = "da39a3ee5e6b4b0d3255bfef95601890afd80709";
-        public static readonly byte[] SHA1ZeroBytes =	    { 0xda, 0x39, 0xa3, 0xee,
+        public static readonly byte[] SHA1ZeroBytes =       { 0xda, 0x39, 0xa3, 0xee,
                                                               0x5e, 0x6b, 0x4b, 0x0d,
                                                               0x32, 0x55, 0xbf, 0xef,
                                                               0x95, 0x60, 0x18, 0x90,
@@ -102,54 +104,6 @@ namespace SabreTools.Library.Data
         public readonly static long ExiByte = (long)Math.Pow(KibiByte, 6);
         public readonly static long ZittiByte = (long)Math.Pow(KibiByte, 7);
         public readonly static long YittiByte = (long)Math.Pow(KibiByte, 8);
-
-        #endregion
-
-        #region CHD header values
-
-        // Header versions and sizes
-        public const int CHD_HEADER_VERSION = 5;
-        public const int CHD_V1_HEADER_SIZE = 76;
-        public const int CHD_V2_HEADER_SIZE = 80;
-        public const int CHD_V3_HEADER_SIZE = 120;
-        public const int CHD_V4_HEADER_SIZE = 108;
-        public const int CHD_V5_HEADER_SIZE = 124;
-        public const int CHD_MAX_HEADER_SIZE = CHD_V5_HEADER_SIZE;
-
-        // Key offsets within the header (V1)
-        public const long CHDv1MapOffsetOffset = 0;
-        public const long CHDv1MetaOffsetOffset = 0;
-        public const long CHDv1MD5Offset = 44;
-        public const long CHDv1RawMD5Offset = 0;
-        public const long CHDv1ParentMD5Offset = 60;
-
-        // Key offsets within the header (V2)
-        public const long CHDv2MapOffsetOffset = 0;
-        public const long CHDv2MetaOffsetOffset = 0;
-        public const long CHDv2MD5Offset = 44;
-        public const long CHDv2RawMD5Offset = 0;
-        public const long CHDv2ParentMD5Offset = 60;
-
-        // Key offsets within the header (V3)
-        public const long CHDv3MapOffsetOffset = 0;    // offset of map offset field
-        public const long CHDv3MetaOffsetOffset = 36;  // offset of metaoffset field
-        public const long CHDv3SHA1Offset = 80;        // offset of SHA1 field
-        public const long CHDv3RawSHA1Offset = 0;      // offset of raw SHA1 field
-        public const long CHDv3ParentSHA1Offset = 100; // offset of parent SHA1 field
-
-        // Key offsets within the header (V4)
-        public const long CHDv4MapOffsetOffset = 0;    // offset of map offset field
-        public const long CHDv4MetaOffsetOffset = 36;  // offset of metaoffset field
-        public const long CHDv4SHA1Offset = 48;        // offset of SHA1 field
-        public const long CHDv4RawSHA1Offset = 88;     // offset of raw SHA1 field
-        public const long CHDv4ParentSHA1Offset = 68;  // offset of parent SHA1 field
-
-        // Key offsets within the header (V5)
-        public const long CHDv5MapOffsetOffset = 40;   // offset of map offset field
-        public const long CHDv5MetaOffsetOffset = 48;  // offset of metaoffset field
-        public const long CHDv5SHA1Offset = 84;        // offset of SHA1 field
-        public const long CHDv5RawSHA1Offset = 64;     // offset of raw SHA1 field
-        public const long CHDv5ParentSHA1Offset = 104; // offset of parent SHA1 field
 
         #endregion
 
@@ -507,7 +461,9 @@ namespace SabreTools.Library.Data
 
         public const int CRCLength = 8;
         public const int MD5Length = 32;
+#if NET_FRAMEWORK
         public const int RIPEMD160Length = 40;
+#endif
         public const int SHA1Length = 40;
         public const int SHA256Length = 64;
         public const int SHA384Length = 96;
@@ -517,48 +473,48 @@ namespace SabreTools.Library.Data
 
         #region Magic numbers
 
-        public static readonly byte[] SevenZipSignature =			{ 0x37, 0x7a, 0xbc, 0xaf, 0x27, 0x1c };
-        public static readonly byte[] A7800SignatureV1 =			{ 0x41, 0x54, 0x41, 0x52, 0x49, 0x37, 0x38, 0x30, 0x30 }; // Offset 0x01
-        public static readonly byte[] A7800SignatureV2 =			{ 0x41, 0x43, 0x54, 0x55, 0x41, 0x4c, 0x20, 0x43, 0x41, 0x52, 0x54, 0x20, 0x44, 0x41,
+        public static readonly byte[] SevenZipSignature = { 0x37, 0x7a, 0xbc, 0xaf, 0x27, 0x1c };
+        public static readonly byte[] A7800SignatureV1 = { 0x41, 0x54, 0x41, 0x52, 0x49, 0x37, 0x38, 0x30, 0x30 }; // Offset 0x01
+        public static readonly byte[] A7800SignatureV2 =            { 0x41, 0x43, 0x54, 0x55, 0x41, 0x4c, 0x20, 0x43, 0x41, 0x52, 0x54, 0x20, 0x44, 0x41,
                                                                     0x54, 0x41, 0x20, 0x53, 0x54, 0x41, 0x52, 0x54, 0x53, 0x20, 0x48, 0x45, 0x52, 0x45 }; // Offset 0x64
-        public static readonly byte[] BZ2Signature =				{ 0x42, 0x5a, 0x68 };
-        public static readonly byte[] CabinetSignature =			{ 0x4d, 0x53, 0x43, 0x46 };
-        public static readonly byte[] CHDSignature =				{ 0x4d, 0x43, 0x6f, 0x6d, 0x70, 0x72, 0x48, 0x44 };
-        public static readonly byte[] ELFSignature =				{ 0x7f, 0x45, 0x4c, 0x46 };
-        public static readonly byte[] FDSSignatureV1 =				{ 0x46, 0x44, 0x53, 0x1a, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-        public static readonly byte[] FDSSignatureV2 =				{ 0x46, 0x44, 0x53, 0x1a, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-        public static readonly byte[] FDSSignatureV3 =				{ 0x46, 0x44, 0x53, 0x1a, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-        public static readonly byte[] FDSSignatureV4 =				{ 0x46, 0x44, 0x53, 0x1a, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-        public static readonly byte[] FreeArcSignature =			{ 0x41, 0x72, 0x43, 0x01 };
-        public static readonly byte[] GzSignature =					{ 0x1f, 0x8b, 0x08 };
-        public static readonly byte[] LRZipSignature =				{ 0x4c, 0x52, 0x5a, 0x49 };
-        public static readonly byte[] LynxSignatureV1 =				{ 0x4c, 0x59, 0x4f, 0x58 };
-        public static readonly byte[] LynxSignatureV2 =				{ 0x42, 0x53, 0x39 }; // Offset 0x06
-        public static readonly byte[] LZ4Signature =				{ 0x18, 0x4d, 0x22, 0x04 };
-        public static readonly byte[] LZ4SkippableMinSignature =	{ 0x18, 0x4d, 0x22, 0x04 };
-        public static readonly byte[] LZ4SkippableMaxSignature =	{ 0x18, 0x4d, 0x2a, 0x5f };
-        public static readonly byte[] N64Signature =				{ 0x40, 0x12, 0x37, 0x80 };
-        public static readonly byte[] NESSignature =				{ 0x4e, 0x45, 0x53, 0x1a };
-        public static readonly byte[] PCESignature =				{ 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xaa, 0xbb, 0x02 };
-        public static readonly byte[] PESignature =					{ 0x4d, 0x5a };
-        public static readonly byte[] PSIDSignatureV1 =				{ 0x50, 0x53, 0x49, 0x44, 0x00, 0x01, 0x00, 0x76 };
-        public static readonly byte[] PSIDSignatureV2 =				{ 0x50, 0x53, 0x49, 0x44, 0x00, 0x02, 0x00, 0x7c };
-        public static readonly byte[] PSIDSignatureV3 =				{ 0x50, 0x53, 0x49, 0x44, 0x00, 0x03, 0x00, 0x7c };
-        public static readonly byte[] RarSignature =				{ 0x52, 0x61, 0x72, 0x21, 0x1a, 0x07, 0x00 };
-        public static readonly byte[] RarFiveSignature =			{ 0x52, 0x61, 0x72, 0x21, 0x1a, 0x07, 0x01, 0x00 };
-        public static readonly byte[] SMCSignature =				{ 0xaa, 0xbb, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00 }; // Offset 0x16
-        public static readonly byte[] SPCSignature =				{ 0x53, 0x4e, 0x45, 0x53, 0x2d, 0x53, 0x50, 0x43 };
-        public static readonly byte[] TarSignature =				{ 0x75, 0x73, 0x74, 0x61, 0x72, 0x20, 0x20, 0x00 };
-        public static readonly byte[] TarZeroSignature =			{ 0x75, 0x73, 0x74, 0x61, 0x72, 0x00, 0x30, 0x30 };
-        public static readonly byte[] UFOSignature =				{ 0x53, 0x55, 0x50, 0x45, 0x52, 0x55, 0x46, 0x4f }; // Offset 0x16
-        public static readonly byte[] V64Signature =				{ 0x80, 0x37, 0x12, 0x40 };
-        public static readonly byte[] XZSignature =					{ 0xfd, 0x37, 0x7a, 0x58, 0x5a, 0x00, 0x00 };
-        public static readonly byte[] Z64Signature =				{ 0x37, 0x80, 0x40, 0x12 };
-        public static readonly byte[] ZipSignature =				{ 0x50, 0x4b, 0x03, 0x04 };
-        public static readonly byte[] ZipSignatureEmpty =			{ 0x50, 0x4b, 0x05, 0x06 };
-        public static readonly byte[] ZipSignatureSpanned =			{ 0x50, 0x4b, 0x07, 0x08 };
-        public static readonly byte[] ZPAQSignature =				{ 0x7a, 0x50, 0x51 };
-        public static readonly byte[] ZstdSignature =				{ 0xfd, 0x2f, 0xb5 };
+        public static readonly byte[] BZ2Signature = { 0x42, 0x5a, 0x68 };
+        public static readonly byte[] CabinetSignature = { 0x4d, 0x53, 0x43, 0x46 };
+        public static readonly byte[] CHDSignature = { 0x4d, 0x43, 0x6f, 0x6d, 0x70, 0x72, 0x48, 0x44 };
+        public static readonly byte[] ELFSignature = { 0x7f, 0x45, 0x4c, 0x46 };
+        public static readonly byte[] FDSSignatureV1 = { 0x46, 0x44, 0x53, 0x1a, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+        public static readonly byte[] FDSSignatureV2 = { 0x46, 0x44, 0x53, 0x1a, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+        public static readonly byte[] FDSSignatureV3 = { 0x46, 0x44, 0x53, 0x1a, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+        public static readonly byte[] FDSSignatureV4 = { 0x46, 0x44, 0x53, 0x1a, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+        public static readonly byte[] FreeArcSignature = { 0x41, 0x72, 0x43, 0x01 };
+        public static readonly byte[] GzSignature = { 0x1f, 0x8b, 0x08 };
+        public static readonly byte[] LRZipSignature = { 0x4c, 0x52, 0x5a, 0x49 };
+        public static readonly byte[] LynxSignatureV1 = { 0x4c, 0x59, 0x4f, 0x58 };
+        public static readonly byte[] LynxSignatureV2 = { 0x42, 0x53, 0x39 }; // Offset 0x06
+        public static readonly byte[] LZ4Signature = { 0x18, 0x4d, 0x22, 0x04 };
+        public static readonly byte[] LZ4SkippableMinSignature = { 0x18, 0x4d, 0x22, 0x04 };
+        public static readonly byte[] LZ4SkippableMaxSignature = { 0x18, 0x4d, 0x2a, 0x5f };
+        public static readonly byte[] N64Signature = { 0x40, 0x12, 0x37, 0x80 };
+        public static readonly byte[] NESSignature = { 0x4e, 0x45, 0x53, 0x1a };
+        public static readonly byte[] PCESignature = { 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xaa, 0xbb, 0x02 };
+        public static readonly byte[] PESignature = { 0x4d, 0x5a };
+        public static readonly byte[] PSIDSignatureV1 = { 0x50, 0x53, 0x49, 0x44, 0x00, 0x01, 0x00, 0x76 };
+        public static readonly byte[] PSIDSignatureV2 = { 0x50, 0x53, 0x49, 0x44, 0x00, 0x02, 0x00, 0x7c };
+        public static readonly byte[] PSIDSignatureV3 = { 0x50, 0x53, 0x49, 0x44, 0x00, 0x03, 0x00, 0x7c };
+        public static readonly byte[] RarSignature = { 0x52, 0x61, 0x72, 0x21, 0x1a, 0x07, 0x00 };
+        public static readonly byte[] RarFiveSignature = { 0x52, 0x61, 0x72, 0x21, 0x1a, 0x07, 0x01, 0x00 };
+        public static readonly byte[] SMCSignature = { 0xaa, 0xbb, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00 }; // Offset 0x16
+        public static readonly byte[] SPCSignature = { 0x53, 0x4e, 0x45, 0x53, 0x2d, 0x53, 0x50, 0x43 };
+        public static readonly byte[] TarSignature = { 0x75, 0x73, 0x74, 0x61, 0x72, 0x20, 0x20, 0x00 };
+        public static readonly byte[] TarZeroSignature = { 0x75, 0x73, 0x74, 0x61, 0x72, 0x00, 0x30, 0x30 };
+        public static readonly byte[] UFOSignature = { 0x53, 0x55, 0x50, 0x45, 0x52, 0x55, 0x46, 0x4f }; // Offset 0x16
+        public static readonly byte[] V64Signature = { 0x80, 0x37, 0x12, 0x40 };
+        public static readonly byte[] XZSignature = { 0xfd, 0x37, 0x7a, 0x58, 0x5a, 0x00, 0x00 };
+        public static readonly byte[] Z64Signature = { 0x37, 0x80, 0x40, 0x12 };
+        public static readonly byte[] ZipSignature = { 0x50, 0x4b, 0x03, 0x04 };
+        public static readonly byte[] ZipSignatureEmpty = { 0x50, 0x4b, 0x05, 0x06 };
+        public static readonly byte[] ZipSignatureSpanned = { 0x50, 0x4b, 0x07, 0x08 };
+        public static readonly byte[] ZPAQSignature = { 0x7a, 0x50, 0x51 };
+        public static readonly byte[] ZstdSignature = { 0xfd, 0x2f, 0xb5 };
 
         #endregion
 

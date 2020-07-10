@@ -50,7 +50,7 @@ namespace SabreTools.Library.Tools
             _tofile = tofile;
             _warnings = false;
             _errors = false;
-            _filename = $"{Path.GetFileNameWithoutExtension(filename)} ({DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss")}).{Utilities.GetExtension(filename)}";
+            _filename = $"{Path.GetFileNameWithoutExtension(filename)} ({DateTime.Now:yyyy-MM-dd HH-mm-ss}).{PathExtensions.GetNormalizedExtension(filename)}";
             _filter = filter;
 
             if (!Directory.Exists(_basepath))
@@ -71,7 +71,7 @@ namespace SabreTools.Library.Tools
 
             try
             {
-                FileStream logfile = Utilities.TryCreate(Path.Combine(_basepath, _filename));
+                FileStream logfile = FileExtensions.TryCreate(Path.Combine(_basepath, _filename));
                 _log = new StreamWriter(logfile, Encoding.UTF8, (int)(4 * Constants.KibiByte), true);
                 _log.AutoFlush = true;
 
@@ -104,7 +104,7 @@ namespace SabreTools.Library.Tools
                 TimeSpan span = DateTime.Now.Subtract(_start);
 
                 // Special case for multi-day runs
-                string total = string.Empty;
+                string total;
                 if (span >= TimeSpan.FromDays(1))
                     total = span.ToString(@"d\:hh\:mm\:ss");
                 else

@@ -5,6 +5,7 @@ using System.IO;
 using System.Xml;
 
 using SabreTools.Library.Data;
+using SabreTools.Library.FileTypes;
 using SabreTools.Library.Tools;
 
 namespace SabreTools.Library.Skippers
@@ -48,9 +49,8 @@ namespace SabreTools.Library.Skippers
             get
             {
                 if (_list == null || _list.Count == 0)
-                {
                     PopulateSkippers();
-                }
+
                 return _list;
             }
         }
@@ -80,8 +80,7 @@ namespace SabreTools.Library.Skippers
             Rules = new List<SkipperRule>();
             SourceFile = Path.GetFileNameWithoutExtension(filename);
 
-            Logger logger = new Logger();
-            XmlReader xtr = Utilities.GetXmlTextReader(filename);
+            XmlReader xtr = filename.GetXmlTextReader();
 
             if (xtr == null)
                 return;
@@ -349,6 +348,98 @@ namespace SabreTools.Library.Skippers
         }
 
         /// <summary>
+        /// Detect header skipper compliance and create an output file
+        /// </summary>
+        /// <param name="file">Name of the file to be parsed</param>
+        /// <param name="outDir">Output directory to write the file to, empty means the same directory as the input file</param>
+        /// <param name="nostore">True if headers should not be stored in the database, false otherwise</param>
+        /// <returns>True if the output file was created, false otherwise</returns>
+        public static bool DetectTransformStore(string file, string outDir, bool nostore)
+        {
+            // Create the output directory if it doesn't exist
+            DirectoryExtensions.Ensure(outDir, create: true);
+
+            Globals.Logger.User($"\nGetting skipper information for '{file}'");
+
+            // Get the skipper rule that matches the file, if any
+            SkipperRule rule = GetMatchingRule(file, string.Empty);
+
+            // If we have an empty rule, return false
+            if (rule.Tests == null || rule.Tests.Count == 0 || rule.Operation != HeaderSkipOperation.None)
+                return false;
+
+            Globals.Logger.User("File has a valid copier header");
+
+            // Get the header bytes from the file first
+            string hstr;
+            try
+            {
+                using (var fs = FileExtensions.TryOpenRead(file))
+                {
+                    // Extract the header as a string for the database
+                    byte[] hbin = new byte[(int)rule.StartOffset];
+                    fs.Read(hbin, 0, (int)rule.StartOffset);
+                    hstr = Utilities.ByteArrayToString(hbin);
+                }
+            }
+            catch
+            {
+                return false;
+            }
+
+            // Apply the rule to the file
+            string newfile = (string.IsNullOrWhiteSpace(outDir) ? Path.GetFullPath(file) + ".new" : Path.Combine(outDir, Path.GetFileName(file)));
+            rule.TransformFile(file, newfile);
+
+            // If the output file doesn't exist, return false
+            if (!File.Exists(newfile))
+                return false;
+
+            // Now add the information to the database if it's not already there
+            if (!nostore)
+            {
+                BaseFile baseFile = FileExtensions.GetInfo(newfile, chdsAsFiles: true);
+                DatabaseTools.AddHeaderToDatabase(hstr, Utilities.ByteArrayToString(baseFile.SHA1), rule.SourceFile);
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Detect and replace header(s) to the given file
+        /// </summary>
+        /// <param name="file">Name of the file to be parsed</param>
+        /// <param name="outDir">Output directory to write the file to, empty means the same directory as the input file</param>
+        /// <returns>True if a header was found and appended, false otherwise</returns>
+        public static bool RestoreHeader(string file, string outDir)
+        {
+            // Create the output directory if it doesn't exist
+            if (!string.IsNullOrWhiteSpace(outDir) && !Directory.Exists(outDir))
+                Directory.CreateDirectory(outDir);
+
+            // First, get the SHA-1 hash of the file
+            BaseFile baseFile = FileExtensions.GetInfo(file, chdsAsFiles: true);
+
+            // Retrieve a list of all related headers from the database
+            List<string> headers = DatabaseTools.RetrieveHeadersFromDatabase(Utilities.ByteArrayToString(baseFile.SHA1));
+
+            // If we have nothing retrieved, we return false
+            if (headers.Count == 0)
+                return false;
+
+            // Now loop through and create the reheadered files, if possible
+            for (int i = 0; i < headers.Count; i++)
+            {
+                string outputFile = (string.IsNullOrWhiteSpace(outDir) ? $"{Path.GetFullPath(file)}.new" : Path.Combine(outDir, Path.GetFileName(file))) + i;
+                Globals.Logger.User($"Creating reheadered file: {outputFile}");
+                FileExtensions.AppendBytes(file, outputFile, Utilities.StringToByteArray(headers[i]), null);
+                Globals.Logger.User("Reheadered file created!");
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// Get the SkipperRule associated with a given file
         /// </summary>
         /// <param name="input">Name of the file to be checked</param>
@@ -364,7 +455,7 @@ namespace SabreTools.Library.Skippers
                 return new SkipperRule();
             }
 
-            return GetMatchingRule(Utilities.TryOpenRead(input), skipperName);
+            return GetMatchingRule(FileExtensions.TryOpenRead(input), skipperName);
         }
 
         /// <summary>

@@ -128,7 +128,7 @@ namespace SabreTools.Library.Readers
             {
                 GroupCollection gc = Regex.Match(line, Constants.InternalPatternCMP).Groups;
                 string normalizedValue = gc[1].Value.ToLowerInvariant();
-                string[] linegc = Utilities.SplitLineAsCMP(gc[2].Value);
+                string[] linegc = SplitLineAsCMP(gc[2].Value);
 
                 Internal = new Dictionary<string, string>();
                 for (int i = 0; i < linegc.Length; i++)
@@ -223,6 +223,32 @@ namespace SabreTools.Library.Readers
                 RowType = CmpRowType.None;
                 Standalone = null;
             }
+        }
+
+        /// <summary>
+        /// Split a line as if it were a CMP rom line
+        /// </summary>
+        /// <param name="s">Line to split</param>
+        /// <returns>Line split</returns>
+        /// <remarks>Uses code from http://stackoverflow.com/questions/554013/regular-expression-to-split-on-spaces-unless-in-quotes</remarks>
+        private string[] SplitLineAsCMP(string s)
+        {
+            // Get the opening and closing brace locations
+            int openParenLoc = s.IndexOf('(');
+            int closeParenLoc = s.LastIndexOf(')');
+
+            // Now remove anything outside of those braces, including the braces
+            s = s.Substring(openParenLoc + 1, closeParenLoc - openParenLoc - 1);
+            s = s.Trim();
+
+            // Now we get each string, divided up as cleanly as possible
+            string[] matches = Regex
+                .Matches(s, Constants.InternalPatternAttributesCMP)
+                .Cast<Match>()
+                .Select(m => m.Groups[0].Value)
+                .ToArray();
+
+            return matches;
         }
 
         /// <summary>

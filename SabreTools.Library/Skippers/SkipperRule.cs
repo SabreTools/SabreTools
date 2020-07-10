@@ -56,15 +56,15 @@ namespace SabreTools.Library.Skippers
             }
 
             // Create the output directory if it doesn't already
-            Utilities.EnsureOutputDirectory(Path.GetDirectoryName(output));
+            DirectoryExtensions.Ensure(Path.GetDirectoryName(output));
 
             Globals.Logger.User($"Attempting to apply rule to '{input}'");
-            success = TransformStream(Utilities.TryOpenRead(input), Utilities.TryCreate(output));
+            success = TransformStream(FileExtensions.TryOpenRead(input), FileExtensions.TryCreate(output));
 
             // If the output file has size 0, delete it
             if (new FileInfo(output).Length == 0)
             {
-                Utilities.TryDeleteFile(output);
+                FileExtensions.TryDelete(output);
                 success = false;
             }
 

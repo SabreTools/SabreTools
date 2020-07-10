@@ -46,8 +46,7 @@ namespace SabreTools.Library.DatFiles
             bool remUnicode)
         {
             // Prepare all internal variables
-            Encoding enc = Utilities.GetEncoding(filename);
-            StreamReader sr = new StreamReader(Utilities.TryOpenRead(filename), new UTF8Encoding(false));
+            StreamReader sr = new StreamReader(FileExtensions.TryOpenRead(filename), new UTF8Encoding(false));
             JsonTextReader jtr = new JsonTextReader(sr);
 
             // If we got a null reader, just return
@@ -124,7 +123,7 @@ namespace SabreTools.Library.DatFiles
                 }
 
                 // Get all header items (ONLY OVERWRITE IF THERE'S NO DATA)
-                string content = string.Empty;
+                string content;
                 switch (jtr.Value)
                 {
                     case "name":
@@ -195,19 +194,19 @@ namespace SabreTools.Library.DatFiles
 
                     case "forcemerging":
                         if (ForceMerging == ForceMerging.None)
-                            ForceMerging = Utilities.GetForceMerging(jtr.ReadAsString());
+                            ForceMerging = jtr.ReadAsString().AsForceMerging();
 
                         break;
 
                     case "forcepacking":
                         if (ForcePacking == ForcePacking.None)
-                            ForcePacking = Utilities.GetForcePacking(jtr.ReadAsString());
+                            ForcePacking = jtr.ReadAsString().AsForcePacking();
 
                         break;
 
                     case "forcenodump":
                         if (ForceNodump == ForceNodump.None)
-                            ForceNodump = Utilities.GetForceNodump(jtr.ReadAsString());
+                            ForceNodump = jtr.ReadAsString().AsForceNodump();
 
                         break;
 
@@ -547,7 +546,7 @@ namespace SabreTools.Library.DatFiles
                     if (itemType == null)
                         return;
 
-                    DatItem datItem = Utilities.GetDatItem(itemType.Value);
+                    DatItem datItem = DatItem.Create(itemType.Value);
                     datItem.CopyMachineInformation(machine);
 
                     datItem.Name = name;
@@ -565,7 +564,9 @@ namespace SabreTools.Library.DatFiles
                     else if (itemType == ItemType.Disk)
                     {
                         (datItem as Disk).MD5 = md5;
+#if NET_FRAMEWORK
                         (datItem as Disk).RIPEMD160 = ripemd160;
+#endif
                         (datItem as Disk).SHA1 = sha1;
                         (datItem as Disk).SHA256 = sha256;
                         (datItem as Disk).SHA384 = sha384;
@@ -590,7 +591,9 @@ namespace SabreTools.Library.DatFiles
                         (datItem as Rom).Size = size;
                         (datItem as Rom).CRC = crc;
                         (datItem as Rom).MD5 = md5;
+#if NET_FRAMEWORK
                         (datItem as Rom).RIPEMD160 = ripemd160;
+#endif
                         (datItem as Rom).SHA1 = sha1;
                         (datItem as Rom).SHA256 = sha256;
                         (datItem as Rom).SHA384 = sha384;
@@ -618,7 +621,7 @@ namespace SabreTools.Library.DatFiles
                 switch (jtr.Value)
                 {
                     case "type":
-                        itemType = Utilities.GetItemType(jtr.ReadAsString());
+                        itemType = jtr.ReadAsString().AsItemType();
                         break;
 
                     case "name":
@@ -731,7 +734,7 @@ namespace SabreTools.Library.DatFiles
                         break;
 
                     case "status":
-                        itemStatus = Utilities.GetItemStatus(jtr.ReadAsString());
+                        itemStatus = jtr.ReadAsString().AsItemStatus();
                         break;
 
                     case "optional":
@@ -765,7 +768,7 @@ namespace SabreTools.Library.DatFiles
             try
             {
                 Globals.Logger.User($"Opening file for writing: {outfile}");
-                FileStream fs = Utilities.TryCreate(outfile);
+                FileStream fs = FileExtensions.TryCreate(outfile);
 
                 // If we get back null for some reason, just log and return
                 if (fs == null)
@@ -775,10 +778,12 @@ namespace SabreTools.Library.DatFiles
                 }
 
                 StreamWriter sw = new StreamWriter(fs, new UTF8Encoding(false));
-                JsonTextWriter jtw = new JsonTextWriter(sw);
-                jtw.Formatting = Formatting.Indented;
-                jtw.IndentChar = '\t';
-                jtw.Indentation = 1;
+                JsonTextWriter jtw = new JsonTextWriter(sw)
+                {
+                    Formatting = Formatting.Indented,
+                    IndentChar = '\t',
+                    Indentation = 1
+                };
 
                 // Write out the header
                 WriteHeader(jtw);
@@ -827,7 +832,9 @@ namespace SabreTools.Library.DatFiles
                             ((Rom)rom).Size = Constants.SizeZero;
                             ((Rom)rom).CRC = ((Rom)rom).CRC == "null" ? Constants.CRCZero : null;
                             ((Rom)rom).MD5 = ((Rom)rom).MD5 == "null" ? Constants.MD5Zero : null;
+#if NET_FRAMEWORK
                             ((Rom)rom).RIPEMD160 = ((Rom)rom).RIPEMD160 == "null" ? Constants.RIPEMD160Zero : null;
+#endif
                             ((Rom)rom).SHA1 = ((Rom)rom).SHA1 == "null" ? Constants.SHA1Zero : null;
                             ((Rom)rom).SHA256 = ((Rom)rom).SHA256 == "null" ? Constants.SHA256Zero : null;
                             ((Rom)rom).SHA384 = ((Rom)rom).SHA384 == "null" ? Constants.SHA384Zero : null;
@@ -1247,11 +1254,13 @@ namespace SabreTools.Library.DatFiles
                             jtw.WritePropertyName("md5");
                             jtw.WriteValue(disk.MD5.ToLowerInvariant());
                         }
-                        if (!string.IsNullOrWhiteSpace(disk.GetField(Field.MD5, ExcludeFields)))
+#if NET_FRAMEWORK
+                        if (!string.IsNullOrWhiteSpace(disk.GetField(Field.RIPEMD160, ExcludeFields)))
                         {
                             jtw.WritePropertyName("ripemd160");
                             jtw.WriteValue(disk.RIPEMD160.ToLowerInvariant());
                         }
+#endif
                         if (!string.IsNullOrWhiteSpace(disk.GetField(Field.SHA1, ExcludeFields)))
                         {
                             jtw.WritePropertyName("sha1");
@@ -1356,11 +1365,13 @@ namespace SabreTools.Library.DatFiles
                             jtw.WritePropertyName("md5");
                             jtw.WriteValue(rom.MD5.ToLowerInvariant());
                         }
-                        if (!string.IsNullOrWhiteSpace(rom.GetField(Field.MD5, ExcludeFields)))
+#if NET_FRAMEWORK
+                        if (!string.IsNullOrWhiteSpace(rom.GetField(Field.RIPEMD160, ExcludeFields)))
                         {
                             jtw.WritePropertyName("ripemd160");
                             jtw.WriteValue(rom.RIPEMD160.ToLowerInvariant());
                         }
+#endif
                         if (!string.IsNullOrWhiteSpace(rom.GetField(Field.SHA1, ExcludeFields)))
                         {
                             jtw.WritePropertyName("sha1");

@@ -49,8 +49,7 @@ namespace SabreTools.Library.DatFiles
             bool remUnicode)
         {
             // Prepare all internal variables
-            Encoding enc = Utilities.GetEncoding(filename);
-            XmlReader xtr = Utilities.GetXmlTextReader(filename);
+            XmlReader xtr = filename.GetXmlTextReader();
 
             // If we got a null reader, just return
             if (xtr == null)
@@ -147,13 +146,13 @@ namespace SabreTools.Library.DatFiles
 
             // Create a new machine
             MachineType machineType = MachineType.NULL;
-            if (Utilities.GetYesNo(reader.GetAttribute("isbios")) == true)
+            if (reader.GetAttribute("isbios").AsYesNo() == true)
                 machineType |= MachineType.Bios;
 
-            if (Utilities.GetYesNo(reader.GetAttribute("isdevice")) == true)
+            if (reader.GetAttribute("isdevice").AsYesNo() == true)
                 machineType |= MachineType.Device;
 
-            if (Utilities.GetYesNo(reader.GetAttribute("ismechanical")) == true)
+            if (reader.GetAttribute("ismechanical").AsYesNo() == true)
                 machineType |= MachineType.Mechanical;
 
             Machine machine = new Machine
@@ -161,7 +160,7 @@ namespace SabreTools.Library.DatFiles
                 Name = reader.GetAttribute("name"),
                 Description = reader.GetAttribute("name"),
                 SourceFile = reader.GetAttribute("sourcefile"),
-                Runnable = Utilities.GetYesNo(reader.GetAttribute("runnable")),
+                Runnable = reader.GetAttribute("runnable").AsYesNo(),
 
                 Comment = string.Empty,
 
@@ -205,7 +204,7 @@ namespace SabreTools.Library.DatFiles
                         {
                             Name = reader.GetAttribute("name"),
                             Description = reader.GetAttribute("description"),
-                            Default = Utilities.GetYesNo(reader.GetAttribute("default")),
+                            Default = reader.GetAttribute("default").AsYesNo(),
 
                             SystemID = sysid,
                             System = filename,
@@ -227,19 +226,21 @@ namespace SabreTools.Library.DatFiles
                         {
                             Name = reader.GetAttribute("name"),
                             Bios = reader.GetAttribute("bios"),
-                            Size = Utilities.GetSize(reader.GetAttribute("size")),
-                            CRC = Utilities.CleanHashData(reader.GetAttribute("crc"), Constants.CRCLength),
-                            MD5 = Utilities.CleanHashData(reader.GetAttribute("md5"), Constants.MD5Length),
-                            RIPEMD160 = Utilities.CleanHashData(reader.GetAttribute("ripemd160"), Constants.SHA1Length),
-                            SHA1 = Utilities.CleanHashData(reader.GetAttribute("sha1"), Constants.SHA1Length),
-                            SHA256 = Utilities.CleanHashData(reader.GetAttribute("sha256"), Constants.SHA256Length),
-                            SHA384 = Utilities.CleanHashData(reader.GetAttribute("sha384"), Constants.SHA384Length),
-                            SHA512 = Utilities.CleanHashData(reader.GetAttribute("sha512"), Constants.SHA512Length),
+                            Size = Sanitizer.CleanSize(reader.GetAttribute("size")),
+                            CRC = Sanitizer.CleanCRC32(reader.GetAttribute("crc")),
+                            MD5 = Sanitizer.CleanMD5(reader.GetAttribute("md5")),
+#if NET_FRAMEWORK
+                            RIPEMD160 = Sanitizer.CleanSHA1(reader.GetAttribute("ripemd160")),
+#endif
+                            SHA1 = Sanitizer.CleanSHA1(reader.GetAttribute("sha1")),
+                            SHA256 = Sanitizer.CleanSHA256(reader.GetAttribute("sha256")),
+                            SHA384 = Sanitizer.CleanSHA384(reader.GetAttribute("sha384")),
+                            SHA512 = Sanitizer.CleanSHA512(reader.GetAttribute("sha512")),
                             MergeTag = reader.GetAttribute("merge"),
                             Region = reader.GetAttribute("region"),
                             Offset = reader.GetAttribute("offset"),
-                            ItemStatus = Utilities.GetItemStatus(reader.GetAttribute("status")),
-                            Optional = Utilities.GetYesNo(reader.GetAttribute("optional")),
+                            ItemStatus = reader.GetAttribute("status").AsItemStatus(),
+                            Optional = reader.GetAttribute("optional").AsYesNo(),
 
                             SystemID = sysid,
                             System = filename,
@@ -260,18 +261,20 @@ namespace SabreTools.Library.DatFiles
                         DatItem disk = new Disk
                         {
                             Name = reader.GetAttribute("name"),
-                            MD5 = Utilities.CleanHashData(reader.GetAttribute("md5"), Constants.MD5Length),
-                            RIPEMD160 = Utilities.CleanHashData(reader.GetAttribute("ripemd160"), Constants.SHA1Length),
-                            SHA1 = Utilities.CleanHashData(reader.GetAttribute("sha1"), Constants.SHA1Length),
-                            SHA256 = Utilities.CleanHashData(reader.GetAttribute("sha256"), Constants.SHA256Length),
-                            SHA384 = Utilities.CleanHashData(reader.GetAttribute("sha384"), Constants.SHA384Length),
-                            SHA512 = Utilities.CleanHashData(reader.GetAttribute("sha512"), Constants.SHA512Length),
+                            MD5 = Sanitizer.CleanMD5(reader.GetAttribute("md5")),
+#if NET_FRAMEWORK
+                            RIPEMD160 = Sanitizer.CleanSHA1(reader.GetAttribute("ripemd160")),
+#endif
+                            SHA1 = Sanitizer.CleanSHA1(reader.GetAttribute("sha1")),
+                            SHA256 = Sanitizer.CleanSHA256(reader.GetAttribute("sha256")),
+                            SHA384 = Sanitizer.CleanSHA384(reader.GetAttribute("sha384")),
+                            SHA512 = Sanitizer.CleanSHA512(reader.GetAttribute("sha512")),
                             MergeTag = reader.GetAttribute("merge"),
                             Region = reader.GetAttribute("region"),
                             Index = reader.GetAttribute("index"),
-                            Writable = Utilities.GetYesNo(reader.GetAttribute("writable")),
-                            ItemStatus = Utilities.GetItemStatus(reader.GetAttribute("status")),
-                            Optional = Utilities.GetYesNo(reader.GetAttribute("optional")),
+                            Writable = reader.GetAttribute("writable").AsYesNo(),
+                            ItemStatus = reader.GetAttribute("status").AsItemStatus(),
+                            Optional = reader.GetAttribute("optional").AsYesNo(),
 
                             SystemID = sysid,
                             System = filename,
@@ -519,7 +522,7 @@ namespace SabreTools.Library.DatFiles
         /// </summary>
         /// <param name="reader">XmlReader representing a machine block</param>
         /// <param name="machine">Machine information to pass to contained items</param>
-        private void ReadSlot(XmlReader reader,	Machine machine)
+        private void ReadSlot(XmlReader reader, Machine machine)
         {
             // If we have an empty machine, skip it
             if (reader == null)
@@ -569,7 +572,7 @@ namespace SabreTools.Library.DatFiles
             try
             {
                 Globals.Logger.User($"Opening file for writing: {outfile}");
-                FileStream fs = Utilities.TryCreate(outfile);
+                FileStream fs = FileExtensions.TryCreate(outfile);
 
                 // If we get back null for some reason, just log and return
                 if (fs == null)
@@ -699,7 +702,7 @@ namespace SabreTools.Library.DatFiles
                 xtw.WriteAttributeString("name", datItem.GetField(Field.MachineName, ExcludeFields));
                 if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SourceFile, ExcludeFields)))
                     xtw.WriteElementString("sourcefile", datItem.SourceFile);
-                
+
                 if (!ExcludeFields[(int)Field.MachineType])
                 {
                     if ((datItem.MachineType & MachineType.Bios) != 0)
@@ -731,7 +734,7 @@ namespace SabreTools.Library.DatFiles
                     xtw.WriteElementString("year", datItem.Year);
                 if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Publisher, ExcludeFields)))
                     xtw.WriteElementString("publisher", datItem.Publisher);
-                
+
                 if (!ExcludeFields[(int)Field.Infos] && datItem.Infos != null && datItem.Infos.Count > 0)
                 {
                     foreach (KeyValuePair<string, string> kvp in datItem.Infos)
@@ -815,8 +818,10 @@ namespace SabreTools.Library.DatFiles
                         xtw.WriteAttributeString("name", disk.GetField(Field.Name, ExcludeFields));
                         if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.MD5, ExcludeFields)))
                             xtw.WriteAttributeString("md5", disk.MD5.ToLowerInvariant());
+#if NET_FRAMEWORK
                         if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.RIPEMD160, ExcludeFields)))
                             xtw.WriteAttributeString("ripemd160", disk.RIPEMD160.ToLowerInvariant());
+#endif
                         if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA1, ExcludeFields)))
                             xtw.WriteAttributeString("sha1", disk.SHA1.ToLowerInvariant());
                         if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA256, ExcludeFields)))
@@ -850,8 +855,10 @@ namespace SabreTools.Library.DatFiles
                             xtw.WriteAttributeString("crc", rom.CRC.ToLowerInvariant());
                         if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.MD5, ExcludeFields)))
                             xtw.WriteAttributeString("md5", rom.MD5.ToLowerInvariant());
+#if NET_FRAMEWORK
                         if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.RIPEMD160, ExcludeFields)))
                             xtw.WriteAttributeString("ripemd160", rom.RIPEMD160.ToLowerInvariant());
+#endif
                         if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA1, ExcludeFields)))
                             xtw.WriteAttributeString("sha1", rom.SHA1.ToLowerInvariant());
                         if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA256, ExcludeFields)))

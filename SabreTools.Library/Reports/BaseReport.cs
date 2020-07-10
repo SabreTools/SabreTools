@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 
+using SabreTools.Library.Data;
 using SabreTools.Library.DatFiles;
 using SabreTools.Library.Tools;
 
@@ -27,7 +28,7 @@ namespace SabreTools.Library.Reports
         public BaseReport(DatFile datfile, string filename, bool baddumpCol = false, bool nodumpCol = false)
         {
             _datFile = datfile;
-            _writer = new StreamWriter(Utilities.TryCreate(filename));
+            _writer = new StreamWriter(FileExtensions.TryCreate(filename));
             _baddumpCol = baddumpCol;
             _nodumpCol = nodumpCol;
         }
@@ -49,6 +50,37 @@ namespace SabreTools.Library.Reports
             _writer = new StreamWriter(stream);
             _baddumpCol = baddumpCol;
             _nodumpCol = nodumpCol;
+        }
+
+        /// <summary>
+        /// Create a specific type of BaseReport to be used based on a format and user inputs
+        /// </summary>
+        /// <param name="statReportFormat">Format of the Statistics Report to be created</param>
+        /// <param name="filename">Name of the file to write out to</param>
+        /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
+        /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
+        /// <returns>BaseReport of the specific internal type that corresponds to the inputs</returns>
+        public static BaseReport Create(StatReportFormat statReportFormat, string filename, bool baddumpCol, bool nodumpCol)
+        {
+            switch (statReportFormat)
+            {
+                case StatReportFormat.Textfile:
+                    return new Textfile(null, filename, baddumpCol, nodumpCol);
+
+                case StatReportFormat.CSV:
+                    return new Reports.SeparatedValue(null, filename, ',', baddumpCol, nodumpCol);
+
+                case StatReportFormat.HTML:
+                    return new Html(null, filename, baddumpCol, nodumpCol);
+
+                case StatReportFormat.SSV:
+                    return new Reports.SeparatedValue(null, filename, ';', baddumpCol, nodumpCol);
+
+                case StatReportFormat.TSV:
+                    return new Reports.SeparatedValue(null, filename, '\t', baddumpCol, nodumpCol);
+            }
+
+            return null;
         }
 
         /// <summary>

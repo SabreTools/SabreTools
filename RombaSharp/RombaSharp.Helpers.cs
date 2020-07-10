@@ -32,7 +32,7 @@ namespace RombaSharp
                 if (lowerCaseDats.Contains(input.ToLowerInvariant()))
                 {
                     string fullpath = Path.GetFullPath(datRootDats[lowerCaseDats.IndexOf(input.ToLowerInvariant())]);
-                    string sha1 = Utilities.ByteArrayToString(Utilities.GetFileInfo(fullpath).SHA1);
+                    string sha1 = Utilities.ByteArrayToString(FileExtensions.GetInfo(fullpath).SHA1);
                     foundDats.Add(sha1, fullpath);
                 }
                 else
@@ -64,7 +64,7 @@ namespace RombaSharp
             Dictionary<string, Tuple<long, bool>> depots = new Dictionary<string, Tuple<long, bool>>();
 
             // Get the XML text reader for the configuration file, if possible
-            XmlReader xtr = Utilities.GetXmlTextReader(_config);
+            XmlReader xtr = _config.GetXmlTextReader();
 
             // Now parse the XML file for settings
             if (xtr != null)

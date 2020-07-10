@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 
 using SabreTools.Library.Data;
 using SabreTools.Library.DatItems;
@@ -49,8 +48,8 @@ namespace SabreTools.Library.DatFiles
             bool remUnicode)
         {
             // Open a file reader
-            Encoding enc = Utilities.GetEncoding(filename);
-            ClrMameProReader cmpr = new ClrMameProReader(Utilities.TryOpenRead(filename), enc);
+            Encoding enc = FileExtensions.GetEncoding(filename);
+            ClrMameProReader cmpr = new ClrMameProReader(FileExtensions.TryOpenRead(filename), enc);
             cmpr.DosCenter = true;
 
             while (!cmpr.EndOfStream)
@@ -208,7 +207,7 @@ namespace SabreTools.Library.DatFiles
                     containsItems = true;
 
                     // Create the proper DatItem based on the type
-                    Rom item = Utilities.GetDatItem(ItemType.Rom) as Rom;
+                    Rom item = DatItem.Create(ItemType.Rom) as Rom;
 
                     // Then populate it with information
                     item.CopyMachineInformation(machine);
@@ -243,7 +242,7 @@ namespace SabreTools.Library.DatFiles
                                 break;
 
                             case "crc":
-                                item.CRC = Utilities.CleanHashData(attrVal, Constants.CRCLength);
+                                item.CRC = Sanitizer.CleanCRC32(attrVal);
                                 break;
                             case "date":
                                 item.Date = attrVal;
@@ -285,7 +284,7 @@ namespace SabreTools.Library.DatFiles
             try
             {
                 Globals.Logger.User($"Opening file for writing: {outfile}");
-                FileStream fs = Utilities.TryCreate(outfile);
+                FileStream fs = FileExtensions.TryCreate(outfile);
 
                 // If we get back null for some reason, just log and return
                 if (fs == null)
@@ -329,7 +328,7 @@ namespace SabreTools.Library.DatFiles
 
                         // If we have a different game and we're not at the start of the list, output the end of last item
                         if (lastgame != null && lastgame.ToLowerInvariant() != rom.MachineName.ToLowerInvariant())
-                             WriteEndGame(cmpw, rom);
+                            WriteEndGame(cmpw, rom);
 
                         // If we have a new game, output the beginning of the new item
                         if (lastgame == null || lastgame.ToLowerInvariant() != rom.MachineName.ToLowerInvariant())
@@ -346,7 +345,9 @@ namespace SabreTools.Library.DatFiles
                             ((Rom)rom).Size = Constants.SizeZero;
                             ((Rom)rom).CRC = ((Rom)rom).CRC == "null" ? Constants.CRCZero : null;
                             ((Rom)rom).MD5 = ((Rom)rom).MD5 == "null" ? Constants.MD5Zero : null;
+#if NET_FRAMEWORK
                             ((Rom)rom).RIPEMD160 = ((Rom)rom).RIPEMD160 == "null" ? Constants.RIPEMD160Zero : null;
+#endif
                             ((Rom)rom).SHA1 = ((Rom)rom).SHA1 == "null" ? Constants.SHA1Zero : null;
                             ((Rom)rom).SHA256 = ((Rom)rom).SHA256 == "null" ? Constants.SHA256Zero : null;
                             ((Rom)rom).SHA384 = ((Rom)rom).SHA384 == "null" ? Constants.SHA384Zero : null;

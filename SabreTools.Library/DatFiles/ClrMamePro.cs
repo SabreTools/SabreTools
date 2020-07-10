@@ -5,10 +5,10 @@ using System.Text;
 
 using SabreTools.Library.Data;
 using SabreTools.Library.DatItems;
+using SabreTools.Library.Readers;
 using SabreTools.Library.Tools;
 using SabreTools.Library.Writers;
 using NaturalSort;
-using SabreTools.Library.Readers;
 
 namespace SabreTools.Library.DatFiles
 {
@@ -47,9 +47,11 @@ namespace SabreTools.Library.DatFiles
             bool remUnicode)
         {
             // Open a file reader
-            Encoding enc = Utilities.GetEncoding(filename);
-            ClrMameProReader cmpr = new ClrMameProReader(Utilities.TryOpenRead(filename), enc);
-            cmpr.DosCenter = false;
+            Encoding enc = FileExtensions.GetEncoding(filename);
+            ClrMameProReader cmpr = new ClrMameProReader(FileExtensions.TryOpenRead(filename), enc)
+            {
+                DosCenter = false
+            };
 
             while (!cmpr.EndOfStream)
             {
@@ -169,17 +171,17 @@ namespace SabreTools.Library.DatFiles
                         break;
                     case "forcemerging":
                         if (ForceMerging == ForceMerging.None)
-                            ForceMerging = Utilities.GetForceMerging(itemVal);
+                            ForceMerging = itemVal.AsForceMerging();
 
                         break;
                     case "forcezipping":
                         if (ForcePacking == ForcePacking.None)
-                            ForcePacking = Utilities.GetForcePacking(itemVal);
+                            ForcePacking = itemVal.AsForcePacking();
 
                         break;
                     case "forcepacking":
                         if (ForcePacking == ForcePacking.None)
-                            ForcePacking = Utilities.GetForcePacking(itemVal);
+                            ForcePacking = itemVal.AsForcePacking();
 
                         break;
                 }
@@ -297,7 +299,7 @@ namespace SabreTools.Library.DatFiles
                     }
 
                     // Create the proper DatItem based on the type
-                    DatItem item = Utilities.GetDatItem(itemType);
+                    DatItem item = DatItem.Create(itemType);
 
                     // Then populate it with information
                     item.CopyMachineInformation(machine);
@@ -335,53 +337,55 @@ namespace SabreTools.Library.DatFiles
                                 break;
                             case "crc":
                                 if (item.ItemType == ItemType.Rom)
-                                    (item as Rom).CRC = Utilities.CleanHashData(attrVal, Constants.CRCLength);
+                                    (item as Rom).CRC = Sanitizer.CleanCRC32(attrVal);
 
                                 break;
                             case "md5":
                                 if (item.ItemType == ItemType.Rom)
-                                    (item as Rom).MD5 = Utilities.CleanHashData(attrVal, Constants.MD5Length);
+                                    (item as Rom).MD5 = Sanitizer.CleanMD5(attrVal);
                                 else if (item.ItemType == ItemType.Disk)
-                                    ((Disk)item).MD5 = Utilities.CleanHashData(attrVal, Constants.MD5Length);
+                                    ((Disk)item).MD5 = Sanitizer.CleanMD5(attrVal);
 
                                 break;
+#if NET_FRAMEWORK
                             case "ripemd160":
                                 if (item.ItemType == ItemType.Rom)
-                                    (item as Rom).RIPEMD160 = Utilities.CleanHashData(attrVal, Constants.RIPEMD160Length);
+                                    (item as Rom).RIPEMD160 = Sanitizer.CleanRIPEMD160(attrVal);
                                 else if (item.ItemType == ItemType.Disk)
-                                    ((Disk)item).RIPEMD160 = Utilities.CleanHashData(attrVal, Constants.RIPEMD160Length);
+                                    ((Disk)item).RIPEMD160 = Sanitizer.CleanRIPEMD160(attrVal);
 
                                 break;
+#endif
                             case "sha1":
                                 if (item.ItemType == ItemType.Rom)
-                                    (item as Rom).SHA1 = Utilities.CleanHashData(attrVal, Constants.SHA1Length);
+                                    (item as Rom).SHA1 = Sanitizer.CleanSHA1(attrVal);
                                 else if (item.ItemType == ItemType.Disk)
-                                    ((Disk)item).SHA1 = Utilities.CleanHashData(attrVal, Constants.SHA1Length);
+                                    ((Disk)item).SHA1 = Sanitizer.CleanSHA1(attrVal);
 
                                 break;
                             case "sha256":
                                 if (item.ItemType == ItemType.Rom)
-                                    ((Rom)item).SHA256 = Utilities.CleanHashData(attrVal, Constants.SHA256Length);
+                                    ((Rom)item).SHA256 = Sanitizer.CleanSHA256(attrVal);
                                 else if (item.ItemType == ItemType.Disk)
-                                    ((Disk)item).SHA256 = Utilities.CleanHashData(attrVal, Constants.SHA256Length);
+                                    ((Disk)item).SHA256 = Sanitizer.CleanSHA256(attrVal);
 
                                 break;
                             case "sha384":
                                 if (item.ItemType == ItemType.Rom)
-                                    ((Rom)item).SHA384 = Utilities.CleanHashData(attrVal, Constants.SHA384Length);
+                                    ((Rom)item).SHA384 = Sanitizer.CleanSHA384(attrVal);
                                 else if (item.ItemType == ItemType.Disk)
-                                    ((Disk)item).SHA384 = Utilities.CleanHashData(attrVal, Constants.SHA384Length);
+                                    ((Disk)item).SHA384 = Sanitizer.CleanSHA384(attrVal);
 
                                 break;
                             case "sha512":
                                 if (item.ItemType == ItemType.Rom)
-                                    ((Rom)item).SHA512 = Utilities.CleanHashData(attrVal, Constants.SHA512Length);
+                                    ((Rom)item).SHA512 = Sanitizer.CleanSHA512(attrVal);
                                 else if (item.ItemType == ItemType.Disk)
-                                    ((Disk)item).SHA512 = Utilities.CleanHashData(attrVal, Constants.SHA512Length);
+                                    ((Disk)item).SHA512 = Sanitizer.CleanSHA512(attrVal);
 
                                 break;
                             case "status":
-                                ItemStatus tempFlagStatus = Utilities.GetItemStatus(attrVal);
+                                ItemStatus tempFlagStatus = attrVal.AsItemStatus();
                                 if (item.ItemType == ItemType.Rom)
                                     ((Rom)item).ItemStatus = tempFlagStatus;
                                 else if (item.ItemType == ItemType.Disk)
@@ -397,9 +401,9 @@ namespace SabreTools.Library.DatFiles
                                 break;
                             case "default":
                                 if (item.ItemType == ItemType.BiosSet)
-                                    ((BiosSet)item).Default = Utilities.GetYesNo(attrVal.ToLowerInvariant());
+                                    ((BiosSet)item).Default = attrVal.ToLowerInvariant().AsYesNo();
                                 else if (item.ItemType == ItemType.Release)
-                                    ((Release)item).Default = Utilities.GetYesNo(attrVal.ToLowerInvariant());
+                                    ((Release)item).Default = attrVal.ToLowerInvariant().AsYesNo();
 
                                 break;
                             case "description":
@@ -453,7 +457,7 @@ namespace SabreTools.Library.DatFiles
             try
             {
                 Globals.Logger.User($"Opening file for writing: {outfile}");
-                FileStream fs = Utilities.TryCreate(outfile);
+                FileStream fs = FileExtensions.TryCreate(outfile);
 
                 // If we get back null for some reason, just log and return
                 if (fs == null)
@@ -462,8 +466,10 @@ namespace SabreTools.Library.DatFiles
                     return false;
                 }
 
-                ClrMameProWriter cmpw = new ClrMameProWriter(fs, new UTF8Encoding(false));
-                cmpw.Quotes = true;
+                ClrMameProWriter cmpw = new ClrMameProWriter(fs, new UTF8Encoding(false))
+                {
+                    Quotes = true
+                };
 
                 // Write out the header
                 WriteHeader(cmpw);
@@ -513,7 +519,9 @@ namespace SabreTools.Library.DatFiles
                             ((Rom)rom).Size = Constants.SizeZero;
                             ((Rom)rom).CRC = ((Rom)rom).CRC == "null" ? Constants.CRCZero : null;
                             ((Rom)rom).MD5 = ((Rom)rom).MD5 == "null" ? Constants.MD5Zero : null;
+#if NET_FRAMEWORK
                             ((Rom)rom).RIPEMD160 = ((Rom)rom).RIPEMD160 == "null" ? Constants.RIPEMD160Zero : null;
+#endif
                             ((Rom)rom).SHA1 = ((Rom)rom).SHA1 == "null" ? Constants.SHA1Zero : null;
                             ((Rom)rom).SHA256 = ((Rom)rom).SHA256 == "null" ? Constants.SHA256Zero : null;
                             ((Rom)rom).SHA384 = ((Rom)rom).SHA384 == "null" ? Constants.SHA384Zero : null;
@@ -571,7 +579,7 @@ namespace SabreTools.Library.DatFiles
                     cmpw.WriteStandalone("url", Url);
                 if (!string.IsNullOrWhiteSpace(Comment))
                     cmpw.WriteStandalone("comment", Comment);
-                
+
                 switch (ForcePacking)
                 {
                     case ForcePacking.Unzip:
@@ -727,8 +735,10 @@ namespace SabreTools.Library.DatFiles
                         cmpw.WriteAttributeString("name", disk.GetField(Field.Name, ExcludeFields));
                         if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.MD5, ExcludeFields)))
                             cmpw.WriteAttributeString("md5", disk.MD5.ToLowerInvariant());
+#if NET_FRAMEWORK
                         if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.RIPEMD160, ExcludeFields)))
                             cmpw.WriteAttributeString("ripemd160", disk.RIPEMD160.ToLowerInvariant());
+#endif
                         if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA1, ExcludeFields)))
                             cmpw.WriteAttributeString("sha1", disk.SHA1.ToLowerInvariant());
                         if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA256, ExcludeFields)))
@@ -767,8 +777,10 @@ namespace SabreTools.Library.DatFiles
                             cmpw.WriteAttributeString("crc", rom.CRC.ToLowerInvariant());
                         if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.MD5, ExcludeFields)))
                             cmpw.WriteAttributeString("md5", rom.MD5.ToLowerInvariant());
+#if NET_FRAMEWORK
                         if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.RIPEMD160, ExcludeFields)))
                             cmpw.WriteAttributeString("ripemd160", rom.RIPEMD160.ToLowerInvariant());
+#endif
                         if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA1, ExcludeFields)))
                             cmpw.WriteAttributeString("sha1", rom.SHA1.ToLowerInvariant());
                         if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA256, ExcludeFields)))

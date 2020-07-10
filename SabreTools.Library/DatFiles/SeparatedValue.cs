@@ -5,10 +5,10 @@ using System.Text;
 
 using SabreTools.Library.Data;
 using SabreTools.Library.DatItems;
+using SabreTools.Library.Readers;
 using SabreTools.Library.Tools;
 using SabreTools.Library.Writers;
 using NaturalSort;
-using SabreTools.Library.Readers;
 
 namespace SabreTools.Library.DatFiles
 {
@@ -52,8 +52,8 @@ namespace SabreTools.Library.DatFiles
             bool remUnicode)
         {
             // Open a file reader
-            Encoding enc = Utilities.GetEncoding(filename);
-            SeparatedValueReader svr = new SeparatedValueReader(Utilities.TryOpenRead(filename), enc);
+            Encoding enc = FileExtensions.GetEncoding(filename);
+            SeparatedValueReader svr = new SeparatedValueReader(FileExtensions.TryOpenRead(filename), enc);
             svr.Header = true;
             svr.Quotes = true;
             svr.Separator = _delim;
@@ -176,15 +176,15 @@ namespace SabreTools.Library.DatFiles
                             break;
 
                         case "DatFile.ForceMerging":
-                            ForceMerging = (ForceMerging == ForceMerging.None ? Utilities.GetForceMerging(value) : ForceMerging);
+                            ForceMerging = (ForceMerging == ForceMerging.None ? value.AsForceMerging() : ForceMerging);
                             break;
 
                         case "DatFile.ForceNodump":
-                            ForceNodump = (ForceNodump == ForceNodump.None ? Utilities.GetForceNodump(value) : ForceNodump);
+                            ForceNodump = (ForceNodump == ForceNodump.None ? value.AsForceNodump() : ForceNodump);
                             break;
 
                         case "DatFile.ForcePacking":
-                            ForcePacking = (ForcePacking == ForcePacking.None ? Utilities.GetForcePacking(value) : ForcePacking);
+                            ForcePacking = (ForcePacking == ForcePacking.None ? value.AsForcePacking() : ForcePacking);
                             break;
 
                         #endregion
@@ -304,7 +304,7 @@ namespace SabreTools.Library.DatFiles
                             break;
 
                         case "Machine.MachineType":
-                            machine.MachineType = Utilities.GetMachineType(value);
+                            machine.MachineType = value.AsMachineType();
                             break;
 
                         #endregion
@@ -312,7 +312,7 @@ namespace SabreTools.Library.DatFiles
                         #region DatItem
 
                         case "DatItem.Type":
-                            itemType = Utilities.GetItemType(value) ?? ItemType.Rom;
+                            itemType = value.AsItemType() ?? ItemType.Rom;
                             break;
 
                         case "DatItem.Name":
@@ -377,31 +377,33 @@ namespace SabreTools.Library.DatFiles
                             break;
 
                         case "DatItem.CRC":
-                            crc = Utilities.CleanHashData(value, Constants.CRCLength);
+                            crc = Sanitizer.CleanCRC32(value);
                             break;
 
                         case "DatItem.MD5":
-                            md5 = Utilities.CleanHashData(value, Constants.MD5Length);
+                            md5 = Sanitizer.CleanMD5(value);
                             break;
 
+#if NET_FRAMEWORK
                         case "DatItem.RIPEMD160":
-                            ripemd160 = Utilities.CleanHashData(value, Constants.RIPEMD160Length);
+                            ripemd160 = Sanitizer.CleanRIPEMD160(value);
                             break;
+#endif
 
                         case "DatItem.SHA1":
-                            sha1 = Utilities.CleanHashData(value, Constants.SHA1Length);
+                            sha1 = Sanitizer.CleanSHA1(value);
                             break;
 
                         case "DatItem.SHA256":
-                            sha256 = Utilities.CleanHashData(value, Constants.SHA256Length);
+                            sha256 = Sanitizer.CleanSHA256(value);
                             break;
 
                         case "DatItem.SHA384":
-                            sha384 = Utilities.CleanHashData(value, Constants.SHA384Length);
+                            sha384 = Sanitizer.CleanSHA384(value);
                             break;
 
                         case "DatItem.SHA512":
-                            sha512 = Utilities.CleanHashData(value, Constants.SHA512Length);
+                            sha512 = Sanitizer.CleanSHA512(value);
                             break;
 
                         case "DatItem.Merge":
@@ -449,7 +451,7 @@ namespace SabreTools.Library.DatFiles
                             break;
 
                         case "DatItem.Status":
-                            status = Utilities.GetItemStatus(value);
+                            status = value.AsItemStatus();
                             break;
 
                         case "DatItem.Language":
@@ -524,7 +526,9 @@ namespace SabreTools.Library.DatFiles
                             AreaSize = areaSize,
 
                             MD5 = md5,
+#if NET_FRAMEWORK
                             RIPEMD160 = ripemd160,
+#endif
                             SHA1 = sha1,
                             SHA256 = sha256,
                             SHA384 = sha384,
@@ -575,7 +579,9 @@ namespace SabreTools.Library.DatFiles
                             Size = size,
                             CRC = crc,
                             MD5 = md5,
+#if NET_FRAMEWORK
                             RIPEMD160 = ripemd160,
+#endif
                             SHA1 = sha1,
                             SHA256 = sha256,
                             SHA384 = sha384,
@@ -898,7 +904,7 @@ namespace SabreTools.Library.DatFiles
             try
             {
                 Globals.Logger.User($"Opening file for writing: {outfile}");
-                FileStream fs = Utilities.TryCreate(outfile);
+                FileStream fs = FileExtensions.TryCreate(outfile);
 
                 // If we get back null for some reason, just log and return
                 if (fs == null)

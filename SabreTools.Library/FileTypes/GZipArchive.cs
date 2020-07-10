@@ -60,7 +60,7 @@ namespace SabreTools.Library.FileTypes
                 Directory.CreateDirectory(outDir);
 
                 // Decompress the _filename stream
-                FileStream outstream = Utilities.TryCreate(Path.Combine(outDir, Path.GetFileNameWithoutExtension(this.Filename)));
+                FileStream outstream = FileExtensions.TryCreate(Path.Combine(outDir, Path.GetFileNameWithoutExtension(this.Filename)));
                 var gz = new gZip();
                 ZipReturn ret = gz.ZipFileOpen(this.Filename);
                 ret = gz.ZipFileOpenReadStream(0, out Stream gzstream, out ulong streamSize);
@@ -110,7 +110,7 @@ namespace SabreTools.Library.FileTypes
                 Directory.CreateDirectory(Path.GetDirectoryName(realEntry));
 
                 // Now open and write the file if possible
-                FileStream fs = Utilities.TryCreate(realEntry);
+                FileStream fs = FileExtensions.TryCreate(realEntry);
                 if (fs != null)
                 {
                     ms.Seek(0, SeekOrigin.Begin);
@@ -215,11 +215,10 @@ namespace SabreTools.Library.FileTypes
                             {
                                 Filename = gamename,
                             };
-                            BinaryReader br = new BinaryReader(Utilities.TryOpenRead(this.Filename));
+                            BinaryReader br = new BinaryReader(FileExtensions.TryOpenRead(this.Filename));
                             br.BaseStream.Seek(-8, SeekOrigin.End);
-                            byte[] headercrc = br.ReadBytesReverse(4);
-                            tempRom.CRC = headercrc;
-                            tempRom.Size = br.ReadInt32Reverse();
+                            tempRom.CRC = br.ReadBytesBigEndian(4);
+                            tempRom.Size = br.ReadInt32BigEndian();
                             br.Dispose();
 
                             _children.Add(tempRom);
@@ -230,7 +229,7 @@ namespace SabreTools.Library.FileTypes
                             var gz = new gZip();
                             ZipReturn ret = gz.ZipFileOpen(this.Filename);
                             ret = gz.ZipFileOpenReadStream(0, out Stream gzstream, out ulong streamSize);
-                            BaseFile gzipEntryRom = Utilities.GetStreamInfo(gzstream, gzstream.Length, omitFromScan);
+                            BaseFile gzipEntryRom = gzstream.GetInfo(omitFromScan: omitFromScan);
                             gzipEntryRom.Filename = gz.Filename(0);
                             gzipEntryRom.Parent = gamename;
                             gzipEntryRom.Date = (date && gz.TimeStamp > 0 ? gz.TimeStamp.ToString() : null);
@@ -300,7 +299,7 @@ namespace SabreTools.Library.FileTypes
             byte[] headermd5; // MD5
             byte[] headercrc; // CRC
             ulong headersz; // Int64 size
-            BinaryReader br = new BinaryReader(Utilities.TryOpenRead(this.Filename));
+            BinaryReader br = new BinaryReader(FileExtensions.TryOpenRead(this.Filename));
             header = br.ReadBytes(12);
             headermd5 = br.ReadBytes(16);
             headercrc = br.ReadBytes(4);
@@ -367,7 +366,7 @@ namespace SabreTools.Library.FileTypes
             byte[] headermd5; // MD5
             byte[] headercrc; // CRC
             ulong headersz; // Int64 size
-            BinaryReader br = new BinaryReader(Utilities.TryOpenRead(this.Filename));
+            BinaryReader br = new BinaryReader(FileExtensions.TryOpenRead(this.Filename));
             header = br.ReadBytes(12);
             headermd5 = br.ReadBytes(16);
             headercrc = br.ReadBytes(4);
@@ -432,7 +431,7 @@ namespace SabreTools.Library.FileTypes
             inputFile = Path.GetFullPath(inputFile);
 
             // Get the file stream for the file and write out
-            return Write(Utilities.TryOpenRead(inputFile), outDir, rom, date, romba);
+            return Write(FileExtensions.TryOpenRead(inputFile), outDir, rom, date, romba);
         }
 
         /// <summary>
@@ -463,7 +462,7 @@ namespace SabreTools.Library.FileTypes
             outDir = Path.GetFullPath(outDir);
 
             // Now get the Rom info for the file so we have hashes and size
-            rom = new Rom(Utilities.GetStreamInfo(inputStream, inputStream.Length, keepReadOpen: true));
+            rom = new Rom(inputStream.GetInfo(keepReadOpen: true));
 
             // Get the output file name
             string outfile = null;
@@ -471,7 +470,7 @@ namespace SabreTools.Library.FileTypes
             // If we have a romba output, add the romba path
             if (romba)
             {
-                outfile = Path.Combine(outDir, Utilities.GetRombaPath(rom.SHA1)); // TODO: When updating to SHA-256, this needs to update to SHA256
+                outfile = Path.Combine(outDir, PathExtensions.GetRombaPath(rom.SHA1)); // TODO: When updating to SHA-256, this needs to update to SHA256
 
                 // Check to see if the folder needs to be created
                 if (!Directory.Exists(Path.GetDirectoryName(outfile)))
@@ -489,7 +488,7 @@ namespace SabreTools.Library.FileTypes
             if (!File.Exists(outfile))
             {
                 // Compress the input stream
-                FileStream outputStream = Utilities.TryCreate(outfile);
+                FileStream outputStream = FileExtensions.TryCreate(outfile);
 
                 // Open the output file for writing
                 BinaryWriter sw = new BinaryWriter(outputStream);

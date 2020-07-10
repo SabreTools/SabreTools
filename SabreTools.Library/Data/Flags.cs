@@ -11,29 +11,29 @@ namespace SabreTools.Library.Data
     public enum ArchiveScanLevel
     {
         // 7zip
-        SevenZipExternal =  1 << 0,
-        SevenZipInternal =  1 << 1,
-        SevenZipBoth =      SevenZipExternal | SevenZipInternal,
+        SevenZipExternal = 1 << 0,
+        SevenZipInternal = 1 << 1,
+        SevenZipBoth = SevenZipExternal | SevenZipInternal,
 
         // GZip
-        GZipExternal =      1 << 2,
-        GZipInternal =      1 << 3,
-        GZipBoth =          GZipExternal | GZipInternal,
+        GZipExternal = 1 << 2,
+        GZipInternal = 1 << 3,
+        GZipBoth = GZipExternal | GZipInternal,
 
         // RAR
-        RarExternal =       1 << 4,
-        RarInternal =       1 << 5,
-        RarBoth =           RarExternal | RarInternal,
+        RarExternal = 1 << 4,
+        RarInternal = 1 << 5,
+        RarBoth = RarExternal | RarInternal,
 
         // Zip
-        ZipExternal =       1 << 6,
-        ZipInternal =       1 << 7,
-        ZipBoth =           ZipExternal | ZipInternal,
+        ZipExternal = 1 << 6,
+        ZipInternal = 1 << 7,
+        ZipBoth = ZipExternal | ZipInternal,
 
         // Tar
-        TarExternal =       1 << 8,
-        TarInternal =       1 << 9,
-        TarBoth =           TarExternal | TarInternal,
+        TarExternal = 1 << 8,
+        TarInternal = 1 << 9,
+        TarBoth = TarExternal | TarInternal,
     }
 
     /// <summary>
@@ -42,34 +42,34 @@ namespace SabreTools.Library.Data
     [Flags]
     public enum GeneralPurposeBitFlag : ushort
     {
-        Encrypted =                     1 << 0,
-        ZeroedCRCAndSize =              1 << 3,
-        CompressedPatchedData =         1 << 5,
-        StrongEncryption =              1 << 6,
-        LanguageEncodingFlag =          1 << 11,
-        EncryptedCentralDirectory =     1 << 13,
+        Encrypted = 1 << 0,
+        ZeroedCRCAndSize = 1 << 3,
+        CompressedPatchedData = 1 << 5,
+        StrongEncryption = 1 << 6,
+        LanguageEncodingFlag = 1 << 11,
+        EncryptedCentralDirectory = 1 << 13,
 
         // For Method 6 - Imploding
-        Imploding8KSlidingDictionary =  1 << 1,
-        Imploding3ShannonFanoTrees =    1 << 2,
+        Imploding8KSlidingDictionary = 1 << 1,
+        Imploding3ShannonFanoTrees = 1 << 2,
 
         // For Methods 8 and 9 - Deflating
-        DeflatingMaximumCompression =   1 << 1,
-        DeflatingFastCompression =      1 << 2,
+        DeflatingMaximumCompression = 1 << 1,
+        DeflatingFastCompression = 1 << 2,
         DeflatingSuperFastCompression = 1 << 1 | 1 << 2,
-        EnhancedDeflating =             1 << 4,
+        EnhancedDeflating = 1 << 4,
 
         // For Method 14 - LZMA
-        LZMAEOSMarkerUsed =             1 << 1,
+        LZMAEOSMarkerUsed = 1 << 1,
 
         // Reserved and unused (SHOULD NOT BE USED)
-        Bit7 =                          1 << 7,
-        Bit8 =                          1 << 8,
-        Bit9 =                          1 << 9,
-        Bit10 =                         1 << 10,
-        Bit12 =                         1 << 12, // Reserved by PKWARE for enhanced compression
-        Bit14 =                         1 << 14, // Reserved by PKWARE
-        Bit15 =                         1 << 15, // Reserved by PKWARE
+        Bit7 = 1 << 7,
+        Bit8 = 1 << 8,
+        Bit9 = 1 << 9,
+        Bit10 = 1 << 10,
+        Bit12 = 1 << 12, // Reserved by PKWARE for enhanced compression
+        Bit14 = 1 << 14, // Reserved by PKWARE
+        Bit15 = 1 << 15, // Reserved by PKWARE
     }
 
     /// <summary>
@@ -78,12 +78,12 @@ namespace SabreTools.Library.Data
     [Flags]
     public enum InternalFileAttributes : ushort
     {
-        ASCIIOrTextFile =       1 << 0,
-        RecordLengthControl =   1 << 1,
+        ASCIIOrTextFile = 1 << 0,
+        RecordLengthControl = 1 << 1,
 
         // Reserved and unused (SHOULD NOT BE USED)
-        Bit1 =                  1 << 1,
-        Bit2 =                  1 << 2,
+        Bit1 = 1 << 1,
+        Bit2 = 1 << 2,
     }
 
     /// <summary>
@@ -95,17 +95,17 @@ namespace SabreTools.Library.Data
         /// <summary>
         /// Volume. Archive is a part of multivolume set.
         /// </summary>
-        Volume =                1 << 0,
+        Volume = 1 << 0,
 
         /// <summary>
         /// Volume number field is present. This flag is present in all volumes except first.
         /// </summary>
-        VolumeNumberField =     1 << 1,
+        VolumeNumberField = 1 << 1,
 
         /// <summary>
         /// Solid archive.
         /// </summary>
-        Solid =                 1 << 2,
+        Solid = 1 << 2,
 
         /// <summary>
         /// Recovery record is present.
@@ -115,7 +115,7 @@ namespace SabreTools.Library.Data
         /// <summary>
         /// Locked archive.
         /// </summary>
-        Locked =                1 << 4,
+        Locked = 1 << 4,
     }
 
     /// <summary>
@@ -124,8 +124,8 @@ namespace SabreTools.Library.Data
     [Flags]
     public enum RarEncryptionFlags : uint
     {
-        PasswordCheckDataPresent =  1 << 0,
-        UseTweakedChecksums =       1 << 1,
+        PasswordCheckDataPresent = 1 << 0,
+        UseTweakedChecksums = 1 << 1,
 
         /*
         If flag 0x0002 is present, RAR transforms the checksum preserving file or service data integrity, so it becomes dependent on 
@@ -143,22 +143,22 @@ namespace SabreTools.Library.Data
         /// <summary>
         /// Directory file system object (file header only)
         /// </summary>
-        Directory =             1 << 0,
+        Directory = 1 << 0,
 
         /// <summary>
         /// Time field in Unix format is present
         /// </summary>
-        TimeInUnix =            1 << 1,
+        TimeInUnix = 1 << 1,
 
         /// <summary>
         /// CRC32 field is present
         /// </summary>
-        CRCPresent =            1 << 2,
+        CRCPresent = 1 << 2,
 
         /// <summary>
         /// Unpacked size is unknown
         /// </summary>
-        UnpackedSizeUnknown =   1 << 3,
+        UnpackedSizeUnknown = 1 << 3,
 
         /*
         If flag 0x0008 is set, unpacked size field is still present, but must be ignored and extraction
@@ -177,46 +177,46 @@ namespace SabreTools.Library.Data
         /// <summary>
         /// Extra area is present in the end of header
         /// </summary>
-        ExtraAreaPresent =                  1 << 0,
+        ExtraAreaPresent = 1 << 0,
 
         /// <summary>
         /// Data area is present in the end of header
         /// </summary>
-        DataAreaPresent =                   1 << 1,
+        DataAreaPresent = 1 << 1,
 
         /// <summary>
         /// Blocks with unknown type and this flag must be skipped when updating an archive
         /// </summary>
-        BlocksWithUnknownType =             1 << 2,
+        BlocksWithUnknownType = 1 << 2,
 
         /// <summary>
         /// Data area is continuing from previous volume
         /// </summary>
-        DataAreaContinuingFromPrevious =    1 << 3,
+        DataAreaContinuingFromPrevious = 1 << 3,
 
         /// <summary>
         /// Data area is continuing in next volume
         /// </summary>
-        DataAreaContinuingToNext =          1 << 4,
+        DataAreaContinuingToNext = 1 << 4,
 
         /// <summary>
         /// Block depends on preceding file block
         /// </summary>
-        BlockDependsOnPreceding =           1 << 5,
+        BlockDependsOnPreceding = 1 << 5,
 
         /// <summary>
         /// Preserve a child block if host block is modified
         /// </summary>
-        PreserveChildBlock =                1 << 6,
+        PreserveChildBlock = 1 << 6,
     }
 
     [Flags]
     public enum RarUnixOwnerRecordFlags : uint
     {
-        UserNameStringIsPresent =   1 << 0,
-        GroupNameStringIsPresent =  1 << 1,
-        NumericUserIdIsPresent =    1 << 2,
-        NumericGroupIdIsPresent =   1 << 3,
+        UserNameStringIsPresent = 1 << 0,
+        GroupNameStringIsPresent = 1 << 1,
+        NumericUserIdIsPresent = 1 << 2,
+        NumericGroupIdIsPresent = 1 << 3,
     }
 
     /// <summary>
@@ -225,10 +225,10 @@ namespace SabreTools.Library.Data
     [Flags]
     public enum RarTimeFlags : uint
     {
-        TimeInUnixFormat =          1 << 0,
-        ModificationTimePresent =   1 << 1,
-        CreationTimePresent =       1 << 2,
-        LastAccessTimePresent =     1 << 3,
+        TimeInUnixFormat = 1 << 0,
+        ModificationTimePresent = 1 << 1,
+        CreationTimePresent = 1 << 2,
+        LastAccessTimePresent = 1 << 3,
     }
 
     #endregion
@@ -246,37 +246,37 @@ namespace SabreTools.Library.Data
         /// <summary>
         /// Logiqx XML (using machine)
         /// </summary>
-        Logiqx =                1 << 0,
+        Logiqx = 1 << 0,
 
         /// <summary>
         /// Logiqx XML (using game)
         /// </summary>
-        LogiqxDeprecated =     1 << 1,
+        LogiqxDeprecated = 1 << 1,
 
         /// <summary>
         /// MAME Softare List XML
         /// </summary>
-        SoftwareList =          1 << 2,
+        SoftwareList = 1 << 2,
 
         /// <summary>
         /// MAME Listxml output
         /// </summary>
-        Listxml =               1 << 3,
+        Listxml = 1 << 3,
 
         /// <summary>
         /// OfflineList XML
         /// </summary>
-        OfflineList =           1 << 4,
+        OfflineList = 1 << 4,
 
         /// <summary>
         /// SabreDat XML
         /// </summary>
-        SabreDat =              1 << 5,
+        SabreDat = 1 << 5,
 
         /// <summary>
         /// openMSX Software List XML
         /// </summary>
-        OpenMSX =               1 << 6,
+        OpenMSX = 1 << 6,
 
         #endregion
 
@@ -285,22 +285,22 @@ namespace SabreTools.Library.Data
         /// <summary>
         /// ClrMamePro custom
         /// </summary>
-        ClrMamePro =            1 << 7,
+        ClrMamePro = 1 << 7,
 
         /// <summary>
         /// RomCetner INI-based
         /// </summary>
-        RomCenter =             1 << 8,
+        RomCenter = 1 << 8,
 
         /// <summary>
         /// DOSCenter custom
         /// </summary>
-        DOSCenter =             1 << 9,
+        DOSCenter = 1 << 9,
 
         /// <summary>
         /// AttractMode custom
         /// </summary>
-        AttractMode =           1 << 10,
+        AttractMode = 1 << 10,
 
         #endregion
 
@@ -309,37 +309,37 @@ namespace SabreTools.Library.Data
         /// <summary>
         /// ClrMamePro missfile
         /// </summary>
-        MissFile =              1 << 11,
+        MissFile = 1 << 11,
 
         /// <summary>
         /// Comma-Separated Values (standardized)
         /// </summary>
-        CSV =                   1 << 12,
+        CSV = 1 << 12,
 
         /// <summary>
         /// Semicolon-Separated Values (standardized)
         /// </summary>
-        SSV =                   1 << 13,
+        SSV = 1 << 13,
 
         /// <summary>
         /// Tab-Separated Values (standardized)
         /// </summary>
-        TSV =                   1 << 14,
+        TSV = 1 << 14,
 
         /// <summary>
         /// MAME Listrom output
         /// </summary>
-        Listrom =               1 << 15,
+        Listrom = 1 << 15,
 
         /// <summary>
         /// Everdrive Packs SMDB
         /// </summary>
-        EverdriveSMDB =         1 << 16,
+        EverdriveSMDB = 1 << 16,
 
         /// <summary>
         /// JSON
         /// </summary>
-        Json =                  1 << 17,
+        Json = 1 << 17,
 
         #endregion
 
@@ -348,37 +348,39 @@ namespace SabreTools.Library.Data
         /// <summary>
         /// CRC32 hash list
         /// </summary>
-        RedumpSFV =             1 << 18,
+        RedumpSFV = 1 << 18,
 
         /// <summary>
         /// MD5 hash list
         /// </summary>
-        RedumpMD5 =             1 << 19,
+        RedumpMD5 = 1 << 19,
 
+#if NET_FRAMEWORK
         /// <summary>
         /// RIPEMD160 hash list
         /// </summary>
         RedumpRIPEMD160 =       1 << 20,
+#endif
 
         /// <summary>
         /// SHA-1 hash list
         /// </summary>
-        RedumpSHA1 =            1 << 21,
+        RedumpSHA1 = 1 << 21,
 
         /// <summary>
         /// SHA-256 hash list
         /// </summary>
-        RedumpSHA256 =          1 << 22,
+        RedumpSHA256 = 1 << 22,
 
         /// <summary>
         /// SHA-384 hash list
         /// </summary>
-        RedumpSHA384 =          1 << 23,
+        RedumpSHA384 = 1 << 23,
 
         /// <summary>
         /// SHA-512 hash list
         /// </summary>
-        RedumpSHA512 =          1 << 24,
+        RedumpSHA512 = 1 << 24,
 
         #endregion
 
@@ -392,18 +394,25 @@ namespace SabreTools.Library.Data
     [Flags]
     public enum Hash
     {
-        CRC =       1 << 0,
-        MD5 =       1 << 1,
+        CRC = 1 << 0,
+        MD5 = 1 << 1,
+#if NET_FRAMEWORK
         RIPEMD160 = 1 << 2,
-        SHA1 =      1 << 3,
-        SHA256 =    1 << 4,
-        SHA384 =    1 << 5,
-        SHA512 =    1 << 6,
+#endif
+        SHA1 = 1 << 3,
+        SHA256 = 1 << 4,
+        SHA384 = 1 << 5,
+        SHA512 = 1 << 6,
 
         // Special combinations
         Standard = CRC | MD5 | SHA1,
-        DeepHashes = SHA256 | SHA384 | SHA512 | RIPEMD160,
-        SecureHashes = MD5 | SHA1 | SHA256 | SHA384 | SHA512 | RIPEMD160,
+#if NET_FRAMEWORK
+        DeepHashes = SHA256 | SHA384 | SHA512,
+        SecureHashes = MD5 | RIPEMD160 | SHA1 | SHA256 | SHA384 | SHA512,
+#else
+        DeepHashes = SHA256 | SHA384 | SHA512,
+        SecureHashes = MD5 | SHA1 | SHA256 | SHA384 | SHA512,
+#endif
     }
 
     /// <summary>
@@ -415,32 +424,32 @@ namespace SabreTools.Library.Data
         /// <summary>
         /// Only output to the console
         /// </summary>
-        None =      0x00,
+        None = 0x00,
 
         /// <summary>
         /// Console-formatted
         /// </summary>
-        Textfile =  1 << 0,
+        Textfile = 1 << 0,
 
         /// <summary>
         /// ClrMamePro HTML
         /// </summary>
-        HTML =      1 << 1,
+        HTML = 1 << 1,
 
         /// <summary>
         /// Comma-Separated Values (Standardized)
         /// </summary>
-        CSV =       1 << 2,
+        CSV = 1 << 2,
 
         /// <summary>
         /// Semicolon-Separated Values (Standardized)
         /// </summary>
-        SSV =       1 << 3,
+        SSV = 1 << 3,
 
         /// <summary>
         /// Tab-Separated Values (Standardized)
         /// </summary>
-        TSV =       1 << 4,
+        TSV = 1 << 4,
 
         All = Int32.MaxValue,
     }
@@ -451,13 +460,13 @@ namespace SabreTools.Library.Data
     [Flags]
     public enum SplittingMode
     {
-        None =          0x00,
+        None = 0x00,
 
-        Extension =     1 << 0,
-        Hash =          1 << 2,
-        Level =         1 << 3,
-        Type =          1 << 4,
-        Size =          1 << 5,
+        Extension = 1 << 0,
+        Hash = 1 << 2,
+        Level = 1 << 3,
+        Type = 1 << 4,
+        Size = 1 << 5,
     }
 
     /// <summary>
@@ -469,21 +478,21 @@ namespace SabreTools.Library.Data
         None = 0x00,
 
         // Standard diffs
-        DiffDupesOnly =         1 << 0,
-        DiffNoDupesOnly =       1 << 1,
-        DiffIndividualsOnly =   1 << 2,
+        DiffDupesOnly = 1 << 0,
+        DiffNoDupesOnly = 1 << 1,
+        DiffIndividualsOnly = 1 << 2,
 
         // Cascaded diffs
-        DiffCascade =           1 << 3,
-        DiffReverseCascade =    1 << 4,
+        DiffCascade = 1 << 3,
+        DiffReverseCascade = 1 << 4,
 
         // Base diffs
-        DiffAgainst =           1 << 5,
+        DiffAgainst = 1 << 5,
 
         // Special update modes
-        Merge =                 1 << 6,
-        BaseReplace =           1 << 7,
-        ReverseBaseReplace =    1 << 8,
+        Merge = 1 << 6,
+        BaseReplace = 1 << 7,
+        ReverseBaseReplace = 1 << 8,
 
         // Combinations
         AllDiffs = DiffDupesOnly | DiffNoDupesOnly | DiffIndividualsOnly,
@@ -500,12 +509,12 @@ namespace SabreTools.Library.Data
     public enum DupeType
     {
         // Type of match
-        Hash =      1 << 0,
-        All =       1 << 1,
+        Hash = 1 << 0,
+        All = 1 << 1,
 
         // Location of match
-        Internal =  1 << 2,
-        External =  1 << 3,
+        Internal = 1 << 2,
+        External = 1 << 3,
     }
 
     /// <summary>
@@ -517,13 +526,13 @@ namespace SabreTools.Library.Data
         /// <summary>
         /// This is a fake flag that is used for filter only
         /// </summary>
-        NULL =      0x00,
+        NULL = 0x00,
 
-        None =      1 << 0,
-        Good =      1 << 1,
-        BadDump =   1 << 2,
-        Nodump =    1 << 3,
-        Verified =  1 << 4,
+        None = 1 << 0,
+        Good = 1 << 1,
+        BadDump = 1 << 2,
+        Nodump = 1 << 3,
+        Verified = 1 << 4,
     }
 
     /// <summary>
@@ -535,12 +544,12 @@ namespace SabreTools.Library.Data
         /// <summary>
         /// This is a fake flag that is used for filter only
         /// </summary>
-        NULL =          0x00,
+        NULL = 0x00,
 
-        None =          1 << 0,
-        Bios =          1 << 1,
-        Device =        1 << 2,
-        Mechanical =    1 << 3,
+        None = 1 << 0,
+        Bios = 1 << 1,
+        Device = 1 << 2,
+        Mechanical = 1 << 3,
     }
 
     #endregion

@@ -46,8 +46,8 @@ namespace SabreTools.Library.DatFiles
             bool remUnicode)
         {
             // Open a file reader
-            Encoding enc = Utilities.GetEncoding(filename);
-            StreamReader sr = new StreamReader(Utilities.TryOpenRead(filename), enc);
+            Encoding enc = FileExtensions.GetEncoding(filename);
+            StreamReader sr = new StreamReader(FileExtensions.TryOpenRead(filename), enc);
 
             while (!sr.EndOfStream)
             {
@@ -69,10 +69,10 @@ namespace SabreTools.Library.DatFiles
                 {
                     Name = gameinfo[1].Substring(fullname[0].Length + 1),
                     Size = -1, // No size provided, but we don't want the size being 0
-                    CRC = Utilities.CleanHashData(gameinfo[4], Constants.CRCLength),
-                    MD5 = Utilities.CleanHashData(gameinfo[3], Constants.MD5Length),
-                    SHA1 = Utilities.CleanHashData(gameinfo[2], Constants.SHA1Length),
-                    SHA256 = Utilities.CleanHashData(gameinfo[0], Constants.SHA256Length),
+                    CRC = Sanitizer.CleanCRC32(gameinfo[4]),
+                    MD5 = Sanitizer.CleanMD5(gameinfo[3]),
+                    SHA1 = Sanitizer.CleanSHA1(gameinfo[2]),
+                    SHA256 = Sanitizer.CleanSHA256(gameinfo[0]),
                     ItemStatus = ItemStatus.None,
 
                     MachineName = fullname[0],
@@ -97,7 +97,7 @@ namespace SabreTools.Library.DatFiles
             try
             {
                 Globals.Logger.User($"Opening file for writing: {outfile}");
-                FileStream fs = Utilities.TryCreate(outfile);
+                FileStream fs = FileExtensions.TryCreate(outfile);
 
                 // If we get back null for some reason, just log and return
                 if (fs == null)

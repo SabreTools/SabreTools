@@ -46,8 +46,8 @@ namespace SabreTools.Library.DatFiles
             bool remUnicode)
         {
             // Open a file reader
-            Encoding enc = Utilities.GetEncoding(filename);
-            StreamReader sr = new StreamReader(Utilities.TryOpenRead(filename), enc);
+            Encoding enc = FileExtensions.GetEncoding(filename);
+            StreamReader sr = new StreamReader(FileExtensions.TryOpenRead(filename), enc);
 
             sr.ReadLine(); // Skip the first line since it's the header
             while (!sr.EndOfStream)
@@ -83,7 +83,9 @@ namespace SabreTools.Library.DatFiles
                     Size = Constants.SizeZero,
                     CRC = Constants.CRCZero,
                     MD5 = Constants.MD5Zero,
+#if NET_FRAMEWORK
                     RIPEMD160 = Constants.RIPEMD160Zero,
+#endif
                     SHA1 = Constants.SHA1Zero,
                     ItemStatus = ItemStatus.None,
 
@@ -113,7 +115,7 @@ namespace SabreTools.Library.DatFiles
             try
             {
                 Globals.Logger.User($"Opening file for writing: {outfile}");
-                FileStream fs = Utilities.TryCreate(outfile);
+                FileStream fs = FileExtensions.TryCreate(outfile);
 
                 // If we get back null for some reason, just log and return
                 if (fs == null)
@@ -122,10 +124,12 @@ namespace SabreTools.Library.DatFiles
                     return false;
                 }
 
-                SeparatedValueWriter svw = new SeparatedValueWriter(fs, new UTF8Encoding(false));
-                svw.Quotes = false;
-                svw.Separator = ';';
-                svw.VerifyFieldCount = true;
+                SeparatedValueWriter svw = new SeparatedValueWriter(fs, new UTF8Encoding(false))
+                {
+                    Quotes = false,
+                    Separator = ';',
+                    VerifyFieldCount = true
+                };
 
                 // Write out the header
                 WriteHeader(svw);

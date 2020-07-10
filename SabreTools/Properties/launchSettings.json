@@ -2,7 +2,7 @@
   "profiles": {
     "SabreTools": {
       "commandName": "Project",
-      "commandLineArgs": "--update --output-dir=B:\\_TEMP --output-type=xml \"B:\\_TEMP\\DEmul x86 v0.7 BUILD 111117.dat\""
+      "commandLineArgs": "--update --output-dir=\"C:\\Users\\Matt\\Downloads\\TEMP\" --output-type=cmp \"C:\\Users\\Matt\\Downloads\\GOG.com_-_Games_DLCs__Extras_REMOVED_356_20200628_DEP.dat\""
     }
   }
 }

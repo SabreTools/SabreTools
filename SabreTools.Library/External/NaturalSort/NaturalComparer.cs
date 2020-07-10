@@ -11,10 +11,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-
-using SabreTools.Library.Tools;
 
 namespace NaturalSort
 {
@@ -77,12 +76,12 @@ namespace NaturalSort
 		{
 			if (!long.TryParse(left, out long x))
 			{
-				return Utilities.CompareNumeric(left, right);
+				return NaturalComparerUtil.CompareNumeric(left, right);
 			}
 
 			if (!long.TryParse(right, out long y))
 			{
-				return Utilities.CompareNumeric(left, right);
+				return NaturalComparerUtil.CompareNumeric(left, right);
 			}
 
 			// If we have an equal part, then make sure that "longer" ones are taken into account

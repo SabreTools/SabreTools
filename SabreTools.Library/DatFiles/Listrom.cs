@@ -55,8 +55,8 @@ namespace SabreTools.Library.DatFiles
             bool remUnicode)
         {
             // Open a file reader
-            Encoding enc = Utilities.GetEncoding(filename);
-            StreamReader sr = new StreamReader(Utilities.TryOpenRead(filename), enc);
+            Encoding enc = FileExtensions.GetEncoding(filename);
+            StreamReader sr = new StreamReader(FileExtensions.TryOpenRead(filename), enc);
 
             string gamename = string.Empty;
             while (!sr.EndOfStream)
@@ -114,7 +114,7 @@ namespace SabreTools.Library.DatFiles
                         Disk disk = new Disk()
                         {
                             Name = romname,
-                            SHA1 = Utilities.CleanListromHashData(split[0]),
+                            SHA1 = Sanitizer.CleanListromHashData(split[0]),
 
                             MachineName = gamename,
                         };
@@ -128,7 +128,7 @@ namespace SabreTools.Library.DatFiles
                         Disk disk = new Disk()
                         {
                             Name = romname,
-                            SHA1 = Utilities.CleanListromHashData(split[1]),
+                            SHA1 = Sanitizer.CleanListromHashData(split[1]),
                             ItemStatus = ItemStatus.BadDump,
 
                             MachineName = gamename,
@@ -147,8 +147,8 @@ namespace SabreTools.Library.DatFiles
                         {
                             Name = romname,
                             Size = size,
-                            CRC = Utilities.CleanListromHashData(split[1]),
-                            SHA1 = Utilities.CleanListromHashData(split[2]),
+                            CRC = Sanitizer.CleanListromHashData(split[1]),
+                            SHA1 = Sanitizer.CleanListromHashData(split[2]),
 
                             MachineName = gamename,
                         };
@@ -180,8 +180,8 @@ namespace SabreTools.Library.DatFiles
                         {
                             Name = romname,
                             Size = size,
-                            CRC = Utilities.CleanListromHashData(split[2]),
-                            SHA1 = Utilities.CleanListromHashData(split[3]),
+                            CRC = Sanitizer.CleanListromHashData(split[2]),
+                            SHA1 = Sanitizer.CleanListromHashData(split[3]),
                             ItemStatus = ItemStatus.BadDump,
 
                             MachineName = gamename,
@@ -217,7 +217,6 @@ namespace SabreTools.Library.DatFiles
             }
         }
 
-
         /// <summary>
         /// Create and open an output file for writing direct from a dictionary
         /// </summary>
@@ -229,7 +228,7 @@ namespace SabreTools.Library.DatFiles
             try
             {
                 Globals.Logger.User($"Opening file for writing: {outfile}");
-                FileStream fs = Utilities.TryCreate(outfile);
+                FileStream fs = FileExtensions.TryCreate(outfile);
 
                 // If we get back null for some reason, just log and return
                 if (fs == null)

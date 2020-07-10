@@ -85,7 +85,7 @@ namespace SabreTools.Library.FileTypes
                         continue;
                     }
 
-                    FileStream writeStream = Utilities.TryCreate(Path.Combine(outDir, zf.Filename(i)));
+                    FileStream writeStream = FileExtensions.TryCreate(Path.Combine(outDir, zf.Filename(i)));
 
                     // If the stream is smaller than the buffer, just run one loop through to avoid issues
                     if (streamsize < _bufferSize)
@@ -152,7 +152,7 @@ namespace SabreTools.Library.FileTypes
                 Directory.CreateDirectory(Path.GetDirectoryName(realEntry));
 
                 // Now open and write the file if possible
-                FileStream fs = Utilities.TryCreate(realEntry);
+                FileStream fs = FileExtensions.TryCreate(realEntry);
                 if (fs != null)
                 {
                     ms.Seek(0, SeekOrigin.Begin);
@@ -314,7 +314,7 @@ namespace SabreTools.Library.FileTypes
                     // Otherwise, use the stream directly
                     else
                     {
-                        BaseFile zipEntryRom = Utilities.GetStreamInfo(readStream, (long)zf.UncompressedSize(i), omitFromScan, true);
+                        BaseFile zipEntryRom = readStream.GetInfo((long)zf.UncompressedSize(i), omitFromScan, true);
                         zipEntryRom.Filename = zf.Filename(i);
                         zipEntryRom.Parent = gamename;
                         found.Add(zipEntryRom);
@@ -417,7 +417,7 @@ namespace SabreTools.Library.FileTypes
         public override bool Write(string inputFile, string outDir, Rom rom, bool date = false, bool romba = false)
         {
             // Get the file stream for the file and write out
-            return Write(Utilities.TryOpenRead(inputFile), outDir, rom, date: date);
+            return Write(FileExtensions.TryOpenRead(inputFile), outDir, rom, date: date);
         }
 
         /// <summary>
@@ -450,7 +450,7 @@ namespace SabreTools.Library.FileTypes
             inputStream.Seek(0, SeekOrigin.Begin);
 
             // Get the output archive name from the first rebuild rom
-            string archiveFileName = Path.Combine(outDir, Utilities.RemovePathUnsafeCharacters(rom.MachineName) + (rom.MachineName.EndsWith(".zip") ? string.Empty : ".zip"));
+            string archiveFileName = Path.Combine(outDir, Sanitizer.RemovePathUnsafeCharacters(rom.MachineName) + (rom.MachineName.EndsWith(".zip") ? string.Empty : ".zip"));
 
             // Set internal variables
             Stream writeStream = null;
@@ -615,7 +615,7 @@ namespace SabreTools.Library.FileTypes
             // If the old file exists, delete it and replace
             if (File.Exists(archiveFileName))
             {
-                Utilities.TryDeleteFile(archiveFileName);
+                FileExtensions.TryDelete(archiveFileName);
             }
             File.Move(tempFile, archiveFileName);
 
@@ -658,7 +658,7 @@ namespace SabreTools.Library.FileTypes
             }
 
             // Get the output archive name from the first rebuild rom
-            string archiveFileName = Path.Combine(outDir, Utilities.RemovePathUnsafeCharacters(roms[0].MachineName) + (roms[0].MachineName.EndsWith(".zip") ? string.Empty : ".zip"));
+            string archiveFileName = Path.Combine(outDir, Sanitizer.RemovePathUnsafeCharacters(roms[0].MachineName) + (roms[0].MachineName.EndsWith(".zip") ? string.Empty : ".zip"));
 
             // Set internal variables
             Stream writeStream = null;
@@ -697,7 +697,7 @@ namespace SabreTools.Library.FileTypes
                         int index = inputIndexMap[key];
 
                         // Open the input file for reading
-                        Stream freadStream = Utilities.TryOpenRead(inputFiles[index]);
+                        Stream freadStream = FileExtensions.TryOpenRead(inputFiles[index]);
                         ulong istreamSize = (ulong)(new FileInfo(inputFiles[index]).Length);
 
                         DateTime dt = DateTime.Now;
@@ -780,7 +780,7 @@ namespace SabreTools.Library.FileTypes
                         if (index < 0)
                         {
                             // Open the input file for reading
-                            Stream freadStream = Utilities.TryOpenRead(inputFiles[-index - 1]);
+                            Stream freadStream = FileExtensions.TryOpenRead(inputFiles[-index - 1]);
                             ulong istreamSize = (ulong)(new FileInfo(inputFiles[-index - 1]).Length);
 
                             DateTime dt = DateTime.Now;
@@ -842,7 +842,7 @@ namespace SabreTools.Library.FileTypes
             // If the old file exists, delete it and replace
             if (File.Exists(archiveFileName))
             {
-                Utilities.TryDeleteFile(archiveFileName);
+                FileExtensions.TryDelete(archiveFileName);
             }
             File.Move(tempFile, archiveFileName);
 

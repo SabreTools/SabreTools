@@ -45,10 +45,12 @@ namespace SabreTools.Library.DatFiles
         /// </summary>
         public FilterItem<string> MD5 { get; set; } = new FilterItem<string>();
 
+#if NET_FRAMEWORK
         /// <summary>
         /// Include or exclude RIPEMD160 hashes
         /// </summary>
         public FilterItem<string> RIPEMD160 { get; set; } = new FilterItem<string>();
+#endif
 
         /// <summary>
         /// Include or exclude SHA-1 hashes
@@ -226,11 +228,13 @@ namespace SabreTools.Library.DatFiles
                 if (this.MD5.MatchesNegativeSet(rom.MD5) == true)
                     return false;
 
+#if NET_FRAMEWORK
                 // Filter on RIPEMD160
                 if (this.RIPEMD160.MatchesPositiveSet(rom.RIPEMD160) == false)
                     return false;
                 if (this.RIPEMD160.MatchesNegativeSet(rom.RIPEMD160) == true)
                     return false;
+#endif
 
                 // Filter on SHA-1
                 if (this.SHA1.MatchesPositiveSet(rom.SHA1) == false)
@@ -272,11 +276,13 @@ namespace SabreTools.Library.DatFiles
                 if (this.MD5.MatchesNegativeSet(rom.MD5) == true)
                     return false;
 
+#if NET_FRAMEWORK
                 // Filter on RIPEMD160
                 if (this.RIPEMD160.MatchesPositiveSet(rom.RIPEMD160) == false)
                     return false;
                 if (this.RIPEMD160.MatchesNegativeSet(rom.RIPEMD160) == true)
                     return false;
+#endif
 
                 // Filter on SHA-1
                 if (this.SHA1.MatchesPositiveSet(rom.SHA1) == false)
