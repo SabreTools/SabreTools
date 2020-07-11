@@ -46,8 +46,6 @@ namespace SabreTools.Library.Skippers
         /// <returns>True if the file was transformed properly, false otherwise</returns>
         public bool TransformFile(string input, string output)
         {
-            bool success = true;
-
             // If the input file doesn't exist, fail
             if (!File.Exists(input))
             {
@@ -59,7 +57,7 @@ namespace SabreTools.Library.Skippers
             DirectoryExtensions.Ensure(Path.GetDirectoryName(output));
 
             Globals.Logger.User($"Attempting to apply rule to '{input}'");
-            success = TransformStream(FileExtensions.TryOpenRead(input), FileExtensions.TryCreate(output));
+            bool success = TransformStream(FileExtensions.TryOpenRead(input), FileExtensions.TryCreate(output));
 
             // If the output file has size 0, delete it
             if (new FileInfo(output).Length == 0)

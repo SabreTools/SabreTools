@@ -15,7 +15,7 @@ namespace SabreTools.Library.FileTypes
         /// CHD flags
         /// </summary>
         [Flags]
-        private enum Flags : uint
+        public enum Flags : uint
         {
             DriveHasParent = 0x00000001,
             DriveAllowsWrites = 0x00000002,
@@ -24,7 +24,7 @@ namespace SabreTools.Library.FileTypes
         /// <summary>
         /// Compression being used in CHD
         /// </summary>
-        private enum Compression : uint
+        public enum Compression : uint
         {
             CHDCOMPRESSION_NONE = 0,
             CHDCOMPRESSION_ZLIB = 1,
@@ -33,25 +33,25 @@ namespace SabreTools.Library.FileTypes
         /// <summary>
         /// Map format
         /// </summary>
-        private class Map
+        public class Map
         {
-            private ulong offset;   // 44; starting offset within the file
-            private ulong length;   // 20; length of data; if == hunksize, data is uncompressed
+            public ulong offset;   // 44; starting offset within the file
+            public ulong length;   // 20; length of data; if == hunksize, data is uncompressed
         }
 
         public const int HeaderSize = 76;
         public const uint Version = 1;
 
         // V1-specific header values
-        private Flags flags;                        // flags (see above)
-        private Compression compression;            // compression type
-        private uint hunksize;                      // 512-byte sectors per hunk
-        private uint totalhunks;                    // total # of hunks represented
-        private uint cylinders;                     // number of cylinders on hard disk
-        private uint heads;                         // number of heads on hard disk
-        private uint sectors;                       // number of sectors on hard disk
-        private byte[] md5 = new byte[16];          // MD5 checksum of raw data
-        private byte[] parentmd5 = new byte[16];    // MD5 checksum of parent file
+        public Flags flags;                        // flags (see above)
+        public Compression compression;            // compression type
+        public uint hunksize;                      // 512-byte sectors per hunk
+        public uint totalhunks;                    // total # of hunks represented
+        public uint cylinders;                     // number of cylinders on hard disk
+        public uint heads;                         // number of heads on hard disk
+        public uint sectors;                       // number of sectors on hard disk
+        public byte[] md5 = new byte[16];          // MD5 checksum of raw data
+        public byte[] parentmd5 = new byte[16];    // MD5 checksum of parent file
 
         /// <summary>
         /// Parse and validate the header as if it's V1

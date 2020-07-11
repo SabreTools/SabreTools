@@ -13,17 +13,17 @@ namespace SabreTools.Library.Tools
     public class Logger
     {
         // Private instance variables
-        private bool _tofile;
+        private readonly bool _tofile;
         private bool _warnings;
         private bool _errors;
-        private string _filename;
-        private LogLevel _filter;
+        private readonly string _filename;
+        private readonly LogLevel _filter;
         private DateTime _start;
         private StreamWriter _log;
-        private object _lock = new object(); // This is used during multithreaded logging
+        private readonly object _lock = new object(); // This is used during multithreaded logging
 
         // Private required variables
-        private string _basepath = Path.Combine(Globals.ExeDir, "logs") + Path.DirectorySeparatorChar;
+        private readonly string _basepath = Path.Combine(Globals.ExeDir, "logs") + Path.DirectorySeparatorChar;
 
         /// <summary>
         /// Initialize a console-only logger object
@@ -72,10 +72,12 @@ namespace SabreTools.Library.Tools
             try
             {
                 FileStream logfile = FileExtensions.TryCreate(Path.Combine(_basepath, _filename));
-                _log = new StreamWriter(logfile, Encoding.UTF8, (int)(4 * Constants.KibiByte), true);
-                _log.AutoFlush = true;
+                _log = new StreamWriter(logfile, Encoding.UTF8, (int)(4 * Constants.KibiByte), true)
+                {
+                    AutoFlush = true
+                };
 
-                _log.WriteLine($"Logging started {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
+                _log.WriteLine($"Logging started {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
                 _log.WriteLine($"Command run: {Globals.CommandLineArgs}");
             }
             catch
@@ -118,7 +120,7 @@ namespace SabreTools.Library.Tools
 
                 try
                 {
-                    _log.WriteLine($"Logging ended {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}");
+                    _log.WriteLine($"Logging ended {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
                     _log.WriteLine($"Total runtime: {total}");
                     Console.WriteLine($"Total runtime: {total}");
                     _log.Close();

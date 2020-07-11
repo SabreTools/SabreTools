@@ -155,7 +155,7 @@ namespace SabreTools.Library.DatFiles
                 }
 
                 // Get all header items (ONLY OVERWRITE IF THERE'S NO DATA)
-                string content = string.Empty;
+                string content;
                 switch (reader.Name)
                 {
                     case "name":
@@ -588,12 +588,10 @@ namespace SabreTools.Library.DatFiles
                 }
 
                 // Get the information from the trurip
-                string content = string.Empty;
                 switch (reader.Name)
                 {
                     case "titleid":
-                        content = reader.ReadElementContentAsString();
-                        // string titleid = content;
+                        string titleid = reader.ReadElementContentAsString();
                         break;
 
                     case "publisher":
@@ -609,38 +607,31 @@ namespace SabreTools.Library.DatFiles
                         break;
 
                     case "genre":
-                        content = reader.ReadElementContentAsString();
-                        // string genre = content;
+                        string genre = reader.ReadElementContentAsString();
                         break;
 
                     case "subgenre":
-                        content = reader.ReadElementContentAsString();
-                        // string subgenre = content;
+                        string subgenre = reader.ReadElementContentAsString();
                         break;
 
                     case "ratings":
-                        content = reader.ReadElementContentAsString();
-                        // string ratings = content;
+                        string ratings = reader.ReadElementContentAsString();
                         break;
 
                     case "score":
-                        content = reader.ReadElementContentAsString();
-                        // string score = content;
+                        string score = reader.ReadElementContentAsString();
                         break;
 
                     case "players":
-                        content = reader.ReadElementContentAsString();
-                        // string players = content;
+                        string players = reader.ReadElementContentAsString();
                         break;
 
                     case "enabled":
-                        content = reader.ReadElementContentAsString();
-                        // string enabled = content;
+                        string enabled = reader.ReadElementContentAsString();
                         break;
 
                     case "crc":
-                        content = reader.ReadElementContentAsString();
-                        // string crc = Utilities.GetYesNo(content);
+                        bool? crc = reader.ReadElementContentAsString().AsYesNo();
                         break;
 
                     case "source":
@@ -652,8 +643,7 @@ namespace SabreTools.Library.DatFiles
                         break;
 
                     case "relatedto":
-                        content = reader.ReadElementContentAsString();
-                        // string relatedto = content;
+                        string relatedto = reader.ReadElementContentAsString();
                         break;
 
                     default:
@@ -683,10 +673,12 @@ namespace SabreTools.Library.DatFiles
                     return false;
                 }
 
-                XmlTextWriter xtw = new XmlTextWriter(fs, new UTF8Encoding(false));
-                xtw.Formatting = Formatting.Indented;
-                xtw.IndentChar = '\t';
-                xtw.Indentation = 1;
+                XmlTextWriter xtw = new XmlTextWriter(fs, new UTF8Encoding(false))
+                {
+                    Formatting = Formatting.Indented,
+                    IndentChar = '\t',
+                    Indentation = 1
+                };
 
                 // Write out the header
                 WriteHeader(xtw);

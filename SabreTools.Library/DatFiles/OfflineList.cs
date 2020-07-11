@@ -127,7 +127,7 @@ namespace SabreTools.Library.DatFiles
                 }
 
                 // Get all configuration items (ONLY OVERWRITE IF THERE'S NO DATA)
-                string content = string.Empty;
+                string content;
                 switch (reader.Name.ToLowerInvariant())
                 {
                     case "datname":
@@ -146,18 +146,15 @@ namespace SabreTools.Library.DatFiles
                         break;
 
                     case "system":
-                        content = reader.ReadElementContentAsString();
-                        // string system = content;
+                        string system = reader.ReadElementContentAsString();
                         break;
 
                     case "screenshotswidth":
-                        content = reader.ReadElementContentAsString();
-                        // string screenshotsWidth = content; // Int32?
+                        string screenshotsWidth = reader.ReadElementContentAsString(); // Int32?
                         break;
 
                     case "screenshotsheight":
-                        content = reader.ReadElementContentAsString();
-                        // string screenshotsHeight = content; // Int32?
+                        string screenshotsHeight = reader.ReadElementContentAsString(); // Int32?
                         break;
 
                     case "infos":
@@ -189,9 +186,7 @@ namespace SabreTools.Library.DatFiles
                         break;
 
                     case "romtitle":
-                        content = reader.ReadElementContentAsString();
-                        // string romtitle = content;
-
+                        string romtitle = reader.ReadElementContentAsString();
                         break;
 
                     default:
@@ -228,93 +223,93 @@ namespace SabreTools.Library.DatFiles
                 switch (reader.Name.ToLowerInvariant())
                 {
                     case "title":
-                        // string title_visible = reader.GetAttribute("visible"); // (true|false)
-                        // string title_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
-                        // string title_default = reader.GetAttribute("default"); // (true|false)
+                        string title_visible = reader.GetAttribute("visible"); // (true|false)
+                        string title_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
+                        string title_default = reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
 
                     case "location":
-                        // string location_visible = reader.GetAttribute("visible"); // (true|false)
-                        // string location_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
-                        // string location_default = reader.GetAttribute("default"); // (true|false)
+                        string location_visible = reader.GetAttribute("visible"); // (true|false)
+                        string location_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
+                        string location_default = reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
 
                     case "publisher":
-                        // string publisher_visible = reader.GetAttribute("visible"); // (true|false)
-                        // string publisher_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
-                        // string publisher_default = reader.GetAttribute("default"); // (true|false)
+                        string publisher_visible = reader.GetAttribute("visible"); // (true|false)
+                        string publisher_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
+                        string publisher_default = reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
 
                     case "sourcerom":
-                        // string sourceRom_visible = reader.GetAttribute("visible"); // (true|false)
-                        // string sourceRom_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
-                        // string sourceRom_default = reader.GetAttribute("default"); // (true|false)
+                        string sourceRom_visible = reader.GetAttribute("visible"); // (true|false)
+                        string sourceRom_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
+                        string sourceRom_default = reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
 
                     case "savetype":
-                        // string saveType_visible = reader.GetAttribute("visible"); // (true|false)
-                        // string saveType_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
-                        // string saveType_default = reader.GetAttribute("default"); // (true|false)
+                        string saveType_visible = reader.GetAttribute("visible"); // (true|false)
+                        string saveType_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
+                        string saveType_default = reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
 
                     case "romsize":
-                        // string romSize_visible = reader.GetAttribute("visible"); // (true|false)
-                        // string romSize_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
-                        // string romSize_default = reader.GetAttribute("default"); // (true|false)
+                        string romSize_visible = reader.GetAttribute("visible"); // (true|false)
+                        string romSize_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
+                        string romSize_default = reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
 
                     case "releasenumber":
-                        // string releaseNumber_visible = reader.GetAttribute("visible"); // (true|false)
-                        // string releaseNumber_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
-                        // string releaseNumber_default = reader.GetAttribute("default"); // (true|false)
+                        string releaseNumber_visible = reader.GetAttribute("visible"); // (true|false)
+                        string releaseNumber_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
+                        string releaseNumber_default = reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
 
                     case "languagenumber":
-                        // string languageNumber_visible = reader.GetAttribute("visible"); // (true|false)
-                        // string languageNumber_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
-                        // string languageNumber_default = reader.GetAttribute("default"); // (true|false)
+                        string languageNumber_visible = reader.GetAttribute("visible"); // (true|false)
+                        string languageNumber_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
+                        string languageNumber_default = reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
 
                     case "comment":
-                        // string comment_visible = reader.GetAttribute("visible"); // (true|false)
-                        // string comment_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
-                        // string comment_default = reader.GetAttribute("default"); // (true|false)
+                        string comment_visible = reader.GetAttribute("visible"); // (true|false)
+                        string comment_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
+                        string comment_default = reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
 
                     case "romcrc":
-                        // string romCRC_visible = reader.GetAttribute("visible"); // (true|false)
-                        // string romCRC_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
-                        // string romCRC_default = reader.GetAttribute("default"); // (true|false)
+                        string romCRC_visible = reader.GetAttribute("visible"); // (true|false)
+                        string romCRC_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
+                        string romCRC_default = reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
 
                     case "im1crc":
-                        // string im1CRC_visible = reader.GetAttribute("visible"); // (true|false)
-                        // string im1CRC_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
-                        // string im1CRC_default = reader.GetAttribute("default"); // (true|false)
+                        string im1CRC_visible = reader.GetAttribute("visible"); // (true|false)
+                        string im1CRC_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
+                        string im1CRC_default = reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
 
                     case "im2crc":
-                        // string im2CRC_visible = reader.GetAttribute("visible"); // (true|false)
-                        // string im2CRC_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
-                        // string im2CRC_default = reader.GetAttribute("default"); // (true|false)
+                        string im2CRC_visible = reader.GetAttribute("visible"); // (true|false)
+                        string im2CRC_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
+                        string im2CRC_default = reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
 
                     case "languages":
-                        // string languages_visible = reader.GetAttribute("visible"); // (true|false)
-                        // string languages_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
-                        // string languages_default = reader.GetAttribute("default"); // (true|false)
+                        string languages_visible = reader.GetAttribute("visible"); // (true|false)
+                        string languages_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
+                        string languages_default = reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
 
@@ -399,13 +394,11 @@ namespace SabreTools.Library.DatFiles
 
                     case "daturl":
                         // string fileName = reader.GetAttribute("fileName");
-                        content = reader.ReadElementContentAsString();
-                        // string url = content;
+                        string daturl = reader.ReadElementContentAsString();
                         break;
 
                     case "imurl":
-                        content = reader.ReadElementContentAsString();
-                        // string url = content;
+                        string imurl = reader.ReadElementContentAsString();
                         break;
 
                     default:
@@ -769,10 +762,12 @@ namespace SabreTools.Library.DatFiles
                     return false;
                 }
 
-                XmlTextWriter xtw = new XmlTextWriter(fs, new UTF8Encoding(false));
-                xtw.Formatting = Formatting.Indented;
-                xtw.IndentChar = '\t';
-                xtw.Indentation = 1;
+                XmlTextWriter xtw = new XmlTextWriter(fs, new UTF8Encoding(false))
+                {
+                    Formatting = Formatting.Indented,
+                    IndentChar = '\t',
+                    Indentation = 1
+                };
 
                 // Write out the header
                 WriteHeader(xtw);

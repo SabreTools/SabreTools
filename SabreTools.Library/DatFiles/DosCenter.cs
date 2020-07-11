@@ -49,8 +49,10 @@ namespace SabreTools.Library.DatFiles
         {
             // Open a file reader
             Encoding enc = FileExtensions.GetEncoding(filename);
-            ClrMameProReader cmpr = new ClrMameProReader(FileExtensions.TryOpenRead(filename), enc);
-            cmpr.DosCenter = true;
+            ClrMameProReader cmpr = new ClrMameProReader(FileExtensions.TryOpenRead(filename), enc)
+            {
+                DosCenter = true
+            };
 
             while (!cmpr.EndOfStream)
             {
@@ -293,8 +295,10 @@ namespace SabreTools.Library.DatFiles
                     return false;
                 }
 
-                ClrMameProWriter cmpw = new ClrMameProWriter(fs, new UTF8Encoding(false));
-                cmpw.Quotes = false;
+                ClrMameProWriter cmpw = new ClrMameProWriter(fs, new UTF8Encoding(false))
+                {
+                    Quotes = false
+                };
 
                 // Write out the header
                 WriteHeader(cmpw);

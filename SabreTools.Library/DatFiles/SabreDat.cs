@@ -159,7 +159,7 @@ namespace SabreTools.Library.DatFiles
                 }
 
                 // Get all header items (ONLY OVERWRITE IF THERE'S NO DATA)
-                string content = string.Empty;
+                string content;
                 switch (reader.Name)
                 {
                     case "name":
@@ -358,11 +358,12 @@ namespace SabreTools.Library.DatFiles
                         // Take care of hex-sized files
                         size = Sanitizer.CleanSize(reader.GetAttribute("size"));
 
-                        Machine dir = new Machine();
-
-                        // Get the name of the game from the parent
-                        dir.Name = string.Join("\\", parent);
-                        dir.Description = dir.Name;
+                        Machine dir = new Machine
+                        {
+                            // Get the name of the game from the parent
+                            Name = string.Join("\\", parent),
+                            Description = string.Join("\\", parent),
+                        };
 
                         DatItem datItem;
                         switch (reader.GetAttribute("type").ToLowerInvariant())
@@ -487,7 +488,7 @@ namespace SabreTools.Library.DatFiles
         private void ReadFlags(XmlReader reader, bool superdat)
         {
             // Prepare all internal variables
-            string content = string.Empty;
+            string content;
 
             // If we somehow have a null flag section, skip it
             if (reader == null)
@@ -566,10 +567,12 @@ namespace SabreTools.Library.DatFiles
                     return false;
                 }
 
-                XmlTextWriter xtw = new XmlTextWriter(fs, new UTF8Encoding(false));
-                xtw.Formatting = Formatting.Indented;
-                xtw.IndentChar = '\t';
-                xtw.Indentation = 1;
+                XmlTextWriter xtw = new XmlTextWriter(fs, new UTF8Encoding(false))
+                {
+                    Formatting = Formatting.Indented,
+                    IndentChar = '\t',
+                    Indentation = 1
+                };
 
                 // Write out the header
                 WriteHeader(xtw);

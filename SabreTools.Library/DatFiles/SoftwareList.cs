@@ -577,10 +577,12 @@ namespace SabreTools.Library.DatFiles
                     return false;
                 }
 
-                XmlTextWriter xtw = new XmlTextWriter(fs, new UTF8Encoding(false));
-                xtw.Formatting = Formatting.Indented;
-                xtw.IndentChar = '\t';
-                xtw.Indentation = 1;
+                XmlTextWriter xtw = new XmlTextWriter(fs, new UTF8Encoding(false))
+                {
+                    Formatting = Formatting.Indented,
+                    IndentChar = '\t',
+                    Indentation = 1
+                };
 
                 // Write out the header
                 WriteHeader(xtw);

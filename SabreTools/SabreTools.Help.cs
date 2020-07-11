@@ -1009,7 +1009,7 @@ namespace SabreTools
                     longDescription: "Instead of outputting the files to folder, files will be rebuilt to Torrent Long-Range Zip (TLRZ) files. This format is based on the LRZip file format as defined at https://github.com/ckolivas/lrzip but with custom header information. This is currently unused by any major application.");
             }
         }
-        
+
         public const string TorrentLz4Value = "torrent-lz4";
         private static Feature torrentLz4Flag
         {
@@ -1234,7 +1234,7 @@ namespace SabreTools
             }
         }
 
-#endregion
+        #endregion
 
         #region Private Int32 features
 
@@ -1385,7 +1385,7 @@ namespace SabreTools
         }
 
         public const string ExcludeFieldListValue = "exclude-field";
-        private static Feature excludeFieldListInput 
+        private static Feature excludeFieldListInput
         {
             get
             {
@@ -1397,7 +1397,7 @@ namespace SabreTools
                     longDescription: "Exclude any valid item or machine field from outputs. Examples include: romof, publisher, and offset.");
             }
         }
-        
+
         public const string ExtAListValue = "exta";
         private static Feature extaListInput
         {
@@ -2475,7 +2475,7 @@ Some special strings that can be used:
 
                 return filter;
             }
-            
+
             /// <summary>
             /// Get omit from scan from feature list
             /// </summary>
@@ -2766,7 +2766,7 @@ Some special strings that can be used:
                 AddFeature(forcepackingStringInput);
                 AddFeature(archivesAsFilesFlag);
                 AddFeature(outputTypeListInput);
-                    this[outputTypeListInput].AddFeature(deprecatedFlag);
+                this[outputTypeListInput].AddFeature(deprecatedFlag);
                 AddFeature(rombaFlag);
                 AddFeature(skipArchivesFlag);
                 AddFeature(skipFilesFlag);
@@ -2845,10 +2845,8 @@ Some special strings that can be used:
                 var skipFileType = GetSkipFileType(features);
 
                 // Create a new DATFromDir object and process the inputs
-                DatFile basedat = new DatFile(datHeader)
-                {
-                    Date = DateTime.Now.ToString("yyyy-MM-dd"),
-                };
+                DatFile basedat = DatFile.Create(datHeader);
+                basedat.Date = DateTime.Now.ToString("yyyy-MM-dd");
 
                 // For each input directory, create a DAT
                 foreach (string path in Inputs)
@@ -2856,7 +2854,7 @@ Some special strings that can be used:
                     if (Directory.Exists(path) || File.Exists(path))
                     {
                         // Clone the base Dat for information
-                        DatFile datdata = new DatFile(basedat);
+                        DatFile datdata = DatFile.Create(baseDat: basedat);
 
                         string basePath = Path.GetFullPath(path);
                         bool success = datdata.PopulateFromDir(
@@ -3041,7 +3039,7 @@ The following systems have headers that this program can work with:
                 AddFeature(torrent7zipFlag);
                 AddFeature(tarFlag);
                 AddFeature(torrentGzipFlag);
-                    this[torrentGzipFlag].AddFeature(rombaFlag);
+                this[torrentGzipFlag].AddFeature(rombaFlag);
                 AddFeature(torrentLrzipFlag);
                 AddFeature(torrentLz4Flag);
                 AddFeature(torrentRarFlag);
@@ -3108,7 +3106,7 @@ The following systems have headers that this program can work with:
                 {
                     foreach (string datfile in datfiles)
                     {
-                        DatFile datdata = new DatFile();
+                        DatFile datdata = DatFile.Create();
                         datdata.Parse(datfile, 99, 99, splitType, keep: true, useTags: true);
 
                         // If we have the depot flag, respect it
@@ -3125,7 +3123,7 @@ The following systems have headers that this program can work with:
                     InternalStopwatch watch = new InternalStopwatch("Populating internal DAT");
 
                     // Add all of the input DATs into one huge internal DAT
-                    DatFile datdata = new DatFile();
+                    DatFile datdata = DatFile.Create();
                     foreach (string datfile in datfiles)
                     {
                         datdata.Parse(datfile, 99, 99, splitType, keep: true, useTags: true);
@@ -3156,28 +3154,24 @@ The following systems have headers that this program can work with:
                 this.Features = new Dictionary<string, Feature>();
 
                 AddFeature(outputTypeListInput);
-                    this[outputTypeListInput].AddFeature(deprecatedFlag);
+                this[outputTypeListInput].AddFeature(deprecatedFlag);
                 AddFeature(outputDirStringInput);
                 AddFeature(inplaceFlag);
                 AddFeature(extensionFlag);
-                    this[extensionFlag].AddFeature(extaListInput);
-                    this[extensionFlag].AddFeature(extbListInput);
+                this[extensionFlag].AddFeature(extaListInput);
+                this[extensionFlag].AddFeature(extbListInput);
                 AddFeature(hashFlag);
                 AddFeature(levelFlag);
-                    this[levelFlag].AddFeature(shortFlag);
-                    this[levelFlag].AddFeature(baseFlag);
+                this[levelFlag].AddFeature(shortFlag);
+                this[levelFlag].AddFeature(baseFlag);
                 AddFeature(sizeFlag);
-                    this[sizeFlag].AddFeature(radixInt64Input);
+                this[sizeFlag].AddFeature(radixInt64Input);
                 AddFeature(typeFlag);
             }
 
             public override void ProcessFeatures(Dictionary<string, Feature> features)
             {
-                DatFile datfile = new DatFile
-                {
-                    DatFormat = GetDatHeader(features).DatFormat,
-                };
-
+                DatFile datfile = DatFile.Create(GetDatHeader(features).DatFormat);
                 datfile.DetermineSplitType(
                     Inputs,
                     GetString(features, OutputDirStringValue),
@@ -3252,16 +3246,16 @@ The stats that are outputted are as follows:
                 this.Features = new Dictionary<string, Feature>();
 
                 AddFeature(outputTypeListInput);
-                    this[outputTypeListInput].AddFeature(prefixStringInput);
-                    this[outputTypeListInput].AddFeature(postfixStringInput);
-                    this[outputTypeListInput].AddFeature(quotesFlag);
-                    this[outputTypeListInput].AddFeature(romsFlag);
-                    this[outputTypeListInput].AddFeature(gamePrefixFlag);
-                    this[outputTypeListInput].AddFeature(addExtensionStringInput);
-                    this[outputTypeListInput].AddFeature(replaceExtensionStringInput);
-                    this[outputTypeListInput].AddFeature(removeExtensionsFlag);
-                    this[outputTypeListInput].AddFeature(rombaFlag);
-                    this[outputTypeListInput].AddFeature(deprecatedFlag);
+                this[outputTypeListInput].AddFeature(prefixStringInput);
+                this[outputTypeListInput].AddFeature(postfixStringInput);
+                this[outputTypeListInput].AddFeature(quotesFlag);
+                this[outputTypeListInput].AddFeature(romsFlag);
+                this[outputTypeListInput].AddFeature(gamePrefixFlag);
+                this[outputTypeListInput].AddFeature(addExtensionStringInput);
+                this[outputTypeListInput].AddFeature(replaceExtensionStringInput);
+                this[outputTypeListInput].AddFeature(removeExtensionsFlag);
+                this[outputTypeListInput].AddFeature(rombaFlag);
+                this[outputTypeListInput].AddFeature(deprecatedFlag);
                 AddFeature(filenameStringInput);
                 AddFeature(nameStringInput);
                 AddFeature(descriptionStringInput);
@@ -3292,50 +3286,50 @@ The stats that are outputted are as follows:
                 AddFeature(datDeviceNonMergedFlag);
                 AddFeature(datFullNonMergedFlag);
                 AddFeature(trimFlag);
-                    this[trimFlag].AddFeature(rootDirStringInput);
+                this[trimFlag].AddFeature(rootDirStringInput);
                 AddFeature(singleSetFlag);
                 AddFeature(dedupFlag);
                 AddFeature(gameDedupFlag);
                 AddFeature(mergeFlag);
-                    this[mergeFlag].AddFeature(noAutomaticDateFlag);
+                this[mergeFlag].AddFeature(noAutomaticDateFlag);
                 AddFeature(diffAllFlag);
-                    this[diffAllFlag].AddFeature(noAutomaticDateFlag);
+                this[diffAllFlag].AddFeature(noAutomaticDateFlag);
                 AddFeature(diffDuplicatesFlag);
-                    this[diffDuplicatesFlag].AddFeature(noAutomaticDateFlag);
+                this[diffDuplicatesFlag].AddFeature(noAutomaticDateFlag);
                 AddFeature(diffIndividualsFlag);
-                    this[diffIndividualsFlag].AddFeature(noAutomaticDateFlag);
+                this[diffIndividualsFlag].AddFeature(noAutomaticDateFlag);
                 AddFeature(diffNoDuplicatesFlag);
-                    this[diffNoDuplicatesFlag].AddFeature(noAutomaticDateFlag);
+                this[diffNoDuplicatesFlag].AddFeature(noAutomaticDateFlag);
                 AddFeature(diffAgainstFlag);
-                    this[diffAgainstFlag].AddFeature(baseDatListInput);
+                this[diffAgainstFlag].AddFeature(baseDatListInput);
                 AddFeature(baseReplaceFlag);
-                    this[baseReplaceFlag].AddFeature(baseDatListInput);
-                    this[baseReplaceFlag].AddFeature(updateFieldListInput);
-                        this[baseReplaceFlag][updateFieldListInput].AddFeature(onlySameFlag);
-                    this[baseReplaceFlag].AddFeature(updateNamesFlag);
-                    this[baseReplaceFlag].AddFeature(updateHashesFlag);
-                    this[baseReplaceFlag].AddFeature(updateDescriptionFlag);
-                        this[baseReplaceFlag][updateDescriptionFlag].AddFeature(onlySameFlag);
-                    this[baseReplaceFlag].AddFeature(updateGameTypeFlag);
-                    this[baseReplaceFlag].AddFeature(updateYearFlag);
-                    this[baseReplaceFlag].AddFeature(updateManufacturerFlag);
-                    this[baseReplaceFlag].AddFeature(updateParentsFlag);
+                this[baseReplaceFlag].AddFeature(baseDatListInput);
+                this[baseReplaceFlag].AddFeature(updateFieldListInput);
+                this[baseReplaceFlag][updateFieldListInput].AddFeature(onlySameFlag);
+                this[baseReplaceFlag].AddFeature(updateNamesFlag);
+                this[baseReplaceFlag].AddFeature(updateHashesFlag);
+                this[baseReplaceFlag].AddFeature(updateDescriptionFlag);
+                this[baseReplaceFlag][updateDescriptionFlag].AddFeature(onlySameFlag);
+                this[baseReplaceFlag].AddFeature(updateGameTypeFlag);
+                this[baseReplaceFlag].AddFeature(updateYearFlag);
+                this[baseReplaceFlag].AddFeature(updateManufacturerFlag);
+                this[baseReplaceFlag].AddFeature(updateParentsFlag);
                 AddFeature(reverseBaseReplaceFlag);
-                    this[reverseBaseReplaceFlag].AddFeature(baseDatListInput);
-                    this[baseReplaceFlag].AddFeature(updateFieldListInput);
-                        this[baseReplaceFlag][updateFieldListInput].AddFeature(onlySameFlag);
-                    this[reverseBaseReplaceFlag].AddFeature(updateNamesFlag);
-                    this[reverseBaseReplaceFlag].AddFeature(updateHashesFlag);
-                    this[reverseBaseReplaceFlag].AddFeature(updateDescriptionFlag);
-                        this[reverseBaseReplaceFlag][updateDescriptionFlag].AddFeature(onlySameFlag);
-                    this[reverseBaseReplaceFlag].AddFeature(updateGameTypeFlag);
-                    this[reverseBaseReplaceFlag].AddFeature(updateYearFlag);
-                    this[reverseBaseReplaceFlag].AddFeature(updateManufacturerFlag);
-                    this[reverseBaseReplaceFlag].AddFeature(updateParentsFlag);
+                this[reverseBaseReplaceFlag].AddFeature(baseDatListInput);
+                this[baseReplaceFlag].AddFeature(updateFieldListInput);
+                this[baseReplaceFlag][updateFieldListInput].AddFeature(onlySameFlag);
+                this[reverseBaseReplaceFlag].AddFeature(updateNamesFlag);
+                this[reverseBaseReplaceFlag].AddFeature(updateHashesFlag);
+                this[reverseBaseReplaceFlag].AddFeature(updateDescriptionFlag);
+                this[reverseBaseReplaceFlag][updateDescriptionFlag].AddFeature(onlySameFlag);
+                this[reverseBaseReplaceFlag].AddFeature(updateGameTypeFlag);
+                this[reverseBaseReplaceFlag].AddFeature(updateYearFlag);
+                this[reverseBaseReplaceFlag].AddFeature(updateManufacturerFlag);
+                this[reverseBaseReplaceFlag].AddFeature(updateParentsFlag);
                 AddFeature(diffCascadeFlag);
-                    this[diffCascadeFlag].AddFeature(skipFirstOutputFlag);
+                this[diffCascadeFlag].AddFeature(skipFirstOutputFlag);
                 AddFeature(diffReverseCascadeFlag);
-                    this[diffReverseCascadeFlag].AddFeature(skipFirstOutputFlag);
+                this[diffReverseCascadeFlag].AddFeature(skipFirstOutputFlag);
                 AddFeature(gameNameListInput);
                 AddFeature(notGameNameListInput);
                 AddFeature(gameDescriptionListInput);
@@ -3426,7 +3420,7 @@ The stats that are outputted are as follows:
                     updateFields = new List<Field>() { Field.Name };
 
                 // Populate the DatData object
-                DatFile userInputDat = new DatFile(datHeader);
+                DatFile userInputDat = DatFile.Create(datHeader);
 
                 userInputDat.DetermineUpdateType(
                     Inputs,
@@ -3527,12 +3521,12 @@ The stats that are outputted are as follows:
                 {
                     foreach (string datfile in datfiles)
                     {
-                        DatFile datdata = new DatFile();
+                        DatFile datdata = DatFile.Create();
                         datdata.Parse(datfile, 99, 99, splitType, keep: true, useTags: true);
 
                         // If we have the depot flag, respect it
                         if (depot)
-                            datdata.VerifyDepot(Inputs, headerToCheckAgainst);
+                            datdata.VerifyDepot(Inputs);
                         else
                             datdata.VerifyGeneric(Inputs, hashOnly, quickScan, headerToCheckAgainst, chdsAsFiles, filter);
                     }
@@ -3543,7 +3537,7 @@ The stats that are outputted are as follows:
                     InternalStopwatch watch = new InternalStopwatch("Populating internal DAT");
 
                     // Add all of the input DATs into one huge internal DAT
-                    DatFile datdata = new DatFile();
+                    DatFile datdata = DatFile.Create();
                     foreach (string datfile in datfiles)
                     {
                         datdata.Parse(datfile, 99, 99, splitType, keep: true, useTags: true);
@@ -3553,7 +3547,7 @@ The stats that are outputted are as follows:
 
                     // If we have the depot flag, respect it
                     if (depot)
-                        datdata.VerifyDepot(Inputs, headerToCheckAgainst);
+                        datdata.VerifyDepot(Inputs);
                     else
                         datdata.VerifyGeneric(Inputs, hashOnly, quickScan, headerToCheckAgainst, chdsAsFiles, filter);
                 }

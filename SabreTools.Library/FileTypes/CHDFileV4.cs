@@ -15,7 +15,7 @@ namespace SabreTools.Library.FileTypes
         /// CHD flags
         /// </summary>
         [Flags]
-        private enum Flags : uint
+        public enum Flags : uint
         {
             DriveHasParent = 0x00000001,
             DriveAllowsWrites = 0x00000002,
@@ -24,7 +24,7 @@ namespace SabreTools.Library.FileTypes
         /// <summary>
         /// Compression being used in CHD
         /// </summary>
-        private enum Compression : uint
+        public enum Compression : uint
         {
             CHDCOMPRESSION_NONE = 0,
             CHDCOMPRESSION_ZLIB = 1,
@@ -35,28 +35,28 @@ namespace SabreTools.Library.FileTypes
         /// <summary>
         /// Map format
         /// </summary>
-        private class Map
+        public class Map
         {
-            private ulong offset;       // starting offset within the file
-            private uint crc32;         // 32-bit CRC of the uncompressed data
-            private ushort length_lo;   // lower 16 bits of length
-            private byte length_hi;     // upper 8 bits of length
-            private byte flags;         // flags, indicating compression info
+            public ulong offset;       // starting offset within the file
+            public uint crc32;         // 32-bit CRC of the uncompressed data
+            public ushort length_lo;   // lower 16 bits of length
+            public byte length_hi;     // upper 8 bits of length
+            public byte flags;         // flags, indicating compression info
         }
 
         public const int HeaderSize = 108;
         public const uint Version = 4;
 
         // V4-specific header values
-        private Flags flags;                        // flags (see above)
-        private Compression compression;            // compression type
-        private uint totalhunks;                    // total # of hunks represented
-        private ulong logicalbytes;                 // logical size of the data (in bytes)
-        private ulong metaoffset;                   // offset to the first blob of metadata
-        private uint hunkbytes;                     // number of bytes per hunk
-        private byte[] sha1 = new byte[20];         // combined raw+meta SHA1
-        private byte[] parentsha1 = new byte[20];   // combined raw+meta SHA1 of parent
-        private byte[] rawsha1 = new byte[20];      // raw data SHA1
+        public Flags flags;                        // flags (see above)
+        public Compression compression;            // compression type
+        public uint totalhunks;                    // total # of hunks represented
+        public ulong logicalbytes;                 // logical size of the data (in bytes)
+        public ulong metaoffset;                   // offset to the first blob of metadata
+        public uint hunkbytes;                     // number of bytes per hunk
+        public byte[] sha1 = new byte[20];         // combined raw+meta SHA1
+        public byte[] parentsha1 = new byte[20];   // combined raw+meta SHA1 of parent
+        public byte[] rawsha1 = new byte[20];      // raw data SHA1
 
         /// <summary>
         /// Parse and validate the header as if it's V4

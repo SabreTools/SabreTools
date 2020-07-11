@@ -106,10 +106,12 @@ namespace SabreTools.Library.DatFiles
                     return false;
                 }
 
-                SeparatedValueWriter svw = new SeparatedValueWriter(fs, new UTF8Encoding(false));
-                svw.Quotes = false;
-                svw.Separator = '\t';
-                svw.VerifyFieldCount = true;
+                SeparatedValueWriter svw = new SeparatedValueWriter(fs, new UTF8Encoding(false))
+                {
+                    Quotes = false,
+                    Separator = '\t',
+                    VerifyFieldCount = true
+                };
 
                 // Get a properly sorted set of keys
                 List<string> keys = Keys;

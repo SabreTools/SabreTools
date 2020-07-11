@@ -53,11 +53,13 @@ namespace SabreTools.Library.DatFiles
         {
             // Open a file reader
             Encoding enc = FileExtensions.GetEncoding(filename);
-            SeparatedValueReader svr = new SeparatedValueReader(FileExtensions.TryOpenRead(filename), enc);
-            svr.Header = true;
-            svr.Quotes = true;
-            svr.Separator = _delim;
-            svr.VerifyFieldCount = true;
+            SeparatedValueReader svr = new SeparatedValueReader(FileExtensions.TryOpenRead(filename), enc)
+            {
+                Header = true,
+                Quotes = true,
+                Separator = _delim,
+                VerifyFieldCount = true
+            };
 
             // If we're somehow at the end of the stream already, we can't do anything
             if (svr.EndOfStream)
@@ -913,10 +915,12 @@ namespace SabreTools.Library.DatFiles
                     return false;
                 }
 
-                SeparatedValueWriter svw = new SeparatedValueWriter(fs, new UTF8Encoding(false));
-                svw.Quotes = true;
-                svw.Separator = this._delim;
-                svw.VerifyFieldCount = true;
+                SeparatedValueWriter svw = new SeparatedValueWriter(fs, new UTF8Encoding(false))
+                {
+                    Quotes = true,
+                    Separator = this._delim,
+                    VerifyFieldCount = true
+                };
 
                 // Write out the header
                 WriteHeader(svw);

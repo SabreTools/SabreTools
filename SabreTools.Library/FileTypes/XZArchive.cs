@@ -285,8 +285,10 @@ namespace SabreTools.Library.FileTypes
                     }
 
                     // Create a stream dictionary
-                    Dictionary<string, Stream> dict = new Dictionary<string, Stream>();
-                    dict.Add(rom.Name, inputStream);
+                    Dictionary<string, Stream> dict = new Dictionary<string, Stream>
+                    {
+                        { rom.Name, inputStream }
+                    };
 
                     // Now add the stream
                     zipFile.CompressStreamDictionary(dict, tempFile);
@@ -341,8 +343,10 @@ namespace SabreTools.Library.FileTypes
                             if (index < 0)
                             {
                                 // Create a stream dictionary
-                                Dictionary<string, Stream> dict = new Dictionary<string, Stream>();
-                                dict.Add(rom.Name, inputStream);
+                                Dictionary<string, Stream> dict = new Dictionary<string, Stream>
+                                {
+                                    { rom.Name, inputStream }
+                                };
 
                                 // Now add the stream
                                 zipFile.CompressStreamDictionary(dict, tempFile);
@@ -356,8 +360,10 @@ namespace SabreTools.Library.FileTypes
                                 oldZipFileEntryStream.Seek(0, SeekOrigin.Begin);
 
                                 // Create a stream dictionary
-                                Dictionary<string, Stream> dict = new Dictionary<string, Stream>();
-                                dict.Add(oldZipFile.ArchiveFileNames[index], oldZipFileEntryStream);
+                                Dictionary<string, Stream> dict = new Dictionary<string, Stream>
+                                {
+                                    { oldZipFile.ArchiveFileNames[index], oldZipFileEntryStream }
+                                };
 
                                 // Now add the stream
                                 zipFile.CompressStreamDictionary(dict, tempFile);
@@ -569,8 +575,10 @@ namespace SabreTools.Library.FileTypes
                                 FileStream inputStream = FileExtensions.TryOpenRead(inputFiles[-index - 1]);
 
                                 // Create a stream dictionary
-                                Dictionary<string, Stream> dict = new Dictionary<string, Stream>();
-                                dict.Add(key, inputStream);
+                                Dictionary<string, Stream> dict = new Dictionary<string, Stream>
+                                {
+                                    { key, inputStream }
+                                };
 
                                 // Now add the stream
                                 zipFile.CompressStreamDictionary(dict, tempFile);
@@ -584,8 +592,10 @@ namespace SabreTools.Library.FileTypes
                                 oldZipFileEntryStream.Seek(0, SeekOrigin.Begin);
 
                                 // Create a stream dictionary
-                                Dictionary<string, Stream> dict = new Dictionary<string, Stream>();
-                                dict.Add(oldZipFile.ArchiveFileNames[index], oldZipFileEntryStream);
+                                Dictionary<string, Stream> dict = new Dictionary<string, Stream>
+                                {
+                                    { oldZipFile.ArchiveFileNames[index], oldZipFileEntryStream }
+                                };
 
                                 // Now add the stream
                                 zipFile.CompressStreamDictionary(dict, tempFile);

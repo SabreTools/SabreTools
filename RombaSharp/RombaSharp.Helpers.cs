@@ -250,7 +250,7 @@ namespace RombaSharp
 
             // Parse the Dat if possible
             Globals.Logger.User($"Adding from '{dat.Name}'");
-            DatFile tempdat = new DatFile();
+            DatFile tempdat = DatFile.Create(fullpath);
             tempdat.Parse(fullpath, 0, 0);
 
             // If the Dat wasn't empty, add the information

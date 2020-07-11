@@ -453,7 +453,7 @@ have a current entry in the DAT index.";
                 }
 
                 // Then process all of the input directories into an internal DAT
-                DatFile df = new DatFile();
+                DatFile df = DatFile.Create();
                 foreach (string dir in onlyDirs)
                 {
                     // TODO: All instances of Hash.DeepHashes should be made into 0x0 eventually
@@ -462,7 +462,7 @@ have a current entry in the DAT index.";
                 }
 
                 // Create an empty Dat for files that need to be rebuilt
-                DatFile need = new DatFile();
+                DatFile need = DatFile.Create();
 
                 // Open the database connection
                 SqliteConnection dbc = new SqliteConnection(_connectionString);
@@ -626,7 +626,7 @@ structure according to the original DAT master directory tree structure.";
                 foreach (string key in foundDats.Keys)
                 {
                     // Get the DAT file associated with the key
-                    DatFile datFile = new DatFile();
+                    DatFile datFile = DatFile.Create(Path.Combine(_dats, foundDats[key]));
                     datFile.Parse(Path.Combine(_dats, foundDats[key]), 0, 0);
 
                     // Create the new output directory if it doesn't exist
@@ -815,11 +815,9 @@ in -old DAT file. Ignores those entries in -old that are not in -new.";
                 }
 
                 // Create the encapsulating datfile
-                DatFile datfile = new DatFile()
-                {
-                    Name = name,
-                    Description = description,
-                };
+                DatFile datfile = DatFile.Create();
+                datfile.Name = name;
+                datfile.Description = description;
 
                 // Create the inputs
                 List<string> dats = new List<string> { newdat };
@@ -870,11 +868,9 @@ in -old DAT file. Ignores those entries in -old that are not in -new.";
                 }
 
                 // Create the encapsulating datfile
-                DatFile datfile = new DatFile()
-                {
-                    Name = (string.IsNullOrWhiteSpace(name) ? "untitled" : name),
-                    Description = description,
-                };
+                DatFile datfile = DatFile.Create();
+                datfile.Name = string.IsNullOrWhiteSpace(name) ? "untitled" : name;
+                datfile.Description = description;
 
                 // Now run the D2D on the input and write out
                 // TODO: All instances of Hash.DeepHashes should be made into 0x0 eventually
@@ -927,7 +923,7 @@ in -old DAT files. Ignores those entries in -old that are not in -new.";
                 }
 
                 // Create the encapsulating datfile
-                DatFile datfile = new DatFile();
+                DatFile datfile = DatFile.Create();
 
                 // Create the inputs
                 List<string> dats = new List<string> { newdat };
@@ -1425,7 +1421,7 @@ particular DAT.";
                 foreach (string key in foundDats.Keys)
                 {
                     // Get the DAT file associated with the key
-                    DatFile datFile = new DatFile();
+                    DatFile datFile = DatFile.Create();
                     datFile.Parse(Path.Combine(_dats, foundDats[key]), 0, 0);
 
                     // Now loop through and see if all of the hash combinations exist in the database
@@ -1577,7 +1573,9 @@ contents of any changed dats.";
                     Directory.CreateDirectory(_dats);
 
                 // First get a list of SHA-1's from the input DATs
-                DatFile datroot = new DatFile { Type = "SuperDAT", };
+                DatFile datroot = DatFile.Create();
+                datroot.Type = "SuperDAT";
+
                 // TODO: All instances of Hash.DeepHashes should be made into 0x0 eventually
                 datroot.PopulateFromDir(_dats, Hash.DeepHashes, false, false, SkipFileType.None, false, false, _tmpdir, false, null, true, null);
                 datroot.BucketBy(SortedBy.SHA1, DedupeType.None);
@@ -1704,7 +1702,7 @@ contents of any changed dats.";
                     }
 
                     // Now rescan the depot itself
-                    DatFile depot = new DatFile();
+                    DatFile depot = DatFile.Create();
                     // TODO: All instances of Hash.DeepHashes should be made into 0x0 eventually
                     depot.PopulateFromDir(depotname, Hash.DeepHashes, false, false, SkipFileType.None, false, false, _tmpdir, false, null, true, null);
                     depot.BucketBy(SortedBy.SHA1, DedupeType.None);

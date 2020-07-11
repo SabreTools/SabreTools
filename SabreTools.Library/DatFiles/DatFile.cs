@@ -20,7 +20,7 @@ namespace SabreTools.Library.DatFiles
     /// <summary>
     /// Represents a format-agnostic DAT
     /// </summary>
-    public class DatFile
+    public abstract class DatFile
     {
         #region Private instance variables
 
@@ -49,7 +49,7 @@ namespace SabreTools.Library.DatFiles
                 EnsureDatHeader();
                 return _datHeader.FileName;
             }
-            set
+            protected set
             {
                 EnsureDatHeader();
                 _datHeader.FileName = value;
@@ -1408,27 +1408,21 @@ namespace SabreTools.Library.DatFiles
         /// <param name="cloneHeader">True if only the header should be cloned (default), false if this should be a reference to another DatFile</param>
         public DatFile(DatFile datFile, bool cloneHeader = true)
         {
-            if (cloneHeader)
+            if (datFile != null)
             {
-                this._datHeader = (DatHeader)datFile._datHeader.Clone();
+                if (cloneHeader)
+                {
+                    this._datHeader = (DatHeader)datFile._datHeader.Clone();
+                }
+                else
+                {
+                    this._datHeader = datFile._datHeader;
+                    this._items = datFile._items;
+                    this.SortedBy = datFile.SortedBy;
+                    this.MergedBy = datFile.MergedBy;
+                    this._datStats = datFile._datStats;
+                }
             }
-            else
-            {
-                this._datHeader = datFile._datHeader;
-                this._items = datFile._items;
-                this.SortedBy = datFile.SortedBy;
-                this.MergedBy = datFile.MergedBy;
-                this._datStats = datFile._datStats;
-            }
-        }
-
-        /// <summary>
-        /// Create a new DatFile from an existing DatHeader
-        /// </summary>
-        /// <param name="datHeader">DatHeader to get the values from</param>
-        public DatFile(DatHeader datHeader)
-        {
-            _datHeader = (DatHeader)datHeader.Clone();
         }
 
         /// <summary>
@@ -1437,7 +1431,7 @@ namespace SabreTools.Library.DatFiles
         /// <param name="input">Name of the file to determine the DAT format from</param>
         /// <param name="baseDat">DatFile containing the information to use in specific operations</param>
         /// <returns>DatFile of the specific internal type that corresponds to the inputs</returns>
-        public static DatFile Create(string input, DatFile baseDat)
+        public static DatFile Create(string input, DatFile baseDat = null)
         {
             DatFormat datFormat = input.GetDatFormat();
             return Create(datFormat, baseDat);
@@ -1449,7 +1443,7 @@ namespace SabreTools.Library.DatFiles
         /// <param name="datFormat">Format of the DAT to be created</param>
         /// <param name="baseDat">DatFile containing the information to use in specific operations</param>
         /// <returns>DatFile of the specific internal type that corresponds to the inputs</returns>
-        public static DatFile Create(DatFormat datFormat, DatFile baseDat)
+        public static DatFile Create(DatFormat? datFormat = null, DatFile baseDat = null)
         {
             switch (datFormat)
             {
@@ -1529,9 +1523,23 @@ namespace SabreTools.Library.DatFiles
 
                 case DatFormat.TSV:
                     return new DatFiles.SeparatedValue(baseDat, '\t');
-            }
 
-            return null;
+                // We use new-style Logiqx as a backup for generic DatFile
+                case null:
+                default:
+                    return new Logiqx(baseDat, false);
+            }
+        }
+
+        /// <summary>
+        /// Create a new DatFile from an existing DatHeader
+        /// </summary>
+        /// <param name="datHeader">DatHeader to get the values from</param>
+        public static DatFile Create(DatHeader datHeader)
+        {
+            DatFile datFile = Create(datHeader.DatFormat);
+            datFile._datHeader = (DatHeader)datHeader.Clone();
+            return datFile;
         }
 
         #endregion
@@ -1659,25 +1667,22 @@ namespace SabreTools.Library.DatFiles
             {
                 string input = inputs[i];
                 Globals.Logger.User($"Adding DAT: {input.Split('¬')[0]}");
-                datHeaders[i] = new DatFile()
-                {
-                    DatFormat = (this.DatFormat != 0 ? this.DatFormat : 0),
+                datHeaders[i] = Create(DatFormat);
 
-                    // Filtering that needs to be copied over
-                    ExcludeFields = (bool[])this.ExcludeFields.Clone(),
-                    OneRom = this.OneRom,
-                    KeepEmptyGames = this.KeepEmptyGames,
-                    SceneDateStrip = this.SceneDateStrip,
-                    DedupeRoms = this.DedupeRoms,
-                    Prefix = this.Prefix,
-                    Postfix = this.Postfix,
-                    AddExtension = this.AddExtension,
-                    ReplaceExtension = this.ReplaceExtension,
-                    RemoveExtension = this.RemoveExtension,
-                    GameName = this.GameName,
-                    Quotes = this.Quotes,
-                    UseRomName = this.UseRomName,
-                };
+                // Filtering that needs to be copied over
+                datHeaders[i].ExcludeFields = (bool[])this.ExcludeFields.Clone();
+                datHeaders[i].OneRom = this.OneRom;
+                datHeaders[i].KeepEmptyGames = this.KeepEmptyGames;
+                datHeaders[i].SceneDateStrip = this.SceneDateStrip;
+                datHeaders[i].DedupeRoms = this.DedupeRoms;
+                datHeaders[i].Prefix = this.Prefix;
+                datHeaders[i].Postfix = this.Postfix;
+                datHeaders[i].AddExtension = this.AddExtension;
+                datHeaders[i].ReplaceExtension = this.ReplaceExtension;
+                datHeaders[i].RemoveExtension = this.RemoveExtension;
+                datHeaders[i].GameName = this.GameName;
+                datHeaders[i].Quotes = this.Quotes;
+                datHeaders[i].UseRomName = this.UseRomName;
 
                 datHeaders[i].Parse(input, i, i, splitType, keep: true, clean: clean, remUnicode: remUnicode, descAsName: descAsName);
             });
@@ -1796,25 +1801,22 @@ namespace SabreTools.Library.DatFiles
                 Globals.Logger.User($"Replacing items in '{path.Split('¬')[0]}' from the base DAT");
 
                 // First we parse in the DAT internally
-                DatFile intDat = new DatFile()
-                {
-                    DatFormat = (this.DatFormat != 0 ? this.DatFormat : 0),
+                DatFile intDat = Create(this.DatFormat);
 
-                    // Filtering that needs to be copied over
-                    ExcludeFields = (bool[])this.ExcludeFields.Clone(),
-                    OneRom = this.OneRom,
-                    KeepEmptyGames = this.KeepEmptyGames,
-                    SceneDateStrip = this.SceneDateStrip,
-                    DedupeRoms = this.DedupeRoms,
-                    Prefix = this.Prefix,
-                    Postfix = this.Postfix,
-                    AddExtension = this.AddExtension,
-                    ReplaceExtension = this.ReplaceExtension,
-                    RemoveExtension = this.RemoveExtension,
-                    GameName = this.GameName,
-                    Quotes = this.Quotes,
-                    UseRomName = this.UseRomName,
-                };
+                // Filtering that needs to be copied over
+                intDat.ExcludeFields = (bool[])this.ExcludeFields.Clone();
+                intDat.OneRom = this.OneRom;
+                intDat.KeepEmptyGames = this.KeepEmptyGames;
+                intDat.SceneDateStrip = this.SceneDateStrip;
+                intDat.DedupeRoms = this.DedupeRoms;
+                intDat.Prefix = this.Prefix;
+                intDat.Postfix = this.Postfix;
+                intDat.AddExtension = this.AddExtension;
+                intDat.ReplaceExtension = this.ReplaceExtension;
+                intDat.RemoveExtension = this.RemoveExtension;
+                intDat.GameName = this.GameName;
+                intDat.Quotes = this.Quotes;
+                intDat.UseRomName = this.UseRomName;
 
                 intDat.Parse(path, 1, 1, keep: true, clean: clean, remUnicode: remUnicode, descAsName: descAsName);
                 filter.FilterDatFile(intDat);
@@ -2258,7 +2260,7 @@ namespace SabreTools.Library.DatFiles
                 Globals.Logger.User($"Comparing '{path.Split('¬')[0]}' to base DAT");
 
                 // First we parse in the DAT internally
-                DatFile intDat = new DatFile();
+                DatFile intDat = Create();
                 intDat.Parse(path, 1, 1, keep: true, clean: clean, remUnicode: remUnicode, descAsName: descAsName);
 
                 // For comparison's sake, we want to use CRC as the base ordering
@@ -2321,7 +2323,7 @@ namespace SabreTools.Library.DatFiles
                 }
                 else
                 {
-                    diffData = new DatFile(this);
+                    diffData = Create(baseDat: this);
                     diffData.FileName += innerpost;
                     diffData.Name += innerpost;
                     diffData.Description += innerpost;
@@ -2390,8 +2392,8 @@ namespace SabreTools.Library.DatFiles
 
             // Default vars for use
             string post = string.Empty;
-            DatFile outerDiffData = new DatFile();
-            DatFile dupeData = new DatFile();
+            DatFile outerDiffData = Create();
+            DatFile dupeData = Create();
 
             // Fill in any information not in the base DAT
             if (string.IsNullOrWhiteSpace(FileName))
@@ -2407,7 +2409,7 @@ namespace SabreTools.Library.DatFiles
             if ((diff & UpdateMode.DiffNoDupesOnly) != 0)
             {
                 post = " (No Duplicates)";
-                outerDiffData = new DatFile(this);
+                outerDiffData = Create(baseDat: this);
                 outerDiffData.FileName += post;
                 outerDiffData.Name += post;
                 outerDiffData.Description += post;
@@ -2418,7 +2420,7 @@ namespace SabreTools.Library.DatFiles
             if ((diff & UpdateMode.DiffDupesOnly) != 0)
             {
                 post = " (Duplicates)";
-                dupeData = new DatFile(this);
+                dupeData = Create(baseDat: this);
                 dupeData.FileName += post;
                 dupeData.Name += post;
                 dupeData.Description += post;
@@ -2436,7 +2438,7 @@ namespace SabreTools.Library.DatFiles
                 Parallel.For(0, inputs.Count, Globals.ParallelOptions, j =>
                 {
                     string innerpost = $" ({j} - {PathExtensions.GetNormalizedFileName(inputs[j], true)} Only)";
-                    DatFile diffData = new DatFile(this);
+                    DatFile diffData = Create(baseDat: this);
                     diffData.FileName += innerpost;
                     diffData.Name += innerpost;
                     diffData.Description += innerpost;
@@ -2589,7 +2591,7 @@ namespace SabreTools.Library.DatFiles
             // Iterate over the files
             foreach (string file in inputFileNames)
             {
-                DatFile innerDatdata = new DatFile(this);
+                DatFile innerDatdata = Create(baseDat: this);
                 Globals.Logger.User($"Processing '{Path.GetFileName(file.Split('¬')[0])}'");
                 innerDatdata.Parse(file, 0, 0, splitType, keep: true, clean: clean, remUnicode: remUnicode, descAsName: descAsName,
                     keepext: ((innerDatdata.DatFormat & DatFormat.TSV) != 0
@@ -3340,7 +3342,7 @@ namespace SabreTools.Library.DatFiles
             // Now parse the correct type of DAT
             try
             {
-                DatFile.Create(filename, this)?.ParseFile(filename, sysid, srcid, keep, clean, remUnicode);
+                Create(filename, this)?.ParseFile(filename, sysid, srcid, keep, clean, remUnicode);
             }
             catch (Exception ex)
             {
@@ -4674,9 +4676,8 @@ namespace SabreTools.Library.DatFiles
         /// Process the DAT and verify from the depots
         /// </summary>
         /// <param name="inputs">List of input directories to compare against</param>
-        /// <param name="headerToCheckAgainst">Populated string representing the name of the skipper to use, a blank string to use the first available checker, null otherwise</param>
         /// <returns>True if verification was a success, false otherwise</returns>
-        public bool VerifyDepot(List<string> inputs, string headerToCheckAgainst)
+        public bool VerifyDepot(List<string> inputs)
         {
             bool success = true;
 
@@ -4779,7 +4780,7 @@ namespace SabreTools.Library.DatFiles
             }
 
             // Setup the fixdat
-            DatFile matched = new DatFile(this);
+            DatFile matched = Create(baseDat: this);
             matched.ResetDictionary();
             matched.FileName = $"fixDat_{matched.FileName}";
             matched.Name = $"fixDat_{matched.Name}";
@@ -4908,36 +4909,31 @@ namespace SabreTools.Library.DatFiles
             string newExtBString = string.Join(",", newExtB);
 
             // Set all of the appropriate outputs for each of the subsets
-            DatFile datdataA = new DatFile
-            {
-                FileName = $"{this.FileName} ({newExtAString})",
-                Name = $"{this.Name} ({newExtAString})",
-                Description = $"{this.Description} ({newExtAString})",
-                Category = this.Category,
-                Version = this.Version,
-                Date = this.Date,
-                Author = this.Author,
-                Email = this.Email,
-                Homepage = this.Homepage,
-                Url = this.Url,
-                Comment = this.Comment,
-                DatFormat = this.DatFormat,
-            };
-            DatFile datdataB = new DatFile
-            {
-                FileName = $"{this.FileName} ({newExtBString})",
-                Name = $"{this.Name} ({newExtBString})",
-                Description = $"{this.Description} ({newExtBString})",
-                Category = this.Category,
-                Version = this.Version,
-                Date = this.Date,
-                Author = this.Author,
-                Email = this.Email,
-                Homepage = this.Homepage,
-                Url = this.Url,
-                Comment = this.Comment,
-                DatFormat = this.DatFormat,
-            };
+            DatFile datdataA = Create(this.DatFormat);
+            datdataA.FileName = $"{this.FileName} ({newExtAString})";
+            datdataA.Name = $"{this.Name} ({newExtAString})";
+            datdataA.Description = $"{this.Description} ({newExtAString})";
+            datdataA.Category = this.Category;
+            datdataA.Version = this.Version;
+            datdataA.Date = this.Date;
+            datdataA.Author = this.Author;
+            datdataA.Email = this.Email;
+            datdataA.Homepage = this.Homepage;
+            datdataA.Url = this.Url;
+            datdataA.Comment = this.Comment;
+
+            DatFile datdataB = Create(this.DatFormat);
+            datdataB.FileName = $"{this.FileName} ({newExtBString})";
+            datdataB.Name = $"{this.Name} ({newExtBString})";
+            datdataB.Description = $"{this.Description} ({newExtBString})";
+            datdataB.Category = this.Category;
+            datdataB.Version = this.Version;
+            datdataB.Date = this.Date;
+            datdataB.Author = this.Author;
+            datdataB.Email = this.Email;
+            datdataB.Homepage = this.Homepage;
+            datdataB.Url = this.Url;
+            datdataB.Comment = this.Comment;
 
             // Now separate the roms accordingly
             List<string> keys = Keys;
@@ -4978,195 +4974,180 @@ namespace SabreTools.Library.DatFiles
         {
             // Create each of the respective output DATs
             Globals.Logger.User("Creating and populating new DATs");
-            DatFile nodump = new DatFile
-            {
-                FileName = this.FileName + " (Nodump)",
-                Name = this.Name + " (Nodump)",
-                Description = this.Description + " (Nodump)",
-                Category = this.Category,
-                Version = this.Version,
-                Date = this.Date,
-                Author = this.Author,
-                Email = this.Email,
-                Homepage = this.Homepage,
-                Url = this.Url,
-                Comment = this.Comment,
-                Header = this.Header,
-                Type = this.Type,
-                ForceMerging = this.ForceMerging,
-                ForceNodump = this.ForceNodump,
-                ForcePacking = this.ForcePacking,
-                DatFormat = this.DatFormat,
-                DedupeRoms = this.DedupeRoms,
-            };
-            DatFile sha512 = new DatFile
-            {
-                FileName = this.FileName + " (SHA-512)",
-                Name = this.Name + " (SHA-512)",
-                Description = this.Description + " (SHA-512)",
-                Category = this.Category,
-                Version = this.Version,
-                Date = this.Date,
-                Author = this.Author,
-                Email = this.Email,
-                Homepage = this.Homepage,
-                Url = this.Url,
-                Comment = this.Comment,
-                Header = this.Header,
-                Type = this.Type,
-                ForceMerging = this.ForceMerging,
-                ForceNodump = this.ForceNodump,
-                ForcePacking = this.ForcePacking,
-                DatFormat = this.DatFormat,
-                DedupeRoms = this.DedupeRoms,
-            };
-            DatFile sha384 = new DatFile
-            {
-                FileName = this.FileName + " (SHA-384)",
-                Name = this.Name + " (SHA-384)",
-                Description = this.Description + " (SHA-384)",
-                Category = this.Category,
-                Version = this.Version,
-                Date = this.Date,
-                Author = this.Author,
-                Email = this.Email,
-                Homepage = this.Homepage,
-                Url = this.Url,
-                Comment = this.Comment,
-                Header = this.Header,
-                Type = this.Type,
-                ForceMerging = this.ForceMerging,
-                ForceNodump = this.ForceNodump,
-                ForcePacking = this.ForcePacking,
-                DatFormat = this.DatFormat,
-                DedupeRoms = this.DedupeRoms,
-            };
-            DatFile sha256 = new DatFile
-            {
-                FileName = this.FileName + " (SHA-256)",
-                Name = this.Name + " (SHA-256)",
-                Description = this.Description + " (SHA-256)",
-                Category = this.Category,
-                Version = this.Version,
-                Date = this.Date,
-                Author = this.Author,
-                Email = this.Email,
-                Homepage = this.Homepage,
-                Url = this.Url,
-                Comment = this.Comment,
-                Header = this.Header,
-                Type = this.Type,
-                ForceMerging = this.ForceMerging,
-                ForceNodump = this.ForceNodump,
-                ForcePacking = this.ForcePacking,
-                DatFormat = this.DatFormat,
-                DedupeRoms = this.DedupeRoms,
-            };
-            DatFile sha1 = new DatFile
-            {
-                FileName = this.FileName + " (SHA-1)",
-                Name = this.Name + " (SHA-1)",
-                Description = this.Description + " (SHA-1)",
-                Category = this.Category,
-                Version = this.Version,
-                Date = this.Date,
-                Author = this.Author,
-                Email = this.Email,
-                Homepage = this.Homepage,
-                Url = this.Url,
-                Comment = this.Comment,
-                Header = this.Header,
-                Type = this.Type,
-                ForceMerging = this.ForceMerging,
-                ForceNodump = this.ForceNodump,
-                ForcePacking = this.ForcePacking,
-                DatFormat = this.DatFormat,
-                DedupeRoms = this.DedupeRoms,
-            };
-            DatFile ripemd160 = new DatFile
-            {
-                FileName = this.FileName + " (RIPEMD160)",
-                Name = this.Name + " (RIPEMD160)",
-                Description = this.Description + " (RIPEMD160)",
-                Category = this.Category,
-                Version = this.Version,
-                Date = this.Date,
-                Author = this.Author,
-                Email = this.Email,
-                Homepage = this.Homepage,
-                Url = this.Url,
-                Comment = this.Comment,
-                Header = this.Header,
-                Type = this.Type,
-                ForceMerging = this.ForceMerging,
-                ForceNodump = this.ForceNodump,
-                ForcePacking = this.ForcePacking,
-                DatFormat = this.DatFormat,
-                DedupeRoms = this.DedupeRoms,
-            };
-            DatFile md5 = new DatFile
-            {
-                FileName = this.FileName + " (MD5)",
-                Name = this.Name + " (MD5)",
-                Description = this.Description + " (MD5)",
-                Category = this.Category,
-                Version = this.Version,
-                Date = this.Date,
-                Author = this.Author,
-                Email = this.Email,
-                Homepage = this.Homepage,
-                Url = this.Url,
-                Comment = this.Comment,
-                Header = this.Header,
-                Type = this.Type,
-                ForceMerging = this.ForceMerging,
-                ForceNodump = this.ForceNodump,
-                ForcePacking = this.ForcePacking,
-                DatFormat = this.DatFormat,
-                DedupeRoms = this.DedupeRoms,
-            };
-            DatFile crc = new DatFile
-            {
-                FileName = this.FileName + " (CRC)",
-                Name = this.Name + " (CRC)",
-                Description = this.Description + " (CRC)",
-                Category = this.Category,
-                Version = this.Version,
-                Date = this.Date,
-                Author = this.Author,
-                Email = this.Email,
-                Homepage = this.Homepage,
-                Url = this.Url,
-                Comment = this.Comment,
-                Header = this.Header,
-                Type = this.Type,
-                ForceMerging = this.ForceMerging,
-                ForceNodump = this.ForceNodump,
-                ForcePacking = this.ForcePacking,
-                DatFormat = this.DatFormat,
-                DedupeRoms = this.DedupeRoms,
-            };
-            DatFile other = new DatFile
-            {
-                FileName = this.FileName + " (Other)",
-                Name = this.Name + " (Other)",
-                Description = this.Description + " (Other)",
-                Category = this.Category,
-                Version = this.Version,
-                Date = this.Date,
-                Author = this.Author,
-                Email = this.Email,
-                Homepage = this.Homepage,
-                Url = this.Url,
-                Comment = this.Comment,
-                Header = this.Header,
-                Type = this.Type,
-                ForceMerging = this.ForceMerging,
-                ForceNodump = this.ForceNodump,
-                ForcePacking = this.ForcePacking,
-                DatFormat = this.DatFormat,
-                DedupeRoms = this.DedupeRoms,
-            };
+
+            DatFile nodump = Create(this.DatFormat);
+            nodump.FileName = this.FileName + " (Nodump)";
+            nodump.Name = this.Name + " (Nodump)";
+            nodump.Description = this.Description + " (Nodump)";
+            nodump.Category = this.Category;
+            nodump.Version = this.Version;
+            nodump.Date = this.Date;
+            nodump.Author = this.Author;
+            nodump.Email = this.Email;
+            nodump.Homepage = this.Homepage;
+            nodump.Url = this.Url;
+            nodump.Comment = this.Comment;
+            nodump.Header = this.Header;
+            nodump.Type = this.Type;
+            nodump.ForceMerging = this.ForceMerging;
+            nodump.ForceNodump = this.ForceNodump;
+            nodump.ForcePacking = this.ForcePacking;
+            nodump.DedupeRoms = this.DedupeRoms;
+
+            DatFile sha512 = Create(this.DatFormat);
+            sha512.FileName = this.FileName + " (SHA-512)";
+            sha512.Name = this.Name + " (SHA-512)";
+            sha512.Description = this.Description + " (SHA-512)";
+            sha512.Category = this.Category;
+            sha512.Version = this.Version;
+            sha512.Date = this.Date;
+            sha512.Author = this.Author;
+            sha512.Email = this.Email;
+            sha512.Homepage = this.Homepage;
+            sha512.Url = this.Url;
+            sha512.Comment = this.Comment;
+            sha512.Header = this.Header;
+            sha512.Type = this.Type;
+            sha512.ForceMerging = this.ForceMerging;
+            sha512.ForceNodump = this.ForceNodump;
+            sha512.ForcePacking = this.ForcePacking;
+            sha512.DedupeRoms = this.DedupeRoms;
+
+            DatFile sha384 = Create(this.DatFormat);
+            sha384.FileName = this.FileName + " (SHA-384)";
+            sha384.Name = this.Name + " (SHA-384)";
+            sha384.Description = this.Description + " (SHA-384)";
+            sha384.Category = this.Category;
+            sha384.Version = this.Version;
+            sha384.Date = this.Date;
+            sha384.Author = this.Author;
+            sha384.Email = this.Email;
+            sha384.Homepage = this.Homepage;
+            sha384.Url = this.Url;
+            sha384.Comment = this.Comment;
+            sha384.Header = this.Header;
+            sha384.Type = this.Type;
+            sha384.ForceMerging = this.ForceMerging;
+            sha384.ForceNodump = this.ForceNodump;
+            sha384.ForcePacking = this.ForcePacking;
+            sha384.DedupeRoms = this.DedupeRoms;
+
+            DatFile sha256 = Create(this.DatFormat);
+            sha256.FileName = this.FileName + " (SHA-256)";
+            sha256.Name = this.Name + " (SHA-256)";
+            sha256.Description = this.Description + " (SHA-256)";
+            sha256.Category = this.Category;
+            sha256.Version = this.Version;
+            sha256.Date = this.Date;
+            sha256.Author = this.Author;
+            sha256.Email = this.Email;
+            sha256.Homepage = this.Homepage;
+            sha256.Url = this.Url;
+            sha256.Comment = this.Comment;
+            sha256.Header = this.Header;
+            sha256.Type = this.Type;
+            sha256.ForceMerging = this.ForceMerging;
+            sha256.ForceNodump = this.ForceNodump;
+            sha256.ForcePacking = this.ForcePacking;
+            sha256.DatFormat = this.DatFormat;
+            sha256.DedupeRoms = this.DedupeRoms;
+
+            DatFile sha1 = Create(this.DatFormat);
+            sha1.FileName = this.FileName + " (SHA-1)";
+            sha1.Name = this.Name + " (SHA-1)";
+            sha1.Description = this.Description + " (SHA-1)";
+            sha1.Category = this.Category;
+            sha1.Version = this.Version;
+            sha1.Date = this.Date;
+            sha1.Author = this.Author;
+            sha1.Email = this.Email;
+            sha1.Homepage = this.Homepage;
+            sha1.Url = this.Url;
+            sha1.Comment = this.Comment;
+            sha1.Header = this.Header;
+            sha1.Type = this.Type;
+            sha1.ForceMerging = this.ForceMerging;
+            sha1.ForceNodump = this.ForceNodump;
+            sha1.ForcePacking = this.ForcePacking;
+            sha1.DedupeRoms = this.DedupeRoms;
+
+#if NET_FRAMEWORK
+            DatFile ripemd160 = Create(this.DatFormat);
+            ripemd160.FileName = this.FileName + " (RIPEMD160)";
+            ripemd160.Name = this.Name + " (RIPEMD160)";
+            ripemd160.Description = this.Description + " (RIPEMD160)";
+            ripemd160.Category = this.Category;
+            ripemd160.Version = this.Version;
+            ripemd160.Date = this.Date;
+            ripemd160.Author = this.Author;
+            ripemd160.Email = this.Email;
+            ripemd160.Homepage = this.Homepage;
+            ripemd160.Url = this.Url;
+            ripemd160.Comment = this.Comment;
+            ripemd160.Header = this.Header;
+            ripemd160.Type = this.Type;
+            ripemd160.ForceMerging = this.ForceMerging;
+            ripemd160.ForceNodump = this.ForceNodump;
+            ripemd160.ForcePacking = this.ForcePacking;
+            ripemd160.DedupeRoms = this.DedupeRoms;
+#endif
+
+            DatFile md5 = Create(this.DatFormat);
+            md5.FileName = this.FileName + " (MD5)";
+            md5.Name = this.Name + " (MD5)";
+            md5.Description = this.Description + " (MD5)";
+            md5.Category = this.Category;
+            md5.Version = this.Version;
+            md5.Date = this.Date;
+            md5.Author = this.Author;
+            md5.Email = this.Email;
+            md5.Homepage = this.Homepage;
+            md5.Url = this.Url;
+            md5.Comment = this.Comment;
+            md5.Header = this.Header;
+            md5.Type = this.Type;
+            md5.ForceMerging = this.ForceMerging;
+            md5.ForceNodump = this.ForceNodump;
+            md5.ForcePacking = this.ForcePacking;
+            md5.DedupeRoms = this.DedupeRoms;
+
+            DatFile crc = Create(this.DatFormat);
+            crc.FileName = this.FileName + " (CRC)";
+            crc.Name = this.Name + " (CRC)";
+            crc.Description = this.Description + " (CRC)";
+            crc.Category = this.Category;
+            crc.Version = this.Version;
+            crc.Date = this.Date;
+            crc.Author = this.Author;
+            crc.Email = this.Email;
+            crc.Homepage = this.Homepage;
+            crc.Url = this.Url;
+            crc.Comment = this.Comment;
+            crc.Header = this.Header;
+            crc.Type = this.Type;
+            crc.ForceMerging = this.ForceMerging;
+            crc.ForceNodump = this.ForceNodump;
+            crc.ForcePacking = this.ForcePacking;
+            crc.DedupeRoms = this.DedupeRoms;
+
+            DatFile other = Create(this.DatFormat);
+            other.FileName = this.FileName + " (Other)";
+            other.Name = this.Name + " (Other)";
+            other.Description = this.Description + " (Other)";
+            other.Category = this.Category;
+            other.Version = this.Version;
+            other.Date = this.Date;
+            other.Author = this.Author;
+            other.Email = this.Email;
+            other.Homepage = this.Homepage;
+            other.Url = this.Url;
+            other.Comment = this.Comment;
+            other.Header = this.Header;
+            other.Type = this.Type;
+            other.ForceMerging = this.ForceMerging;
+            other.ForceNodump = this.ForceNodump;
+            other.ForcePacking = this.ForcePacking;
+            other.DedupeRoms = this.DedupeRoms;
 
             // Now populate each of the DAT objects in turn
             List<string> keys = Keys;
@@ -5243,7 +5224,9 @@ namespace SabreTools.Library.DatFiles
             success &= sha384.Write(outDir);
             success &= sha256.Write(outDir);
             success &= sha1.Write(outDir);
+#if NET_FRAMEWORK
             success &= ripemd160.Write(outDir);
+#endif
             success &= md5.Write(outDir);
             success &= crc.Write(outDir);
 
@@ -5263,10 +5246,8 @@ namespace SabreTools.Library.DatFiles
             BucketBy(SortedBy.Game, DedupeType.None, lower: false, norename: true);
 
             // Create a temporary DAT to add things to
-            DatFile tempDat = new DatFile(this)
-            {
-                Name = null,
-            };
+            DatFile tempDat = Create(baseDat: this);
+            tempDat.Name = null;
 
             // Sort the input keys
             List<string> keys = Keys;
@@ -5279,10 +5260,8 @@ namespace SabreTools.Library.DatFiles
                 if (tempDat.Name != null && tempDat.Name != Path.GetDirectoryName(key))
                 {
                     // Reset the DAT for the next items
-                    tempDat = new DatFile(this)
-                    {
-                        Name = null,
-                    };
+                    tempDat = Create(baseDat: this);
+                    tempDat.Name = null;
                 }
 
                 // Clean the input list and set all games to be pathless
@@ -5360,48 +5339,44 @@ namespace SabreTools.Library.DatFiles
         {
             // Create each of the respective output DATs
             Globals.Logger.User("Creating and populating new DATs");
-            DatFile lessDat = new DatFile
-            {
-                FileName = $"{this.FileName} (less than {radix})",
-                Name = $"{this.Name} (less than {radix})",
-                Description = $"{this.Description} (less than {radix})",
-                Category = this.Category,
-                Version = this.Version,
-                Date = this.Date,
-                Author = this.Author,
-                Email = this.Email,
-                Homepage = this.Homepage,
-                Url = this.Url,
-                Comment = this.Comment,
-                Header = this.Header,
-                Type = this.Type,
-                ForceMerging = this.ForceMerging,
-                ForceNodump = this.ForceNodump,
-                ForcePacking = this.ForcePacking,
-                DatFormat = this.DatFormat,
-                DedupeRoms = this.DedupeRoms,
-            };
-            DatFile greaterEqualDat = new DatFile
-            {
-                FileName = $"{this.FileName} (equal-greater than {radix})",
-                Name = $"{this.Name} (equal-greater than {radix})",
-                Description = $"{this.Description} (equal-greater than {radix})",
-                Category = this.Category,
-                Version = this.Version,
-                Date = this.Date,
-                Author = this.Author,
-                Email = this.Email,
-                Homepage = this.Homepage,
-                Url = this.Url,
-                Comment = this.Comment,
-                Header = this.Header,
-                Type = this.Type,
-                ForceMerging = this.ForceMerging,
-                ForceNodump = this.ForceNodump,
-                ForcePacking = this.ForcePacking,
-                DatFormat = this.DatFormat,
-                DedupeRoms = this.DedupeRoms,
-            };
+
+            DatFile lessDat = Create(this.DatFormat);
+            lessDat.FileName = $"{this.FileName} (less than {radix})";
+            lessDat.Name = $"{this.Name} (less than {radix})";
+            lessDat.Description = $"{this.Description} (less than {radix})";
+            lessDat.Category = this.Category;
+            lessDat.Version = this.Version;
+            lessDat.Date = this.Date;
+            lessDat.Author = this.Author;
+            lessDat.Email = this.Email;
+            lessDat.Homepage = this.Homepage;
+            lessDat.Url = this.Url;
+            lessDat.Comment = this.Comment;
+            lessDat.Header = this.Header;
+            lessDat.Type = this.Type;
+            lessDat.ForceMerging = this.ForceMerging;
+            lessDat.ForceNodump = this.ForceNodump;
+            lessDat.ForcePacking = this.ForcePacking;
+            lessDat.DedupeRoms = this.DedupeRoms;
+
+            DatFile greaterEqualDat = Create(this.DatFormat);
+            greaterEqualDat.FileName = $"{this.FileName} (equal-greater than {radix})";
+            greaterEqualDat.Name = $"{this.Name} (equal-greater than {radix})";
+            greaterEqualDat.Description = $"{this.Description} (equal-greater than {radix})";
+            greaterEqualDat.Category = this.Category;
+            greaterEqualDat.Version = this.Version;
+            greaterEqualDat.Date = this.Date;
+            greaterEqualDat.Author = this.Author;
+            greaterEqualDat.Email = this.Email;
+            greaterEqualDat.Homepage = this.Homepage;
+            greaterEqualDat.Url = this.Url;
+            greaterEqualDat.Comment = this.Comment;
+            greaterEqualDat.Header = this.Header;
+            greaterEqualDat.Type = this.Type;
+            greaterEqualDat.ForceMerging = this.ForceMerging;
+            greaterEqualDat.ForceNodump = this.ForceNodump;
+            greaterEqualDat.ForcePacking = this.ForcePacking;
+            greaterEqualDat.DedupeRoms = this.DedupeRoms;
 
             // Now populate each of the DAT objects in turn
             List<string> keys = Keys;
@@ -5442,69 +5417,62 @@ namespace SabreTools.Library.DatFiles
         {
             // Create each of the respective output DATs
             Globals.Logger.User("Creating and populating new DATs");
-            DatFile romdat = new DatFile
-            {
-                FileName = this.FileName + " (ROM)",
-                Name = this.Name + " (ROM)",
-                Description = this.Description + " (ROM)",
-                Category = this.Category,
-                Version = this.Version,
-                Date = this.Date,
-                Author = this.Author,
-                Email = this.Email,
-                Homepage = this.Homepage,
-                Url = this.Url,
-                Comment = this.Comment,
-                Header = this.Header,
-                Type = this.Type,
-                ForceMerging = this.ForceMerging,
-                ForceNodump = this.ForceNodump,
-                ForcePacking = this.ForcePacking,
-                DatFormat = this.DatFormat,
-                DedupeRoms = this.DedupeRoms,
-            };
-            DatFile diskdat = new DatFile
-            {
-                FileName = this.FileName + " (Disk)",
-                Name = this.Name + " (Disk)",
-                Description = this.Description + " (Disk)",
-                Category = this.Category,
-                Version = this.Version,
-                Date = this.Date,
-                Author = this.Author,
-                Email = this.Email,
-                Homepage = this.Homepage,
-                Url = this.Url,
-                Comment = this.Comment,
-                Header = this.Header,
-                Type = this.Type,
-                ForceMerging = this.ForceMerging,
-                ForceNodump = this.ForceNodump,
-                ForcePacking = this.ForcePacking,
-                DatFormat = this.DatFormat,
-                DedupeRoms = this.DedupeRoms,
-            };
-            DatFile sampledat = new DatFile
-            {
-                FileName = this.FileName + " (Sample)",
-                Name = this.Name + " (Sample)",
-                Description = this.Description + " (Sample)",
-                Category = this.Category,
-                Version = this.Version,
-                Date = this.Date,
-                Author = this.Author,
-                Email = this.Email,
-                Homepage = this.Homepage,
-                Url = this.Url,
-                Comment = this.Comment,
-                Header = this.Header,
-                Type = this.Type,
-                ForceMerging = this.ForceMerging,
-                ForceNodump = this.ForceNodump,
-                ForcePacking = this.ForcePacking,
-                DatFormat = this.DatFormat,
-                DedupeRoms = this.DedupeRoms,
-            };
+            DatFile romdat = Create(this.DatFormat);
+            romdat.FileName = this.FileName + " (ROM)";
+            romdat.Name = this.Name + " (ROM)";
+            romdat.Description = this.Description + " (ROM)";
+            romdat.Category = this.Category;
+            romdat.Version = this.Version;
+            romdat.Date = this.Date;
+            romdat.Author = this.Author;
+            romdat.Email = this.Email;
+            Homepage = this.Homepage;
+            romdat.Url = this.Url;
+            romdat.Comment = this.Comment;
+            romdat.Header = this.Header;
+            romdat.Type = this.Type;
+            romdat.ForceMerging = this.ForceMerging;
+            romdat.ForceNodump = this.ForceNodump;
+            romdat.ForcePacking = this.ForcePacking;
+            romdat.DedupeRoms = this.DedupeRoms;
+
+            DatFile diskdat = Create(this.DatFormat);
+            diskdat.FileName = this.FileName + " (Disk)";
+            diskdat.Name = this.Name + " (Disk)";
+            diskdat.Description = this.Description + " (Disk)";
+            diskdat.Category = this.Category;
+            diskdat.Version = this.Version;
+            diskdat.Date = this.Date;
+            diskdat.Author = this.Author;
+            diskdat.Email = this.Email;
+            diskdat.Homepage = this.Homepage;
+            diskdat.Url = this.Url;
+            diskdat.Comment = this.Comment;
+            diskdat.Header = this.Header;
+            diskdat.Type = this.Type;
+            diskdat.ForceMerging = this.ForceMerging;
+            diskdat.ForceNodump = this.ForceNodump;
+            diskdat.ForcePacking = this.ForcePacking;
+            diskdat.DedupeRoms = this.DedupeRoms;
+
+            DatFile sampledat = Create(this.DatFormat);
+            sampledat.FileName = this.FileName + " (Sample)";
+            sampledat.Name = this.Name + " (Sample)";
+            sampledat.Description = this.Description + " (Sample)";
+            sampledat.Category = this.Category;
+            sampledat.Version = this.Version;
+            sampledat.Date = this.Date;
+            sampledat.Author = this.Author;
+            sampledat.Email = this.Email;
+            sampledat.Homepage = this.Homepage;
+            sampledat.Url = this.Url;
+            sampledat.Comment = this.Comment;
+            sampledat.Header = this.Header;
+            sampledat.Type = this.Type;
+            sampledat.ForceMerging = this.ForceMerging;
+            sampledat.ForceNodump = this.ForceNodump;
+            sampledat.ForcePacking = this.ForcePacking;
+            sampledat.DedupeRoms = this.DedupeRoms;
 
             // Now populate each of the DAT objects in turn
             List<string> keys = Keys;
@@ -6241,11 +6209,9 @@ namespace SabreTools.Library.DatFiles
                     // Output separator if needed
                     reports.ForEach(report => report.WriteMidSeparator());
 
-                    DatFile lastdirdat = new DatFile
-                    {
-                        FileName = $"DIR: {WebUtility.HtmlEncode(lastdir)}",
-                        _datStats = dirStats,
-                    };
+                    DatFile lastdirdat = Create();
+                    lastdirdat.FileName = $"DIR: {WebUtility.HtmlEncode(lastdir)}";
+                    lastdirdat._datStats = dirStats;
 
                     lastdirdat.WriteStatsToScreen(recalculate: false, game: dirStats.GameCount, baddumpCol: baddumpCol, nodumpCol: nodumpCol);
                     reports.ForEach(report => report.ReplaceDatFile(lastdirdat));
@@ -6263,7 +6229,7 @@ namespace SabreTools.Library.DatFiles
 
                 Globals.Logger.Verbose($"Beginning stat collection for '{file}'", false);
                 List<string> games = new List<string>();
-                DatFile datdata = new DatFile();
+                DatFile datdata = Create();
                 datdata.Parse(file, 0, 0);
                 datdata.BucketBy(SortedBy.Game, DedupeType.None, norename: true);
 
@@ -6293,11 +6259,9 @@ namespace SabreTools.Library.DatFiles
 
             if (single)
             {
-                DatFile dirdat = new DatFile
-                {
-                    FileName = $"DIR: {WebUtility.HtmlEncode(lastdir)}",
-                    _datStats = dirStats,
-                };
+                DatFile dirdat = Create();
+                dirdat.FileName = $"DIR: {WebUtility.HtmlEncode(lastdir)}";
+                dirdat._datStats = dirStats;
 
                 dirdat.WriteStatsToScreen(recalculate: false, game: dirStats.GameCount, baddumpCol: baddumpCol, nodumpCol: nodumpCol);
                 reports.ForEach(report => report.ReplaceDatFile(dirdat));
@@ -6314,11 +6278,9 @@ namespace SabreTools.Library.DatFiles
             dirStats.Reset();
 
             // Output total DAT stats
-            DatFile totaldata = new DatFile
-            {
-                FileName = "DIR: All DATs",
-                _datStats = totalStats,
-            };
+            DatFile totaldata = DatFile.Create();
+            totaldata.FileName = "DIR: All DATs";
+            totaldata._datStats = totalStats;
 
             totaldata.WriteStatsToScreen(recalculate: false, game: totalStats.GameCount, baddumpCol: baddumpCol, nodumpCol: nodumpCol);
             reports.ForEach(report => report.ReplaceDatFile(totaldata));
