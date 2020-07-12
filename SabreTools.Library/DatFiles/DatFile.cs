@@ -3220,7 +3220,6 @@ namespace SabreTools.Library.DatFiles
         /// <param name="delete">True if input files should be deleted, false otherwise</param>
         /// <param name="inverse">True if the DAT should be used as a filter instead of a template, false otherwise</param>
         /// <param name="outputFormat">Output format that files should be written to</param>
-        /// <param name="archiveScanLevel">ArchiveScanLevel representing the archive handling levels</param>
         /// <param name="updateDat">True if the updated DAT should be output, false otherwise</param>
         /// <param name="headerToCheckAgainst">Populated string representing the name of the skipper to use, a blank string to use the first available checker, null otherwise</param>
         /// <param name="chdsAsFiles">True if CHDs should be treated like regular files, false otherwise</param>
@@ -3233,7 +3232,6 @@ namespace SabreTools.Library.DatFiles
             bool delete,
             bool inverse,
             OutputFormat outputFormat,
-            ArchiveScanLevel archiveScanLevel,
             bool updateDat,
             string headerToCheckAgainst,
             bool chdsAsFiles)
@@ -3316,7 +3314,7 @@ namespace SabreTools.Library.DatFiles
                 if (File.Exists(input))
                 {
                     Globals.Logger.User($"Checking file: {input}");
-                    RebuildGenericHelper(input, outDir, quickScan, date, delete, inverse, outputFormat, archiveScanLevel, updateDat, headerToCheckAgainst, chdsAsFiles);
+                    RebuildGenericHelper(input, outDir, quickScan, date, delete, inverse, outputFormat, updateDat, headerToCheckAgainst, chdsAsFiles);
                 }
 
                 // If the input is a directory
@@ -3326,7 +3324,7 @@ namespace SabreTools.Library.DatFiles
                     foreach (string file in Directory.EnumerateFiles(input, "*", SearchOption.AllDirectories))
                     {
                         Globals.Logger.User($"Checking file: {file}");
-                        RebuildGenericHelper(file, outDir, quickScan, date, delete, inverse, outputFormat, archiveScanLevel, updateDat, headerToCheckAgainst, chdsAsFiles);
+                        RebuildGenericHelper(file, outDir, quickScan, date, delete, inverse, outputFormat, updateDat, headerToCheckAgainst, chdsAsFiles);
                     }
                 }
             }
@@ -3358,7 +3356,6 @@ namespace SabreTools.Library.DatFiles
         /// <param name="delete">True if input files should be deleted, false otherwise</param>
         /// <param name="inverse">True if the DAT should be used as a filter instead of a template, false otherwise</param>
         /// <param name="outputFormat">Output format that files should be written to</param>
-        /// <param name="archiveScanLevel">ArchiveScanLevel representing the archive handling levels</param>
         /// <param name="updateDat">True if the updated DAT should be output, false otherwise</param>
         /// <param name="headerToCheckAgainst">Populated string representing the name of the skipper to use, a blank string to use the first available checker, null otherwise</param>
         /// <param name="chdsAsFiles">True if CHDs should be treated like regular files, false otherwise</param>
@@ -3370,7 +3367,6 @@ namespace SabreTools.Library.DatFiles
             bool delete,
             bool inverse,
             OutputFormat outputFormat,
-            ArchiveScanLevel archiveScanLevel,
             bool updateDat,
             string headerToCheckAgainst,
             bool chdsAsFiles)
@@ -3380,72 +3376,63 @@ namespace SabreTools.Library.DatFiles
                 return;
 
             // Set the deletion variables
-            bool usedExternally = false;
-            bool usedInternally = false;
+            bool usedExternally, usedInternally = false;
 
-            // Get the required scanning level for the file
-            Utilities.GetInternalExternalProcess(file, archiveScanLevel, out bool shouldExternalProcess, out bool shouldInternalProcess);
+            // Scan the file externally
 
-            // If we're supposed to scan the file externally
-            if (shouldExternalProcess)
+            // TODO: All instances of Hash.DeepHashes should be made into 0x0 eventually
+            BaseFile externalFileInfo = FileExtensions.GetInfo(file, omitFromScan: (quickScan ? Hash.SecureHashes : Hash.DeepHashes),
+                header: headerToCheckAgainst, chdsAsFiles: chdsAsFiles);
+
+            DatItem externalDatItem = null;
+            if (externalFileInfo.Type == FileType.CHD)
+                externalDatItem = new Disk(externalFileInfo);
+            else if (externalFileInfo.Type == FileType.None)
+                externalDatItem = new Rom(externalFileInfo);
+
+            usedExternally = RebuildIndividualFile(externalDatItem, file, outDir, date, inverse, outputFormat,
+                updateDat, null /* isZip */, headerToCheckAgainst);
+
+            // Scan the file internally
+
+            // Create an empty list of BaseFile for archive entries
+            List<BaseFile> entries = null;
+
+            // Get the TGZ status for later
+            GZipArchive tgz = new GZipArchive(file);
+            bool isTorrentGzip = tgz.IsTorrent();
+
+            // Get the base archive first
+            BaseArchive archive = BaseArchive.Create(file);
+
+            // Now get all extracted items from the archive
+            if (archive != null)
             {
                 // TODO: All instances of Hash.DeepHashes should be made into 0x0 eventually
-                BaseFile fileinfo = FileExtensions.GetInfo(file, omitFromScan: (quickScan ? Hash.SecureHashes : Hash.DeepHashes),
-                    header: headerToCheckAgainst, chdsAsFiles: chdsAsFiles);
-
-                DatItem datItem = null;
-                if (fileinfo.Type == FileType.CHD)
-                    datItem = new Disk(fileinfo);
-                else if (fileinfo.Type == FileType.None)
-                    datItem = new Rom(fileinfo);
-
-                usedExternally = RebuildIndividualFile(datItem, file, outDir, date, inverse, outputFormat,
-                    updateDat, null /* isZip */, headerToCheckAgainst);
+                entries = archive.GetChildren(omitFromScan: (quickScan ? Hash.SecureHashes : Hash.DeepHashes), date: date);
             }
 
-            // If we're supposed to scan the file internally
-            if (shouldInternalProcess)
+            // If the entries list is null, we encountered an error and should scan exteranlly
+            if (entries == null && File.Exists(file))
             {
-                // Create an empty list of BaseFile for archive entries
-                List<BaseFile> entries = null;
-                usedInternally = true;
+                // TODO: All instances of Hash.DeepHashes should be made into 0x0 eventually
+                BaseFile internalFileInfo = FileExtensions.GetInfo(file, omitFromScan: (quickScan ? Hash.SecureHashes : Hash.DeepHashes), chdsAsFiles: chdsAsFiles);
 
-                // Get the TGZ status for later
-                GZipArchive tgz = new GZipArchive(file);
-                bool isTorrentGzip = tgz.IsTorrent();
+                DatItem internalDatItem = null;
+                if (internalFileInfo.Type == FileType.CHD)
+                    internalDatItem = new Disk(internalFileInfo);
+                else if (internalFileInfo.Type == FileType.None)
+                    internalDatItem = new Rom(internalFileInfo);
 
-                // Get the base archive first
-                BaseArchive archive = BaseArchive.Create(file);
-
-                // Now get all extracted items from the archive
-                if (archive != null)
+                usedExternally = RebuildIndividualFile(internalDatItem, file, outDir, date, inverse, outputFormat, updateDat, null /* isZip */, headerToCheckAgainst);
+            }
+            // Otherwise, loop through the entries and try to match
+            else
+            {
+                foreach (BaseFile entry in entries)
                 {
-                    // TODO: All instances of Hash.DeepHashes should be made into 0x0 eventually
-                    entries = archive.GetChildren(omitFromScan: (quickScan ? Hash.SecureHashes : Hash.DeepHashes), date: date);
-                }
-
-                // If the entries list is null, we encountered an error and should scan exteranlly
-                if (entries == null && File.Exists(file))
-                {
-                    // TODO: All instances of Hash.DeepHashes should be made into 0x0 eventually
-                    BaseFile fileinfo = FileExtensions.GetInfo(file, omitFromScan: (quickScan ? Hash.SecureHashes : Hash.DeepHashes), chdsAsFiles: chdsAsFiles);
-
-                    DatItem datItem = null;
-                    if (fileinfo.Type == FileType.CHD)
-                        datItem = new Disk(fileinfo);
-                    else if (fileinfo.Type == FileType.None)
-                        datItem = new Rom(fileinfo);
-
-                    usedExternally = RebuildIndividualFile(datItem, file, outDir, date, inverse, outputFormat, updateDat, null /* isZip */, headerToCheckAgainst);
-                }
-                // Otherwise, loop through the entries and try to match
-                else
-                {
-                    foreach (BaseFile entry in entries)
-                    {
-                        DatItem datItem = DatItem.Create(entry);
-                        usedInternally |= RebuildIndividualFile(datItem, file, outDir, date, inverse, outputFormat, updateDat, !isTorrentGzip /* isZip */, headerToCheckAgainst);
-                    }
+                    DatItem internalDatItem = DatItem.Create(entry);
+                    usedInternally |= RebuildIndividualFile(internalDatItem, file, outDir, date, inverse, outputFormat, updateDat, !isTorrentGzip /* isZip */, headerToCheckAgainst);
                 }
             }
 

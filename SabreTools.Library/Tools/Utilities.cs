@@ -1,7 +1,5 @@
 ﻿using System;
 
-using SabreTools.Library.Data;
-
 namespace SabreTools.Library.Tools
 {
     /// <summary>
@@ -9,126 +7,6 @@ namespace SabreTools.Library.Tools
     /// </summary>
     public static class Utilities
     {
-        #region Archive Scanning Information
-
-        /// <summary>
-        /// Get the archive scan level based on the inputs
-        /// </summary>
-        /// <param name="sevenzip">User-defined scan level for 7z archives</param>
-        /// <param name="gzip">User-defined scan level for GZ archives</param>
-        /// <param name="rar">User-defined scan level for RAR archives</param>
-        /// <param name="zip">User-defined scan level for Zip archives</param>
-        /// <returns>ArchiveScanLevel representing the levels</returns>
-        /// TODO: Can this be phased out?
-        public static ArchiveScanLevel GetArchiveScanLevelFromNumbers(int sevenzip, int gzip, int rar, int zip)
-        {
-            ArchiveScanLevel archiveScanLevel = 0x0000;
-
-            // 7z
-            sevenzip = (sevenzip < 0 || sevenzip > 2 ? 0 : sevenzip);
-            switch (sevenzip)
-            {
-                case 0:
-                    archiveScanLevel |= ArchiveScanLevel.SevenZipBoth;
-                    break;
-                case 1:
-                    archiveScanLevel |= ArchiveScanLevel.SevenZipInternal;
-                    break;
-                case 2:
-                    archiveScanLevel |= ArchiveScanLevel.SevenZipExternal;
-                    break;
-            }
-
-            // GZip
-            gzip = (gzip < 0 || gzip > 2 ? 0 : gzip);
-            switch (gzip)
-            {
-                case 0:
-                    archiveScanLevel |= ArchiveScanLevel.GZipBoth;
-                    break;
-                case 1:
-                    archiveScanLevel |= ArchiveScanLevel.GZipInternal;
-                    break;
-                case 2:
-                    archiveScanLevel |= ArchiveScanLevel.GZipExternal;
-                    break;
-            }
-
-            // RAR
-            rar = (rar < 0 || rar > 2 ? 0 : rar);
-            switch (rar)
-            {
-                case 0:
-                    archiveScanLevel |= ArchiveScanLevel.RarBoth;
-                    break;
-                case 1:
-                    archiveScanLevel |= ArchiveScanLevel.RarInternal;
-                    break;
-                case 2:
-                    archiveScanLevel |= ArchiveScanLevel.RarExternal;
-                    break;
-            }
-
-            // Zip
-            zip = (zip < 0 || zip > 2 ? 0 : zip);
-            switch (zip)
-            {
-                case 0:
-                    archiveScanLevel |= ArchiveScanLevel.ZipBoth;
-                    break;
-                case 1:
-                    archiveScanLevel |= ArchiveScanLevel.ZipInternal;
-                    break;
-                case 2:
-                    archiveScanLevel |= ArchiveScanLevel.ZipExternal;
-                    break;
-            }
-
-            return archiveScanLevel;
-        }
-
-        /// <summary>
-        /// Get if the current file should be scanned internally and externally
-        /// </summary>
-        /// <param name="input">Name of the input file to check</param>
-        /// <param name="archiveScanLevel">ArchiveScanLevel representing the archive handling levels</param>
-        /// <param name="shouldExternalProcess">Output parameter determining if file should be processed externally</param>
-        /// <param name="shouldInternalProcess">Output parameter determining if file should be processed internally</param>
-        /// TODO: Can this be phased out?
-        public static void GetInternalExternalProcess(string input, ArchiveScanLevel archiveScanLevel,
-            out bool shouldExternalProcess, out bool shouldInternalProcess)
-        {
-            FileType? fileType = input.GetFileType();
-            switch (fileType)
-            {
-                case FileType.GZipArchive:
-                    shouldExternalProcess = (archiveScanLevel.HasFlag(ArchiveScanLevel.GZipExternal));
-                    shouldInternalProcess = (archiveScanLevel.HasFlag(ArchiveScanLevel.GZipInternal));
-                    break;
-                case FileType.RarArchive:
-                    shouldExternalProcess = (archiveScanLevel.HasFlag(ArchiveScanLevel.RarExternal));
-                    shouldInternalProcess = (archiveScanLevel.HasFlag(ArchiveScanLevel.RarInternal));
-                    break;
-                case FileType.SevenZipArchive:
-                    shouldExternalProcess = (archiveScanLevel.HasFlag(ArchiveScanLevel.SevenZipExternal));
-                    shouldInternalProcess = (archiveScanLevel.HasFlag(ArchiveScanLevel.SevenZipInternal));
-                    break;
-                case FileType.ZipArchive:
-                    shouldExternalProcess = (archiveScanLevel.HasFlag(ArchiveScanLevel.ZipExternal));
-                    shouldInternalProcess = (archiveScanLevel.HasFlag(ArchiveScanLevel.ZipInternal));
-                    break;
-                case null:
-                default:
-                    shouldExternalProcess = true;
-                    shouldInternalProcess = false;
-                    break;
-            }
-        }
-
-        #endregion    
-
-        #region Miscellaneous / Externally Sourced
-
         /// <summary>
         /// Returns the human-readable file size for an arbitrary, 64-bit file size 
         /// The default format is "0.### XB", e.g. "4.2 KB" or "1.434 GB"
@@ -281,7 +159,5 @@ namespace SabreTools.Library.Tools
         {
             return (array == null || array.Length == 0);
         }
-
-        #endregion
     }
 }

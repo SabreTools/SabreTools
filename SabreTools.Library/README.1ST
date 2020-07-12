@@ -695,21 +695,6 @@ Options:
 		  or specific copier headers by name (such as "fds.xml") to determine
 		  if a file matches or not.
 
-	  -7z=, --7z=				 Set scanning level for 7zip archives (default 1)
-	  -gz=, --gz=				 Set scanning level for GZip archives (default 1)
-	  -rar=, --rar=			   Set scanning level for RAR archives (default 1)
-	  -zip=, --zip=			   Set scanning level for Zip archives (default 1)
-		  Scan archives in one of the following ways:
-		  0 - Hash both archive and its contents
-		  1 - Only hash contents of the archive
-		  2 - Only hash archive itself (treat like a regular file)
-
-	  -sa, --scan-all			 Set scanning levels for all archives to 0
-		  This flag is the short equivalent to -7z=0 -gz=0 -rar=0 -zip=0
-		  wrapped up. Generally this will be helpful in all cases where the
-		  content of the rebuild folder is not entirely known or is known to be
-		  mixed.
-
 	  -dm, --dat-merged		   Force creating merged sets
 		  Preprocess the DAT to have parent sets contain all items from the
 		  children based on the cloneof tag. This is incompatible with the
@@ -1803,9 +1788,9 @@ attributed to the site and/or person(s) that originally wrote the code. All
 code written by project members is licensed under GPL v3. See LICENSE for
 more details.
 
-** Section 20.0 - TEMPORARY REMAPPINGS
+** Section 20.0 - REMAPPINGS
 
-This section contains remappings from old flag names to new ones for the purposes of testing
+This section contains remappings from old flag names to new ones.
 
 -ab, --add-blank -> -ab, --add-blank-files
 -ae, --add-ext -> -ae, --add-extension

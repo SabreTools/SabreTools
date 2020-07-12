@@ -498,7 +498,23 @@ Below are originally from SabreTools / DATabase -
 			
 	system=			Comma-separated list of system IDs
 	source=			Comma-separated list of source IDs
-			
+	
+	(-ss, --sort - This feature flag is not removed, just internal flags)
+		-7z=, --7z=				 Set scanning level for 7zip archives (default 1)
+		-gz=, --gz=				 Set scanning level for GZip archives (default 1)
+		-rar=, --rar=			   Set scanning level for RAR archives (default 1)
+		-zip=, --zip=			   Set scanning level for Zip archives (default 1)
+			Scan archives in one of the following ways:
+				0 - Hash both archive and its contents
+				1 - Only hash contents of the archive
+				2 - Only hash archive itself (treat like a regular file)
+
+	  -sa, --scan-all			 Set scanning levels for all archives to 0
+		  This flag is the short equivalent to -7z=0 -gz=0 -rar=0 -zip=0
+		  wrapped up. Generally this will be helpful in all cases where the
+		  content of the rebuild folder is not entirely known or is known to be
+		  mixed.
+
 	-tm, --trim-merge	Consolidate DAT into a single game and trim entries
 		In the cases where files will have too long a name, this allows for trimming
 		the name of the files to the NTFS maximum length at most

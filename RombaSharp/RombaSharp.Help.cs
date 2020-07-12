@@ -438,8 +438,6 @@ have a current entry in the DAT index.";
                 int zip = GetInt32(features, IncludeZipsInt32Value);
                 zip = zip == Int32.MinValue ? 1 : zip;
 
-                var asl = Utilities.GetArchiveScanLevelFromNumbers(sevenzip, gz, 2, zip);
-
                 // Get feature flags
                 bool noDb = GetBoolean(features, NoDbValue);
                 bool onlyNeeded = GetBoolean(features, OnlyNeededValue);
@@ -582,7 +580,7 @@ have a current entry in the DAT index.";
 
                 // Create the sorting object to use and rebuild the needed files
                 need.RebuildGeneric(onlyDirs, _depots.Keys.ToList()[0], false /*quickScan*/, false /*date*/,
-                    false /*delete*/, false /*inverse*/, OutputFormat.TorrentGzipRomba, asl, false /*updateDat*/,
+                    false /*delete*/, false /*inverse*/, OutputFormat.TorrentGzipRomba, false /*updateDat*/,
                     null /*headerToCheckAgainst*/, true /* chdsAsFiles */);
             }
         }
@@ -636,7 +634,6 @@ structure according to the original DAT master directory tree structure.";
                     List<string> onlineDepots = _depots.Where(d => d.Value.Item2).Select(d => d.Key).ToList();
 
                     // Now scan all of those depots and rebuild
-                    ArchiveScanLevel asl = Utilities.GetArchiveScanLevelFromNumbers(1, 1, 1, 1);
                     datFile.RebuildDepot(onlineDepots, outputFolder, false /*date*/,
                         false /*delete*/, false /*inverse*/, (copy ? OutputFormat.TorrentGzipRomba : OutputFormat.TorrentZip),
                         false /*updateDat*/, null /*headerToCheckAgainst*/);
@@ -687,7 +684,7 @@ structure according to the original DAT master directory tree structure.";
                 }
 
                 // Now output the stats for all inputs
-                DatFile.OutputStats(Inputs, "rombasharp-datstats", null /* outDir */, true /* single */, true /* baddumpCol */, true /* nodumpCol */, StatReportFormat.Textfile);
+                DatStats.OutputStats(Inputs, "rombasharp-datstats", null /* outDir */, true /* single */, true /* baddumpCol */, true /* nodumpCol */, StatReportFormat.Textfile);
             }
         }
 

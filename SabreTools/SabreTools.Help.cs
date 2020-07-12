@@ -742,20 +742,6 @@ namespace SabreTools
             }
         }
 
-        public const string ScanAllValue = "scan-all";
-        private static Feature scanAllFlag
-        {
-            get
-            {
-                return new Feature(
-                    ScanAllValue,
-                    new List<string>() { "-sa", "--scan-all" },
-                    "Set scanning levels for all archives to 0",
-                    FeatureType.Flag,
-                    longDescription: "This flag is the short equivalent to -7z=0 -gz=0 -rar=0 -zip=0 wrapped up. Generally this will be helpful in all cases where the content of the rebuild folder is not entirely known or is known to be mixed.");
-            }
-        }
-
         public const string SceneDateStripValue = "scene-date-strip";
         private static Feature sceneDateStripFlag
         {
@@ -1238,57 +1224,6 @@ namespace SabreTools
 
         #region Private Int32 features
 
-        public const string GzInt32Value = "gz";
-        private static Feature gzInt32Input
-        {
-            get
-            {
-                return new Feature(
-                    GzInt32Value,
-                    new List<string>() { "-gz", "--gz" },
-                    "Set scanning level for GZip archives (default 1)",
-                    FeatureType.Int32,
-                    longDescription: @"Scan GZip archives in one of the following ways:
-0 - Hash both archive and its contents
-1 - Only hash contents of the archive
-2 - Only hash archive itself (treat like a regular file)");
-            }
-        }
-
-        public const string RarInt32Value = "rar";
-        private static Feature rarInt32Input
-        {
-            get
-            {
-                return new Feature(
-                    RarInt32Value,
-                    new List<string>() { "-rar", "--rar" },
-                    "Set scanning level for RAR archives (default 1)",
-                    FeatureType.Int32,
-                    longDescription: @"Scan RAR archives in one of the following ways:
-0 - Hash both archive and its contents
-1 - Only hash contents of the archive
-2 - Only hash archive itself (treat like a regular file)");
-            }
-        }
-
-        public const string SevenZipInt32Value = "7z";
-        private static Feature sevenZipInt32Input
-        {
-            get
-            {
-                return new Feature(
-                    SevenZipInt32Value,
-                    new List<string>() { "-7z", "--7z" },
-                    "Set scanning level for 7zip archives (default 1)",
-                    FeatureType.Int32,
-                    longDescription: @"Scan 7Zip archives in one of the following ways:
-0 - Hash both archive and its contents
-1 - Only hash contents of the archive
-2 - Only hash archive itself (treat like a regular file)");
-            }
-        }
-
         public const string ThreadsInt32Value = "threads";
         private static Feature threadsInt32Input
         {
@@ -1300,23 +1235,6 @@ namespace SabreTools
                     "Amount of threads to use (default = # cores)",
                     FeatureType.Int32,
                     longDescription: "Optionally, set the number of threads to use for the multithreaded operations. The default is the number of available machine threads; -1 means unlimited threads created.");
-            }
-        }
-
-        public const string ZipInt32Value = "zip";
-        private static Feature zipInt32Input
-        {
-            get
-            {
-                return new Feature(
-                    ZipInt32Value,
-                    new List<string>() { "-zip", "--zip" },
-                    "Set scanning level for Zip archives (default 1)",
-                    FeatureType.Int32,
-                    longDescription: @"Scan Zip archives in one of the following ways:
-0 - Hash both archive and its contents
-1 - Only hash contents of the archive
-2 - Only hash archive itself (treat like a regular file)");
             }
         }
 
@@ -3048,11 +2966,6 @@ The following systems have headers that this program can work with:
                 AddFeature(torrentZpaqFlag);
                 AddFeature(torrentZstdFlag);
                 AddFeature(headerStringInput);
-                AddFeature(sevenZipInt32Input);
-                AddFeature(gzInt32Input);
-                AddFeature(rarInt32Input);
-                AddFeature(zipInt32Input);
-                AddFeature(scanAllFlag);
                 AddFeature(datMergedFlag);
                 AddFeature(datSplitFlag);
                 AddFeature(datNonMergedFlag);
@@ -3064,21 +2977,6 @@ The following systems have headers that this program can work with:
 
             public override void ProcessFeatures(Dictionary<string, Feature> features)
             {
-                // Get the archive scanning level
-                int sevenzip = GetInt32(features, SevenZipInt32Value);
-                sevenzip = sevenzip == Int32.MinValue ? 1 : sevenzip;
-
-                int gz = GetInt32(features, GzInt32Value);
-                gz = gz == Int32.MinValue ? 1 : gz;
-
-                int rar = GetInt32(features, RarInt32Value);
-                rar = rar == Int32.MinValue ? 1 : rar;
-
-                int zip = GetInt32(features, ZipInt32Value);
-                zip = zip == Int32.MinValue ? 1 : zip;
-
-                var asl = Utilities.GetArchiveScanLevelFromNumbers(sevenzip, gz, rar, zip);
-
                 // Get feature flags
                 bool chdsAsFiles = GetBoolean(features, ChdsAsFilesValue);
                 bool date = GetBoolean(features, AddDateValue);
@@ -3113,7 +3011,7 @@ The following systems have headers that this program can work with:
                         if (depot)
                             datdata.RebuildDepot(Inputs, Path.Combine(outDir, datdata.GetFileName()), date, delete, inverse, outputFormat, updateDat, headerToCheckAgainst);
                         else
-                            datdata.RebuildGeneric(Inputs, Path.Combine(outDir, datdata.GetFileName()), quickScan, date, delete, inverse, outputFormat, asl, updateDat, headerToCheckAgainst, chdsAsFiles);
+                            datdata.RebuildGeneric(Inputs, Path.Combine(outDir, datdata.GetFileName()), quickScan, date, delete, inverse, outputFormat, updateDat, headerToCheckAgainst, chdsAsFiles);
                     }
                 }
 
@@ -3135,7 +3033,7 @@ The following systems have headers that this program can work with:
                     if (depot)
                         datdata.RebuildDepot(Inputs, outDir, date, delete, inverse, outputFormat, updateDat, headerToCheckAgainst);
                     else
-                        datdata.RebuildGeneric(Inputs, outDir, quickScan, date, delete, inverse, outputFormat, asl, updateDat, headerToCheckAgainst, chdsAsFiles);
+                        datdata.RebuildGeneric(Inputs, outDir, quickScan, date, delete, inverse, outputFormat, updateDat, headerToCheckAgainst, chdsAsFiles);
                 }
             }
         }
