@@ -308,6 +308,33 @@ namespace SabreTools.Library.DatFiles
             };
         }
 
+        /// <summary>
+        /// Clone the filtering parts of the current header
+        /// </summary>
+        public DatHeader CloneFiltering()
+        {
+            return new DatHeader()
+            {
+                DatFormat = this.DatFormat,
+                ExcludeFields = this.ExcludeFields,
+                OneRom = this.OneRom,
+                KeepEmptyGames = this.KeepEmptyGames,
+                SceneDateStrip = this.SceneDateStrip,
+                DedupeRoms = this.DedupeRoms,
+                StripHash = this.StripHash,
+
+                UseRomName = this.UseRomName,
+                Prefix = this.Prefix,
+                Postfix = this.Postfix,
+                Quotes = this.Quotes,
+                ReplaceExtension = this.ReplaceExtension,
+                AddExtension = this.AddExtension,
+                RemoveExtension = this.RemoveExtension,
+                GameName = this.GameName,
+                Romba = this.Romba,
+            };
+        }
+
         #endregion
 
         #region Writing

@@ -21,7 +21,7 @@ namespace SabreTools.Library.DatFiles
         /// </summary>
         /// <param name="datFile">Parent DatFile to copy from</param>
         public Json(DatFile datFile)
-            : base(datFile, cloneHeader: false)
+            : base(datFile)
         {
         }
 
@@ -1136,17 +1136,17 @@ namespace SabreTools.Library.DatFiles
                 }
                 if (!DatHeader.ExcludeFields[(int)Field.MachineType])
                 {
-                    if ((datItem.MachineType & MachineType.Bios) != 0)
+                    if (datItem.MachineType.HasFlag(MachineType.Bios))
                     {
                         jtw.WritePropertyName("isbios");
                         jtw.WriteValue("yes");
                     }
-                    if ((datItem.MachineType & MachineType.Device) != 0)
+                    if (datItem.MachineType.HasFlag(MachineType.Device))
                     {
                         jtw.WritePropertyName("isdevice");
                         jtw.WriteValue("yes");
                     }
-                    if ((datItem.MachineType & MachineType.Mechanical) != 0)
+                    if (datItem.MachineType.HasFlag(MachineType.Mechanical))
                     {
                         jtw.WritePropertyName("ismechanical");
                         jtw.WriteValue("yes");

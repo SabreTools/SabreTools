@@ -25,7 +25,7 @@ namespace SabreTools.Library.DatFiles
         /// <param name="datFile">Parent DatFile to copy from</param>
         /// <param name="hash">Type of hash that is associated with this DAT</param> 
         public Hashfile(DatFile datFile, Hash hash)
-            : base(datFile, cloneHeader: false)
+            : base(datFile)
         {
             _hash = hash;
         }
@@ -64,7 +64,7 @@ namespace SabreTools.Library.DatFiles
                 string hash = string.Empty;
 
                 // If we have CRC, then it's an SFV file and the name is first are
-                if ((_hash & Hash.CRC) != 0)
+                if (_hash.HasFlag(Hash.CRC))
                 {
                     name = split[0].Replace("*", String.Empty);
                     hash = split[1];
@@ -80,15 +80,15 @@ namespace SabreTools.Library.DatFiles
                 {
                     Name = name,
                     Size = -1,
-                    CRC = ((_hash & Hash.CRC) != 0 ? Sanitizer.CleanCRC32(hash) : null),
-                    MD5 = ((_hash & Hash.MD5) != 0 ? Sanitizer.CleanMD5(hash) : null),
+                    CRC = (_hash.HasFlag(Hash.CRC) ? Sanitizer.CleanCRC32(hash) : null),
+                    MD5 = (_hash.HasFlag(Hash.MD5) ? Sanitizer.CleanMD5(hash) : null),
 #if NET_FRAMEWORK
-                    RIPEMD160 = ((_hash & Hash.RIPEMD160) != 0 ? Sanitizer.CleanRIPEMD160(hash) : null),
+                    RIPEMD160 = (_hash.HasFlag(Hash.RIPEMD160) ? Sanitizer.CleanRIPEMD160(hash) : null),
 #endif
-                    SHA1 = ((_hash & Hash.SHA1) != 0 ? Sanitizer.CleanSHA1(hash) : null),
-                    SHA256 = ((_hash & Hash.SHA256) != 0 ? Sanitizer.CleanSHA256(hash) : null),
-                    SHA384 = ((_hash & Hash.SHA384) != 0 ? Sanitizer.CleanSHA384(hash) : null),
-                    SHA512 = ((_hash & Hash.SHA512) != 0 ? Sanitizer.CleanSHA512(hash) : null),
+                    SHA1 = (_hash.HasFlag(Hash.SHA1) ? Sanitizer.CleanSHA1(hash) : null),
+                    SHA256 = (_hash.HasFlag(Hash.SHA256) ? Sanitizer.CleanSHA256(hash) : null),
+                    SHA384 = (_hash.HasFlag(Hash.SHA384) ? Sanitizer.CleanSHA384(hash) : null),
+                    SHA512 = (_hash.HasFlag(Hash.SHA512) ? Sanitizer.CleanSHA512(hash) : null),
                     ItemStatus = ItemStatus.None,
 
                     MachineName = Path.GetFileNameWithoutExtension(filename),

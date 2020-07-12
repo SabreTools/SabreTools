@@ -23,7 +23,7 @@ namespace SabreTools.Library.DatFiles
         /// </summary>
         /// <param name="datFile">Parent DatFile to copy from</param>
         public SabreDat(DatFile datFile)
-            : base(datFile, cloneHeader: false)
+            : base(datFile)
         {
         }
 
@@ -71,7 +71,7 @@ namespace SabreTools.Library.DatFiles
                         if (empty)
                         {
                             string tempgame = string.Join("\\", parent);
-                            Rom rom = new Rom("null", tempgame, omitFromScan: Hash.DeepHashes); // TODO: All instances of Hash.DeepHashes should be made into 0x0 eventually
+                            Rom rom = new Rom("null", tempgame);
 
                             // Now process and add the rom
                             key = ParseAddHelper(rom, clean, remUnicode);
@@ -272,7 +272,7 @@ namespace SabreTools.Library.DatFiles
                     if (empty)
                     {
                         string tempgame = string.Join("\\", parent);
-                        Rom rom = new Rom("null", tempgame, omitFromScan: Hash.DeepHashes); // TODO: All instances of Hash.DeepHashes should be made into 0x0 eventually
+                        Rom rom = new Rom("null", tempgame);
 
                         // Now process and add the rom
                         key = ParseAddHelper(rom, clean, remUnicode);

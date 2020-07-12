@@ -168,36 +168,11 @@ namespace SabreTools.Library.DatItems
         /// <param name="name"></param>
         /// <param name="machineName"></param>
         /// <param name="omitFromScan"></param>
-        /// <remarks>TODO: All instances of Hash.DeepHashes should be made into 0x0 eventually</remarks>
-        public Rom(string name, string machineName, Hash omitFromScan = Hash.DeepHashes)
+        public Rom(string name, string machineName)
         {
             this.Name = name;
             this.ItemType = ItemType.Rom;
             this.Size = -1;
-
-            if ((omitFromScan & Hash.CRC) == 0)
-                _crc = null;
-
-            if ((omitFromScan & Hash.MD5) == 0)
-                _md5 = null;
-
-#if NET_FRAMEWORK
-            if ((omitFromScan & Hash.RIPEMD160) == 0)
-                _ripemd160 = null;
-#endif
-
-            if ((omitFromScan & Hash.SHA1) == 0)
-                _sha1 = null;
-
-            if ((omitFromScan & Hash.SHA256) == 0)
-                _sha256 = null;
-
-            if ((omitFromScan & Hash.SHA384) == 0)
-                _sha384 = null;
-
-            if ((omitFromScan & Hash.SHA512) == 0)
-                _sha512 = null;
-
             this.ItemStatus = ItemStatus.None;
 
             _machine = new Machine

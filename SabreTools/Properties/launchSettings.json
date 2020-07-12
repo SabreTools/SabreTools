@@ -2,7 +2,7 @@
   "profiles": {
     "SabreTools": {
       "commandName": "Project",
-      "commandLineArgs": "--update --output-dir=\"C:\\Users\\Matt\\Downloads\\TEMP\" --output-type=cmp \"C:\\Users\\Matt\\Downloads\\GOG.com_-_Games_DLCs__Extras_REMOVED_356_20200628_DEP.dat\""
+      "commandLineArgs": "--stats \"C:\\Users\\Matt\\Downloads\\No-Intro\" --output-dir=\"C:\\Users\\Matt\\Downloads\" --baddump-column --nodump-column --individual"
     }
   }
 }

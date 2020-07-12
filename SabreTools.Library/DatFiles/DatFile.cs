@@ -557,24 +557,15 @@ namespace SabreTools.Library.DatFiles
         /// Create a new DatFile from an existing one
         /// </summary>
         /// <param name="datFile">DatFile to get the values from</param>
-        /// <param name="cloneHeader">True if only the header should be cloned (default), false if this should be a reference to another DatFile</param>
-        public DatFile(DatFile datFile, bool cloneHeader = true)
+        public DatFile(DatFile datFile)
         {
             if (datFile != null)
             {
-                if (cloneHeader)
-                {
-                    DatHeader = (DatHeader)datFile.DatHeader.Clone();
-                    Items = new SortedDictionary<string, List<DatItem>>();
-                }
-                else
-                {
-                    DatHeader = datFile.DatHeader;
-                    this.Items = datFile.Items;
-                    this.SortedBy = datFile.SortedBy;
-                    this.MergedBy = datFile.MergedBy;
-                    this.DatStats = datFile.DatStats;
-                }
+                DatHeader = datFile.DatHeader;
+                this.Items = datFile.Items;
+                this.SortedBy = datFile.SortedBy;
+                this.MergedBy = datFile.MergedBy;
+                this.DatStats = datFile.DatStats;
             }
         }
 
@@ -595,7 +586,7 @@ namespace SabreTools.Library.DatFiles
                     return new ClrMamePro(baseDat);
 
                 case DatFormat.CSV:
-                    return new DatFiles.SeparatedValue(baseDat, ',');
+                    return new SeparatedValue(baseDat, ',');
 
                 case DatFormat.DOSCenter:
                     return new DosCenter(baseDat);
@@ -660,10 +651,10 @@ namespace SabreTools.Library.DatFiles
                     return new SoftwareList(baseDat);
 
                 case DatFormat.SSV:
-                    return new DatFiles.SeparatedValue(baseDat, ';');
+                    return new SeparatedValue(baseDat, ';');
 
                 case DatFormat.TSV:
-                    return new DatFiles.SeparatedValue(baseDat, '\t');
+                    return new SeparatedValue(baseDat, '\t');
 
                 // We use new-style Logiqx as a backup for generic DatFile
                 case null:
@@ -730,13 +721,13 @@ namespace SabreTools.Library.DatFiles
             }
 
             // Reverse inputs if we're in a required mode
-            if ((updateMode & UpdateMode.DiffReverseCascade) != 0)
+            if (updateMode.HasFlag(UpdateMode.DiffReverseCascade))
                 inputFileNames.Reverse();
-            if ((updateMode & UpdateMode.ReverseBaseReplace) != 0)
+            if (updateMode.HasFlag(UpdateMode.ReverseBaseReplace))
                 baseFileNames.Reverse();
 
             // If we're in merging mode
-            if ((updateMode & UpdateMode.Merge) != 0)
+            if (updateMode.HasFlag(UpdateMode.Merge))
             {
                 // Populate the combined data and get the headers
                 PopulateUserData(inputFileNames, clean, remUnicode, descAsName, filter, splitType);
@@ -744,9 +735,9 @@ namespace SabreTools.Library.DatFiles
             }
 
             // If we have one of the standard diffing modes
-            else if ((updateMode & UpdateMode.DiffDupesOnly) != 0
-                || (updateMode & UpdateMode.DiffNoDupesOnly) != 0
-                || (updateMode & UpdateMode.DiffIndividualsOnly) != 0)
+            else if (updateMode.HasFlag(UpdateMode.DiffDupesOnly)
+                || updateMode.HasFlag(UpdateMode.DiffNoDupesOnly)
+                || updateMode.HasFlag(UpdateMode.DiffIndividualsOnly))
             {
                 // Populate the combined data
                 PopulateUserData(inputFileNames, clean, remUnicode, descAsName, filter, splitType);
@@ -754,16 +745,16 @@ namespace SabreTools.Library.DatFiles
             }
 
             // If we have one of the cascaded diffing modes
-            else if ((updateMode & UpdateMode.DiffCascade) != 0
-                || (updateMode & UpdateMode.DiffReverseCascade) != 0)
+            else if (updateMode.HasFlag(UpdateMode.DiffCascade)
+                || updateMode.HasFlag(UpdateMode.DiffReverseCascade))
             {
                 // Populate the combined data and get the headers
-                List<DatFile> datHeaders = PopulateUserData(inputFileNames, clean, remUnicode, descAsName, filter, splitType);
+                List<DatHeader> datHeaders = PopulateUserData(inputFileNames, clean, remUnicode, descAsName, filter, splitType);
                 DiffCascade(inputFileNames, datHeaders, outDir, inplace, skip);
             }
 
             // If we have diff against mode
-            else if ((updateMode & UpdateMode.DiffAgainst) != 0)
+            else if (updateMode.HasFlag(UpdateMode.DiffAgainst))
             {
                 // Populate the combined data
                 PopulateUserData(baseFileNames, clean, remUnicode, descAsName, filter, splitType);
@@ -771,8 +762,8 @@ namespace SabreTools.Library.DatFiles
             }
 
             // If we have one of the base replacement modes
-            else if ((updateMode & UpdateMode.BaseReplace) != 0
-                || (updateMode & UpdateMode.ReverseBaseReplace) != 0)
+            else if (updateMode.HasFlag(UpdateMode.BaseReplace)
+                || updateMode.HasFlag(UpdateMode.ReverseBaseReplace))
             {
                 // Populate the combined data
                 PopulateUserData(baseFileNames, clean, remUnicode, descAsName, filter, splitType);
@@ -792,7 +783,7 @@ namespace SabreTools.Library.DatFiles
         /// <param name="filter">Filter object to be passed to the DatItem level</param>
         /// <param name="splitType">Type of the split that should be performed (split, merged, fully merged)</param>
         /// <returns>List of DatData objects representing headers</returns>
-        private List<DatFile> PopulateUserData(
+        private List<DatHeader> PopulateUserData(
             List<string> inputs,
             bool clean,
             bool remUnicode,
@@ -800,7 +791,7 @@ namespace SabreTools.Library.DatFiles
             Filter filter,
             SplitType splitType)
         {
-            DatFile[] datHeaders = new DatFile[inputs.Count];
+            DatFile[] datFiles = new DatFile[inputs.Count];
             InternalStopwatch watch = new InternalStopwatch("Processing individual DATs");
 
             // Parse all of the DATs into their own DatFiles in the array
@@ -808,24 +799,8 @@ namespace SabreTools.Library.DatFiles
             {
                 string input = inputs[i];
                 Globals.Logger.User($"Adding DAT: {input.Split('¬')[0]}");
-                datHeaders[i] = Create(DatHeader.DatFormat);
-
-                // Filtering that needs to be copied over
-                datHeaders[i].DatHeader.ExcludeFields = (bool[])DatHeader.ExcludeFields.Clone();
-                datHeaders[i].DatHeader.OneRom = DatHeader.OneRom;
-                datHeaders[i].DatHeader.KeepEmptyGames = DatHeader.KeepEmptyGames;
-                datHeaders[i].DatHeader.SceneDateStrip = DatHeader.SceneDateStrip;
-                datHeaders[i].DatHeader.DedupeRoms = DatHeader.DedupeRoms;
-                datHeaders[i].DatHeader.Prefix = DatHeader.Prefix;
-                datHeaders[i].DatHeader.Postfix = DatHeader.Postfix;
-                datHeaders[i].DatHeader.AddExtension = DatHeader.AddExtension;
-                datHeaders[i].DatHeader.ReplaceExtension = DatHeader.ReplaceExtension;
-                datHeaders[i].DatHeader.RemoveExtension = DatHeader.RemoveExtension;
-                datHeaders[i].DatHeader.GameName = DatHeader.GameName;
-                datHeaders[i].DatHeader.Quotes = DatHeader.Quotes;
-                datHeaders[i].DatHeader.UseRomName = DatHeader.UseRomName;
-
-                datHeaders[i].Parse(input, i, i, splitType, keep: true, clean: clean, remUnicode: remUnicode, descAsName: descAsName);
+                datFiles[i] = Create(DatHeader.CloneFiltering());
+                datFiles[i].Parse(input, i, i, splitType, keep: true, clean: clean, remUnicode: remUnicode, descAsName: descAsName);
             });
 
             watch.Stop();
@@ -834,18 +809,18 @@ namespace SabreTools.Library.DatFiles
             Parallel.For(0, inputs.Count, Globals.ParallelOptions, i =>
             {
                 // Get the list of keys from the DAT
-                List<string> keys = datHeaders[i].Keys;
+                List<string> keys = datFiles[i].Keys;
                 foreach (string key in keys)
                 {
                     // Add everything from the key to the internal DAT
-                    AddRange(key, datHeaders[i][key]);
+                    AddRange(key, datFiles[i][key]);
 
                     // Now remove the key from the source DAT
-                    datHeaders[i].Remove(key);
+                    datFiles[i].Remove(key);
                 }
 
                 // Now remove the file dictionary from the source DAT to save memory
-                datHeaders[i].DeleteDictionary();
+                datFiles[i].DeleteDictionary();
             });
 
             // Now that we have a merged DAT, filter it
@@ -853,7 +828,7 @@ namespace SabreTools.Library.DatFiles
 
             watch.Stop();
 
-            return datHeaders.ToList();
+            return datFiles.Select(d => d.DatHeader).ToList();
         }
 
         /// <summary>
@@ -1443,7 +1418,7 @@ namespace SabreTools.Library.DatFiles
         /// <param name="outDir">Output directory to write the DATs to</param>
         /// <param name="inplace">True if cascaded diffs are outputted in-place, false otherwise</param>
         /// <param name="skip">True if the first cascaded diff file should be skipped on output, false otherwise</param>
-        private void DiffCascade(List<string> inputs, List<DatFile> datHeaders, string outDir, bool inplace, bool skip)
+        private void DiffCascade(List<string> inputs, List<DatHeader> datHeaders, string outDir, bool inplace, bool skip)
         {
             // Create a list of DatData objects representing output files
             List<DatFile> outDats = new List<DatFile>();
@@ -1460,7 +1435,7 @@ namespace SabreTools.Library.DatFiles
                 // If we're in inplace mode or the output directory is set, take the appropriate DatData object already stored
                 if (inplace || outDir != Environment.CurrentDirectory)
                 {
-                    diffData = datHeaders[j];
+                    diffData = Create(datHeaders[j]);
                 }
                 else
                 {
@@ -1547,7 +1522,7 @@ namespace SabreTools.Library.DatFiles
                 DatHeader.Description = "All DATs";
 
             // Don't have External dupes
-            if ((diff & UpdateMode.DiffNoDupesOnly) != 0)
+            if (diff.HasFlag(UpdateMode.DiffNoDupesOnly))
             {
                 post = " (No Duplicates)";
                 outerDiffData = Create(baseDat: this);
@@ -1558,7 +1533,7 @@ namespace SabreTools.Library.DatFiles
             }
 
             // Have External dupes
-            if ((diff & UpdateMode.DiffDupesOnly) != 0)
+            if (diff.HasFlag(UpdateMode.DiffDupesOnly))
             {
                 post = " (Duplicates)";
                 dupeData = Create(baseDat: this);
@@ -1572,7 +1547,7 @@ namespace SabreTools.Library.DatFiles
             List<DatFile> outDats = new List<DatFile>();
 
             // Loop through each of the inputs and get or create a new DatData object
-            if ((diff & UpdateMode.DiffIndividualsOnly) != 0)
+            if (diff.HasFlag(UpdateMode.DiffIndividualsOnly))
             {
                 DatFile[] outDatsArray = new DatFile[inputs.Count];
 
@@ -1608,16 +1583,16 @@ namespace SabreTools.Library.DatFiles
                 foreach (DatItem item in items)
                 {
                     // No duplicates
-                    if ((diff & UpdateMode.DiffNoDupesOnly) != 0 || (diff & UpdateMode.DiffIndividualsOnly) != 0)
+                    if (diff.HasFlag(UpdateMode.DiffNoDupesOnly) || diff.HasFlag(UpdateMode.DiffIndividualsOnly))
                     {
-                        if ((item.DupeType & DupeType.Internal) != 0 || item.DupeType == 0x00)
+                        if (item.DupeType.HasFlag(DupeType.Internal) || item.DupeType == 0x00)
                         {
                             // Individual DATs that are output
-                            if ((diff & UpdateMode.DiffIndividualsOnly) != 0)
+                            if (diff.HasFlag(UpdateMode.DiffIndividualsOnly))
                                 outDats[item.SystemID].Add(key, item);
 
                             // Merged no-duplicates DAT
-                            if ((diff & UpdateMode.DiffNoDupesOnly) != 0)
+                            if (diff.HasFlag(UpdateMode.DiffNoDupesOnly))
                             {
                                 DatItem newrom = item.Clone() as DatItem;
                                 newrom.MachineName += $" ({Path.GetFileNameWithoutExtension(inputs[item.SystemID].Split('¬')[0])})";
@@ -1628,9 +1603,9 @@ namespace SabreTools.Library.DatFiles
                     }
 
                     // Duplicates only
-                    if ((diff & UpdateMode.DiffDupesOnly) != 0)
+                    if (diff.HasFlag(UpdateMode.DiffNoDupesOnly))
                     {
-                        if ((item.DupeType & DupeType.External) != 0)
+                        if (item.DupeType.HasFlag(DupeType.External))
                         {
                             DatItem newrom = item.Clone() as DatItem;
                             newrom.MachineName += $" ({Path.GetFileNameWithoutExtension(inputs[item.SystemID].Split('¬')[0])})";
@@ -1647,15 +1622,15 @@ namespace SabreTools.Library.DatFiles
             watch.Start("Outputting all created DATs");
 
             // Output the difflist (a-b)+(b-a) diff
-            if ((diff & UpdateMode.DiffNoDupesOnly) != 0)
+            if (diff.HasFlag(UpdateMode.DiffNoDupesOnly))
                 outerDiffData.Write(outDir, overwrite: false);
 
             // Output the (ab) diff
-            if ((diff & UpdateMode.DiffDupesOnly) != 0)
+            if (diff.HasFlag(UpdateMode.DiffDupesOnly))
                 dupeData.Write(outDir, overwrite: false);
 
             // Output the individual (a-b) DATs
-            if ((diff & UpdateMode.DiffIndividualsOnly) != 0)
+            if (diff.HasFlag(UpdateMode.DiffIndividualsOnly))
             {
                 Parallel.For(0, inputs.Count, Globals.ParallelOptions, j =>
                 {
@@ -1735,9 +1710,9 @@ namespace SabreTools.Library.DatFiles
                 DatFile innerDatdata = Create(baseDat: this);
                 Globals.Logger.User($"Processing '{Path.GetFileName(file.Split('¬')[0])}'");
                 innerDatdata.Parse(file, 0, 0, splitType, keep: true, clean: clean, remUnicode: remUnicode, descAsName: descAsName,
-                    keepext: ((innerDatdata.DatHeader.DatFormat & DatFormat.TSV) != 0
-                        || (innerDatdata.DatHeader.DatFormat & DatFormat.CSV) != 0
-                        || (innerDatdata.DatHeader.DatFormat & DatFormat.SSV) != 0));
+                    keepext: innerDatdata.DatHeader.DatFormat.HasFlag(DatFormat.TSV)
+                        || innerDatdata.DatHeader.DatFormat.HasFlag(DatFormat.CSV)
+                        || innerDatdata.DatHeader.DatFormat.HasFlag(DatFormat.SSV));
                 filter.FilterDatFile(innerDatdata);
 
                 // Get the correct output path
@@ -2074,7 +2049,7 @@ namespace SabreTools.Library.DatFiles
                     continue;
 
                 // If the game (is/is not) a bios, we want to continue
-                if (dev ^ (this[game][0].MachineType & MachineType.Device) != 0)
+                if (dev ^ (this[game][0].MachineType.HasFlag(MachineType.Device)))
                     continue;
 
                 // If the game has no devices, we continue
@@ -2268,8 +2243,8 @@ namespace SabreTools.Library.DatFiles
             foreach (string game in games)
             {
                 if (this[game].Count > 0
-                    && ((this[game][0].MachineType & MachineType.Bios) != 0
-                        || (this[game][0].MachineType & MachineType.Device) != 0))
+                    && (this[game][0].MachineType.HasFlag(MachineType.Bios)
+                        || this[game][0].MachineType.HasFlag(MachineType.Device)))
                 {
                     Remove(game);
                 }
@@ -2291,7 +2266,7 @@ namespace SabreTools.Library.DatFiles
                     continue;
 
                 // If the game (is/is not) a bios, we want to continue
-                if (bios ^ (this[game][0].MachineType & MachineType.Bios) != 0)
+                if (bios ^ this[game][0].MachineType.HasFlag(MachineType.Bios))
                     continue;
 
                 // Determine if the game has a parent or not
@@ -2385,7 +2360,6 @@ namespace SabreTools.Library.DatFiles
 
         #endregion
 
-        // TODO: Can there be a static parse that does the same thing as Create?
         #region Parsing
 
         /// <summary>
@@ -2805,7 +2779,7 @@ namespace SabreTools.Library.DatFiles
                         romname = romname.Trim(Path.DirectorySeparatorChar);
 
                         Globals.Logger.Verbose($"Adding blank empty folder: {gamename}");
-                        this["null"].Add(new Rom(romname, gamename, omitFromScan));
+                        this["null"].Add(new Rom(romname, gamename));
                     });
                 }
             }
@@ -2923,7 +2897,7 @@ namespace SabreTools.Library.DatFiles
                     // Add add all of the found empties to the DAT
                     Parallel.ForEach(empties, Globals.ParallelOptions, empty =>
                     {
-                        Rom emptyRom = new Rom(Path.Combine(empty, "_"), newItem, omitFromScan);
+                        Rom emptyRom = new Rom(Path.Combine(empty, "_"), newItem);
                         ProcessFileHelper(newItem,
                             emptyRom,
                             basePath,
@@ -3963,7 +3937,6 @@ namespace SabreTools.Library.DatFiles
 
         #endregion
 
-        // TODO: Re-evaluate if any of these can be made more streamlined
         #region Splitting
 
         /// <summary>
@@ -3998,19 +3971,19 @@ namespace SabreTools.Library.DatFiles
                 outDir = PathExtensions.GetOutputPath(outDir, file, inplace);
 
                 // Split and write the DAT
-                if ((splittingMode & SplittingMode.Extension) != 0)
+                if (splittingMode.HasFlag(SplittingMode.Extension))
                     SplitByExtension(outDir, exta, extb);
 
-                if ((splittingMode & SplittingMode.Hash) != 0)
+                if (splittingMode.HasFlag(SplittingMode.Hash))
                     SplitByHash(outDir);
 
-                if ((splittingMode & SplittingMode.Level) != 0)
+                if (splittingMode.HasFlag(SplittingMode.Level))
                     SplitByLevel(outDir, shortname, basedat);
 
-                if ((splittingMode & SplittingMode.Size) != 0)
+                if (splittingMode.HasFlag(SplittingMode.Size))
                     SplitBySize(outDir, radix);
 
-                if ((splittingMode & SplittingMode.Type) != 0)
+                if (splittingMode.HasFlag(SplittingMode.Type))
                     SplitByType(outDir);
 
                 // Now re-empty the DAT to make room for the next one
@@ -4330,43 +4303,15 @@ namespace SabreTools.Library.DatFiles
             // Create each of the respective output DATs
             Globals.Logger.User("Creating and populating new DATs");
 
-            DatFile lessDat = Create(DatHeader.DatFormat);
-            lessDat.DatHeader.FileName = $"{DatHeader.FileName} (less than {radix})";
-            lessDat.DatHeader.Name = $"{DatHeader.Name} (less than {radix})";
-            lessDat.DatHeader.Description = $"{DatHeader.Description} (less than {radix})";
-            lessDat.DatHeader.Category = DatHeader.Category;
-            lessDat.DatHeader.Version = DatHeader.Version;
-            lessDat.DatHeader.Date = DatHeader.Date;
-            lessDat.DatHeader.Author = DatHeader.Author;
-            lessDat.DatHeader.Email = DatHeader.Email;
-            lessDat.DatHeader.Homepage = DatHeader.Homepage;
-            lessDat.DatHeader.Url = DatHeader.Url;
-            lessDat.DatHeader.Comment = DatHeader.Comment;
-            lessDat.DatHeader.Header = DatHeader.Header;
-            lessDat.DatHeader.Type = DatHeader.Type;
-            lessDat.DatHeader.ForceMerging = DatHeader.ForceMerging;
-            lessDat.DatHeader.ForceNodump = DatHeader.ForceNodump;
-            lessDat.DatHeader.ForcePacking = DatHeader.ForcePacking;
-            lessDat.DatHeader.DedupeRoms = DatHeader.DedupeRoms;
+            DatFile lessDat = Create(DatHeader.CloneStandard());
+            lessDat.DatHeader.FileName += $" (less than {radix})";
+            lessDat.DatHeader.Name += $" (less than {radix})";
+            lessDat.DatHeader.Description += $" (less than {radix})";
 
-            DatFile greaterEqualDat = Create(DatHeader.DatFormat);
-            greaterEqualDat.DatHeader.FileName = $"{DatHeader.FileName} (equal-greater than {radix})";
-            greaterEqualDat.DatHeader.Name = $"{DatHeader.Name} (equal-greater than {radix})";
-            greaterEqualDat.DatHeader.Description = $"{DatHeader.Description} (equal-greater than {radix})";
-            greaterEqualDat.DatHeader.Category = DatHeader.Category;
-            greaterEqualDat.DatHeader.Version = DatHeader.Version;
-            greaterEqualDat.DatHeader.Date = DatHeader.Date;
-            greaterEqualDat.DatHeader.Author = DatHeader.Author;
-            greaterEqualDat.DatHeader.Email = DatHeader.Email;
-            greaterEqualDat.DatHeader.Homepage = DatHeader.Homepage;
-            greaterEqualDat.DatHeader.Url = DatHeader.Url;
-            greaterEqualDat.DatHeader.Comment = DatHeader.Comment;
-            greaterEqualDat.DatHeader.Header = DatHeader.Header;
-            greaterEqualDat.DatHeader.Type = DatHeader.Type;
-            greaterEqualDat.DatHeader.ForceMerging = DatHeader.ForceMerging;
-            greaterEqualDat.DatHeader.ForceNodump = DatHeader.ForceNodump;
-            greaterEqualDat.DatHeader.ForcePacking = DatHeader.ForcePacking;
-            greaterEqualDat.DatHeader.DedupeRoms = DatHeader.DedupeRoms;
+            DatFile greaterEqualDat = Create(DatHeader.CloneStandard());
+            greaterEqualDat.DatHeader.FileName += $" (equal-greater than {radix})";
+            greaterEqualDat.DatHeader.Name += $" (equal-greater than {radix})";
+            greaterEqualDat.DatHeader.Description += $" (equal-greater than {radix})";
 
             // Now populate each of the DAT objects in turn
             List<string> keys = Keys;
@@ -4407,62 +4352,21 @@ namespace SabreTools.Library.DatFiles
         {
             // Create each of the respective output DATs
             Globals.Logger.User("Creating and populating new DATs");
-            DatFile romdat = Create(DatHeader.DatFormat);
-            romdat.DatHeader.FileName = DatHeader.FileName + " (ROM)";
-            romdat.DatHeader.Name = DatHeader.Name + " (ROM)";
-            romdat.DatHeader.Description = DatHeader.Description + " (ROM)";
-            romdat.DatHeader.Category = DatHeader.Category;
-            romdat.DatHeader.Version = DatHeader.Version;
-            romdat.DatHeader.Date = DatHeader.Date;
-            romdat.DatHeader.Author = DatHeader.Author;
-            romdat.DatHeader.Email = DatHeader.Email;
-            romdat.DatHeader.Homepage = DatHeader.Homepage;
-            romdat.DatHeader.Url = DatHeader.Url;
-            romdat.DatHeader.Comment = DatHeader.Comment;
-            romdat.DatHeader.Header = DatHeader.Header;
-            romdat.DatHeader.Type = DatHeader.Type;
-            romdat.DatHeader.ForceMerging = DatHeader.ForceMerging;
-            romdat.DatHeader.ForceNodump = DatHeader.ForceNodump;
-            romdat.DatHeader.ForcePacking = DatHeader.ForcePacking;
-            romdat.DatHeader.DedupeRoms = DatHeader.DedupeRoms;
 
-            DatFile diskdat = Create(DatHeader.DatFormat);
-            diskdat.DatHeader.FileName = DatHeader.FileName + " (Disk)";
-            diskdat.DatHeader.Name = DatHeader.Name + " (Disk)";
-            diskdat.DatHeader.Description = DatHeader.Description + " (Disk)";
-            diskdat.DatHeader.Category = DatHeader.Category;
-            diskdat.DatHeader.Version = DatHeader.Version;
-            diskdat.DatHeader.Date = DatHeader.Date;
-            diskdat.DatHeader.Author = DatHeader.Author;
-            diskdat.DatHeader.Email = DatHeader.Email;
-            diskdat.DatHeader.Homepage = DatHeader.Homepage;
-            diskdat.DatHeader.Url = DatHeader.Url;
-            diskdat.DatHeader.Comment = DatHeader.Comment;
-            diskdat.DatHeader.Header = DatHeader.Header;
-            diskdat.DatHeader.Type = DatHeader.Type;
-            diskdat.DatHeader.ForceMerging = DatHeader.ForceMerging;
-            diskdat.DatHeader.ForceNodump = DatHeader.ForceNodump;
-            diskdat.DatHeader.ForcePacking = DatHeader.ForcePacking;
-            diskdat.DatHeader.DedupeRoms = DatHeader.DedupeRoms;
+            DatFile romdat = Create(DatHeader.CloneStandard());
+            romdat.DatHeader.FileName += " (ROM)";
+            romdat.DatHeader.Name += " (ROM)";
+            romdat.DatHeader.Description += " (ROM)";
 
-            DatFile sampledat = Create(DatHeader.DatFormat);
-            sampledat.DatHeader.FileName = DatHeader.FileName + " (Sample)";
-            sampledat.DatHeader.Name = DatHeader.Name + " (Sample)";
-            sampledat.DatHeader.Description = DatHeader.Description + " (Sample)";
-            sampledat.DatHeader.Category = DatHeader.Category;
-            sampledat.DatHeader.Version = DatHeader.Version;
-            sampledat.DatHeader.Date = DatHeader.Date;
-            sampledat.DatHeader.Author = DatHeader.Author;
-            sampledat.DatHeader.Email = DatHeader.Email;
-            sampledat.DatHeader.Homepage = DatHeader.Homepage;
-            sampledat.DatHeader.Url = DatHeader.Url;
-            sampledat.DatHeader.Comment = DatHeader.Comment;
-            sampledat.DatHeader.Header = DatHeader.Header;
-            sampledat.DatHeader.Type = DatHeader.Type;
-            sampledat.DatHeader.ForceMerging = DatHeader.ForceMerging;
-            sampledat.DatHeader.ForceNodump = DatHeader.ForceNodump;
-            sampledat.DatHeader.ForcePacking = DatHeader.ForcePacking;
-            sampledat.DatHeader.DedupeRoms = DatHeader.DedupeRoms;
+            DatFile diskdat = Create(DatHeader.CloneStandard());
+            diskdat.DatHeader.FileName += " (Disk)";
+            diskdat.DatHeader.Name += " (Disk)";
+            diskdat.DatHeader.Description += " (Disk)";
+
+            DatFile sampledat = Create(DatHeader.CloneStandard());
+            sampledat.DatHeader.FileName += " (Sample)";
+            sampledat.DatHeader.Name += " (Sample)";
+            sampledat.DatHeader.Description += " (Sample)";
 
             // Now populate each of the DAT objects in turn
             List<string> keys = Keys;
@@ -4498,50 +4402,6 @@ namespace SabreTools.Library.DatFiles
         #endregion
 
         #region Statistics
-
-        /// <summary>
-        /// Output the stats for the Dat in a human-readable format
-        /// </summary>
-        /// <param name="recalculate">True if numbers should be recalculated for the DAT, false otherwise (default)</param>
-        /// <param name="game">Number of games to use, -1 means recalculate games (default)</param>
-        /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise (default)</param>
-        /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise (default)</param>
-        public void WriteStatsToScreen(bool recalculate = false, long game = -1, bool baddumpCol = false, bool nodumpCol = false)
-        {
-            // If we're supposed to recalculate the statistics, do so
-            if (recalculate)
-                RecalculateStats();
-
-            BucketBy(SortedBy.Game, DedupeType.None, norename: true);
-            
-            // TODO: How can the size be negative when dealing with Int64?
-            if (DatStats.TotalSize < 0)
-                DatStats.TotalSize = Int64.MaxValue + DatStats.TotalSize;
-
-            // Log the results to screen
-            string results = $"For '{DatHeader.FileName}':{Environment.NewLine}"
-                + $"--------------------------------------------------{Environment.NewLine}"
-                + $"    Uncompressed size:       {Utilities.GetBytesReadable(DatStats.TotalSize)}{Environment.NewLine}"
-                + $"    Games found:             {(game == -1 ? Keys.Count() : game)}{Environment.NewLine}"
-                + $"    Roms found:              {DatStats.RomCount}{Environment.NewLine}"
-                + $"    Disks found:             {DatStats.DiskCount}{Environment.NewLine}"
-                + $"    Roms with CRC:           {DatStats.CRCCount}{Environment.NewLine}"
-                + $"    Roms with MD5:           {DatStats.MD5Count}{Environment.NewLine}"
-#if NET_FRAMEWORK
-                + $"    Roms with RIPEMD160:     {DatStats.RIPEMD160Count}{Environment.NewLine}"
-#endif
-                + $"    Roms with SHA-1:         {DatStats.SHA1Count}{Environment.NewLine}"
-                + $"    Roms with SHA-256:       {DatStats.SHA256Count}{Environment.NewLine}"
-                + $"    Roms with SHA-384:       {DatStats.SHA384Count}{Environment.NewLine}"
-                + $"    Roms with SHA-512:       {DatStats.SHA512Count}{Environment.NewLine}"
-                + (baddumpCol ? $"    Roms with BadDump status: {DatStats.BaddumpCount}{Environment.NewLine}" : string.Empty)
-                + (nodumpCol ? $"    Roms with Nodump status: {DatStats.NodumpCount}{Environment.NewLine}" : string.Empty);
-
-            // For spacing between DATs
-            results += $"{Environment.NewLine}{Environment.NewLine}";
-
-            Globals.Logger.User(results);
-        }
 
         /// <summary>
         /// Recalculate the statistics for the Dat
@@ -4635,7 +4495,19 @@ namespace SabreTools.Library.DatFiles
 
             // Output initial statistics, for kicks
             if (stats)
-                WriteStatsToScreen(recalculate: (DatStats.RomCount + DatStats.DiskCount == 0), baddumpCol: true, nodumpCol: true);
+            {
+                if (DatStats.RomCount + DatStats.DiskCount == 0)
+                    RecalculateStats();
+
+                BucketBy(SortedBy.Game, DedupeType.None, norename: true);
+
+                // TODO: How can the size be negative when dealing with Int64?
+                if (DatStats.TotalSize < 0)
+                    DatStats.TotalSize = Int64.MaxValue + DatStats.TotalSize;
+
+                var consoleOutput = BaseReport.Create(StatReportFormat.None, null, true, true);
+                consoleOutput.ReplaceStatistics(DatHeader.FileName, Keys.Count(), DatStats);
+            }
 
             // Run the one rom per game logic, if required
             if (DatHeader.OneRom)
@@ -4668,7 +4540,7 @@ namespace SabreTools.Library.DatFiles
                     string outfile = outfiles[datFormat];
                     try
                     {
-                        DatFile.Create(datFormat, this)?.WriteToFile(outfile, ignoreblanks);
+                        Create(datFormat, this)?.WriteToFile(outfile, ignoreblanks);
                     }
                     catch (Exception ex)
                     {
@@ -4854,222 +4726,5 @@ namespace SabreTools.Library.DatFiles
         #endregion
 
         #endregion // Instance Methods
-
-        #region Static Methods
-
-        #region Statistics
-
-        /// <summary>
-        /// Output the stats for a list of input dats as files in a human-readable format
-        /// </summary>
-        /// <param name="inputs">List of input files and folders</param>
-        /// <param name="reportName">Name of the output file</param>
-        /// <param name="single">True if single DAT stats are output, false otherwise</param>
-        /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
-        /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
-        /// <param name="statDatFormat" > Set the statistics output format to use</param>
-        public static void OutputStats(List<string> inputs, string reportName, string outDir, bool single,
-            bool baddumpCol, bool nodumpCol, StatReportFormat statDatFormat)
-        {
-            // If there's no output format, set the default
-            if (statDatFormat == StatReportFormat.None)
-                statDatFormat = StatReportFormat.Textfile;
-
-            // Get the proper output file name
-            if (string.IsNullOrWhiteSpace(reportName))
-                reportName = "report";
-
-            // Get the proper output directory name
-            outDir = DirectoryExtensions.Ensure(outDir);
-
-            // Get the dictionary of desired output report names
-            Dictionary<StatReportFormat, string> outputs = CreateOutStatsNames(outDir, statDatFormat, reportName);
-
-            // Make sure we have all files and then order them
-            List<string> files = DirectoryExtensions.GetFilesOnly(inputs);
-            files = files
-                .OrderBy(i => Path.GetDirectoryName(i))
-                .ThenBy(i => Path.GetFileName(i))
-                .ToList();
-
-            // Get all of the writers that we need
-            List<BaseReport> reports = outputs.Select(kvp => BaseReport.Create(kvp.Key, kvp.Value, baddumpCol, nodumpCol)).ToList();
-
-            // Write the header, if any
-            reports.ForEach(report => report.WriteHeader());
-
-            // Init all total variables
-            DatStats totalStats = new DatStats();
-
-            // Init directory-level variables
-            string lastdir = null;
-            string basepath = null;
-            DatStats dirStats = new DatStats();
-
-            // Now process each of the input files
-            foreach (string file in files)
-            {
-                // Get the directory for the current file
-                string thisdir = Path.GetDirectoryName(file);
-                basepath = Path.GetDirectoryName(Path.GetDirectoryName(file));
-
-                // If we don't have the first file and the directory has changed, show the previous directory stats and reset
-                if (lastdir != null && thisdir != lastdir)
-                {
-                    // Output separator if needed
-                    reports.ForEach(report => report.WriteMidSeparator());
-
-                    DatFile lastdirdat = Create();
-                    lastdirdat.DatHeader.FileName = $"DIR: {WebUtility.HtmlEncode(lastdir)}";
-                    lastdirdat.DatStats = dirStats;
-
-                    lastdirdat.WriteStatsToScreen(recalculate: false, game: dirStats.GameCount, baddumpCol: baddumpCol, nodumpCol: nodumpCol);
-                    reports.ForEach(report => report.ReplaceStatistics(lastdirdat.DatHeader.FileName, dirStats.GameCount, dirStats));
-                    reports.ForEach(report => report.Write());
-
-                    // Write the mid-footer, if any
-                    reports.ForEach(report => report.WriteFooterSeparator());
-
-                    // Write the header, if any
-                    reports.ForEach(report => report.WriteMidHeader());
-
-                    // Reset the directory stats
-                    dirStats.Reset();
-                }
-
-                Globals.Logger.Verbose($"Beginning stat collection for '{file}'", false);
-                List<string> games = new List<string>();
-                DatFile datdata = Create();
-                datdata.Parse(file, 0, 0);
-                datdata.BucketBy(SortedBy.Game, DedupeType.None, norename: true);
-
-                // Output single DAT stats (if asked)
-                Globals.Logger.User($"Adding stats for file '{file}'\n", false);
-                if (single)
-                {
-                    datdata.WriteStatsToScreen(recalculate: false, baddumpCol: baddumpCol, nodumpCol: nodumpCol);
-                    reports.ForEach(report => report.ReplaceStatistics(datdata.DatHeader.FileName, datdata.Keys.Count, datdata.DatStats));
-                    reports.ForEach(report => report.Write());
-                }
-
-                // Add single DAT stats to dir
-                dirStats.AddStats(datdata.DatStats);
-                dirStats.GameCount += datdata.Keys.Count();
-
-                // Add single DAT stats to totals
-                totalStats.AddStats(datdata.DatStats);
-                totalStats.GameCount += datdata.Keys.Count();
-
-                // Make sure to assign the new directory
-                lastdir = thisdir;
-            }
-
-            // Output the directory stats one last time
-            reports.ForEach(report => report.WriteMidSeparator());
-
-            if (single)
-            {
-                DatFile dirdat = Create();
-                dirdat.DatHeader.FileName = $"DIR: {WebUtility.HtmlEncode(lastdir)}";
-                dirdat.DatStats = dirStats;
-
-                dirdat.WriteStatsToScreen(recalculate: false, game: dirStats.GameCount, baddumpCol: baddumpCol, nodumpCol: nodumpCol);
-                reports.ForEach(report => report.ReplaceStatistics(dirdat.DatHeader.FileName, dirStats.GameCount, dirStats));
-                reports.ForEach(report => report.Write());
-            }
-
-            // Write the mid-footer, if any
-            reports.ForEach(report => report.WriteFooterSeparator());
-
-            // Write the header, if any
-            reports.ForEach(report => report.WriteMidHeader());
-
-            // Reset the directory stats
-            dirStats.Reset();
-
-            // Output total DAT stats
-            DatFile totaldata = DatFile.Create();
-            totaldata.DatHeader.FileName = "DIR: All DATs";
-            totaldata.DatStats = totalStats;
-
-            totaldata.WriteStatsToScreen(recalculate: false, game: totalStats.GameCount, baddumpCol: baddumpCol, nodumpCol: nodumpCol);
-            reports.ForEach(report => report.ReplaceStatistics(totaldata.DatHeader.FileName, totalStats.GameCount, totalStats));
-            reports.ForEach(report => report.Write());
-
-            // Output footer if needed
-            reports.ForEach(report => report.WriteFooter());
-
-            Globals.Logger.User(@"
-Please check the log folder if the stats scrolled offscreen", false);
-        }
-
-        /// <summary>
-        /// Get the proper extension for the stat output format
-        /// </summary>
-        /// <param name="outDir">Output path to use</param>
-        /// <param name="statDatFormat">StatDatFormat to get the extension for</param>
-        /// <param name="reportName">Name of the input file to use</param>
-        /// <returns>Dictionary of output formats mapped to file names</returns>
-        private static Dictionary<StatReportFormat, string> CreateOutStatsNames(string outDir, StatReportFormat statDatFormat, string reportName, bool overwrite = true)
-        {
-            Dictionary<StatReportFormat, string> output = new Dictionary<StatReportFormat, string>();
-
-            // First try to create the output directory if we need to
-            if (!Directory.Exists(outDir))
-                Directory.CreateDirectory(outDir);
-
-            // Double check the outDir for the end delim
-            if (!outDir.EndsWith(Path.DirectorySeparatorChar.ToString()))
-                outDir += Path.DirectorySeparatorChar;
-
-            // For each output format, get the appropriate stream writer
-            if ((statDatFormat & StatReportFormat.Textfile) != 0)
-                output.Add(StatReportFormat.Textfile, CreateOutStatsNamesHelper(outDir, ".txt", reportName, overwrite));
-
-            if ((statDatFormat & StatReportFormat.CSV) != 0)
-                output.Add(StatReportFormat.CSV, CreateOutStatsNamesHelper(outDir, ".csv", reportName, overwrite));
-
-            if ((statDatFormat & StatReportFormat.HTML) != 0)
-                output.Add(StatReportFormat.HTML, CreateOutStatsNamesHelper(outDir, ".html", reportName, overwrite));
-
-            if ((statDatFormat & StatReportFormat.SSV) != 0)
-                output.Add(StatReportFormat.SSV, CreateOutStatsNamesHelper(outDir, ".ssv", reportName, overwrite));
-
-            if ((statDatFormat & StatReportFormat.TSV) != 0)
-                output.Add(StatReportFormat.TSV, CreateOutStatsNamesHelper(outDir, ".tsv", reportName, overwrite));
-
-            return output;
-        }
-
-        /// <summary>
-        /// Help generating the outstats name
-        /// </summary>
-        /// <param name="outDir">Output directory</param>
-        /// <param name="extension">Extension to use for the file</param>
-        /// <param name="reportName">Name of the input file to use</param>
-        /// <param name="overwrite">True if we ignore existing files, false otherwise</param>
-        /// <returns>String containing the new filename</returns>
-        private static string CreateOutStatsNamesHelper(string outDir, string extension, string reportName, bool overwrite)
-        {
-            string outfile = outDir + reportName + extension;
-            outfile = outfile.Replace($"{Path.DirectorySeparatorChar}{Path.DirectorySeparatorChar}", Path.DirectorySeparatorChar.ToString());
-
-            if (!overwrite)
-            {
-                int i = 1;
-                while (File.Exists(outfile))
-                {
-                    outfile = $"{outDir}{reportName}_{i}{extension}";
-                    outfile = outfile.Replace($"{Path.DirectorySeparatorChar}{Path.DirectorySeparatorChar}", Path.DirectorySeparatorChar.ToString());
-                    i++;
-                }
-            }
-
-            return outfile;
-        }
-
-        #endregion
-
-        #endregion // Static Methods
     }
 }

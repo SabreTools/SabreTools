@@ -26,7 +26,7 @@ namespace SabreTools.Library.DatFiles
         /// <param name="datFile">Parent DatFile to copy from</param>
         /// <param name="delim">Delimiter for parsing individual lines</param>
         public SeparatedValue(DatFile datFile, char delim)
-            : base(datFile, cloneHeader: false)
+            : base(datFile)
         {
             _delim = delim;
         }

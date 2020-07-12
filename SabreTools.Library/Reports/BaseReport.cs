@@ -62,6 +62,9 @@ namespace SabreTools.Library.Reports
         {
             switch (statReportFormat)
             {
+                case StatReportFormat.None:
+                    return new Textfile(Console.OpenStandardOutput(), baddumpCol, nodumpCol);
+
                 case StatReportFormat.Textfile:
                     return new Textfile(filename, baddumpCol, nodumpCol);
 

@@ -940,7 +940,7 @@ namespace SabreTools.Library.DatItems
                 return output;
 
             // If the duplicate is external already or should be, set it
-            if ((lastItem.DupeType & DupeType.External) != 0 || lastItem.SystemID != this.SystemID || lastItem.SourceID != this.SourceID)
+            if (lastItem.DupeType.HasFlag(DupeType.External) || lastItem.SystemID != this.SystemID || lastItem.SourceID != this.SourceID)
             {
                 if (lastItem.MachineName == this.MachineName && lastItem.Name == this.Name)
                     output = DupeType.External | DupeType.All;
@@ -1257,7 +1257,7 @@ namespace SabreTools.Library.DatItems
                 }
 
                 // If the current item exactly matches the last item, then we don't add it
-                if ((datItem.GetDuplicateStatus(lastItem) & DupeType.All) != 0)
+                if (datItem.GetDuplicateStatus(lastItem).HasFlag(DupeType.All))
                 {
                     Globals.Logger.Verbose($"Exact duplicate found for '{datItem.Name}'");
                     continue;

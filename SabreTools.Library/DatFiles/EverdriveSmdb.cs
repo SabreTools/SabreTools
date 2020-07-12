@@ -21,7 +21,7 @@ namespace SabreTools.Library.DatFiles
         /// </summary>
         /// <param name="datFile">Parent DatFile to copy from</param>
         public EverdriveSMDB(DatFile datFile)
-            : base(datFile, cloneHeader: false)
+            : base(datFile)
         {
         }
 

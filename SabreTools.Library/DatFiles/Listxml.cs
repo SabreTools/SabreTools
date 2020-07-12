@@ -22,7 +22,7 @@ namespace SabreTools.Library.DatFiles
         /// </summary>
         /// <param name="datFile">Parent DatFile to copy from</param>
         public Listxml(DatFile datFile)
-            : base(datFile, cloneHeader: false)
+            : base(datFile)
         {
         }
 
@@ -707,11 +707,11 @@ namespace SabreTools.Library.DatFiles
 
                 if (!DatHeader.ExcludeFields[(int)Field.MachineType])
                 {
-                    if ((datItem.MachineType & MachineType.Bios) != 0)
+                    if (datItem.MachineType.HasFlag(MachineType.Bios))
                         xtw.WriteAttributeString("isbios", "yes");
-                    if ((datItem.MachineType & MachineType.Device) != 0)
+                    if (datItem.MachineType.HasFlag(MachineType.Device))
                         xtw.WriteAttributeString("isdevice", "yes");
-                    if ((datItem.MachineType & MachineType.Mechanical) != 0)
+                    if (datItem.MachineType.HasFlag(MachineType.Mechanical))
                         xtw.WriteAttributeString("ismechanical", "yes");
                 }
 

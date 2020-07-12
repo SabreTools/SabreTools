@@ -3221,7 +3221,7 @@ The stats that are outputted are as follows:
 
             public override void ProcessFeatures(Dictionary<string, Feature> features)
             {
-                DatFile.OutputStats(
+                DatStats.OutputStats(
                     Inputs,
                     GetDatHeader(features).FileName,
                     GetString(features, OutputDirStringValue),

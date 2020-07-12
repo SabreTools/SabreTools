@@ -102,20 +102,20 @@ namespace SabreTools.Library.Tools
             switch (fileType)
             {
                 case FileType.GZipArchive:
-                    shouldExternalProcess = ((archiveScanLevel & ArchiveScanLevel.GZipExternal) != 0);
-                    shouldInternalProcess = ((archiveScanLevel & ArchiveScanLevel.GZipInternal) != 0);
+                    shouldExternalProcess = (archiveScanLevel.HasFlag(ArchiveScanLevel.GZipExternal));
+                    shouldInternalProcess = (archiveScanLevel.HasFlag(ArchiveScanLevel.GZipInternal));
                     break;
                 case FileType.RarArchive:
-                    shouldExternalProcess = ((archiveScanLevel & ArchiveScanLevel.RarExternal) != 0);
-                    shouldInternalProcess = ((archiveScanLevel & ArchiveScanLevel.RarInternal) != 0);
+                    shouldExternalProcess = (archiveScanLevel.HasFlag(ArchiveScanLevel.RarExternal));
+                    shouldInternalProcess = (archiveScanLevel.HasFlag(ArchiveScanLevel.RarInternal));
                     break;
                 case FileType.SevenZipArchive:
-                    shouldExternalProcess = ((archiveScanLevel & ArchiveScanLevel.SevenZipExternal) != 0);
-                    shouldInternalProcess = ((archiveScanLevel & ArchiveScanLevel.SevenZipInternal) != 0);
+                    shouldExternalProcess = (archiveScanLevel.HasFlag(ArchiveScanLevel.SevenZipExternal));
+                    shouldInternalProcess = (archiveScanLevel.HasFlag(ArchiveScanLevel.SevenZipInternal));
                     break;
                 case FileType.ZipArchive:
-                    shouldExternalProcess = ((archiveScanLevel & ArchiveScanLevel.ZipExternal) != 0);
-                    shouldInternalProcess = ((archiveScanLevel & ArchiveScanLevel.ZipInternal) != 0);
+                    shouldExternalProcess = (archiveScanLevel.HasFlag(ArchiveScanLevel.ZipExternal));
+                    shouldInternalProcess = (archiveScanLevel.HasFlag(ArchiveScanLevel.ZipInternal));
                     break;
                 case null:
                 default:

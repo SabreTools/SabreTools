@@ -29,7 +29,7 @@ namespace SabreTools.Library.DatFiles
         /// <param name="datFile">Parent DatFile to copy from</param>
         /// <param name="deprecated">True if the output uses "game", false if the output uses "machine"</param>
         public Logiqx(DatFile datFile, bool deprecated)
-            : base(datFile, cloneHeader: false)
+            : base(datFile)
         {
             _deprecated = deprecated;
         }
@@ -880,11 +880,11 @@ namespace SabreTools.Library.DatFiles
                 xtw.WriteAttributeString("name", datItem.GetField(Field.MachineName, DatHeader.ExcludeFields));
                 if (!DatHeader.ExcludeFields[(int)Field.MachineType])
                 {
-                    if ((datItem.MachineType & MachineType.Bios) != 0)
+                    if (datItem.MachineType.HasFlag(MachineType.Bios))
                         xtw.WriteAttributeString("isbios", "yes");
-                    if ((datItem.MachineType & MachineType.Device) != 0)
+                    if (datItem.MachineType.HasFlag(MachineType.Device))
                         xtw.WriteAttributeString("isdevice", "yes");
-                    if ((datItem.MachineType & MachineType.Mechanical) != 0)
+                    if (datItem.MachineType.HasFlag(MachineType.Mechanical))
                         xtw.WriteAttributeString("ismechanical", "yes");
                 }
 
