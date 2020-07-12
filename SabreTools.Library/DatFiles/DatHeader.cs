@@ -335,6 +335,94 @@ namespace SabreTools.Library.DatFiles
             };
         }
 
+        /// <summary>
+        /// Overwrite local values from another DatHeader if not default
+        /// </summary>
+        /// <param name="datHeader">DatHeader to get the values from</param>
+        public void ConditionalCopy(DatHeader datHeader)
+        {
+            if (!string.IsNullOrWhiteSpace(datHeader.FileName))
+                this.FileName = datHeader.FileName;
+
+            if (!string.IsNullOrWhiteSpace(datHeader.Name))
+                this.Name = datHeader.Name;
+
+            if (!string.IsNullOrWhiteSpace(datHeader.Description))
+                this.Description = datHeader.Description;
+
+            if (!string.IsNullOrWhiteSpace(datHeader.RootDir))
+                this.RootDir = datHeader.RootDir;
+
+            if (!string.IsNullOrWhiteSpace(datHeader.Category))
+                this.Category = datHeader.Category;
+
+            if (!string.IsNullOrWhiteSpace(datHeader.Version))
+                this.Version = datHeader.Version;
+
+            if (!string.IsNullOrWhiteSpace(datHeader.Date))
+                this.Date = datHeader.Date;
+
+            if (!string.IsNullOrWhiteSpace(datHeader.Author))
+                this.Author = datHeader.Author;
+
+            if (!string.IsNullOrWhiteSpace(datHeader.Email))
+                this.Email = datHeader.Email;
+
+            if (!string.IsNullOrWhiteSpace(datHeader.Homepage))
+                this.Homepage = datHeader.Homepage;
+
+            if (!string.IsNullOrWhiteSpace(datHeader.Url))
+                this.Url = datHeader.Url;
+
+            if (!string.IsNullOrWhiteSpace(datHeader.Comment))
+                this.Comment = datHeader.Comment;
+
+            if (!string.IsNullOrWhiteSpace(datHeader.Header))
+                this.Header = datHeader.Header;
+
+            if (!string.IsNullOrWhiteSpace(datHeader.Type))
+                this.Type = datHeader.Type;
+
+            if (datHeader.ForceMerging != ForceMerging.None)
+                this.ForceMerging = datHeader.ForceMerging;
+
+            if (datHeader.ForceNodump != ForceNodump.None)
+                this.ForceNodump = datHeader.ForceNodump;
+
+            if (datHeader.ForcePacking != ForcePacking.None)
+                this.ForcePacking = datHeader.ForcePacking;
+
+            if (datHeader.DatFormat != 0x00)
+                this.DatFormat = datHeader.DatFormat;
+
+            if (datHeader.ExcludeFields != null)
+                this.ExcludeFields = datHeader.ExcludeFields;
+
+            this.OneRom = datHeader.OneRom;
+            this.KeepEmptyGames = datHeader.KeepEmptyGames;
+            this.SceneDateStrip = datHeader.SceneDateStrip;
+            this.DedupeRoms = datHeader.DedupeRoms;
+            //this.StripHash = datHeader.StripHash;
+
+            if (!string.IsNullOrWhiteSpace(datHeader.Prefix))
+                this.Prefix = datHeader.Prefix;
+
+            if (!string.IsNullOrWhiteSpace(datHeader.Postfix))
+                this.Postfix = datHeader.Postfix;
+
+            if (!string.IsNullOrWhiteSpace(datHeader.AddExtension))
+                this.AddExtension = datHeader.AddExtension;
+
+            if (!string.IsNullOrWhiteSpace(datHeader.ReplaceExtension))
+                this.ReplaceExtension = datHeader.ReplaceExtension;
+
+            this.RemoveExtension = datHeader.RemoveExtension;
+            this.Romba = datHeader.Romba;
+            this.GameName = datHeader.GameName;
+            this.Quotes = datHeader.Quotes;
+            this.UseRomName = datHeader.UseRomName;
+        }
+
         #endregion
 
         #region Writing

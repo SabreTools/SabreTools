@@ -551,8 +551,6 @@ namespace SabreTools.Library.DatFiles
 
         #endregion
 
-        // TODO: Add method to apply a DatHeader to an existing DatFile (overwrite if not default value)
-        // TODO: Add method to add items from another DatFile without overwriting contents
         #region Constructors
 
         /// <summary>
@@ -674,6 +672,39 @@ namespace SabreTools.Library.DatFiles
             DatFile datFile = Create(datHeader.DatFormat);
             datFile.DatHeader = (DatHeader)datHeader.Clone();
             return datFile;
+        }
+
+        /// <summary>
+        /// Add items from another DatFile to the existing DatFile
+        /// </summary>
+        /// <param name="datFile">DatFile to add from</param>
+        /// <param name="delete">If items should be deleted from the source DatFile</param>
+        public void AddFromExisting(DatFile datFile, bool delete = false)
+        {
+            // Get the list of keys from the DAT
+            List<string> keys = datFile.Keys;
+            foreach (string key in keys)
+            {
+                // Add everything from the key to the internal DAT
+                AddRange(key, datFile[key]);
+
+                // Now remove the key from the source DAT
+                if (delete)
+                    datFile.Remove(key);
+            }
+
+            // Now remove the file dictionary from the source DAT
+            if (delete)
+                datFile.DeleteDictionary();
+        }
+
+        /// <summary>
+        /// Apply a DatHeader to an existing DatFile
+        /// </summary>
+        /// <param name="datHeader">DatHeader to get the values from</param>
+        public void ApplyDatHeader(DatHeader datHeader)
+        {
+            DatHeader.ConditionalCopy(datHeader);
         }
 
         #endregion
@@ -810,19 +841,7 @@ namespace SabreTools.Library.DatFiles
             watch.Start("Populating internal DAT");
             Parallel.For(0, inputs.Count, Globals.ParallelOptions, i =>
             {
-                // Get the list of keys from the DAT
-                List<string> keys = datFiles[i].Keys;
-                foreach (string key in keys)
-                {
-                    // Add everything from the key to the internal DAT
-                    AddRange(key, datFiles[i][key]);
-
-                    // Now remove the key from the source DAT
-                    datFiles[i].Remove(key);
-                }
-
-                // Now remove the file dictionary from the source DAT to save memory
-                datFiles[i].DeleteDictionary();
+                AddFromExisting(datFiles[i], true);
             });
 
             // Now that we have a merged DAT, filter it
@@ -2346,7 +2365,6 @@ namespace SabreTools.Library.DatFiles
 
         #endregion
 
-        // TODO: Add parse-as to parse in from a different type
         #region Parsing
 
         /// <summary>
