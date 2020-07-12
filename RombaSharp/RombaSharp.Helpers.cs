@@ -250,12 +250,11 @@ namespace RombaSharp
 
             // Parse the Dat if possible
             Globals.Logger.User($"Adding from '{dat.Name}'");
-            DatFile tempdat = DatFile.Create(fullpath);
-            tempdat.Parse(fullpath, 0, 0);
+            DatFile tempdat = DatFile.CreateAndParse(fullpath, 0, 0);
 
             // If the Dat wasn't empty, add the information
             SqliteCommand slc = new SqliteCommand();
-            if (tempdat.Count != 0)
+            if (tempdat.GetCount() != 0)
             {
                 string crcquery = "INSERT OR IGNORE INTO crc (crc) VALUES";
                 string md5query = "INSERT OR IGNORE INTO md5 (md5) VALUES";

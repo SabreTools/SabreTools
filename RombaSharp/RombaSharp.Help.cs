@@ -626,8 +626,7 @@ structure according to the original DAT master directory tree structure.";
                 foreach (string key in foundDats.Keys)
                 {
                     // Get the DAT file associated with the key
-                    DatFile datFile = DatFile.Create(Path.Combine(_dats, foundDats[key]));
-                    datFile.Parse(Path.Combine(_dats, foundDats[key]), 0, 0);
+                    DatFile datFile = DatFile.CreateAndParse(Path.Combine(_dats, foundDats[key]), 0, 0);
 
                     // Create the new output directory if it doesn't exist
                     string outputFolder = Path.Combine(outdat, Path.GetFileNameWithoutExtension(foundDats[key]));
@@ -816,8 +815,8 @@ in -old DAT file. Ignores those entries in -old that are not in -new.";
 
                 // Create the encapsulating datfile
                 DatFile datfile = DatFile.Create();
-                datfile.Name = name;
-                datfile.Description = description;
+                datfile.SetName(name);
+                datfile.SetDescription(description);
 
                 // Create the inputs
                 List<string> dats = new List<string> { newdat };
@@ -869,8 +868,8 @@ in -old DAT file. Ignores those entries in -old that are not in -new.";
 
                 // Create the encapsulating datfile
                 DatFile datfile = DatFile.Create();
-                datfile.Name = string.IsNullOrWhiteSpace(name) ? "untitled" : name;
-                datfile.Description = description;
+                datfile.SetName(string.IsNullOrWhiteSpace(name) ? "untitled" : name);
+                datfile.SetDescription(description);
 
                 // Now run the D2D on the input and write out
                 // TODO: All instances of Hash.DeepHashes should be made into 0x0 eventually
@@ -1574,7 +1573,7 @@ contents of any changed dats.";
 
                 // First get a list of SHA-1's from the input DATs
                 DatFile datroot = DatFile.Create();
-                datroot.Type = "SuperDAT";
+                datroot.SetType("SuperDAT");
 
                 // TODO: All instances of Hash.DeepHashes should be made into 0x0 eventually
                 datroot.PopulateFromDir(_dats, Hash.DeepHashes, false, false, SkipFileType.None, false, false, _tmpdir, false, null, true, null);

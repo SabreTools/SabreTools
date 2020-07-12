@@ -33,7 +33,7 @@ namespace SabreTools.Library.DatFiles
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
         /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
-        public override void ParseFile(
+        protected override void ParseFile(
             // Standard Dat parsing
             string filename,
             int sysid,
@@ -146,21 +146,21 @@ namespace SabreTools.Library.DatFiles
                 ProcessItemName(datItem, false, forceRomName: false);
 
                 // If we're in Romba mode, the state is consistent
-                if (Romba)
+                if (DatHeader.Romba)
                 {
-                    sw.Write($"{datItem.GetField(Field.SHA1, ExcludeFields)}\n");
+                    sw.Write($"{datItem.GetField(Field.SHA1, DatHeader.ExcludeFields)}\n");
                 }
                 // Otherwise, use any flags
                 else
                 {
-                    if (!UseRomName && datItem.MachineName != lastgame)
+                    if (!DatHeader.UseRomName && datItem.MachineName != lastgame)
                     {
-                        sw.Write($"{datItem.GetField(Field.MachineName, ExcludeFields)}\n");
+                        sw.Write($"{datItem.GetField(Field.MachineName, DatHeader.ExcludeFields)}\n");
                         lastgame = datItem.MachineName;
                     }
-                    else if (UseRomName)
+                    else if (DatHeader.UseRomName)
                     {
-                        sw.Write($"{datItem.GetField(Field.Name, ExcludeFields)}\n");
+                        sw.Write($"{datItem.GetField(Field.Name, DatHeader.ExcludeFields)}\n");
                     }
                 }
 

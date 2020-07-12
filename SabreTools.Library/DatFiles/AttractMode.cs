@@ -34,7 +34,7 @@ namespace SabreTools.Library.DatFiles
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
         /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
-        public override void ParseFile(
+        protected override void ParseFile(
             // Standard Dat parsing
             string filename,
             int sysid,
@@ -258,23 +258,23 @@ namespace SabreTools.Library.DatFiles
 
                 string[] fields = new string[]
                 {
-                    datItem.GetField(Field.MachineName, ExcludeFields),
-                    datItem.GetField(Field.Description, ExcludeFields),
-                    FileName,
-                    datItem.GetField(Field.CloneOf, ExcludeFields),
-                    datItem.GetField(Field.Year, ExcludeFields),
-                    datItem.GetField(Field.Manufacturer, ExcludeFields),
-                    string.Empty, // datItem.GetField(Field.Category, ExcludeFields)
-                    string.Empty, // datItem.GetField(Field.Players, ExcludeFields)
-                    string.Empty, // datItem.GetField(Field.Rotation, ExcludeFields)
-                    string.Empty, // datItem.GetField(Field.Control, ExcludeFields)
-                    string.Empty, // datItem.GetField(Field.Status, ExcludeFields)
-                    string.Empty, // datItem.GetField(Field.DisplayCount, ExcludeFields)
-                    string.Empty, // datItem.GetField(Field.DisplayType, ExcludeFields)
-                    string.Empty, // datItem.GetField(Field.AltRomname, ExcludeFields)
-                    string.Empty, // datItem.GetField(Field.AltTitle, ExcludeFields)
-                    datItem.GetField(Field.Comment, ExcludeFields),
-                    string.Empty, // datItem.GetField(Field.Buttons, ExcludeFields)
+                    datItem.GetField(Field.MachineName, DatHeader.ExcludeFields),
+                    datItem.GetField(Field.Description, DatHeader.ExcludeFields),
+                    DatHeader.FileName,
+                    datItem.GetField(Field.CloneOf, DatHeader.ExcludeFields),
+                    datItem.GetField(Field.Year, DatHeader.ExcludeFields),
+                    datItem.GetField(Field.Manufacturer, DatHeader.ExcludeFields),
+                    string.Empty, // datItem.GetField(Field.Category, DatHeader.ExcludeFields)
+                    string.Empty, // datItem.GetField(Field.Players, DatHeader.ExcludeFields)
+                    string.Empty, // datItem.GetField(Field.Rotation, DatHeader.ExcludeFields)
+                    string.Empty, // datItem.GetField(Field.Control, DatHeader.ExcludeFields)
+                    string.Empty, // datItem.GetField(Field.Status, DatHeader.ExcludeFields)
+                    string.Empty, // datItem.GetField(Field.DisplayCount, DatHeader.ExcludeFields)
+                    string.Empty, // datItem.GetField(Field.DisplayType, DatHeader.ExcludeFields)
+                    string.Empty, // datItem.GetField(Field.AltRomname, DatHeader.ExcludeFields)
+                    string.Empty, // datItem.GetField(Field.AltTitle, DatHeader.ExcludeFields)
+                    datItem.GetField(Field.Comment, DatHeader.ExcludeFields),
+                    string.Empty, // datItem.GetField(Field.Buttons, DatHeader.ExcludeFields)
                 };
 
                 svw.WriteValues(fields);

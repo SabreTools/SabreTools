@@ -43,7 +43,7 @@ namespace SabreTools.Library.DatFiles
         /// 6331.sound-u8                            32 BAD CRC(1d298cb0) SHA1(bb0bb62365402543e3154b9a77be9c75010e6abc) BAD_DUMP
         /// 16v8h-blue.u24                          279 NO GOOD DUMP KNOWN
         /// </remarks>
-        public override void ParseFile(
+        protected override void ParseFile(
             // Standard Dat parsing
             string filename,
             int sysid,
@@ -324,7 +324,7 @@ namespace SabreTools.Library.DatFiles
                 rom.MachineName = rom.MachineName.TrimStart(Path.DirectorySeparatorChar);
 
                 // Build the state based on excluded fields
-                sw.Write($"ROMs required for driver \"{rom.GetField(Field.MachineName, ExcludeFields)}\".\n");
+                sw.Write($"ROMs required for driver \"{rom.GetField(Field.MachineName, DatHeader.ExcludeFields)}\".\n");
                 sw.Write("Name                                   Size Checksum\n");
 
                 sw.Flush();
@@ -392,19 +392,19 @@ namespace SabreTools.Library.DatFiles
                             sw.Write($"{disk.Name}          ");
 
                         // If we have a baddump, put the first indicator
-                        if (!ExcludeFields[(int)Field.Status] && disk.ItemStatus == ItemStatus.BadDump)
+                        if (!DatHeader.ExcludeFields[(int)Field.Status] && disk.ItemStatus == ItemStatus.BadDump)
                             sw.Write(" BAD");
 
                         // If we have a nodump, write out the indicator
-                        if (!ExcludeFields[(int)Field.Status] && disk.ItemStatus == ItemStatus.Nodump)
+                        if (!DatHeader.ExcludeFields[(int)Field.Status] && disk.ItemStatus == ItemStatus.Nodump)
                             sw.Write(" NO GOOD DUMP KNOWN");
 
                         // Otherwise, write out the SHA-1 hash
-                        else if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA1, ExcludeFields)))
+                        else if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA1, DatHeader.ExcludeFields)))
                             sw.Write($" SHA1({disk.SHA1})");
 
                         // If we have a baddump, put the second indicator
-                        if (!ExcludeFields[(int)Field.Status] && disk.ItemStatus == ItemStatus.BadDump)
+                        if (!DatHeader.ExcludeFields[(int)Field.Status] && disk.ItemStatus == ItemStatus.BadDump)
                             sw.Write(" BAD_DUMP");
 
                         sw.Write("\n");
@@ -424,25 +424,25 @@ namespace SabreTools.Library.DatFiles
                             sw.Write(rom.Size);
 
                         // If we have a baddump, put the first indicator
-                        if (!ExcludeFields[(int)Field.Status] && rom.ItemStatus == ItemStatus.BadDump)
+                        if (!DatHeader.ExcludeFields[(int)Field.Status] && rom.ItemStatus == ItemStatus.BadDump)
                             sw.Write(" BAD");
 
                         // If we have a nodump, write out the indicator
-                        if (!ExcludeFields[(int)Field.Status] && rom.ItemStatus == ItemStatus.Nodump)
+                        if (!DatHeader.ExcludeFields[(int)Field.Status] && rom.ItemStatus == ItemStatus.Nodump)
                         {
                             sw.Write(" NO GOOD DUMP KNOWN");
                         }
                         // Otherwise, write out the CRC and SHA-1 hashes
                         else
                         {
-                            if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.CRC, ExcludeFields)))
+                            if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.CRC, DatHeader.ExcludeFields)))
                                 sw.Write($" CRC({rom.CRC})");
-                            if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA1, ExcludeFields)))
+                            if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA1, DatHeader.ExcludeFields)))
                                 sw.Write($" SHA1({rom.SHA1})");
                         }
 
                         // If we have a baddump, put the second indicator
-                        if (!ExcludeFields[(int)Field.Status] && rom.ItemStatus == ItemStatus.BadDump)
+                        if (!DatHeader.ExcludeFields[(int)Field.Status] && rom.ItemStatus == ItemStatus.BadDump)
                             sw.Write(" BAD_DUMP");
 
                         sw.Write("\n");

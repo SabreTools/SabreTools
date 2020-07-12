@@ -36,7 +36,7 @@ namespace SabreTools.Library.DatFiles
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
         /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
-        public override void ParseFile(
+        protected override void ParseFile(
             // Standard Dat parsing
             string filename,
             int sysid,
@@ -117,25 +117,25 @@ namespace SabreTools.Library.DatFiles
                 switch (itemKey)
                 {
                     case "name":
-                        Name = (string.IsNullOrWhiteSpace(Name) ? itemVal : Name);
+                        DatHeader.Name = (string.IsNullOrWhiteSpace(DatHeader.Name) ? itemVal : DatHeader.Name);
                         break;
                     case "description":
-                        Description = (string.IsNullOrWhiteSpace(Description) ? itemVal : Description);
+                        DatHeader.Description = (string.IsNullOrWhiteSpace(DatHeader.Description) ? itemVal : DatHeader.Description);
                         break;
                     case "dersion":
-                        Version = (string.IsNullOrWhiteSpace(Version) ? itemVal : Version);
+                        DatHeader.Version = (string.IsNullOrWhiteSpace(DatHeader.Version) ? itemVal : DatHeader.Version);
                         break;
                     case "date":
-                        Date = (string.IsNullOrWhiteSpace(Date) ? itemVal : Date);
+                        DatHeader.Date = (string.IsNullOrWhiteSpace(DatHeader.Date) ? itemVal : DatHeader.Date);
                         break;
                     case "author":
-                        Author = (string.IsNullOrWhiteSpace(Author) ? itemVal : Author);
+                        DatHeader.Author = (string.IsNullOrWhiteSpace(DatHeader.Author) ? itemVal : DatHeader.Author);
                         break;
                     case "homepage":
-                        Homepage = (string.IsNullOrWhiteSpace(Homepage) ? itemVal : Homepage);
+                        DatHeader.Homepage = (string.IsNullOrWhiteSpace(DatHeader.Homepage) ? itemVal : DatHeader.Homepage);
                         break;
                     case "comment":
-                        Comment = (string.IsNullOrWhiteSpace(Comment) ? itemVal : Comment);
+                        DatHeader.Comment = (string.IsNullOrWhiteSpace(DatHeader.Comment) ? itemVal : DatHeader.Comment);
                         break;
                 }
             }
@@ -392,13 +392,13 @@ namespace SabreTools.Library.DatFiles
             try
             {
                 cmpw.WriteStartElement("DOSCenter");
-                cmpw.WriteStandalone("Name:", Name, false);
-                cmpw.WriteStandalone("Description:", Description, false);
-                cmpw.WriteStandalone("Version:", Version, false);
-                cmpw.WriteStandalone("Date:", Date, false);
-                cmpw.WriteStandalone("Author:", Author, false);
-                cmpw.WriteStandalone("Homepage:", Homepage, false);
-                cmpw.WriteStandalone("Comment:", Comment, false);
+                cmpw.WriteStandalone("Name:", DatHeader.Name, false);
+                cmpw.WriteStandalone("Description:", DatHeader.Description, false);
+                cmpw.WriteStandalone("Version:", DatHeader.Version, false);
+                cmpw.WriteStandalone("Date:", DatHeader.Date, false);
+                cmpw.WriteStandalone("Author:", DatHeader.Author, false);
+                cmpw.WriteStandalone("Homepage:", DatHeader.Homepage, false);
+                cmpw.WriteStandalone("Comment:", DatHeader.Comment, false);
                 cmpw.WriteEndElement();
 
                 cmpw.Flush();
@@ -427,7 +427,7 @@ namespace SabreTools.Library.DatFiles
 
                 // Build the state based on excluded fields
                 cmpw.WriteStartElement("game");
-                cmpw.WriteStandalone("name", $"{datItem.GetField(Field.MachineName, ExcludeFields)}.zip", true);
+                cmpw.WriteStandalone("name", $"{datItem.GetField(Field.MachineName, DatHeader.ExcludeFields)}.zip", true);
 
                 cmpw.Flush();
             }
@@ -488,12 +488,12 @@ namespace SabreTools.Library.DatFiles
                     case ItemType.Rom:
                         var rom = datItem as Rom;
                         cmpw.WriteStartElement("file");
-                        cmpw.WriteAttributeString("name", datItem.GetField(Field.Name, ExcludeFields));
-                        if (!ExcludeFields[(int)Field.Size] && rom.Size != -1)
+                        cmpw.WriteAttributeString("name", datItem.GetField(Field.Name, DatHeader.ExcludeFields));
+                        if (!DatHeader.ExcludeFields[(int)Field.Size] && rom.Size != -1)
                             cmpw.WriteAttributeString("size", rom.Size.ToString());
-                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Date, ExcludeFields)))
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Date, DatHeader.ExcludeFields)))
                             cmpw.WriteAttributeString("date", rom.Date);
-                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.CRC, ExcludeFields)))
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.CRC, DatHeader.ExcludeFields)))
                             cmpw.WriteAttributeString("crc", rom.CRC.ToLowerInvariant());
                         cmpw.WriteEndElement();
                         break;

@@ -39,7 +39,7 @@ namespace SabreTools.Library.DatFiles
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
         /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
-        public override void ParseFile(
+        protected override void ParseFile(
             // Standard Dat parsing
             string filename,
             int sysid,
@@ -204,10 +204,10 @@ namespace SabreTools.Library.DatFiles
                             case ItemType.Rom:
                                 var rom = datItem as Rom;
                                 fields[0] = string.Empty;
-                                if (GameName)
-                                    fields[0] = $"{rom.GetField(Field.MachineName, ExcludeFields)}{Path.DirectorySeparatorChar}";
-                                fields[0] += rom.GetField(Field.Name, ExcludeFields);
-                                fields[1] = rom.GetField(Field.CRC, ExcludeFields);
+                                if (DatHeader.GameName)
+                                    fields[0] = $"{rom.GetField(Field.MachineName, DatHeader.ExcludeFields)}{Path.DirectorySeparatorChar}";
+                                fields[0] += rom.GetField(Field.Name, DatHeader.ExcludeFields);
+                                fields[1] = rom.GetField(Field.CRC, DatHeader.ExcludeFields);
                                 break;
                         }
                         break;
@@ -226,20 +226,20 @@ namespace SabreTools.Library.DatFiles
                         {
                             case ItemType.Disk:
                                 var disk = datItem as Disk;
-                                fields[0] = disk.GetField(hashField, ExcludeFields);
+                                fields[0] = disk.GetField(hashField, DatHeader.ExcludeFields);
                                 fields[1] = string.Empty;
-                                if (GameName)
-                                    fields[1] = $"{disk.GetField(Field.MachineName, ExcludeFields)}{Path.DirectorySeparatorChar}";
-                                fields[1] += disk.GetField(Field.Name, ExcludeFields);
+                                if (DatHeader.GameName)
+                                    fields[1] = $"{disk.GetField(Field.MachineName, DatHeader.ExcludeFields)}{Path.DirectorySeparatorChar}";
+                                fields[1] += disk.GetField(Field.Name, DatHeader.ExcludeFields);
                                 break;
 
                             case ItemType.Rom:
                                 var rom = datItem as Rom;
-                                fields[0] = rom.GetField(hashField, ExcludeFields);
+                                fields[0] = rom.GetField(hashField, DatHeader.ExcludeFields);
                                 fields[1] = string.Empty;
-                                if (GameName)
-                                    fields[1] = $"{rom.GetField(Field.MachineName, ExcludeFields)}{Path.DirectorySeparatorChar}";
-                                fields[1] += rom.GetField(Field.Name, ExcludeFields);
+                                if (DatHeader.GameName)
+                                    fields[1] = $"{rom.GetField(Field.MachineName, DatHeader.ExcludeFields)}{Path.DirectorySeparatorChar}";
+                                fields[1] += rom.GetField(Field.Name, DatHeader.ExcludeFields);
                                 break;
                         }
                         break;

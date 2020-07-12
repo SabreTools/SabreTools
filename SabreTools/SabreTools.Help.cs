@@ -2846,7 +2846,7 @@ Some special strings that can be used:
 
                 // Create a new DATFromDir object and process the inputs
                 DatFile basedat = DatFile.Create(datHeader);
-                basedat.Date = DateTime.Now.ToString("yyyy-MM-dd");
+                basedat.SetDate(DateTime.Now.ToString("yyyy-MM-dd"));
 
                 // For each input directory, create a DAT
                 foreach (string path in Inputs)
@@ -3111,9 +3111,9 @@ The following systems have headers that this program can work with:
 
                         // If we have the depot flag, respect it
                         if (depot)
-                            datdata.RebuildDepot(Inputs, Path.Combine(outDir, datdata.FileName), date, delete, inverse, outputFormat, updateDat, headerToCheckAgainst);
+                            datdata.RebuildDepot(Inputs, Path.Combine(outDir, datdata.GetFileName()), date, delete, inverse, outputFormat, updateDat, headerToCheckAgainst);
                         else
-                            datdata.RebuildGeneric(Inputs, Path.Combine(outDir, datdata.FileName), quickScan, date, delete, inverse, outputFormat, asl, updateDat, headerToCheckAgainst, chdsAsFiles);
+                            datdata.RebuildGeneric(Inputs, Path.Combine(outDir, datdata.GetFileName()), quickScan, date, delete, inverse, outputFormat, asl, updateDat, headerToCheckAgainst, chdsAsFiles);
                     }
                 }
 

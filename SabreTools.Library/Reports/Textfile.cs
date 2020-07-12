@@ -1,7 +1,5 @@
 ﻿using System.IO;
-using System.Linq;
 
-using SabreTools.Library.DatFiles;
 using SabreTools.Library.Tools;
 
 namespace SabreTools.Library.Reports
@@ -12,58 +10,55 @@ namespace SabreTools.Library.Reports
     internal class Textfile : BaseReport
     {
         /// <summary>
-        /// Create a new report from the input DatFile and the filename
+        /// Create a new report from the filename
         /// </summary>
-        /// <param name="datfile">DatFile to write out statistics for</param>
         /// <param name="filename">Name of the file to write out to</param>
         /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
         /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
-        public Textfile(DatFile datfile, string filename, bool baddumpCol = false, bool nodumpCol = false)
-            : base(datfile, filename, baddumpCol, nodumpCol)
+        public Textfile(string filename, bool baddumpCol = false, bool nodumpCol = false)
+            : base(filename, baddumpCol, nodumpCol)
         {
         }
 
         /// <summary>
-        /// Create a new report from the input DatFile and the stream
+        /// Create a new report from the stream
         /// </summary>
-        /// <param name="datfile">DatFile to write out statistics for</param>
         /// <param name="stream">Output stream to write to</param>
         /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
         /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
-        public Textfile(DatFile datfile, Stream stream, bool baddumpCol = false, bool nodumpCol = false)
-            : base(datfile, stream, baddumpCol, nodumpCol)
+        public Textfile(Stream stream, bool baddumpCol = false, bool nodumpCol = false)
+            : base(stream, baddumpCol, nodumpCol)
         {
         }
 
         /// <summary>
         /// Write the report to file
         /// </summary>
-        /// <param name="game">Number of games to use, -1 means use the number of keys</param>
-        public override void Write(long game = -1)
+        public override void Write()
         {
-            string line = @"'" + _datFile.FileName + @"':
+            string line = @"'" + _name + @"':
 --------------------------------------------------
-    Uncompressed size:       " + Utilities.GetBytesReadable(_datFile.TotalSize) + @"
-    Games found:             " + (game == -1 ? _datFile.Keys.Count() : game) + @"
-    Roms found:              " + _datFile.RomCount + @"
-    Disks found:             " + _datFile.DiskCount + @"
-    Roms with CRC:           " + _datFile.CRCCount + @"
-    Roms with MD5:           " + _datFile.MD5Count
+    Uncompressed size:       " + Utilities.GetBytesReadable(_stats.TotalSize) + @"
+    Games found:             " + _machineCount + @"
+    Roms found:              " + _stats.RomCount + @"
+    Disks found:             " + _stats.DiskCount + @"
+    Roms with CRC:           " + _stats.CRCCount + @"
+    Roms with MD5:           " + _stats.MD5Count
 #if NET_FRAMEWORK
 + @"
-    Roms with RIPEMD160:     " + _datFile.RIPEMD160Count
+    Roms with RIPEMD160:     " + _stats.RIPEMD160Count
 #endif
 + @"
-    Roms with SHA-1:         " + _datFile.SHA1Count + @"
-    Roms with SHA-256:       " + _datFile.SHA256Count + @"
-    Roms with SHA-384:       " + _datFile.SHA384Count + @"
-    Roms with SHA-512:       " + _datFile.SHA512Count + "\n";
+    Roms with SHA-1:         " + _stats.SHA1Count + @"
+    Roms with SHA-256:       " + _stats.SHA256Count + @"
+    Roms with SHA-384:       " + _stats.SHA384Count + @"
+    Roms with SHA-512:       " + _stats.SHA512Count + "\n";
 
             if (_baddumpCol)
-                line += "	Roms with BadDump status: " + _datFile.BaddumpCount + "\n";
+                line += "	Roms with BadDump status: " + _stats.BaddumpCount + "\n";
 
             if (_nodumpCol)
-                line += "	Roms with Nodump status: " + _datFile.NodumpCount + "\n";
+                line += "	Roms with Nodump status: " + _stats.NodumpCount + "\n";
 
             // For spacing between DATs
             line += "\n\n";

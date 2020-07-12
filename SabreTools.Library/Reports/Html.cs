@@ -1,9 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Net;
 
-using SabreTools.Library.DatFiles;
 using SabreTools.Library.Tools;
 
 namespace SabreTools.Library.Reports
@@ -15,51 +13,49 @@ namespace SabreTools.Library.Reports
     internal class Html : BaseReport
     {
         /// <summary>
-        /// Create a new report from the input DatFile and the filename
+        /// Create a new report from the filename
         /// </summary>
-        /// <param name="datfile">DatFile to write out statistics for</param>
         /// <param name="filename">Name of the file to write out to</param>
         /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
         /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
-        public Html(DatFile datfile, string filename, bool baddumpCol = false, bool nodumpCol = false)
-            : base(datfile, filename, baddumpCol, nodumpCol)
+        public Html(string filename, bool baddumpCol = false, bool nodumpCol = false)
+            : base(filename, baddumpCol, nodumpCol)
         {
         }
 
         /// <summary>
-        /// Create a new report from the input DatFile and the stream
+        /// Create a new report from the stream
         /// </summary>
         /// <param name="datfile">DatFile to write out statistics for</param>
         /// <param name="stream">Output stream to write to</param>
         /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
         /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
-        public Html(DatFile datfile, Stream stream, bool baddumpCol = false, bool nodumpCol = false)
-            : base(datfile, stream, baddumpCol, nodumpCol)
+        public Html(Stream stream, bool baddumpCol = false, bool nodumpCol = false)
+            : base(stream, baddumpCol, nodumpCol)
         {
         }
 
         /// <summary>
         /// Write the report to file
         /// </summary>
-        /// <param name="game">Number of games to use, -1 means use the number of keys</param>
-        public override void Write(long game = -1)
+        public override void Write()
         {
-            string line = "\t\t\t<tr" + (_datFile.FileName.StartsWith("DIR: ")
-                            ? $" class=\"dir\"><td>{WebUtility.HtmlEncode(_datFile.FileName.Remove(0, 5))}"
-                            : $"><td>{WebUtility.HtmlEncode(_datFile.FileName)}") + "</td>"
-                        + $"<td align=\"right\">{Utilities.GetBytesReadable(_datFile.TotalSize)}</td>"
-                        + $"<td align=\"right\">{(game == -1 ? _datFile.Keys.Count() : game)}</td>"
-                        + $"<td align=\"right\">{_datFile.RomCount}</td>"
-                        + $"<td align=\"right\">{_datFile.DiskCount}</td>"
-                        + $"<td align=\"right\">{_datFile.CRCCount}</td>"
-                        + $"<td align=\"right\">{_datFile.MD5Count}</td>"
+            string line = "\t\t\t<tr" + (_name.StartsWith("DIR: ")
+                            ? $" class=\"dir\"><td>{WebUtility.HtmlEncode(_name.Remove(0, 5))}"
+                            : $"><td>{WebUtility.HtmlEncode(_name)}") + "</td>"
+                        + $"<td align=\"right\">{Utilities.GetBytesReadable(_stats.TotalSize)}</td>"
+                        + $"<td align=\"right\">{_machineCount}</td>"
+                        + $"<td align=\"right\">{_stats.RomCount}</td>"
+                        + $"<td align=\"right\">{_stats.DiskCount}</td>"
+                        + $"<td align=\"right\">{_stats.CRCCount}</td>"
+                        + $"<td align=\"right\">{_stats.MD5Count}</td>"
 #if NET_FRAMEWORK
-                        + $"<td align=\"right\">{_datFile.RIPEMD160Count}</td>"
+                        + $"<td align=\"right\">{_stats.RIPEMD160Count}</td>"
 #endif
-                        + $"<td align=\"right\">{_datFile.SHA1Count}</td>"
-                        + $"<td align=\"right\">{_datFile.SHA256Count}</td>"
-                        + (_baddumpCol ? $"<td align=\"right\">{_datFile.BaddumpCount}</td>" : string.Empty)
-                        + (_nodumpCol ? $"<td align=\"right\">{_datFile.NodumpCount}</td>" : string.Empty)
+                        + $"<td align=\"right\">{_stats.SHA1Count}</td>"
+                        + $"<td align=\"right\">{_stats.SHA256Count}</td>"
+                        + (_baddumpCol ? $"<td align=\"right\">{_stats.BaddumpCount}</td>" : string.Empty)
+                        + (_nodumpCol ? $"<td align=\"right\">{_stats.NodumpCount}</td>" : string.Empty)
                         + "</tr>\n";
             _writer.Write(line);
             _writer.Flush();

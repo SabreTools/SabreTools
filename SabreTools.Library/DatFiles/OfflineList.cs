@@ -37,7 +37,7 @@ namespace SabreTools.Library.DatFiles
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         /// <remarks>
         /// </remarks>
-        public override void ParseFile(
+        protected override void ParseFile(
             // Standard Dat parsing
             string filename,
             int sysid,
@@ -132,17 +132,17 @@ namespace SabreTools.Library.DatFiles
                 {
                     case "datname":
                         content = reader.ReadElementContentAsString();
-                        Name = (string.IsNullOrWhiteSpace(Name) ? content : Name);
+                        DatHeader.Name = (string.IsNullOrWhiteSpace(DatHeader.Name) ? content : DatHeader.Name);
                         superdat = superdat || content.Contains(" - SuperDAT");
                         if (keep && superdat)
                         {
-                            Type = (string.IsNullOrWhiteSpace(Type) ? "SuperDAT" : Type);
+                            DatHeader.Type = (string.IsNullOrWhiteSpace(DatHeader.Type) ? "SuperDAT" : DatHeader.Type);
                         }
                         break;
 
                     case "datversion":
                         content = reader.ReadElementContentAsString();
-                        Version = (string.IsNullOrWhiteSpace(Version) ? content : Version);
+                        DatHeader.Version = (string.IsNullOrWhiteSpace(DatHeader.Version) ? content : DatHeader.Version);
                         break;
 
                     case "system":
@@ -389,7 +389,7 @@ namespace SabreTools.Library.DatFiles
                 {
                     case "datversionurl":
                         content = reader.ReadElementContentAsString();
-                        Url = (string.IsNullOrWhiteSpace(Name) ? content : Url);
+                        DatHeader.Url = (string.IsNullOrWhiteSpace(DatHeader.Url) ? content : DatHeader.Url);
                         break;
 
                     case "daturl":
@@ -857,8 +857,8 @@ namespace SabreTools.Library.DatFiles
                 xtw.WriteAttributeString("noNamespaceSchemaLocation", "xsi", "datas.xsd");
 
                 xtw.WriteStartElement("configuration");
-                xtw.WriteElementString("datName", Name);
-                xtw.WriteElementString("datVersion", Count.ToString());
+                xtw.WriteElementString("datName", DatHeader.Name);
+                xtw.WriteElementString("datVersion", DatStats.Count.ToString());
                 xtw.WriteElementString("system", "none");
                 xtw.WriteElementString("screenshotsWidth", "240");
                 xtw.WriteElementString("screenshotsHeight", "160");
@@ -951,14 +951,14 @@ namespace SabreTools.Library.DatFiles
                 xtw.WriteEndElement();
 
                 xtw.WriteStartElement("newDat");
-                xtw.WriteElementString("datVersionURL", Url);
+                xtw.WriteElementString("datVersionURL", DatHeader.Url);
 
                 xtw.WriteStartElement("datUrl");
-                xtw.WriteAttributeString("fileName", $"{FileName}.zip");
-                xtw.WriteString(Url);
+                xtw.WriteAttributeString("fileName", $"{DatHeader.FileName}.zip");
+                xtw.WriteString(DatHeader.Url);
                 xtw.WriteEndElement();
 
-                xtw.WriteElementString("imURL", Url);
+                xtw.WriteElementString("imURL", DatHeader.Url);
 
                 // End newDat
                 xtw.WriteEndElement();
@@ -1044,13 +1044,13 @@ namespace SabreTools.Library.DatFiles
                 xtw.WriteStartElement("game");
                 xtw.WriteElementString("imageNumber", "1");
                 xtw.WriteElementString("releaseNumber", "1");
-                xtw.WriteElementString("title", datItem.GetField(Field.Name, ExcludeFields));
+                xtw.WriteElementString("title", datItem.GetField(Field.Name, DatHeader.ExcludeFields));
                 xtw.WriteElementString("saveType", "None");
 
                 if (datItem.ItemType == ItemType.Rom)
                 {
                     var rom = datItem as Rom;
-                    xtw.WriteElementString("romSize", datItem.GetField(Field.Size, ExcludeFields));
+                    xtw.WriteElementString("romSize", datItem.GetField(Field.Size, DatHeader.ExcludeFields));
                 }
 
                 xtw.WriteElementString("publisher", "None");
@@ -1062,14 +1062,14 @@ namespace SabreTools.Library.DatFiles
                 {
                     var disk = datItem as Disk;
                     xtw.WriteStartElement("files");
-                    if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.MD5, ExcludeFields)))
+                    if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.MD5, DatHeader.ExcludeFields)))
                     {
                         xtw.WriteStartElement("romMD5");
                         xtw.WriteAttributeString("extension", ".chd");
                         xtw.WriteString(disk.MD5.ToUpperInvariant());
                         xtw.WriteEndElement();
                     }
-                    else if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA1, ExcludeFields)))
+                    else if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA1, DatHeader.ExcludeFields)))
                     {
                         xtw.WriteStartElement("romSHA1");
                         xtw.WriteAttributeString("extension", ".chd");
@@ -1086,21 +1086,21 @@ namespace SabreTools.Library.DatFiles
                     string tempext = "." + PathExtensions.GetNormalizedExtension(rom.Name);
 
                     xtw.WriteStartElement("files");
-                    if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.CRC, ExcludeFields)))
+                    if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.CRC, DatHeader.ExcludeFields)))
                     {
                         xtw.WriteStartElement("romCRC");
                         xtw.WriteAttributeString("extension", tempext);
                         xtw.WriteString(rom.CRC.ToUpperInvariant());
                         xtw.WriteEndElement();
                     }
-                    else if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.MD5, ExcludeFields)))
+                    else if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.MD5, DatHeader.ExcludeFields)))
                     {
                         xtw.WriteStartElement("romMD5");
                         xtw.WriteAttributeString("extension", tempext);
                         xtw.WriteString(rom.MD5.ToUpperInvariant());
                         xtw.WriteEndElement();
                     }
-                    else if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA1, ExcludeFields)))
+                    else if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.SHA1, DatHeader.ExcludeFields)))
                     {
                         xtw.WriteStartElement("romSHA1");
                         xtw.WriteAttributeString("extension", tempext);

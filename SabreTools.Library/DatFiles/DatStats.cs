@@ -240,6 +240,42 @@ namespace SabreTools.Library.DatFiles
         }
 
         /// <summary>
+        /// Get the highest-order SortedBy value that represents the statistics
+        /// </summary>
+        public SortedBy GetBestAvailable()
+        {
+            // If all items are supposed to have a SHA-512, we sort by that
+            if (RomCount + DiskCount - NodumpCount == SHA512Count)
+                return SortedBy.SHA512;
+
+            // If all items are supposed to have a SHA-384, we sort by that
+            else if (RomCount + DiskCount - NodumpCount == SHA384Count)
+                return SortedBy.SHA384;
+
+            // If all items are supposed to have a SHA-256, we sort by that
+            else if (RomCount + DiskCount - NodumpCount == SHA256Count)
+                return SortedBy.SHA256;
+
+            // If all items are supposed to have a SHA-1, we sort by that
+            else if (RomCount + DiskCount - NodumpCount == SHA1Count)
+                return SortedBy.SHA1;
+
+#if NET_FRAMEWORK
+            // If all items are supposed to have a RIPEMD160, we sort by that
+            else if (RomCount + DiskCount - NodumpCount == RIPEMD160Count)
+                return SortedBy.RIPEMD160;
+#endif
+
+            // If all items are supposed to have a MD5, we sort by that
+            else if (RomCount + DiskCount - NodumpCount == MD5Count)
+                return SortedBy.MD5;
+
+            // Otherwise, we sort by CRC
+            else
+                return SortedBy.CRC;
+        }
+
+        /// <summary>
         /// Remove from the statistics given a DatItem
         /// </summary>
         /// <param name="item">Item to remove info for</param>

@@ -34,7 +34,7 @@ namespace SabreTools.Library.DatFiles
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
         /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
-        public override void ParseFile(
+        protected override void ParseFile(
             // Standard Dat parsing
             string filename,
             int sysid,
@@ -191,12 +191,12 @@ namespace SabreTools.Library.DatFiles
 
                         string[] fields = new string[]
                         {
-                            rom.GetField(Field.SHA256, ExcludeFields),
-                            $"{rom.GetField(Field.MachineName, ExcludeFields)}/",
-                            rom.GetField(Field.Name, ExcludeFields),
-                            rom.GetField(Field.SHA1, ExcludeFields),
-                            rom.GetField(Field.MD5, ExcludeFields),
-                            rom.GetField(Field.CRC, ExcludeFields),
+                            rom.GetField(Field.SHA256, DatHeader.ExcludeFields),
+                            $"{rom.GetField(Field.MachineName, DatHeader.ExcludeFields)}/",
+                            rom.GetField(Field.Name, DatHeader.ExcludeFields),
+                            rom.GetField(Field.SHA1, DatHeader.ExcludeFields),
+                            rom.GetField(Field.MD5, DatHeader.ExcludeFields),
+                            rom.GetField(Field.CRC, DatHeader.ExcludeFields),
                         };
 
                         svw.WriteValues(fields);

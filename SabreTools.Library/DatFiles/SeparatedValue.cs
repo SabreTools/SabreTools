@@ -40,7 +40,7 @@ namespace SabreTools.Library.DatFiles
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
         /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
-        public override void ParseFile(
+        protected override void ParseFile(
             // Standard Dat parsing
             string filename,
             int sysid,
@@ -122,71 +122,71 @@ namespace SabreTools.Library.DatFiles
                         #region DatFile
 
                         case "DatFile.FileName":
-                            FileName = (string.IsNullOrWhiteSpace(FileName) ? value : FileName);
+                            DatHeader.FileName = (string.IsNullOrWhiteSpace(DatHeader.FileName) ? value : DatHeader.FileName);
                             break;
 
                         case "DatFile.Name":
-                            Name = (string.IsNullOrWhiteSpace(Name) ? value : Name);
+                            DatHeader.Name = (string.IsNullOrWhiteSpace(DatHeader.Name) ? value : DatHeader.Name);
                             break;
 
                         case "DatFile.Description":
-                            Description = (string.IsNullOrWhiteSpace(Description) ? value : Description);
+                            DatHeader.Description = (string.IsNullOrWhiteSpace(DatHeader.Description) ? value : DatHeader.Description);
                             break;
 
                         case "DatFile.RootDir":
-                            RootDir = (string.IsNullOrWhiteSpace(RootDir) ? value : RootDir);
+                            DatHeader.RootDir = (string.IsNullOrWhiteSpace(DatHeader.RootDir) ? value : DatHeader.RootDir);
                             break;
 
                         case "DatFile.Category":
-                            Category = (string.IsNullOrWhiteSpace(Category) ? value : Category);
+                            DatHeader.Category = (string.IsNullOrWhiteSpace(DatHeader.Category) ? value : DatHeader.Category);
                             break;
 
                         case "DatFile.Version":
-                            Version = (string.IsNullOrWhiteSpace(Version) ? value : Version);
+                            DatHeader.Version = (string.IsNullOrWhiteSpace(DatHeader.Version) ? value : DatHeader.Version);
                             break;
 
                         case "DatFile.Date":
-                            Date = (string.IsNullOrWhiteSpace(Date) ? value : Date);
+                            DatHeader.Date = (string.IsNullOrWhiteSpace(DatHeader.Date) ? value : DatHeader.Date);
                             break;
 
                         case "DatFile.Author":
-                            Author = (string.IsNullOrWhiteSpace(Author) ? value : Author);
+                            DatHeader.Author = (string.IsNullOrWhiteSpace(DatHeader.Author) ? value : DatHeader.Author);
                             break;
 
                         case "DatFile.Email":
-                            Email = (string.IsNullOrWhiteSpace(Email) ? value : Email);
+                            DatHeader.Email = (string.IsNullOrWhiteSpace(DatHeader.Email) ? value : DatHeader.Email);
                             break;
 
                         case "DatFile.Homepage":
-                            Homepage = (string.IsNullOrWhiteSpace(Homepage) ? value : Homepage);
+                            DatHeader.Homepage = (string.IsNullOrWhiteSpace(DatHeader.Homepage) ? value : DatHeader.Homepage);
                             break;
 
                         case "DatFile.Url":
-                            Url = (string.IsNullOrWhiteSpace(Url) ? value : Url);
+                            DatHeader.Url = (string.IsNullOrWhiteSpace(DatHeader.Url) ? value : DatHeader.Url);
                             break;
 
                         case "DatFile.Comment":
-                            Comment = (string.IsNullOrWhiteSpace(Comment) ? value : Comment);
+                            DatHeader.Comment = (string.IsNullOrWhiteSpace(DatHeader.Comment) ? value : DatHeader.Comment);
                             break;
 
                         case "DatFile.Header":
-                            Header = (string.IsNullOrWhiteSpace(Header) ? value : Header);
+                            DatHeader.Header = (string.IsNullOrWhiteSpace(DatHeader.Header) ? value : DatHeader.Header);
                             break;
 
                         case "DatFile.Type":
-                            Type = (string.IsNullOrWhiteSpace(Type) ? value : Type);
+                            DatHeader.Type = (string.IsNullOrWhiteSpace(DatHeader.Type) ? value : DatHeader.Type);
                             break;
 
                         case "DatFile.ForceMerging":
-                            ForceMerging = (ForceMerging == ForceMerging.None ? value.AsForceMerging() : ForceMerging);
+                            DatHeader.ForceMerging = (DatHeader.ForceMerging == ForceMerging.None ? value.AsForceMerging() : DatHeader.ForceMerging);
                             break;
 
                         case "DatFile.ForceNodump":
-                            ForceNodump = (ForceNodump == ForceNodump.None ? value.AsForceNodump() : ForceNodump);
+                            DatHeader.ForceNodump = (DatHeader.ForceNodump == ForceNodump.None ? value.AsForceNodump() : DatHeader.ForceNodump);
                             break;
 
                         case "DatFile.ForcePacking":
-                            ForcePacking = (ForcePacking == ForcePacking.None ? value.AsForcePacking() : ForcePacking);
+                            DatHeader.ForcePacking = (DatHeader.ForcePacking == ForcePacking.None ? value.AsForcePacking() : DatHeader.ForcePacking);
                             break;
 
                         #endregion
@@ -1038,11 +1038,11 @@ namespace SabreTools.Library.DatFiles
                 // Build the state based on excluded fields
                 // TODO: Can we have some way of saying what fields to write out? Support for read extends to all fields now
                 string[] fields = new string[14]; // 17;
-                fields[0] = FileName;
-                fields[1] = Name;
-                fields[2] = Description;
-                fields[3] = datItem.GetField(Field.MachineName, ExcludeFields);
-                fields[4] = datItem.GetField(Field.Description, ExcludeFields);
+                fields[0] = DatHeader.FileName;
+                fields[1] = DatHeader.Name;
+                fields[2] = DatHeader.Description;
+                fields[3] = datItem.GetField(Field.MachineName, DatHeader.ExcludeFields);
+                fields[4] = datItem.GetField(Field.Description, DatHeader.ExcludeFields);
 
                 switch (datItem.ItemType)
                 {
@@ -1050,32 +1050,32 @@ namespace SabreTools.Library.DatFiles
                         var disk = datItem as Disk;
                         fields[5] = "disk";
                         fields[6] = string.Empty;
-                        fields[7] = disk.GetField(Field.Name, ExcludeFields);
+                        fields[7] = disk.GetField(Field.Name, DatHeader.ExcludeFields);
                         fields[8] = string.Empty;
                         fields[9] = string.Empty;
-                        fields[10] = disk.GetField(Field.MD5, ExcludeFields).ToLowerInvariant();
-                        //fields[11] = disk.GetField(Field.RIPEMD160, ExcludeFields).ToLowerInvariant();
-                        fields[11] = disk.GetField(Field.SHA1, ExcludeFields).ToLowerInvariant();
-                        fields[12] = disk.GetField(Field.SHA256, ExcludeFields).ToLowerInvariant();
-                        //fields[13] = disk.GetField(Field.SHA384, ExcludeFields).ToLowerInvariant();
-                        //fields[14] = disk.GetField(Field.SHA512, ExcludeFields).ToLowerInvariant();
-                        fields[13] = disk.GetField(Field.Status, ExcludeFields);
+                        fields[10] = disk.GetField(Field.MD5, DatHeader.ExcludeFields).ToLowerInvariant();
+                        //fields[11] = disk.GetField(Field.RIPEMD160, DatHeader.ExcludeFields).ToLowerInvariant();
+                        fields[11] = disk.GetField(Field.SHA1, DatHeader.ExcludeFields).ToLowerInvariant();
+                        fields[12] = disk.GetField(Field.SHA256, DatHeader.ExcludeFields).ToLowerInvariant();
+                        //fields[13] = disk.GetField(Field.SHA384, DatHeader.ExcludeFields).ToLowerInvariant();
+                        //fields[14] = disk.GetField(Field.SHA512, DatHeader.ExcludeFields).ToLowerInvariant();
+                        fields[13] = disk.GetField(Field.Status, DatHeader.ExcludeFields);
                         break;
 
                     case ItemType.Rom:
                         var rom = datItem as Rom;
                         fields[5] = "rom";
-                        fields[6] = rom.GetField(Field.Name, ExcludeFields);
+                        fields[6] = rom.GetField(Field.Name, DatHeader.ExcludeFields);
                         fields[7] = string.Empty;
-                        fields[8] = rom.GetField(Field.Size, ExcludeFields);
-                        fields[9] = rom.GetField(Field.CRC, ExcludeFields).ToLowerInvariant();
-                        fields[10] = rom.GetField(Field.MD5, ExcludeFields).ToLowerInvariant();
-                        //fields[11] = rom.GetField(Field.RIPEMD160, ExcludeFields).ToLowerInvariant();
-                        fields[11] = rom.GetField(Field.SHA1, ExcludeFields).ToLowerInvariant();
-                        fields[12] = rom.GetField(Field.SHA256, ExcludeFields).ToLowerInvariant();
-                        //fields[13] = rom.GetField(Field.SHA384, ExcludeFields).ToLowerInvariant();
-                        //fields[14] = rom.GetField(Field.SHA512, ExcludeFields).ToLowerInvariant();
-                        fields[13] = rom.GetField(Field.Status, ExcludeFields);
+                        fields[8] = rom.GetField(Field.Size, DatHeader.ExcludeFields);
+                        fields[9] = rom.GetField(Field.CRC, DatHeader.ExcludeFields).ToLowerInvariant();
+                        fields[10] = rom.GetField(Field.MD5, DatHeader.ExcludeFields).ToLowerInvariant();
+                        //fields[11] = rom.GetField(Field.RIPEMD160, DatHeader.ExcludeFields).ToLowerInvariant();
+                        fields[11] = rom.GetField(Field.SHA1, DatHeader.ExcludeFields).ToLowerInvariant();
+                        fields[12] = rom.GetField(Field.SHA256, DatHeader.ExcludeFields).ToLowerInvariant();
+                        //fields[13] = rom.GetField(Field.SHA384, DatHeader.ExcludeFields).ToLowerInvariant();
+                        //fields[14] = rom.GetField(Field.SHA512, DatHeader.ExcludeFields).ToLowerInvariant();
+                        fields[13] = rom.GetField(Field.Status, DatHeader.ExcludeFields);
                         break;
                 }
 

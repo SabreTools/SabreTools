@@ -37,7 +37,7 @@ namespace SabreTools.Library.DatFiles
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         /// <remarks>
         /// </remarks>
-        public override void ParseFile(
+        protected override void ParseFile(
             // Standard Dat parsing
             string filename,
             int sysid,
@@ -71,8 +71,8 @@ namespace SabreTools.Library.DatFiles
                     switch (xtr.Name)
                     {
                         case "softwaredb":
-                            Name = (string.IsNullOrWhiteSpace(Name) ? "openMSX Software List" : Name);
-                            Description = (string.IsNullOrWhiteSpace(Description) ? Name : Name);
+                            DatHeader.Name = (string.IsNullOrWhiteSpace(DatHeader.Name) ? "openMSX Software List" : DatHeader.Name);
+                            DatHeader.Description = (string.IsNullOrWhiteSpace(DatHeader.Description) ? DatHeader.Name : DatHeader.Description);
                             // string timestamp = xtr.GetAttribute("timestamp"); // CDATA
                             xtr.Read();
                             break;
@@ -672,11 +672,11 @@ namespace SabreTools.Library.DatFiles
 
                 // Build the state based on excluded fields
                 xtw.WriteStartElement("software");
-                xtw.WriteElementString("title", datItem.GetField(Field.MachineName, ExcludeFields));
+                xtw.WriteElementString("title", datItem.GetField(Field.MachineName, DatHeader.ExcludeFields));
                 //xtw.WriteElementString("genmsxid", msxid);
                 //xtw.WriteElementString("system", system));
-                xtw.WriteElementString("company", datItem.GetField(Field.Manufacturer, ExcludeFields));
-                xtw.WriteElementString("year", datItem.GetField(Field.Year, ExcludeFields));
+                xtw.WriteElementString("company", datItem.GetField(Field.Manufacturer, DatHeader.ExcludeFields));
+                xtw.WriteElementString("year", datItem.GetField(Field.Year, DatHeader.ExcludeFields));
                 //xtw.WriteElementString("country", country);
 
                 xtw.Flush();
@@ -744,10 +744,10 @@ namespace SabreTools.Library.DatFiles
                         //xtw.WriteEndElement();
 
                         xtw.WriteStartElement("rom");
-                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Offset, ExcludeFields)))
+                        if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Offset, DatHeader.ExcludeFields)))
                             xtw.WriteElementString("start", rom.Offset);
                         //xtw.WriteElementString("type", "Normal");
-                        xtw.WriteElementString("hash", rom.GetField(Field.SHA1, ExcludeFields).ToLowerInvariant());
+                        xtw.WriteElementString("hash", rom.GetField(Field.SHA1, DatHeader.ExcludeFields).ToLowerInvariant());
                         //xtw.WriteElementString("remark", "");
 
                         // End rom

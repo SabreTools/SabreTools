@@ -1,7 +1,4 @@
 ﻿using System.IO;
-using System.Linq;
-
-using SabreTools.Library.DatFiles;
 
 namespace SabreTools.Library.Reports
 {
@@ -13,15 +10,14 @@ namespace SabreTools.Library.Reports
         private char _separator;
 
         /// <summary>
-        /// Create a new report from the input DatFile and the filename
+        /// Create a new report from the filename
         /// </summary>
-        /// <param name="datfile">DatFile to write out statistics for</param>
         /// <param name="filename">Name of the file to write out to</param>
         /// <param name="separator">Separator character to use in output</param>
         /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
         /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
-        public SeparatedValue(DatFile datfile, string filename, char separator, bool baddumpCol = false, bool nodumpCol = false)
-            : base(datfile, filename, baddumpCol, nodumpCol)
+        public SeparatedValue(string filename, char separator, bool baddumpCol = false, bool nodumpCol = false)
+            : base(filename, baddumpCol, nodumpCol)
         {
             _separator = separator;
         }
@@ -29,13 +25,12 @@ namespace SabreTools.Library.Reports
         /// <summary>
         /// Create a new report from the input DatFile and the stream
         /// </summary>
-        /// <param name="datfile">DatFile to write out statistics for</param>
         /// <param name="stream">Output stream to write to</param>
         /// <param name="separator">Separator character to use in output</param>
         /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
         /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
-        public SeparatedValue(DatFile datfile, Stream stream, char separator, bool baddumpCol = false, bool nodumpCol = false)
-            : base(datfile, stream, baddumpCol, nodumpCol)
+        public SeparatedValue(Stream stream, char separator, bool baddumpCol = false, bool nodumpCol = false)
+            : base(stream, baddumpCol, nodumpCol)
         {
             _separator = separator;
         }
@@ -43,25 +38,24 @@ namespace SabreTools.Library.Reports
         /// <summary>
         /// Write the report to file
         /// </summary>
-        /// <param name="game">Number of games to use, -1 means use the number of keys</param>
-        public override void Write(long game = -1)
+        public override void Write()
         {
-            string line = string.Format("\"" + _datFile.FileName + "\"{0}"
-                    + "\"" + _datFile.TotalSize + "\"{0}"
-                    + "\"" + (game == -1 ? _datFile.Keys.Count() : game) + "\"{0}"
-                    + "\"" + _datFile.RomCount + "\"{0}"
-                    + "\"" + _datFile.DiskCount + "\"{0}"
-                    + "\"" + _datFile.CRCCount + "\"{0}"
-                    + "\"" + _datFile.MD5Count + "\"{0}"
+            string line = string.Format("\"" + _name + "\"{0}"
+                    + "\"" + _stats.TotalSize + "\"{0}"
+                    + "\"" + _machineCount + "\"{0}"
+                    + "\"" + _stats.RomCount + "\"{0}"
+                    + "\"" + _stats.DiskCount + "\"{0}"
+                    + "\"" + _stats.CRCCount + "\"{0}"
+                    + "\"" + _stats.MD5Count + "\"{0}"
 #if NET_FRAMEWORK
-                    + "\"" + _datFile.RIPEMD160Count + "\"{0}"
+                    + "\"" + _stats.RIPEMD160Count + "\"{0}"
 #endif
-                    + "\"" + _datFile.SHA1Count + "\"{0}"
-                    + "\"" + _datFile.SHA256Count + "\"{0}"
-                    + "\"" + _datFile.SHA384Count + "\"{0}"
-                    + "\"" + _datFile.SHA512Count + "\""
-                    + (_baddumpCol ? "{0}\"" + _datFile.BaddumpCount + "\"" : string.Empty)
-                    + (_nodumpCol ? "{0}\"" + _datFile.BaddumpCount + "\"" : string.Empty)
+                    + "\"" + _stats.SHA1Count + "\"{0}"
+                    + "\"" + _stats.SHA256Count + "\"{0}"
+                    + "\"" + _stats.SHA384Count + "\"{0}"
+                    + "\"" + _stats.SHA512Count + "\""
+                    + (_baddumpCol ? "{0}\"" + _stats.BaddumpCount + "\"" : string.Empty)
+                    + (_nodumpCol ? "{0}\"" + _stats.NodumpCount + "\"" : string.Empty)
                     + "\n", _separator);
 
             _writer.Write(line);

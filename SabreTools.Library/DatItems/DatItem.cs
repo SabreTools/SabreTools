@@ -965,81 +965,6 @@ namespace SabreTools.Library.DatItems
         #region Sorting and Merging
 
         /// <summary>
-        /// Check if a DAT contains the given rom
-        /// </summary>
-        /// <param name="datdata">Dat to match against</param>
-        /// <param name="sorted">True if the DAT is already sorted accordingly, false otherwise (default)</param>
-        /// <returns>True if it contains the rom, false otherwise</returns>
-        public bool HasDuplicates(DatFile datdata, bool sorted = false)
-        {
-            // Check for an empty rom list first
-            if (datdata.Count == 0)
-                return false;
-
-            // We want to get the proper key for the DatItem
-            string key = SortAndGetKey(datdata, sorted);
-
-            // If the key doesn't exist, return the empty list
-            if (!datdata.Contains(key))
-                return false;
-
-            // Try to find duplicates
-            List<DatItem> roms = datdata[key];
-            return roms.Any(r => this.Equals(r));
-        }
-
-        /// <summary>
-        /// List all duplicates found in a DAT based on a rom
-        /// </summary>
-        /// <param name="datdata">Dat to match against</param>
-        /// <param name="remove">True to mark matched roms for removal from the input, false otherwise (default)</param>
-        /// <param name="sorted">True if the DAT is already sorted accordingly, false otherwise (default)</param>
-        /// <returns>List of matched DatItem objects</returns>
-        public List<DatItem> GetDuplicates(DatFile datdata, bool remove = false, bool sorted = false)
-        {
-            List<DatItem> output = new List<DatItem>();
-
-            // Check for an empty rom list first
-            if (datdata.Count == 0)
-                return output;
-
-            // We want to get the proper key for the DatItem
-            string key = SortAndGetKey(datdata, sorted);
-
-            // If the key doesn't exist, return the empty list
-            if (!datdata.Contains(key))
-                return output;
-
-            // Try to find duplicates
-            List<DatItem> roms = datdata[key];
-            List<DatItem> left = new List<DatItem>();
-            for (int i = 0; i < roms.Count; i++)
-            {
-                DatItem datItem = roms[i];
-
-                if (this.Equals(datItem))
-                {
-                    datItem.Remove = true;
-                    output.Add(datItem);
-                }
-                else
-                {
-                    left.Add(datItem);
-                }
-            }
-
-            // If we're in removal mode, add back all roms with the proper flags
-            if (remove)
-            {
-                datdata.Remove(key);
-                datdata.AddRange(key, output);
-                datdata.AddRange(key, left);
-            }
-
-            return output;
-        }
-
-        /// <summary>
         /// Get the dictionary key that should be used for a given item and sorting type
         /// </summary>
         /// <param name="sortedBy">SortedBy enum representing what key to get</param>
@@ -1131,22 +1056,6 @@ namespace SabreTools.Library.DatItems
                 key = string.Empty;
 
             return key;
-        }
-
-        /// <summary>
-        /// Sort the input DAT and get the key to be used by the item
-        /// </summary>
-        /// <param name="datdata">Dat to match against</param>
-        /// <param name="sorted">True if the DAT is already sorted accordingly, false otherwise (default)</param>
-        /// <returns>Key to try to use</returns>
-        private string SortAndGetKey(DatFile datdata, bool sorted = false)
-        {
-            // If we're not already sorted, take care of it
-            if (!sorted)
-                datdata.BucketByBestAvailable();
-
-            // Now that we have the sorted type, we get the proper key
-            return GetKey(datdata.SortedBy);
         }
 
         #endregion
