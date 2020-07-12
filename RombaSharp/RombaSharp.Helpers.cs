@@ -250,7 +250,7 @@ namespace RombaSharp
 
             // Parse the Dat if possible
             Globals.Logger.User($"Adding from '{dat.Name}'");
-            DatFile tempdat = DatFile.CreateAndParse(fullpath, 0, 0);
+            DatFile tempdat = DatFile.CreateAndParse(fullpath);
 
             // If the Dat wasn't empty, add the information
             SqliteCommand slc = new SqliteCommand();

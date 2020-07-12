@@ -29,16 +29,14 @@ namespace SabreTools.Library.DatFiles
         /// Parse a Logiqx XML DAT and return all found games and roms within
         /// </summary>
         /// <param name="filename">Name of the file to be parsed</param>
-        /// <param name="sysid">System ID for the DAT</param>
-        /// <param name="srcid">Source ID for the DAT</param>
+        /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
         /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         protected override void ParseFile(
             // Standard Dat parsing
             string filename,
-            int sysid,
-            int srcid,
+            int indexId,
 
             // Miscellaneous
             bool keep,
@@ -76,7 +74,7 @@ namespace SabreTools.Library.DatFiles
 
                         // Machine array
                         case "machines":
-                            ReadMachines(sr, jtr, clean, remUnicode);
+                            ReadMachines(sr, jtr, filename, indexId, clean, remUnicode);
                             jtr.Read();
                             break;
 
@@ -228,11 +226,17 @@ namespace SabreTools.Library.DatFiles
         /// </summary>
         /// <param name="sr">StreamReader to use to parse the header</param>
         /// <param name="itr">JsonTextReader to use to parse the machine</param>
+        /// <param name="filename">Name of the file to be parsed</param>
+        /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         private void ReadMachines(
             StreamReader sr,
             JsonTextReader jtr,
+
+            // Standard Dat parsing
+            string filename,
+            int indexId,
 
             // Miscellaneous
             bool clean,
@@ -256,7 +260,7 @@ namespace SabreTools.Library.DatFiles
                     continue;
                 }
 
-                ReadMachine(sr, jtr, clean, remUnicode);
+                ReadMachine(sr, jtr, filename, indexId, clean, remUnicode);
                 jtr.Read();
             }
         }
@@ -266,11 +270,17 @@ namespace SabreTools.Library.DatFiles
         /// </summary>
         /// <param name="sr">StreamReader to use to parse the header</param>
         /// <param name="itr">JsonTextReader to use to parse the machine</param>
+        /// <param name="filename">Name of the file to be parsed</param>
+        /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         private void ReadMachine(
             StreamReader sr,
             JsonTextReader jtr,
+
+            // Standard Dat parsing
+            string filename,
+            int indexId,
 
             // Miscellaneous
             bool clean,
@@ -437,7 +447,7 @@ namespace SabreTools.Library.DatFiles
                         break;
 
                     case "items":
-                        ReadItems(sr, jtr, clean, remUnicode, machine);
+                        ReadItems(sr, jtr, filename, indexId, clean, remUnicode, machine);
                         break;
 
                     default:
@@ -453,11 +463,17 @@ namespace SabreTools.Library.DatFiles
         /// </summary>
         /// <param name="sr">StreamReader to use to parse the header</param>
         /// <param name="itr">JsonTextReader to use to parse the machine</param>
+        /// <param name="filename">Name of the file to be parsed</param>
+        /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         private void ReadItems(
             StreamReader sr,
             JsonTextReader jtr,
+
+            // Standard Dat parsing
+            string filename,
+            int indexId,
 
             // Miscellaneous
             bool clean,
@@ -482,7 +498,7 @@ namespace SabreTools.Library.DatFiles
                     continue;
                 }
 
-                ReadItem(sr, jtr, clean, remUnicode, machine);
+                ReadItem(sr, jtr, filename, indexId, clean, remUnicode, machine);
                 jtr.Read();
             }
         }
@@ -492,11 +508,17 @@ namespace SabreTools.Library.DatFiles
         /// </summary>
         /// <param name="sr">StreamReader to use to parse the header</param>
         /// <param name="itr">JsonTextReader to use to parse the machine</param>
+        /// <param name="filename">Name of the file to be parsed</param>
+        /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         private void ReadItem(
             StreamReader sr,
             JsonTextReader jtr,
+
+            // Standard Dat parsing
+            string filename,
+            int indexId,
 
             // Miscellaneous
             bool clean,
@@ -548,6 +570,8 @@ namespace SabreTools.Library.DatFiles
 
                     DatItem datItem = DatItem.Create(itemType.Value);
                     datItem.CopyMachineInformation(machine);
+                    datItem.IndexId = indexId;
+                    datItem.IndexSource = filename;
 
                     datItem.Name = name;
                     datItem.PartName = partName;

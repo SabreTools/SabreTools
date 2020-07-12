@@ -30,8 +30,7 @@ namespace SabreTools.Library.DatFiles
         /// Parse an OfflineList XML DAT and return all found games and roms within
         /// </summary>
         /// <param name="filename">Name of the file to be parsed</param>
-        /// <param name="sysid">System ID for the DAT</param>
-        /// <param name="srcid">Source ID for the DAT</param>
+        /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
         /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
@@ -40,8 +39,7 @@ namespace SabreTools.Library.DatFiles
         protected override void ParseFile(
             // Standard Dat parsing
             string filename,
-            int sysid,
-            int srcid,
+            int indexId,
 
             // Miscellaneous
             bool keep,
@@ -77,7 +75,7 @@ namespace SabreTools.Library.DatFiles
                             break;
 
                         case "games":
-                            ReadGames(xtr.ReadSubtree(), keep, clean, remUnicode);
+                            ReadGames(xtr.ReadSubtree(), filename, indexId, clean, remUnicode);
 
                             // Skip the games node now that we've processed it
                             xtr.Skip();
@@ -432,13 +430,12 @@ namespace SabreTools.Library.DatFiles
                 }
 
                 // Get all search items
-                string content = string.Empty;
                 switch (reader.Name.ToLowerInvariant())
                 {
                     case "to":
-                        // string value = reader.GetAttribute("value");
-                        // string default = reader.GetAttribute("default"); (true|false)
-                        // string auto = reader.GetAttribute("auto"); (true|false)
+                        string value = reader.GetAttribute("value");
+                        string def = reader.GetAttribute("default"); // (true|false)
+                        string auto = reader.GetAttribute("auto"); // (true|false)
 
                         ReadTo(reader.ReadSubtree());
 
@@ -498,13 +495,18 @@ namespace SabreTools.Library.DatFiles
         /// Read games information
         /// </summary>
         /// <param name="reader">XmlReader to use to parse the header</param>
-        /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
+        /// <param name="filename">Name of the file to be parsed</param>
+        /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
-        private void ReadGames(XmlReader reader,
+        private void ReadGames(
+            XmlReader reader,
+
+            // Standard Dat parsing
+            string filename,
+            int indexId,
 
             // Miscellaneous
-            bool keep,
             bool clean,
             bool remUnicode)
         {
@@ -529,7 +531,7 @@ namespace SabreTools.Library.DatFiles
                 switch (reader.Name.ToLowerInvariant())
                 {
                     case "game":
-                        ReadGame(reader.ReadSubtree(), keep, clean, remUnicode);
+                        ReadGame(reader.ReadSubtree(), filename, indexId, clean, remUnicode);
 
                         // Skip the game node now that we've processed it
                         reader.Skip();
@@ -546,13 +548,18 @@ namespace SabreTools.Library.DatFiles
         /// Read game information
         /// </summary>
         /// <param name="reader">XmlReader to use to parse the header</param>
-        /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
+        /// <param name="filename">Name of the file to be parsed</param>
+        /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
-        private void ReadGame(XmlReader reader,
+        private void ReadGame(
+            XmlReader reader,
+
+            // Standard Dat parsing
+            string filename,
+            int indexId,
 
             // Miscellaneous
-            bool keep,
             bool clean,
             bool remUnicode)
         {
@@ -628,7 +635,7 @@ namespace SabreTools.Library.DatFiles
                         break;
 
                     case "files":
-                        roms = ReadFiles(reader.ReadSubtree(), releaseNumber, machine.Name, keep, clean, remUnicode);
+                        roms = ReadFiles(reader.ReadSubtree(), releaseNumber, machine.Name, filename, indexId);
                         // Skip the files node now that we've processed it
                         reader.Skip();
                         break;
@@ -678,17 +685,16 @@ namespace SabreTools.Library.DatFiles
         /// <param name="reader">XmlReader to use to parse the header</param>
         /// <param name="releaseNumber">Release number from the parent game</param>
         /// <param name="machineName">Name of the parent game to use</param>
-        /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
-        /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
-        private List<Rom> ReadFiles(XmlReader reader,
+        /// <param name="filename">Name of the file to be parsed</param>
+        /// <param name="indexId">Index ID for the DAT</param>
+        private List<Rom> ReadFiles(
+            XmlReader reader,
             string releaseNumber,
             string machineName,
 
-            // Miscellaneous
-            bool keep,
-            bool clean,
-            bool remUnicode)
+            // Standard Dat parsing
+            string filename,
+            int indexId)
         {
             // Prepare all internal variables
             var extensionToCrc = new List<KeyValuePair<string, string>>();
@@ -736,6 +742,9 @@ namespace SabreTools.Library.DatFiles
                     CRC = Sanitizer.CleanCRC32(pair.Value),
 
                     ItemStatus = ItemStatus.None,
+
+                    IndexId = indexId,
+                    IndexSource = filename,
                 });
             }
 

@@ -30,8 +30,7 @@ namespace SabreTools.Library.DatFiles
         /// Parse a MAME XML DAT and return all found games and roms within
         /// </summary>
         /// <param name="filename">Name of the file to be parsed</param>
-        /// <param name="sysid">System ID for the DAT</param>
-        /// <param name="srcid">Source ID for the DAT</param>
+        /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
         /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
@@ -40,8 +39,7 @@ namespace SabreTools.Library.DatFiles
         protected override void ParseFile(
             // Standard Dat parsing
             string filename,
-            int sysid,
-            int srcid,
+            int indexId,
 
             // Miscellaneous
             bool keep,
@@ -89,7 +87,7 @@ namespace SabreTools.Library.DatFiles
                         // We want to process the entire subtree of the machine
                         case "game": // Some older DATs still use "game"
                         case "machine":
-                            ReadMachine(xtr.ReadSubtree(), filename, sysid, srcid, clean, remUnicode);
+                            ReadMachine(xtr.ReadSubtree(), filename, indexId, clean, remUnicode);
 
                             // Skip the machine now that we've processed it
                             xtr.Skip();
@@ -117,8 +115,7 @@ namespace SabreTools.Library.DatFiles
         /// </summary>
         /// <param name="reader">XmlReader representing a machine block</param>
         /// <param name="filename">Name of the file to be parsed</param>
-        /// <param name="sysid">System ID for the DAT</param>
-        /// <param name="srcid">Source ID for the DAT</param>
+        /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         private void ReadMachine(
@@ -126,8 +123,7 @@ namespace SabreTools.Library.DatFiles
 
             // Standard Dat parsing
             string filename,
-            int sysid,
-            int srcid,
+            int indexId,
 
             // Miscellaneous
             bool clean,
@@ -206,9 +202,8 @@ namespace SabreTools.Library.DatFiles
                             Description = reader.GetAttribute("description"),
                             Default = reader.GetAttribute("default").AsYesNo(),
 
-                            SystemID = sysid,
-                            System = filename,
-                            SourceID = srcid,
+                            IndexId = indexId,
+                            IndexSource = filename,
                         };
 
                         biosset.CopyMachineInformation(machine);
@@ -242,9 +237,8 @@ namespace SabreTools.Library.DatFiles
                             ItemStatus = reader.GetAttribute("status").AsItemStatus(),
                             Optional = reader.GetAttribute("optional").AsYesNo(),
 
-                            SystemID = sysid,
-                            System = filename,
-                            SourceID = srcid,
+                            IndexId = indexId,
+                            IndexSource = filename,
                         };
 
                         rom.CopyMachineInformation(machine);
@@ -276,9 +270,8 @@ namespace SabreTools.Library.DatFiles
                             ItemStatus = reader.GetAttribute("status").AsItemStatus(),
                             Optional = reader.GetAttribute("optional").AsYesNo(),
 
-                            SystemID = sysid,
-                            System = filename,
-                            SourceID = srcid,
+                            IndexId = indexId,
+                            IndexSource = filename,
                         };
 
                         disk.CopyMachineInformation(machine);
@@ -304,9 +297,8 @@ namespace SabreTools.Library.DatFiles
                         {
                             Name = reader.GetAttribute("name"),
 
-                            SystemID = sysid,
-                            System = filename,
-                            SourceID = srcid,
+                            IndexId = indexId,
+                            IndexSource = filename,
                         };
 
                         samplerom.CopyMachineInformation(machine);
@@ -506,9 +498,8 @@ namespace SabreTools.Library.DatFiles
             {
                 Blank blank = new Blank()
                 {
-                    SystemID = sysid,
-                    System = filename,
-                    SourceID = srcid,
+                    IndexId = indexId,
+                    IndexSource = filename,
                 };
                 blank.CopyMachineInformation(machine);
 

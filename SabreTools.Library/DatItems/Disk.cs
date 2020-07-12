@@ -195,10 +195,8 @@ namespace SabreTools.Library.DatItems
                 Devices = this.Devices,
                 MachineType = this.MachineType,
 
-                SystemID = this.SystemID,
-                System = this.System,
-                SourceID = this.SourceID,
-                Source = this.Source,
+                IndexId = this.IndexId,
+                IndexSource = this.IndexSource,
 
                 _md5 = this._md5,
                 _ripemd160 = this._ripemd160,
@@ -262,10 +260,8 @@ namespace SabreTools.Library.DatItems
                 AreaName = this.AreaName,
                 AreaSize = this.AreaSize,
 
-                SystemID = this.SystemID,
-                System = this.System,
-                SourceID = this.SourceID,
-                Source = this.Source,
+                IndexId = this.IndexId,
+                IndexSource = this.IndexSource,
                 Remove = this.Remove,
             };
 

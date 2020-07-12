@@ -30,16 +30,14 @@ namespace SabreTools.Library.DatFiles
         /// Parse a ClrMamePro DAT and return all found games and roms within
         /// </summary>
         /// <param name="filename">Name of the file to be parsed</param>
-        /// <param name="sysid">System ID for the DAT</param>
-        /// <param name="srcid">Source ID for the DAT</param>
+        /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
         /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         protected override void ParseFile(
             // Standard Dat parsing
             string filename,
-            int sysid,
-            int srcid,
+            int indexId,
 
             // Miscellaneous
             bool keep,
@@ -74,10 +72,10 @@ namespace SabreTools.Library.DatFiles
                     case "set":         // Used by the most ancient DATs
                     case "game":        // Used by most CMP DATs
                     case "machine":     // Possibly used by MAME CMP DATs
-                        ReadSet(cmpr, false, filename, sysid, srcid, clean, remUnicode);
+                        ReadSet(cmpr, false, filename, indexId, clean, remUnicode);
                         break;
                     case "resource":    // Used by some other DATs to denote a BIOS set
-                        ReadSet(cmpr, true, filename, sysid, srcid, clean, remUnicode);
+                        ReadSet(cmpr, true, filename, indexId, clean, remUnicode);
                         break;
 
                     default:
@@ -194,8 +192,7 @@ namespace SabreTools.Library.DatFiles
         /// <param name="cmpr">ClrMameProReader to use to parse the header</param>
         /// <param name="resource">True if the item is a resource (bios), false otherwise</param>
         /// <param name="filename">Name of the file to be parsed</param>
-        /// <param name="sysid">System ID for the DAT</param>
-        /// <param name="srcid">Source ID for the DAT</param>
+        /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         private void ReadSet(
@@ -204,8 +201,7 @@ namespace SabreTools.Library.DatFiles
 
             // Standard Dat parsing
             string filename,
-            int sysid,
-            int srcid,
+            int indexId,
 
             // Miscellaneous
             bool clean,
@@ -304,9 +300,8 @@ namespace SabreTools.Library.DatFiles
                     // Then populate it with information
                     item.CopyMachineInformation(machine);
 
-                    item.SystemID = sysid;
-                    item.System = filename;
-                    item.SourceID = srcid;
+                    item.IndexId = indexId;
+                    item.IndexSource = filename;
 
                     // Loop through all of the attributes
                     foreach (var kvp in cmpr.Internal)
@@ -434,9 +429,8 @@ namespace SabreTools.Library.DatFiles
             {
                 Blank blank = new Blank()
                 {
-                    SystemID = sysid,
-                    System = filename,
-                    SourceID = srcid,
+                    IndexId = indexId,
+                    IndexSource = filename,
                 };
 
                 blank.CopyMachineInformation(machine);

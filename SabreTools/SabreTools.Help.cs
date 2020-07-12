@@ -3005,7 +3005,7 @@ The following systems have headers that this program can work with:
                     foreach (string datfile in datfiles)
                     {
                         DatFile datdata = DatFile.Create();
-                        datdata.Parse(datfile, 99, 99, splitType, keep: true, useTags: true);
+                        datdata.Parse(datfile, 99, splitType, keep: true, useTags: true);
 
                         // If we have the depot flag, respect it
                         if (depot)
@@ -3024,7 +3024,7 @@ The following systems have headers that this program can work with:
                     DatFile datdata = DatFile.Create();
                     foreach (string datfile in datfiles)
                     {
-                        datdata.Parse(datfile, 99, 99, splitType, keep: true, useTags: true);
+                        datdata.Parse(datfile, 99, splitType, keep: true, useTags: true);
                     }
 
                     watch.Stop();
@@ -3420,7 +3420,7 @@ The stats that are outputted are as follows:
                     foreach (string datfile in datfiles)
                     {
                         DatFile datdata = DatFile.Create();
-                        datdata.Parse(datfile, 99, 99, splitType, keep: true, useTags: true);
+                        datdata.Parse(datfile, 99, splitType, keep: true, useTags: true);
 
                         // If we have the depot flag, respect it
                         if (depot)
@@ -3438,7 +3438,7 @@ The stats that are outputted are as follows:
                     DatFile datdata = DatFile.Create();
                     foreach (string datfile in datfiles)
                     {
-                        datdata.Parse(datfile, 99, 99, splitType, keep: true, useTags: true);
+                        datdata.Parse(datfile, 99, splitType, keep: true, useTags: true);
                     }
 
                     watch.Stop();

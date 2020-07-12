@@ -43,17 +43,7 @@ namespace SabreTools.Library.Skippers
         public static string LocalPath = Path.Combine(Globals.ExeDir, "Skippers") + Path.DirectorySeparatorChar;
 
         // Header skippers represented by a list of skipper objects
-        private static List<Skipper> _list;
-        public static List<Skipper> List
-        {
-            get
-            {
-                if (_list == null || _list.Count == 0)
-                    PopulateSkippers();
-
-                return _list;
-            }
-        }
+        public static List<Skipper> List { get; private set; }
 
         #endregion
 
@@ -330,6 +320,14 @@ namespace SabreTools.Library.Skippers
         #region Static Methods
 
         /// <summary>
+        /// Initialize static fields
+        /// </summary>
+        public static void Init()
+        {
+            PopulateSkippers();
+        }
+
+        /// <summary>
         /// Populate the entire list of header Skippers
         /// </summary>
         /// <remarks>
@@ -338,12 +336,12 @@ namespace SabreTools.Library.Skippers
         /// </remarks>
         private static void PopulateSkippers()
         {
-            if (_list == null)
-                _list = new List<Skipper>();
+            if (List == null)
+                List = new List<Skipper>();
 
             foreach (string skipperFile in Directory.EnumerateFiles(LocalPath, "*", SearchOption.AllDirectories))
             {
-                _list.Add(new Skipper(Path.GetFullPath(skipperFile)));
+                List.Add(new Skipper(Path.GetFullPath(skipperFile)));
             }
         }
 

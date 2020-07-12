@@ -30,16 +30,14 @@ namespace SabreTools.Library.DatFiles
         /// Parse an SofwareList XML DAT and return all found games and roms within
         /// </summary>
         /// <param name="filename">Name of the file to be parsed</param>
-        /// <param name="sysid">System ID for the DAT</param>
-        /// <param name="srcid">Source ID for the DAT</param>
+        /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
         /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         protected override void ParseFile(
             // Standard Dat parsing
             string filename,
-            int sysid,
-            int srcid,
+            int indexId,
 
             // Miscellaneous
             bool keep,
@@ -85,7 +83,7 @@ namespace SabreTools.Library.DatFiles
 
                         // We want to process the entire subtree of the machine
                         case "software":
-                            ReadSoftware(xtr.ReadSubtree(), filename, sysid, srcid, keep, clean, remUnicode);
+                            ReadSoftware(xtr.ReadSubtree(), filename, indexId, keep, clean, remUnicode);
 
                             // Skip the software now that we've processed it
                             xtr.Skip();
@@ -113,8 +111,7 @@ namespace SabreTools.Library.DatFiles
         /// </summary>
         /// <param name="reader">XmlReader representing a software block</param>
         /// <param name="filename">Name of the file to be parsed</param>
-        /// <param name="sysid">System ID for the DAT</param>
-        /// <param name="srcid">Source ID for the DAT</param>
+        /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
         /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
@@ -123,8 +120,7 @@ namespace SabreTools.Library.DatFiles
 
             // Standard Dat parsing
             string filename,
-            int sysid,
-            int srcid,
+            int indexId,
 
             // Miscellaneous
             bool keep,
@@ -138,8 +134,7 @@ namespace SabreTools.Library.DatFiles
             // Otherwise, add what is possible
             reader.MoveToContent();
 
-            string key = string.Empty;
-            string temptype = reader.Name;
+            string key;
             bool containsItems = false;
 
             // Create a new machine
@@ -201,7 +196,7 @@ namespace SabreTools.Library.DatFiles
                         break;
 
                     case "part": // Contains all rom and disk information
-                        containsItems = ReadPart(reader.ReadSubtree(), machine, filename, sysid, srcid, keep, clean, remUnicode);
+                        containsItems = ReadPart(reader.ReadSubtree(), machine, filename, indexId, keep, clean, remUnicode);
 
                         // Skip the part now that we've processed it
                         reader.Skip();
@@ -218,9 +213,8 @@ namespace SabreTools.Library.DatFiles
             {
                 Blank blank = new Blank()
                 {
-                    SystemID = sysid,
-                    System = filename,
-                    SourceID = srcid,
+                    IndexId = indexId,
+                    IndexSource = filename,
                 };
                 blank.CopyMachineInformation(machine);
 
@@ -235,8 +229,7 @@ namespace SabreTools.Library.DatFiles
         /// <param name="reader">XmlReader representing a part block</param>
         /// <param name="machine">Machine information to pass to contained items</param>
         /// <param name="filename">Name of the file to be parsed</param>
-        /// <param name="sysid">System ID for the DAT</param>
-        /// <param name="srcid">Source ID for the DAT</param>
+        /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
         /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
@@ -246,8 +239,7 @@ namespace SabreTools.Library.DatFiles
 
             // Standard Dat parsing
             string filename,
-            int sysid,
-            int srcid,
+            int indexId,
 
             // Miscellaneous
             bool keep,
@@ -308,7 +300,7 @@ namespace SabreTools.Library.DatFiles
                         // string dataarea_endianness = reader.GetAttribute("endianness"); // endianness (big|little) "little"
 
                         containsItems = ReadDataArea(reader.ReadSubtree(), machine, features, areaname, areasize,
-                            partname, partinterface, filename, sysid, srcid, keep, clean, remUnicode);
+                            partname, partinterface, filename, indexId, keep, clean, remUnicode);
 
                         // Skip the dataarea now that we've processed it
                         reader.Skip();
@@ -318,7 +310,7 @@ namespace SabreTools.Library.DatFiles
                         areaname = reader.GetAttribute("name");
 
                         containsItems = ReadDiskArea(reader.ReadSubtree(), machine, features, areaname, areasize,
-                            partname, partinterface, filename, sysid, srcid, keep, clean, remUnicode);
+                            partname, partinterface, filename, indexId, keep, clean, remUnicode);
 
                         // Skip the diskarea now that we've processed it
                         reader.Skip();
@@ -357,8 +349,7 @@ namespace SabreTools.Library.DatFiles
         /// <param name="partname">Name of the containing part</param>
         /// <param name="partinterface">Interface of the containing part</param>
         /// <param name="filename">Name of the file to be parsed</param>
-        /// <param name="sysid">System ID for the DAT</param>
-        /// <param name="srcid">Source ID for the DAT</param>
+        /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
         /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
@@ -373,8 +364,7 @@ namespace SabreTools.Library.DatFiles
 
             // Standard Dat parsing
             string filename,
-            int sysid,
-            int srcid,
+            int indexId,
 
             // Miscellaneous
             bool keep,
@@ -439,9 +429,8 @@ namespace SabreTools.Library.DatFiles
                             PartName = partname,
                             PartInterface = partinterface,
 
-                            SystemID = sysid,
-                            System = filename,
-                            SourceID = srcid,
+                            IndexId = indexId,
+                            IndexSource = filename,
                         };
 
                         rom.CopyMachineInformation(machine);
@@ -472,8 +461,7 @@ namespace SabreTools.Library.DatFiles
         /// <param name="partname">Name of the containing part</param>
         /// <param name="partinterface">Interface of the containing part</param>
         /// <param name="filename">Name of the file to be parsed</param>
-        /// <param name="sysid">System ID for the DAT</param>
-        /// <param name="srcid">Source ID for the DAT</param>
+        /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
         /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
@@ -488,8 +476,7 @@ namespace SabreTools.Library.DatFiles
 
             // Standard Dat parsing
             string filename,
-            int sysid,
-            int srcid,
+            int indexId,
 
             // Miscellaneous
             bool keep,
@@ -535,9 +522,8 @@ namespace SabreTools.Library.DatFiles
                             PartName = partname,
                             PartInterface = partinterface,
 
-                            SystemID = sysid,
-                            System = filename,
-                            SourceID = srcid,
+                            IndexId = indexId,
+                            IndexSource = filename,
                         };
 
                         disk.CopyMachineInformation(machine);

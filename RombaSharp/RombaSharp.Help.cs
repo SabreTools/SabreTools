@@ -624,7 +624,7 @@ structure according to the original DAT master directory tree structure.";
                 foreach (string key in foundDats.Keys)
                 {
                     // Get the DAT file associated with the key
-                    DatFile datFile = DatFile.CreateAndParse(Path.Combine(_dats, foundDats[key]), 0, 0);
+                    DatFile datFile = DatFile.CreateAndParse(Path.Combine(_dats, foundDats[key]));
 
                     // Create the new output directory if it doesn't exist
                     string outputFolder = Path.Combine(outdat, Path.GetFileNameWithoutExtension(foundDats[key]));
@@ -1417,8 +1417,7 @@ particular DAT.";
                 foreach (string key in foundDats.Keys)
                 {
                     // Get the DAT file associated with the key
-                    DatFile datFile = DatFile.Create();
-                    datFile.Parse(Path.Combine(_dats, foundDats[key]), 0, 0);
+                    DatFile datFile = DatFile.CreateAndParse(Path.Combine(_dats, foundDats[key]));
 
                     // Now loop through and see if all of the hash combinations exist in the database
                     /* ended here */

@@ -87,10 +87,8 @@ namespace SabreTools.Library.DatItems
                 Devices = this.Devices,
                 MachineType = this.MachineType,
 
-                SystemID = this.SystemID,
-                System = this.System,
-                SourceID = this.SourceID,
-                Source = this.Source,
+                IndexId = this.IndexId,
+                IndexSource = this.IndexSource,
 
                 Region = this.Region,
                 Language = this.Language,

@@ -35,16 +35,14 @@ namespace SabreTools.Library.DatFiles
         /// Parse a character-separated value DAT and return all found games and roms within
         /// </summary>
         /// <param name="filename">Name of the file to be parsed</param>
-        /// <param name="sysid">System ID for the DAT</param>
-        /// <param name="srcid">Source ID for the DAT</param>
+        /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
         /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         protected override void ParseFile(
             // Standard Dat parsing
             string filename,
-            int sysid,
-            int srcid,
+            int indexId,
 
             // Miscellaneous
             bool keep,
@@ -493,6 +491,9 @@ namespace SabreTools.Library.DatFiles
                             Features = features,
                             AreaName = areaName,
                             AreaSize = areaSize,
+
+                            IndexId = indexId,
+                            IndexSource = filename,
                         };
 
                         archive.CopyMachineInformation(machine);
@@ -511,6 +512,9 @@ namespace SabreTools.Library.DatFiles
 
                             Description = biosDescription,
                             Default = def,
+
+                            IndexId = indexId,
+                            IndexSource = filename,
                         };
 
                         biosset.CopyMachineInformation(machine);
@@ -541,6 +545,9 @@ namespace SabreTools.Library.DatFiles
                             Writable = writable,
                             ItemStatus = status,
                             Optional = optional,
+
+                            IndexId = indexId,
+                            IndexSource = filename,
                         };
 
                         disk.CopyMachineInformation(machine);
@@ -561,6 +568,9 @@ namespace SabreTools.Library.DatFiles
                             Language = language,
                             Date = date,
                             Default = default,
+
+                            IndexId = indexId,
+                            IndexSource = filename,
                         };
 
                         release.CopyMachineInformation(machine);
@@ -594,6 +604,9 @@ namespace SabreTools.Library.DatFiles
                             Date = date,
                             ItemStatus = status,
                             Optional = optional,
+
+                            IndexId = indexId,
+                            IndexSource = filename,
                         };
 
                         rom.CopyMachineInformation(machine);
@@ -609,6 +622,9 @@ namespace SabreTools.Library.DatFiles
                             Features = features,
                             AreaName = areaName,
                             AreaSize = areaSize,
+
+                            IndexId = indexId,
+                            IndexSource = filename,
                         };
 
                         sample.CopyMachineInformation(machine);

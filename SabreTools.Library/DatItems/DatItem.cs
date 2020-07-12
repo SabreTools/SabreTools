@@ -5,7 +5,6 @@ using System.Linq;
 using System.Net;
 
 using SabreTools.Library.Data;
-using SabreTools.Library.DatFiles;
 using SabreTools.Library.FileTypes;
 using SabreTools.Library.Tools;
 using NaturalSort;
@@ -560,28 +559,16 @@ namespace SabreTools.Library.DatItems
         #region Source metadata information
 
         /// <summary>
-        /// Internal system ID for organization
+        /// Internal DatFile index for organization
         /// </summary>
         [JsonIgnore]
-        public int SystemID { get; set; }
+        public int IndexId { get; set; }
 
         /// <summary>
-        /// Internal system name for organization
+        /// Internal DatFile name for organization
         /// </summary>
         [JsonIgnore]
-        public string System { get; set; }
-
-        /// <summary>
-        /// Internal source ID for organization
-        /// </summary>
-        [JsonIgnore]
-        public int SourceID { get; set; }
-
-        /// <summary>
-        /// Internal source name for organization
-        /// </summary>
-        [JsonIgnore]
-        public string Source { get; set; }
+        public string IndexSource { get; set; }
 
         /// <summary>
         /// Flag if item should be removed
@@ -940,7 +927,7 @@ namespace SabreTools.Library.DatItems
                 return output;
 
             // If the duplicate is external already or should be, set it
-            if (lastItem.DupeType.HasFlag(DupeType.External) || lastItem.SystemID != this.SystemID || lastItem.SourceID != this.SourceID)
+            if (lastItem.DupeType.HasFlag(DupeType.External) || lastItem.IndexId != this.IndexId)
             {
                 if (lastItem.MachineName == this.MachineName && lastItem.Name == this.Name)
                     output = DupeType.External | DupeType.All;
@@ -985,9 +972,8 @@ namespace SabreTools.Library.DatItems
 
                 case SortedBy.Game:
                     key = (norename ? string.Empty
-                        : this.SystemID.ToString().PadLeft(10, '0')
-                            + "-"
-                            + this.SourceID.ToString().PadLeft(10, '0') + "-")
+                        : this.IndexId.ToString().PadLeft(10, '0')
+                            + "-")
                     + (string.IsNullOrWhiteSpace(this.MachineName)
                             ? "Default"
                             : this.MachineName);
@@ -1182,19 +1168,10 @@ namespace SabreTools.Library.DatItems
                         saveditem.DupeType = dupetype;
 
                         // If the current system has a lower ID than the previous, set the system accordingly
-                        if (file.SystemID < saveditem.SystemID)
+                        if (file.IndexId < saveditem.IndexId)
                         {
-                            saveditem.SystemID = file.SystemID;
-                            saveditem.System = file.System;
-                            saveditem.CopyMachineInformation(file);
-                            saveditem.Name = file.Name;
-                        }
-
-                        // If the current source has a lower ID than the previous, set the source accordingly
-                        if (file.SourceID < saveditem.SourceID)
-                        {
-                            saveditem.SourceID = file.SourceID;
-                            saveditem.Source = file.Source;
+                            saveditem.IndexId = file.IndexId;
+                            saveditem.IndexSource = file.IndexSource;
                             saveditem.CopyMachineInformation(file);
                             saveditem.Name = file.Name;
                         }
@@ -1353,47 +1330,42 @@ namespace SabreTools.Library.DatItems
                 try
                 {
                     NaturalComparer nc = new NaturalComparer();
-                    if (x.SystemID == y.SystemID)
+                    if (x.IndexId == y.IndexId)
                     {
-                        if (x.SourceID == y.SourceID)
+                        if (x.MachineName == y.MachineName)
                         {
-                            if (x.MachineName == y.MachineName)
+                            if ((x.ItemType == ItemType.Rom || x.ItemType == ItemType.Disk) && (y.ItemType == ItemType.Rom || y.ItemType == ItemType.Disk))
                             {
-                                if ((x.ItemType == ItemType.Rom || x.ItemType == ItemType.Disk) && (y.ItemType == ItemType.Rom || y.ItemType == ItemType.Disk))
+                                if (Path.GetDirectoryName(Sanitizer.RemovePathUnsafeCharacters(x.Name)) == Path.GetDirectoryName(Sanitizer.RemovePathUnsafeCharacters(y.Name)))
                                 {
-                                    if (Path.GetDirectoryName(Sanitizer.RemovePathUnsafeCharacters(x.Name)) == Path.GetDirectoryName(Sanitizer.RemovePathUnsafeCharacters(y.Name)))
-                                    {
-                                        return nc.Compare(Path.GetFileName(Sanitizer.RemovePathUnsafeCharacters(x.Name)), Path.GetFileName(Sanitizer.RemovePathUnsafeCharacters(y.Name)));
-                                    }
+                                    return nc.Compare(Path.GetFileName(Sanitizer.RemovePathUnsafeCharacters(x.Name)), Path.GetFileName(Sanitizer.RemovePathUnsafeCharacters(y.Name)));
+                                }
 
-                                    return nc.Compare(Path.GetDirectoryName(Sanitizer.RemovePathUnsafeCharacters(x.Name)), Path.GetDirectoryName(Sanitizer.RemovePathUnsafeCharacters(y.Name)));
-                                }
-                                else if ((x.ItemType == ItemType.Rom || x.ItemType == ItemType.Disk) && (y.ItemType != ItemType.Rom && y.ItemType != ItemType.Disk))
-                                {
-                                    return -1;
-                                }
-                                else if ((x.ItemType != ItemType.Rom && x.ItemType != ItemType.Disk) && (y.ItemType == ItemType.Rom || y.ItemType == ItemType.Disk))
-                                {
-                                    return 1;
-                                }
-                                else
-                                {
-                                    if (Path.GetDirectoryName(x.Name) == Path.GetDirectoryName(y.Name))
-                                    {
-                                        return nc.Compare(Path.GetFileName(x.Name), Path.GetFileName(y.Name));
-                                    }
-
-                                    return nc.Compare(Path.GetDirectoryName(x.Name), Path.GetDirectoryName(y.Name));
-                                }
+                                return nc.Compare(Path.GetDirectoryName(Sanitizer.RemovePathUnsafeCharacters(x.Name)), Path.GetDirectoryName(Sanitizer.RemovePathUnsafeCharacters(y.Name)));
                             }
+                            else if ((x.ItemType == ItemType.Rom || x.ItemType == ItemType.Disk) && (y.ItemType != ItemType.Rom && y.ItemType != ItemType.Disk))
+                            {
+                                return -1;
+                            }
+                            else if ((x.ItemType != ItemType.Rom && x.ItemType != ItemType.Disk) && (y.ItemType == ItemType.Rom || y.ItemType == ItemType.Disk))
+                            {
+                                return 1;
+                            }
+                            else
+                            {
+                                if (Path.GetDirectoryName(x.Name) == Path.GetDirectoryName(y.Name))
+                                {
+                                    return nc.Compare(Path.GetFileName(x.Name), Path.GetFileName(y.Name));
+                                }
 
-                            return nc.Compare(x.MachineName, y.MachineName);
+                                return nc.Compare(Path.GetDirectoryName(x.Name), Path.GetDirectoryName(y.Name));
+                            }
                         }
 
-                        return (norename ? nc.Compare(x.MachineName, y.MachineName) : x.SourceID - y.SourceID);
+                        return nc.Compare(x.MachineName, y.MachineName);
                     }
 
-                    return (norename ? nc.Compare(x.MachineName, y.MachineName) : x.SystemID - y.SystemID);
+                    return (norename ? nc.Compare(x.MachineName, y.MachineName) : x.IndexId - y.IndexId);
                 }
                 catch (Exception)
                 {

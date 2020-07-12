@@ -551,6 +551,8 @@ namespace SabreTools.Library.DatFiles
 
         #endregion
 
+        // TODO: Add method to apply a DatHeader to an existing DatFile (overwrite if not default value)
+        // TODO: Add method to add items from another DatFile without overwriting contents
         #region Constructors
 
         /// <summary>
@@ -800,7 +802,7 @@ namespace SabreTools.Library.DatFiles
                 string input = inputs[i];
                 Globals.Logger.User($"Adding DAT: {input.Split('¬')[0]}");
                 datFiles[i] = Create(DatHeader.CloneFiltering());
-                datFiles[i].Parse(input, i, i, splitType, keep: true, clean: clean, remUnicode: remUnicode, descAsName: descAsName);
+                datFiles[i].Parse(input, i, splitType, keep: true, clean: clean, remUnicode: remUnicode, descAsName: descAsName);
             });
 
             watch.Stop();
@@ -917,24 +919,8 @@ namespace SabreTools.Library.DatFiles
                 Globals.Logger.User($"Replacing items in '{path.Split('¬')[0]}' from the base DAT");
 
                 // First we parse in the DAT internally
-                DatFile intDat = Create(DatHeader.DatFormat);
-
-                // Filtering that needs to be copied over
-                intDat.DatHeader.ExcludeFields = (bool[])DatHeader.ExcludeFields.Clone();
-                intDat.DatHeader.OneRom = DatHeader.OneRom;
-                intDat.DatHeader.KeepEmptyGames = DatHeader.KeepEmptyGames;
-                intDat.DatHeader.SceneDateStrip = DatHeader.SceneDateStrip;
-                intDat.DatHeader.DedupeRoms = DatHeader.DedupeRoms;
-                intDat.DatHeader.Prefix = DatHeader.Prefix;
-                intDat.DatHeader.Postfix = DatHeader.Postfix;
-                intDat.DatHeader.AddExtension = DatHeader.AddExtension;
-                intDat.DatHeader.ReplaceExtension = DatHeader.ReplaceExtension;
-                intDat.DatHeader.RemoveExtension = DatHeader.RemoveExtension;
-                intDat.DatHeader.GameName = DatHeader.GameName;
-                intDat.DatHeader.Quotes = DatHeader.Quotes;
-                intDat.DatHeader.UseRomName = DatHeader.UseRomName;
-
-                intDat.Parse(path, 1, 1, keep: true, clean: clean, remUnicode: remUnicode, descAsName: descAsName);
+                DatFile intDat = Create(DatHeader.CloneFiltering());
+                intDat.Parse(path, 1, keep: true, clean: clean, remUnicode: remUnicode, descAsName: descAsName);
                 filter.FilterDatFile(intDat);
 
                 // If we are matching based on DatItem fields of any sort
@@ -1377,7 +1363,7 @@ namespace SabreTools.Library.DatFiles
 
                 // First we parse in the DAT internally
                 DatFile intDat = Create();
-                intDat.Parse(path, 1, 1, keep: true, clean: clean, remUnicode: remUnicode, descAsName: descAsName);
+                intDat.Parse(path, 1, keep: true, clean: clean, remUnicode: remUnicode, descAsName: descAsName);
 
                 // For comparison's sake, we want to use CRC as the base ordering
                 intDat.BucketBy(SortedBy.CRC, DedupeType.Full);
@@ -1470,13 +1456,13 @@ namespace SabreTools.Library.DatFiles
                 foreach (DatItem item in items)
                 {
                     // There's odd cases where there are items with System ID < 0. Skip them for now
-                    if (item.SystemID < 0)
+                    if (item.IndexId < 0)
                     {
                         Globals.Logger.Warning($"Item found with a <0 SystemID: {item.Name}");
                         continue;
                     }
 
-                    outDats[item.SystemID].Add(key, item);
+                    outDats[item.IndexId].Add(key, item);
                 }
             });
 
@@ -1589,13 +1575,13 @@ namespace SabreTools.Library.DatFiles
                         {
                             // Individual DATs that are output
                             if (diff.HasFlag(UpdateMode.DiffIndividualsOnly))
-                                outDats[item.SystemID].Add(key, item);
+                                outDats[item.IndexId].Add(key, item);
 
                             // Merged no-duplicates DAT
                             if (diff.HasFlag(UpdateMode.DiffNoDupesOnly))
                             {
                                 DatItem newrom = item.Clone() as DatItem;
-                                newrom.MachineName += $" ({Path.GetFileNameWithoutExtension(inputs[item.SystemID].Split('¬')[0])})";
+                                newrom.MachineName += $" ({Path.GetFileNameWithoutExtension(inputs[item.IndexId].Split('¬')[0])})";
 
                                 outerDiffData.Add(key, newrom);
                             }
@@ -1608,7 +1594,7 @@ namespace SabreTools.Library.DatFiles
                         if (item.DupeType.HasFlag(DupeType.External))
                         {
                             DatItem newrom = item.Clone() as DatItem;
-                            newrom.MachineName += $" ({Path.GetFileNameWithoutExtension(inputs[item.SystemID].Split('¬')[0])})";
+                            newrom.MachineName += $" ({Path.GetFileNameWithoutExtension(inputs[item.IndexId].Split('¬')[0])})";
 
                             dupeData.Add(key, newrom);
                         }
@@ -1662,8 +1648,8 @@ namespace SabreTools.Library.DatFiles
                     foreach (DatItem item in items)
                     {
                         DatItem newItem = item;
-                        string filename = inputs[newItem.SystemID].Split('¬')[0];
-                        string rootpath = inputs[newItem.SystemID].Split('¬')[1];
+                        string filename = inputs[newItem.IndexId].Split('¬')[0];
+                        string rootpath = inputs[newItem.IndexId].Split('¬')[1];
 
                         rootpath += (string.IsNullOrWhiteSpace(rootpath) ? string.Empty : Path.DirectorySeparatorChar.ToString());
                         filename = filename.Remove(0, rootpath.Length);
@@ -1709,7 +1695,7 @@ namespace SabreTools.Library.DatFiles
             {
                 DatFile innerDatdata = Create(baseDat: this);
                 Globals.Logger.User($"Processing '{Path.GetFileName(file.Split('¬')[0])}'");
-                innerDatdata.Parse(file, 0, 0, splitType, keep: true, clean: clean, remUnicode: remUnicode, descAsName: descAsName,
+                innerDatdata.Parse(file, splitType: splitType, keep: true, clean: clean, remUnicode: remUnicode, descAsName: descAsName,
                     keepext: innerDatdata.DatHeader.DatFormat.HasFlag(DatFormat.TSV)
                         || innerDatdata.DatHeader.DatFormat.HasFlag(DatFormat.CSV)
                         || innerDatdata.DatHeader.DatFormat.HasFlag(DatFormat.SSV));
@@ -2360,26 +2346,17 @@ namespace SabreTools.Library.DatFiles
 
         #endregion
 
+        // TODO: Add parse-as to parse in from a different type
         #region Parsing
 
         /// <summary>
         /// Create a DatFile and parse a file into it
         /// </summary>
         /// <param name="filename">Name of the file to be parsed</param>
-        /// <param name="sysid">System ID for the DAT</param>
-        /// <param name="srcid">Source ID for the DAT</param>
-        /// <param name="datdata">The DatData object representing found roms to this point</param>
-        /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
-        /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
-        /// <param name="descAsName">True if descriptions should be used as names, false otherwise (default)</param>
-        /// <param name="keepext">True if original extension should be kept, false otherwise (default)</param>
-        /// <param name="useTags">True if tags from the DAT should be used to merge the output, false otherwise (default)</param>
-        public static DatFile CreateAndParse(string filename, int sysid, int srcid, bool keep = false, bool clean = false,
-            bool remUnicode = false, bool descAsName = false, bool keepext = false, bool useTags = false)
+        public static DatFile CreateAndParse(string filename)
         {
             DatFile datFile = Create();
-            datFile.Parse(filename, sysid, srcid, keep, clean, remUnicode, descAsName, keepext, useTags);
+            datFile.Parse(filename);
             return datFile;
         }
 
@@ -2387,28 +2364,7 @@ namespace SabreTools.Library.DatFiles
         /// Parse a DAT and return all found games and roms within
         /// </summary>
         /// <param name="filename">Name of the file to be parsed</param>
-        /// <param name="sysid">System ID for the DAT</param>
-        /// <param name="srcid">Source ID for the DAT</param>
-        /// <param name="datdata">The DatData object representing found roms to this point</param>
-        /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
-        /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
-        /// <param name="descAsName">True if descriptions should be used as names, false otherwise (default)</param>
-        /// <param name="keepext">True if original extension should be kept, false otherwise (default)</param>
-        /// <param name="useTags">True if tags from the DAT should be used to merge the output, false otherwise (default)</param>
-        public void Parse(string filename, int sysid, int srcid, bool keep = false, bool clean = false,
-            bool remUnicode = false, bool descAsName = false, bool keepext = false, bool useTags = false)
-        {
-            Parse(filename, sysid, srcid, SplitType.None, keep: keep, clean: clean,
-                remUnicode: remUnicode, descAsName: descAsName, keepext: keepext, useTags: useTags);
-        }
-
-        /// <summary>
-        /// Parse a DAT and return all found games and roms within
-        /// </summary>
-        /// <param name="filename">Name of the file to be parsed</param>
-        /// <param name="sysid">System ID for the DAT</param>
-        /// <param name="srcid">Source ID for the DAT</param>>
+        /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="splitType">Type of the split that should be performed (split, merged, fully merged)</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
         /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
@@ -2419,11 +2375,10 @@ namespace SabreTools.Library.DatFiles
         public void Parse(
             // Standard Dat parsing
             string filename,
-            int sysid,
-            int srcid,
+            int indexId = 0,
 
             // Rom renaming
-            SplitType splitType,
+            SplitType splitType = SplitType.None,
 
             // Miscellaneous
             bool keep = false,
@@ -2451,7 +2406,7 @@ namespace SabreTools.Library.DatFiles
             // Now parse the correct type of DAT
             try
             {
-                Create(filename.GetDatFormat(), this)?.ParseFile(filename, sysid, srcid, keep, clean, remUnicode);
+                Create(filename.GetDatFormat(), this)?.ParseFile(filename, indexId, keep, clean, remUnicode);
             }
             catch (Exception ex)
             {
@@ -2657,31 +2612,17 @@ namespace SabreTools.Library.DatFiles
         }
 
         /// <summary>
-        /// Add a rom to the Dat after checking
-        /// </summary>
-        /// <param name="item">Item data to check against</param>
-        /// <param name="clean">True if the names should be cleaned to WoD standards, false otherwise</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
-        /// <returns>The key for the item</returns>
-        protected async Task<string> ParseAddHelperAsync(DatItem item, bool clean, bool remUnicode)
-        {
-            return await Task.Run(() => ParseAddHelper(item, clean, remUnicode));
-        }
-
-        /// <summary>
         /// Parse DatFile and return all found games and roms within
         /// </summary>
         /// <param name="filename">Name of the file to be parsed</param>
-        /// <param name="sysid">System ID for the DAT</param>
-        /// <param name="srcid">Source ID for the DAT</param>
+        /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
         /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         protected abstract void ParseFile(
             // Standard Dat parsing
             string filename,
-            int sysid,
-            int srcid,
+            int indexId,
 
             // Miscellaneous
             bool keep,
@@ -3267,7 +3208,7 @@ namespace SabreTools.Library.DatFiles
             }
 
             // Preload the Skipper list
-            int listcount = Skipper.List.Count;
+            Skipper.Init();
 
             #endregion
 
@@ -3527,10 +3468,9 @@ namespace SabreTools.Library.DatFiles
                 // If we have a zipfile, extract the stream to memory
                 if (isZip != null)
                 {
-                    string realName = null;
                     BaseArchive archive = BaseArchive.Create(file);
                     if (archive != null)
-                        (fileStream, realName) = archive.CopyToStream(datItem.Name);
+                        (fileStream, _) = archive.CopyToStream(datItem.Name);
                 }
                 // Otherwise, just open the filestream
                 else
@@ -3602,10 +3542,9 @@ namespace SabreTools.Library.DatFiles
                 // If we have a zipfile, extract the stream to memory
                 if (isZip != null)
                 {
-                    string realName;
                     BaseArchive archive = BaseArchive.Create(file);
                     if (archive != null)
-                        (fileStream, realName) = archive.CopyToStream(datItem.Name);
+                        (fileStream, _) = archive.CopyToStream(datItem.Name);
                 }
                 // Otherwise, just open the filestream
                 else
@@ -3687,10 +3626,9 @@ namespace SabreTools.Library.DatFiles
                 // If we have a zipfile, extract the stream to memory
                 if (isZip != null)
                 {
-                    string realName;
                     BaseArchive archive = BaseArchive.Create(file);
                     if (archive != null)
-                        (fileStream, realName) = archive.CopyToStream(datItem.Name);
+                        (fileStream, _) = archive.CopyToStream(datItem.Name);
                 }
                 // Otherwise, just open the filestream
                 else
@@ -3892,7 +3830,7 @@ namespace SabreTools.Library.DatFiles
                     List<DatItem> roms = this[key];
                     foreach (DatItem rom in roms)
                     {
-                        if (rom.SourceID == 99)
+                        if (rom.IndexId == 99)
                         {
                             if (rom.ItemType == ItemType.Disk || rom.ItemType == ItemType.Rom)
                                 matched.Add(((Disk)rom).SHA1, rom);
@@ -3909,7 +3847,7 @@ namespace SabreTools.Library.DatFiles
                     List<DatItem> newroms = DatItem.Merge(roms);
                     foreach (Rom rom in newroms)
                     {
-                        if (rom.SourceID == 99)
+                        if (rom.IndexId == 99)
                             matched.Add($"{rom.Size}-{rom.CRC}", rom);
                     }
                 }
@@ -3952,7 +3890,7 @@ namespace SabreTools.Library.DatFiles
             foreach (string file in files)
             {
                 // Create and fill the new DAT
-                Parse(file, 0, 0);
+                Parse(file);
 
                 // Get the output directory
                 outDir = PathExtensions.GetOutputPath(outDir, file, inplace);

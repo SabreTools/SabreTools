@@ -29,8 +29,7 @@ namespace SabreTools.Library.DatFiles
         /// Parse a MAME Listrom DAT and return all found games and roms within
         /// </summary>
         /// <param name="filename">Name of the file to be parsed</param>
-        /// <param name="sysid">System ID for the DAT</param>
-        /// <param name="srcid">Source ID for the DAT</param>
+        /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
         /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
@@ -46,8 +45,7 @@ namespace SabreTools.Library.DatFiles
         protected override void ParseFile(
             // Standard Dat parsing
             string filename,
-            int sysid,
-            int srcid,
+            int indexId,
 
             // Miscellaneous
             bool keep,
@@ -91,7 +89,6 @@ namespace SabreTools.Library.DatFiles
                 else
                 {
                     // First, we preprocess the line so that the rom name is consistently correct
-                    string romname = string.Empty;
                     string[] split = line.Split(new string[] { "    " }, StringSplitOptions.RemoveEmptyEntries);
 
                     // If the line doesn't have the 4 spaces of padding, check for 3
@@ -102,7 +99,7 @@ namespace SabreTools.Library.DatFiles
                     if (split.Length == 1)
                         Globals.Logger.Warning($"Possibly malformed line: '{line}'");
 
-                    romname = split[0];
+                    string romname = split[0];
                     line = line.Substring(romname.Length);
 
                     // Next we separate the ROM into pieces
@@ -117,6 +114,9 @@ namespace SabreTools.Library.DatFiles
                             SHA1 = Sanitizer.CleanListromHashData(split[0]),
 
                             MachineName = gamename,
+
+                            IndexId = indexId,
+                            IndexSource = filename,
                         };
 
                         ParseAddHelper(disk, clean, remUnicode);
@@ -132,6 +132,9 @@ namespace SabreTools.Library.DatFiles
                             ItemStatus = ItemStatus.BadDump,
 
                             MachineName = gamename,
+
+                            IndexId = indexId,
+                            IndexSource = filename,
                         };
 
                         ParseAddHelper(disk, clean, remUnicode);
@@ -151,6 +154,9 @@ namespace SabreTools.Library.DatFiles
                             SHA1 = Sanitizer.CleanListromHashData(split[2]),
 
                             MachineName = gamename,
+
+                            IndexId = indexId,
+                            IndexSource = filename,
                         };
 
                         ParseAddHelper(rom, clean, remUnicode);
@@ -165,6 +171,9 @@ namespace SabreTools.Library.DatFiles
                             ItemStatus = ItemStatus.Nodump,
 
                             MachineName = gamename,
+
+                            IndexId = indexId,
+                            IndexSource = filename,
                         };
 
                         ParseAddHelper(disk, clean, remUnicode);
@@ -185,6 +194,9 @@ namespace SabreTools.Library.DatFiles
                             ItemStatus = ItemStatus.BadDump,
 
                             MachineName = gamename,
+
+                            IndexId = indexId,
+                            IndexSource = filename,
                         };
 
                         ParseAddHelper(rom, clean, remUnicode);
@@ -203,6 +215,9 @@ namespace SabreTools.Library.DatFiles
                             ItemStatus = ItemStatus.Nodump,
 
                             MachineName = gamename,
+
+                            IndexId = indexId,
+                            IndexSource = filename,
                         };
 
                         ParseAddHelper(rom, clean, remUnicode);

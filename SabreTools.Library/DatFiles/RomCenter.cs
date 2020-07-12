@@ -30,16 +30,14 @@ namespace SabreTools.Library.DatFiles
         /// Parse a RomCenter DAT and return all found games and roms within
         /// </summary>
         /// <param name="filename">Name of the file to be parsed</param>
-        /// <param name="sysid">System ID for the DAT</param>
-        /// <param name="srcid">Source ID for the DAT</param>
+        /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
         /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         protected override void ParseFile(
             // Standard Dat parsing
             string filename,
-            int sysid,
-            int srcid,
+            int indexId,
 
             // Miscellaneous
             bool keep,
@@ -85,7 +83,7 @@ namespace SabreTools.Library.DatFiles
                                 break;
 
                             case "games":
-                                ReadGamesSection(ir, sysid, srcid, clean, remUnicode);
+                                ReadGamesSection(ir, filename, indexId, clean, remUnicode);
                                 break;
 
                             // Unknown section so we ignore it
@@ -297,11 +295,11 @@ namespace SabreTools.Library.DatFiles
         /// Read games information
         /// </summary>
         /// <param name="reader">IniReader to use to parse the credits</param>
-        /// <param name="sysid">System ID for the DAT</param>
-        /// <param name="srcid">Source ID for the DAT</param>
+        /// <param name="filename">Name of the file to be parsed</param>
+        /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
-        private void ReadGamesSection(IniReader reader, int sysid, int srcid, bool clean, bool remUnicode)
+        private void ReadGamesSection(IniReader reader, string filename, int indexId, bool clean, bool remUnicode)
         {
             // If the reader is somehow null, skip it
             if (reader == null)
@@ -363,8 +361,8 @@ namespace SabreTools.Library.DatFiles
                     RomOf = rominfo[8],
                     MergeTag = rominfo[9],
 
-                    SystemID = sysid,
-                    SourceID = srcid,
+                    IndexId = indexId,
+                    IndexSource = filename,
                 };
 
                 // Now process and add the rom

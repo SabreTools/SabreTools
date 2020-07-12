@@ -31,16 +31,14 @@ namespace SabreTools.Library.DatFiles
         /// Parse an SabreDat XML DAT and return all found directories and files within
         /// </summary>
         /// <param name="filename">Name of the file to be parsed</param>
-        /// <param name="sysid">System ID for the DAT</param>
-        /// <param name="srcid">Source ID for the DAT</param>
+        /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
         /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         protected override void ParseFile(
             // Standard Dat parsing
             string filename,
-            int sysid,
-            int srcid,
+            int indexId,
 
             // Miscellaneous
             bool keep,
@@ -49,7 +47,7 @@ namespace SabreTools.Library.DatFiles
         {
             // Prepare all internal variables
             bool empty = true;
-            string key = string.Empty;
+            string key;
             List<string> parent = new List<string>();
 
             XmlReader xtr = filename.GetXmlTextReader();
@@ -113,7 +111,7 @@ namespace SabreTools.Library.DatFiles
 
                         case "dir":
                         case "directory":
-                            empty = ReadDirectory(xtr.ReadSubtree(), parent, filename, sysid, srcid, keep, clean, remUnicode);
+                            empty = ReadDirectory(xtr.ReadSubtree(), parent, filename, indexId, keep, clean, remUnicode);
 
                             // Skip the directory node now that we've processed it
                             xtr.Read();
@@ -229,8 +227,7 @@ namespace SabreTools.Library.DatFiles
         /// </summary>
         /// <param name="reader">XmlReader to use to parse the header</param>
         /// <param name="filename">Name of the file to be parsed</param>
-        /// <param name="sysid">System ID for the DAT</param>
-        /// <param name="srcid">Source ID for the DAT</param>
+        /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
         /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
         /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
@@ -239,8 +236,7 @@ namespace SabreTools.Library.DatFiles
 
             // Standard Dat parsing
             string filename,
-            int sysid,
-            int srcid,
+            int indexId,
 
             // Miscellaneous
             bool keep,
@@ -309,7 +305,7 @@ namespace SabreTools.Library.DatFiles
                     // Directories can contain directories
                     case "dir":
                     case "directory":
-                        ReadDirectory(reader.ReadSubtree(), parent, filename, sysid, srcid, keep, clean, remUnicode);
+                        ReadDirectory(reader.ReadSubtree(), parent, filename, indexId, keep, clean, remUnicode);
 
                         // Skip the directory node now that we've processed it
                         reader.Read();
@@ -373,9 +369,8 @@ namespace SabreTools.Library.DatFiles
                                 {
                                     Name = reader.GetAttribute("name"),
 
-                                    SystemID = sysid,
-                                    System = filename,
-                                    SourceID = srcid,
+                                    IndexId = indexId,
+                                    IndexSource = filename,
                                 };
                                 break;
 
@@ -386,9 +381,8 @@ namespace SabreTools.Library.DatFiles
                                     Description = reader.GetAttribute("description"),
                                     Default = reader.GetAttribute("default").AsYesNo(),
 
-                                    SystemID = sysid,
-                                    System = filename,
-                                    SourceID = srcid,
+                                    IndexId = indexId,
+                                    IndexSource = filename,
                                 };
                                 break;
 
@@ -406,9 +400,8 @@ namespace SabreTools.Library.DatFiles
                                     SHA512 = Sanitizer.CleanSHA512(reader.GetAttribute("sha512")),
                                     ItemStatus = its,
 
-                                    SystemID = sysid,
-                                    System = filename,
-                                    SourceID = srcid,
+                                    IndexId = indexId,
+                                    IndexSource = filename,
                                 };
                                 break;
 
@@ -421,9 +414,8 @@ namespace SabreTools.Library.DatFiles
                                     Date = reader.GetAttribute("date"),
                                     Default = reader.GetAttribute("default").AsYesNo(),
 
-                                    SystemID = sysid,
-                                    System = filename,
-                                    SourceID = srcid,
+                                    IndexId = indexId,
+                                    IndexSource = filename,
                                 };
                                 break;
 
@@ -444,9 +436,8 @@ namespace SabreTools.Library.DatFiles
                                     ItemStatus = its,
                                     Date = date,
 
-                                    SystemID = sysid,
-                                    System = filename,
-                                    SourceID = srcid,
+                                    IndexId = indexId,
+                                    IndexSource = filename,
                                 };
                                 break;
 
@@ -455,9 +446,8 @@ namespace SabreTools.Library.DatFiles
                                 {
                                     Name = reader.GetAttribute("name"),
 
-                                    SystemID = sysid,
-                                    System = filename,
-                                    SourceID = srcid,
+                                    IndexId = indexId,
+                                    IndexSource = filename,
                                 };
                                 break;
 
@@ -612,7 +602,7 @@ namespace SabreTools.Library.DatFiles
 
                         // If we have a new game, output the beginning of the new item
                         if (lastgame == null || lastgame.ToLowerInvariant() != rom.MachineName.ToLowerInvariant())
-                            depth = WriteStartGame(xtw, rom, newsplit, lastgame, depth, last);
+                            depth = WriteStartGame(xtw, rom, newsplit, depth, last);
 
                         // If we have a "null" game (created by DATFromDir or something similar), log it to file
                         if (rom.ItemType == ItemType.Rom
@@ -786,11 +776,10 @@ namespace SabreTools.Library.DatFiles
         /// <param name="xtw">XmlTextWriter to output to</param>
         /// <param name="datItem">DatItem object to be output</param>
         /// <param name="newsplit">Split path representing the parent game (SabreDAT only)</param>
-        /// <param name="lastgame">The name of the last game to be output</param>
         /// <param name="depth">Current depth to output file at (SabreDAT only)</param>
         /// <param name="last">Last known depth to cycle back from (SabreDAT only)</param>
         /// <returns>The new depth of the tag</returns>
-        private int WriteStartGame(XmlTextWriter xtw, DatItem datItem, List<string> newsplit, string lastgame, int depth, int last)
+        private int WriteStartGame(XmlTextWriter xtw, DatItem datItem, List<string> newsplit, int depth, int last)
         {
             try
             {
