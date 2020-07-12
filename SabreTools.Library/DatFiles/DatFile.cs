@@ -58,9 +58,6 @@ namespace SabreTools.Library.DatFiles
         {
             get
             {
-                // Ensure the dictionary is created
-                EnsureDictionary();
-
                 lock (Items)
                 {
                     // Ensure the key exists
@@ -73,36 +70,17 @@ namespace SabreTools.Library.DatFiles
         }
 
         /// <summary>
-        /// Add a new key to the file dictionary
-        /// </summary>
-        /// <param name="key">Key in the dictionary to add</param>
-        public void Add(string key)
-        {
-            // Ensure the dictionary is created
-            EnsureDictionary();
-
-            lock (Items)
-            {
-                // Ensure the key exists
-                EnsureKey(key);
-            }
-        }
-
-        /// <summary>
         /// Add a value to the file dictionary
         /// </summary>
         /// <param name="key">Key in the dictionary to add to</param>
         /// <param name="value">Value to add to the dictionary</param>
         public void Add(string key, DatItem value)
         {
-            // Ensure the dictionary is created
-            EnsureDictionary();
-
-            // Add the key, if necessary
-            Add(key);
-
             lock (Items)
             {
+                // Ensure the key exists
+                EnsureKey(key);
+
                 // Now add the value
                 Items[key].Add(value);
 
@@ -118,14 +96,11 @@ namespace SabreTools.Library.DatFiles
         /// <param name="value">Value to add to the dictionary</param>
         public void AddRange(string key, List<DatItem> value)
         {
-            // Ensure the dictionary is created
-            EnsureDictionary();
-
-            // Add the key, if necessary
-            Add(key);
-
             lock (Items)
             {
+                // Ensure the key exists
+                EnsureKey(key);
+
                 // Now add the value
                 Items[key].AddRange(value);
 
@@ -144,23 +119,14 @@ namespace SabreTools.Library.DatFiles
         /// <returns>True if the key exists, false otherwise</returns>
         public bool Contains(string key)
         {
-            bool contains = false;
-
-            // Ensure the dictionary is created
-            EnsureDictionary();
-
             // If the key is null, we return false since keys can't be null
             if (key == null)
-            {
-                return contains;
-            }
+                return false;
 
             lock (Items)
             {
-                contains = Items.ContainsKey(key);
+                return Items.ContainsKey(key);
             }
-
-            return contains;
         }
 
         /// <summary>
@@ -171,22 +137,17 @@ namespace SabreTools.Library.DatFiles
         /// <returns>True if the key exists, false otherwise</returns>
         public bool Contains(string key, DatItem value)
         {
-            bool contains = false;
-
-            // Ensure the dictionary is created
-            EnsureDictionary();
-
             // If the key is null, we return false since keys can't be null
             if (key == null)
-                return contains;
+                return false;
 
             lock (Items)
             {
                 if (Items.ContainsKey(key))
-                    contains = Items[key].Contains(value);
-            }
+                    return Items[key].Contains(value);
 
-            return contains;
+                return false;
+            }
         }
 
         /// <summary>
@@ -213,9 +174,6 @@ namespace SabreTools.Library.DatFiles
         {
             get
             {
-                // Ensure the dictionary is created
-                EnsureDictionary();
-
                 lock (Items)
                 {
                     return Items.Keys.Select(item => (String)item.Clone()).ToList();
@@ -229,14 +187,9 @@ namespace SabreTools.Library.DatFiles
         /// <param name="key">Key in the dictionary to remove</param>
         public void Remove(string key)
         {
-            // Ensure the dictionary is created
-            EnsureDictionary();
-
             // If the key doesn't exist, return
             if (!Contains(key))
-            {
                 return;
-            }
 
             lock (Items)
             {
@@ -258,9 +211,6 @@ namespace SabreTools.Library.DatFiles
         /// <param name="value">Value to remove from the dictionary</param>
         public void Remove(string key, DatItem value)
         {
-            // Ensure the dictionary is created
-            EnsureDictionary();
-
             // If the key and value doesn't exist, return
             if (!Contains(key, value))
             {
@@ -320,18 +270,6 @@ namespace SabreTools.Library.DatFiles
         public void SetType(string type)
         {
             DatHeader.Type = type;
-        }
-
-        /// <summary>
-        /// Ensure the items dictionary
-        /// </summary>
-        private void EnsureDictionary()
-        {
-            // If the dictionary is null, create it
-            if (Items == null)
-            {
-                Items = new SortedDictionary<string, List<DatItem>>();
-            }
         }
 
         /// <summary>
@@ -1778,8 +1716,7 @@ namespace SabreTools.Library.DatFiles
                     foreach (DatItem item in items)
                     {
                         // If the key mapping doesn't exist, add it
-                        if (!mapping.ContainsKey(item.MachineName))
-                            mapping.TryAdd(item.MachineName, item.MachineDescription.Replace('/', '_').Replace("\"", "''").Replace(":", " -"));
+                        mapping.TryAdd(item.MachineName, item.MachineDescription.Replace('/', '_').Replace("\"", "''").Replace(":", " -"));
                     }
                 });
 
