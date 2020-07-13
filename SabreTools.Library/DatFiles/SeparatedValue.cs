@@ -89,7 +89,9 @@ namespace SabreTools.Library.DatFiles
                     biosDescription = null,
                     crc = null,
                     md5 = null,
+#if NET_FRAMEWORK
                     ripemd160 = null,
+#endif
                     sha1 = null,
                     sha256 = null,
                     sha384 = null,

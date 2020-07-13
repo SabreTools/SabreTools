@@ -330,19 +330,7 @@ namespace SabreTools.Library.DatFiles
                         break;
 
                     case "supported":
-                        string supported = jtr.ReadAsString();
-                        switch (supported)
-                        {
-                            case "yes":
-                                machine.Supported = true;
-                                break;
-                            case "no":
-                                machine.Supported = false;
-                                break;
-                            case "partial":
-                                machine.Supported = null;
-                                break;
-                        }
+                        machine.Supported = jtr.ReadAsString().AsYesNo();
                         break;
 
                     case "sourcefile":
@@ -350,16 +338,7 @@ namespace SabreTools.Library.DatFiles
                         break;
 
                     case "runnable":
-                        string runnable = jtr.ReadAsString();
-                        switch (runnable)
-                        {
-                            case "yes":
-                                machine.Runnable = true;
-                                break;
-                            case "no":
-                                machine.Runnable = false;
-                                break;
-                        }
+                        machine.Runnable = jtr.ReadAsString().AsYesNo();
                         break;
 
                     case "board":
