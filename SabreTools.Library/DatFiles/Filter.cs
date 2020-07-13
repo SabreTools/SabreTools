@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
+using System.Linq;
+using System.Threading.Tasks;
+
 using SabreTools.Library.Data;
 using SabreTools.Library.DatItems;
 using SabreTools.Library.Tools;
@@ -105,6 +108,16 @@ namespace SabreTools.Library.DatFiles
         public FilterItem<bool> Clean { get; set; } = new FilterItem<bool>() { Neutral = false };
 
         /// <summary>
+        /// Set Machine Description from Machine Name
+        /// </summary>
+        public FilterItem<bool> DescriptionAsName { get; set; } = new FilterItem<bool>() { Neutral = false };
+
+        /// <summary>
+        /// Internally split a DatFile
+        /// </summary>
+        public FilterItem<SplitType> InternalSplit { get; set; } = new FilterItem<SplitType>() { Neutral = SplitType.None };
+
+        /// <summary>
         /// Remove all unicode characters
         /// </summary>
         public FilterItem<bool> RemoveUnicode { get; set; } = new FilterItem<bool>() { Neutral = false };
@@ -131,9 +144,10 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Filter a DatFile using the inputs
         /// </summary>
-        /// <param name="datFile"></param>
+        /// <param name="datFile">DatFile to filter</param>
+        /// <param name="useTags">True if DatFile tags override splitting, false otherwise</param>
         /// <returns>True if the DatFile was filtered, false on error</returns>
-        public bool FilterDatFile(DatFile datFile)
+        public bool FilterDatFile(DatFile datFile, bool useTags)
         {
             try
             {
@@ -192,6 +206,18 @@ namespace SabreTools.Library.DatFiles
                     datFile.Remove(key);
                     datFile.AddRange(key, newitems);
                 }
+
+                // Process description to machine name
+                if (this.DescriptionAsName.Neutral)
+                    MachineDescriptionToName(datFile);
+
+                // If we are using tags from the DAT, set the proper input for split type unless overridden
+                if (useTags && this.InternalSplit.Neutral == SplitType.None)
+                    this.InternalSplit.Neutral = datFile.DatHeader.ForceMerging.AsSplitType();
+
+                // Run internal splitting
+                ProcessSplitType(datFile, this.InternalSplit.Neutral);
+
             }
             catch (Exception ex)
             {
@@ -376,6 +402,585 @@ namespace SabreTools.Library.DatFiles
                 return false;
 
             return true;
+        }
+
+        #region Internal Splitting/Merging
+
+        /// <summary>
+        /// Process items according to SplitType
+        /// </summary>
+        /// <param name="datFile">DatFile to filter</param>
+        /// <param name="splitType">SplitType to implement</param>
+        private void ProcessSplitType(DatFile datFile, SplitType splitType)
+        {
+            // Now we pre-process the DAT with the splitting/merging mode
+            switch (splitType)
+            {
+                case SplitType.None:
+                    // No-op
+                    break;
+                case SplitType.DeviceNonMerged:
+                    CreateDeviceNonMergedSets(datFile, DedupeType.None);
+                    break;
+                case SplitType.FullNonMerged:
+                    CreateFullyNonMergedSets(datFile, DedupeType.None);
+                    break;
+                case SplitType.NonMerged:
+                    CreateNonMergedSets(datFile, DedupeType.None);
+                    break;
+                case SplitType.Merged:
+                    CreateMergedSets(datFile, DedupeType.None);
+                    break;
+                case SplitType.Split:
+                    CreateSplitSets(datFile, DedupeType.None);
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Use cdevice_ref tags to get full non-merged sets and remove parenting tags
+        /// </summary>
+        /// <param name="datFile">DatFile to filter</param>
+        /// <param name="mergeroms">Dedupe type to be used</param>
+        private void CreateDeviceNonMergedSets(DatFile datFile, DedupeType mergeroms)
+        {
+            Globals.Logger.User("Creating device non-merged sets from the DAT");
+
+            // For sake of ease, the first thing we want to do is sort by game
+            datFile.BucketBy(SortedBy.Game, mergeroms, norename: true);
+
+            // Now we want to loop through all of the games and set the correct information
+            while (AddRomsFromDevices(datFile, false, false)) ;
+            while (AddRomsFromDevices(datFile, true, false)) ;
+
+            // Then, remove the romof and cloneof tags so it's not picked up by the manager
+            RemoveTagsFromChild(datFile);
+        }
+
+        /// <summary>
+        /// Use cloneof tags to create non-merged sets and remove the tags plus using the device_ref tags to get full sets
+        /// </summary>
+        /// <param name="datFile">DatFile to filter</param>
+        /// <param name="mergeroms">Dedupe type to be used</param>
+        private void CreateFullyNonMergedSets(DatFile datFile, DedupeType mergeroms)
+        {
+            Globals.Logger.User("Creating fully non-merged sets from the DAT");
+
+            // For sake of ease, the first thing we want to do is sort by game
+            datFile.BucketBy(SortedBy.Game, mergeroms, norename: true);
+
+            // Now we want to loop through all of the games and set the correct information
+            while (AddRomsFromDevices(datFile, true, true)) ;
+            AddRomsFromDevices(datFile, false, true);
+            AddRomsFromParent(datFile);
+
+            // Now that we have looped through the cloneof tags, we loop through the romof tags
+            AddRomsFromBios(datFile);
+
+            // Then, remove the romof and cloneof tags so it's not picked up by the manager
+            RemoveTagsFromChild(datFile);
+        }
+
+        /// <summary>
+        /// Use cloneof tags to create merged sets and remove the tags
+        /// </summary>
+        /// <param name="datFile">DatFile to filter</param>
+        /// <param name="mergeroms">Dedupe type to be used</param>
+        private void CreateMergedSets(DatFile datFile, DedupeType mergeroms)
+        {
+            Globals.Logger.User("Creating merged sets from the DAT");
+
+            // For sake of ease, the first thing we want to do is sort by game
+            datFile.BucketBy(SortedBy.Game, mergeroms, norename: true);
+
+            // Now we want to loop through all of the games and set the correct information
+            AddRomsFromChildren(datFile);
+
+            // Now that we have looped through the cloneof tags, we loop through the romof tags
+            RemoveBiosRomsFromChild(datFile, false);
+            RemoveBiosRomsFromChild(datFile, true);
+
+            // Finally, remove the romof and cloneof tags so it's not picked up by the manager
+            RemoveTagsFromChild(datFile);
+        }
+
+        /// <summary>
+        /// Use cloneof tags to create non-merged sets and remove the tags
+        /// </summary>
+        /// <param name="datFile">DatFile to filter</param>
+        /// <param name="mergeroms">Dedupe type to be used</param>
+        private void CreateNonMergedSets(DatFile datFile, DedupeType mergeroms)
+        {
+            Globals.Logger.User("Creating non-merged sets from the DAT");
+
+            // For sake of ease, the first thing we want to do is sort by game
+            datFile.BucketBy(SortedBy.Game, mergeroms, norename: true);
+
+            // Now we want to loop through all of the games and set the correct information
+            AddRomsFromParent(datFile);
+
+            // Now that we have looped through the cloneof tags, we loop through the romof tags
+            RemoveBiosRomsFromChild(datFile, false);
+            RemoveBiosRomsFromChild(datFile, true);
+
+            // Finally, remove the romof and cloneof tags so it's not picked up by the manager
+            RemoveTagsFromChild(datFile);
+        }
+
+        /// <summary>
+        /// Use cloneof and romof tags to create split sets and remove the tags
+        /// </summary>
+        /// <param name="datFile">DatFile to filter</param>
+        /// <param name="mergeroms">Dedupe type to be used</param>
+        private void CreateSplitSets(DatFile datFile, DedupeType mergeroms)
+        {
+            Globals.Logger.User("Creating split sets from the DAT");
+
+            // For sake of ease, the first thing we want to do is sort by game
+            datFile.BucketBy(SortedBy.Game, mergeroms, norename: true);
+
+            // Now we want to loop through all of the games and set the correct information
+            RemoveRomsFromChild(datFile);
+
+            // Now that we have looped through the cloneof tags, we loop through the romof tags
+            RemoveBiosRomsFromChild(datFile, false);
+            RemoveBiosRomsFromChild(datFile, true);
+
+            // Finally, remove the romof and cloneof tags so it's not picked up by the manager
+            RemoveTagsFromChild(datFile);
+        }
+
+        /// <summary>
+        /// Use romof tags to add roms to the children
+        /// </summary>
+        /// <param name="datFile">DatFile to filter</param>
+        private void AddRomsFromBios(DatFile datFile)
+        {
+            List<string> games = datFile.Keys;
+            foreach (string game in games)
+            {
+                // If the game has no items in it, we want to continue
+                if (datFile[game].Count == 0)
+                    continue;
+
+                // Determine if the game has a parent or not
+                string parent = null;
+                if (!string.IsNullOrWhiteSpace(datFile[game][0].RomOf))
+                    parent = datFile[game][0].RomOf;
+
+                // If the parent doesnt exist, we want to continue
+                if (string.IsNullOrWhiteSpace(parent))
+                    continue;
+
+                // If the parent doesn't have any items, we want to continue
+                if (datFile[parent].Count == 0)
+                    continue;
+
+                // If the parent exists and has items, we copy the items from the parent to the current game
+                DatItem copyFrom = datFile[game][0];
+                List<DatItem> parentItems = datFile[parent];
+                foreach (DatItem item in parentItems)
+                {
+                    DatItem datItem = (DatItem)item.Clone();
+                    datItem.CopyMachineInformation(copyFrom);
+                    if (datFile[game].Where(i => i.Name == datItem.Name).Count() == 0 && !datFile[game].Contains(datItem))
+                        datFile.Add(game, datItem);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Use device_ref and optionally slotoption tags to add roms to the children
+        /// </summary>
+        /// <param name="datFile">DatFile to filter</param>
+        /// <param name="dev">True if only child device sets are touched, false for non-device sets (default)</param>
+        /// <param name="slotoptions">True if slotoptions tags are used as well, false otherwise</param>
+        private bool AddRomsFromDevices(DatFile datFile, bool dev = false, bool slotoptions = false)
+        {
+            bool foundnew = false;
+            List<string> games = datFile.Keys;
+            foreach (string game in games)
+            {
+                // If the game doesn't have items, we continue
+                if (datFile[game] == null || datFile[game].Count == 0)
+                    continue;
+
+                // If the game (is/is not) a bios, we want to continue
+                if (dev ^ (datFile[game][0].MachineType.HasFlag(MachineType.Device)))
+                    continue;
+
+                // If the game has no devices, we continue
+                if (datFile[game][0].Devices == null
+                    || datFile[game][0].Devices.Count == 0
+                    || (slotoptions && datFile[game][0].SlotOptions == null)
+                    || (slotoptions && datFile[game][0].SlotOptions.Count == 0))
+                {
+                    continue;
+                }
+
+                // Determine if the game has any devices or not
+                List<string> devices = datFile[game][0].Devices;
+                List<string> newdevs = new List<string>();
+                foreach (string device in devices)
+                {
+                    // If the device doesn't exist then we continue
+                    if (datFile[device].Count == 0)
+                        continue;
+
+                    // Otherwise, copy the items from the device to the current game
+                    DatItem copyFrom = datFile[game][0];
+                    List<DatItem> devItems = datFile[device];
+                    foreach (DatItem item in devItems)
+                    {
+                        DatItem datItem = (DatItem)item.Clone();
+                        newdevs.AddRange(datItem.Devices ?? new List<string>());
+                        datItem.CopyMachineInformation(copyFrom);
+                        if (datFile[game].Where(i => i.Name.ToLowerInvariant() == datItem.Name.ToLowerInvariant()).Count() == 0)
+                        {
+                            foundnew = true;
+                            datFile.Add(game, datItem);
+                        }
+                    }
+                }
+
+                // Now that every device is accounted for, add the new list of devices, if they don't already exist
+                foreach (string device in newdevs)
+                {
+                    if (!datFile[game][0].Devices.Contains(device))
+                        datFile[game][0].Devices.Add(device);
+                }
+
+                // If we're checking slotoptions too
+                if (slotoptions)
+                {
+                    // Determine if the game has any slotoptions or not
+                    List<string> slotopts = datFile[game][0].SlotOptions;
+                    List<string> newslotopts = new List<string>();
+                    foreach (string slotopt in slotopts)
+                    {
+                        // If the slotoption doesn't exist then we continue
+                        if (datFile[slotopt].Count == 0)
+                            continue;
+
+                        // Otherwise, copy the items from the slotoption to the current game
+                        DatItem copyFrom = datFile[game][0];
+                        List<DatItem> slotItems = datFile[slotopt];
+                        foreach (DatItem item in slotItems)
+                        {
+                            DatItem datItem = (DatItem)item.Clone();
+                            newslotopts.AddRange(datItem.SlotOptions ?? new List<string>());
+                            datItem.CopyMachineInformation(copyFrom);
+                            if (datFile[game].Where(i => i.Name.ToLowerInvariant() == datItem.Name.ToLowerInvariant()).Count() == 0)
+                            {
+                                foundnew = true;
+                                datFile.Add(game, datItem);
+                            }
+                        }
+                    }
+
+                    // Now that every slotoption is accounted for, add the new list of slotoptions, if they don't already exist
+                    foreach (string slotopt in newslotopts)
+                    {
+                        if (!datFile[game][0].SlotOptions.Contains(slotopt))
+                            datFile[game][0].SlotOptions.Add(slotopt);
+                    }
+                }
+            }
+
+            return foundnew;
+        }
+
+        /// <summary>
+        /// Use cloneof tags to add roms to the children, setting the new romof tag in the process
+        /// </summary>
+        /// <param name="datFile">DatFile to filter</param>
+        private void AddRomsFromParent(DatFile datFile)
+        {
+            List<string> games = datFile.Keys;
+            foreach (string game in games)
+            {
+                // If the game has no items in it, we want to continue
+                if (datFile[game].Count == 0)
+                    continue;
+
+                // Determine if the game has a parent or not
+                string parent = null;
+                if (!string.IsNullOrWhiteSpace(datFile[game][0].CloneOf))
+                    parent = datFile[game][0].CloneOf;
+
+                // If the parent doesnt exist, we want to continue
+                if (string.IsNullOrWhiteSpace(parent))
+                    continue;
+
+                // If the parent doesn't have any items, we want to continue
+                if (datFile[parent].Count == 0)
+                    continue;
+
+                // If the parent exists and has items, we copy the items from the parent to the current game
+                DatItem copyFrom = datFile[game][0];
+                List<DatItem> parentItems = datFile[parent];
+                foreach (DatItem item in parentItems)
+                {
+                    DatItem datItem = (DatItem)item.Clone();
+                    datItem.CopyMachineInformation(copyFrom);
+                    if (datFile[game].Where(i => i.Name.ToLowerInvariant() == datItem.Name.ToLowerInvariant()).Count() == 0
+                        && !datFile[game].Contains(datItem))
+                    {
+                        datFile.Add(game, datItem);
+                    }
+                }
+
+                // Now we want to get the parent romof tag and put it in each of the items
+                List<DatItem> items = datFile[game];
+                string romof = datFile[parent][0].RomOf;
+                foreach (DatItem item in items)
+                {
+                    item.RomOf = romof;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Use cloneof tags to add roms to the parents, removing the child sets in the process
+        /// </summary>
+        /// <param name="datFile">DatFile to filter</param>
+        private void AddRomsFromChildren(DatFile datFile)
+        {
+            List<string> games = datFile.Keys;
+            foreach (string game in games)
+            {
+                // If the game has no items in it, we want to continue
+                if (datFile[game].Count == 0)
+                    continue;
+
+                // Determine if the game has a parent or not
+                string parent = null;
+                if (!string.IsNullOrWhiteSpace(datFile[game][0].CloneOf))
+                    parent = datFile[game][0].CloneOf;
+
+                // If there is no parent, then we continue
+                if (string.IsNullOrWhiteSpace(parent))
+                    continue;
+
+                // Otherwise, move the items from the current game to a subfolder of the parent game
+                DatItem copyFrom = datFile[parent].Count == 0 ? new Rom { MachineName = parent, MachineDescription = parent } : datFile[parent][0];
+                List<DatItem> items = datFile[game];
+                foreach (DatItem item in items)
+                {
+                    // If the disk doesn't have a valid merge tag OR the merged file doesn't exist in the parent, then add it
+                    if (item.ItemType == ItemType.Disk && (((Disk)item).MergeTag == null || !datFile[parent].Select(i => i.Name).Contains(((Disk)item).MergeTag)))
+                    {
+                        item.CopyMachineInformation(copyFrom);
+                        datFile.Add(parent, item);
+                    }
+
+                    // Otherwise, if the parent doesn't already contain the non-disk (or a merge-equivalent), add it
+                    else if (item.ItemType != ItemType.Disk && !datFile[parent].Contains(item))
+                    {
+                        // Rename the child so it's in a subfolder
+                        item.Name = $"{item.MachineName}\\{item.Name}";
+
+                        // Update the machine to be the new parent
+                        item.CopyMachineInformation(copyFrom);
+
+                        // Add the rom to the parent set
+                        datFile.Add(parent, item);
+                    }
+                }
+
+                // Then, remove the old game so it's not picked up by the writer
+                datFile.Remove(game);
+            }
+        }
+
+        /// <summary>
+        /// Remove all BIOS and device sets
+        /// </summary>
+        /// <param name="datFile">DatFile to filter</param>
+        private void RemoveBiosAndDeviceSets(DatFile datFile)
+        {
+            List<string> games = datFile.Keys;
+            foreach (string game in games)
+            {
+                if (datFile[game].Count > 0
+                    && (datFile[game][0].MachineType.HasFlag(MachineType.Bios)
+                        || datFile[game][0].MachineType.HasFlag(MachineType.Device)))
+                {
+                    datFile.Remove(game);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Use romof tags to remove bios roms from children
+        /// </summary>
+        /// <param name="datFile">DatFile to filter</param>
+        /// <param name="bios">True if only child Bios sets are touched, false for non-bios sets (default)</param>
+        private void RemoveBiosRomsFromChild(DatFile datFile, bool bios = false)
+        {
+            // Loop through the romof tags
+            List<string> games = datFile.Keys;
+            foreach (string game in games)
+            {
+                // If the game has no items in it, we want to continue
+                if (datFile[game].Count == 0)
+                    continue;
+
+                // If the game (is/is not) a bios, we want to continue
+                if (bios ^ datFile[game][0].MachineType.HasFlag(MachineType.Bios))
+                    continue;
+
+                // Determine if the game has a parent or not
+                string parent = null;
+                if (!string.IsNullOrWhiteSpace(datFile[game][0].RomOf))
+                    parent = datFile[game][0].RomOf;
+
+                // If the parent doesnt exist, we want to continue
+                if (string.IsNullOrWhiteSpace(parent))
+                    continue;
+
+                // If the parent doesn't have any items, we want to continue
+                if (datFile[parent].Count == 0)
+                    continue;
+
+                // If the parent exists and has items, we remove the items that are in the parent from the current game
+                List<DatItem> parentItems = datFile[parent];
+                foreach (DatItem item in parentItems)
+                {
+                    DatItem datItem = (DatItem)item.Clone();
+                    while (datFile[game].Contains(datItem))
+                    {
+                        datFile.Remove(game, datItem);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Use cloneof tags to remove roms from the children
+        /// </summary>
+        /// <param name="datFile">DatFile to filter</param>
+        private void RemoveRomsFromChild(DatFile datFile)
+        {
+            List<string> games = datFile.Keys;
+            foreach (string game in games)
+            {
+                // If the game has no items in it, we want to continue
+                if (datFile[game].Count == 0)
+                    continue;
+
+                // Determine if the game has a parent or not
+                string parent = null;
+                if (!string.IsNullOrWhiteSpace(datFile[game][0].CloneOf))
+                    parent = datFile[game][0].CloneOf;
+
+                // If the parent doesnt exist, we want to continue
+                if (string.IsNullOrWhiteSpace(parent))
+                    continue;
+
+                // If the parent doesn't have any items, we want to continue
+                if (datFile[parent].Count == 0)
+                    continue;
+
+                // If the parent exists and has items, we remove the parent items from the current game
+                List<DatItem> parentItems = datFile[parent];
+                foreach (DatItem item in parentItems)
+                {
+                    DatItem datItem = (DatItem)item.Clone();
+                    while (datFile[game].Contains(datItem))
+                    {
+                        datFile.Remove(game, datItem);
+                    }
+                }
+
+                // Now we want to get the parent romof tag and put it in each of the remaining items
+                List<DatItem> items = datFile[game];
+                string romof = datFile[parent][0].RomOf;
+                foreach (DatItem item in items)
+                {
+                    item.RomOf = romof;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Remove all romof and cloneof tags from all games
+        /// </summary>
+        /// <param name="datFile">DatFile to filter</param>
+        private void RemoveTagsFromChild(DatFile datFile)
+        {
+            List<string> games = datFile.Keys;
+            foreach (string game in games)
+            {
+                List<DatItem> items = datFile[game];
+                foreach (DatItem item in items)
+                {
+                    item.CloneOf = null;
+                    item.RomOf = null;
+                }
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Use game descriptions as names in the DAT, updating cloneof/romof/sampleof
+        /// </summary>
+        /// <param name="datFile">DatFile to filter</param>
+        private void MachineDescriptionToName(DatFile datFile)
+        {
+            try
+            {
+                // First we want to get a mapping for all games to description
+                ConcurrentDictionary<string, string> mapping = new ConcurrentDictionary<string, string>();
+                List<string> keys = datFile.Keys;
+                Parallel.ForEach(keys, Globals.ParallelOptions, key =>
+                {
+                    List<DatItem> items = datFile[key];
+                    foreach (DatItem item in items)
+                    {
+                        // If the key mapping doesn't exist, add it
+                        mapping.TryAdd(item.MachineName, item.MachineDescription.Replace('/', '_').Replace("\"", "''").Replace(":", " -"));
+                    }
+                });
+
+                // Now we loop through every item and update accordingly
+                keys = datFile.Keys;
+                Parallel.ForEach(keys, Globals.ParallelOptions, key =>
+                {
+                    List<DatItem> items = datFile[key];
+                    List<DatItem> newItems = new List<DatItem>();
+                    foreach (DatItem item in items)
+                    {
+                        // Update machine name
+                        if (!string.IsNullOrWhiteSpace(item.MachineName) && mapping.ContainsKey(item.MachineName))
+                            item.MachineName = mapping[item.MachineName];
+
+                        // Update cloneof
+                        if (!string.IsNullOrWhiteSpace(item.CloneOf) && mapping.ContainsKey(item.CloneOf))
+                            item.CloneOf = mapping[item.CloneOf];
+
+                        // Update romof
+                        if (!string.IsNullOrWhiteSpace(item.RomOf) && mapping.ContainsKey(item.RomOf))
+                            item.RomOf = mapping[item.RomOf];
+
+                        // Update sampleof
+                        if (!string.IsNullOrWhiteSpace(item.SampleOf) && mapping.ContainsKey(item.SampleOf))
+                            item.SampleOf = mapping[item.SampleOf];
+
+                        // Add the new item to the output list
+                        newItems.Add(item);
+                    }
+
+                    // Replace the old list of roms with the new one
+                    datFile.Remove(key);
+                    datFile.AddRange(key, newItems);
+                });
+            }
+            catch (Exception ex)
+            {
+                Globals.Logger.Warning(ex.ToString());
+            }
         }
 
         #endregion

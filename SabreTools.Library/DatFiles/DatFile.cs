@@ -658,9 +658,8 @@ namespace SabreTools.Library.DatFiles
         /// <param name="updateMode">Non-zero flag for diffing mode, zero otherwise</param>
         /// <param name="inplace">True if the output files should overwrite their inputs, false otherwise</param>
         /// <param name="skip">True if the first cascaded diff file should be skipped on output, false otherwise</param>
-        /// <param name="descAsName">True to use game descriptions as the names, false otherwise (default)</param>
         /// <param name="filter">Filter object to be passed to the DatItem level</param>
-        /// <param name="splitType">Type of the split that should be performed (split, merged, fully merged)</param>
+        /// <param name="useTags">True if DatFile tags override splitting, false otherwise</param>
         /// <param name="updateFields">List of Fields representing what should be updated [only for base replacement]</param>
         /// <param name="onlySame">True if descriptions should only be replaced if the game name is the same, false otherwise [only for base replacement]</param>
         public void DetermineUpdateType(
@@ -670,9 +669,8 @@ namespace SabreTools.Library.DatFiles
             UpdateMode updateMode,
             bool inplace,
             bool skip,
-            bool descAsName,
             Filter filter,
-            SplitType splitType,
+            bool useTags,
             List<Field> updateFields,
             bool onlySame)
         {
@@ -683,7 +681,7 @@ namespace SabreTools.Library.DatFiles
             // If we're in standard update mode, run through all of the inputs
             if (updateMode == UpdateMode.None)
             {
-                Update(inputFileNames, outDir, inplace, descAsName, filter, splitType);
+                Update(inputFileNames, outDir, inplace, filter, useTags);
                 return;
             }
 
@@ -697,7 +695,7 @@ namespace SabreTools.Library.DatFiles
             if (updateMode.HasFlag(UpdateMode.Merge))
             {
                 // Populate the combined data and get the headers
-                PopulateUserData(inputFileNames, descAsName, filter, splitType);
+                PopulateUserData(inputFileNames, filter, useTags);
                 MergeNoDiff(inputFileNames, outDir);
             }
 
@@ -707,7 +705,7 @@ namespace SabreTools.Library.DatFiles
                 || updateMode.HasFlag(UpdateMode.DiffIndividualsOnly))
             {
                 // Populate the combined data
-                PopulateUserData(inputFileNames, descAsName, filter, splitType);
+                PopulateUserData(inputFileNames, filter, useTags);
                 DiffNoCascade(inputFileNames, outDir, updateMode);
             }
 
@@ -716,7 +714,7 @@ namespace SabreTools.Library.DatFiles
                 || updateMode.HasFlag(UpdateMode.DiffReverseCascade))
             {
                 // Populate the combined data and get the headers
-                List<DatHeader> datHeaders = PopulateUserData(inputFileNames, descAsName, filter, splitType);
+                List<DatHeader> datHeaders = PopulateUserData(inputFileNames, filter, useTags);
                 DiffCascade(inputFileNames, datHeaders, outDir, inplace, skip);
             }
 
@@ -724,8 +722,8 @@ namespace SabreTools.Library.DatFiles
             else if (updateMode.HasFlag(UpdateMode.DiffAgainst))
             {
                 // Populate the combined data
-                PopulateUserData(baseFileNames, descAsName, filter, splitType);
-                DiffAgainst(inputFileNames, outDir, inplace, descAsName);
+                PopulateUserData(baseFileNames, filter, useTags);
+                DiffAgainst(inputFileNames, outDir, inplace);
             }
 
             // If we have one of the base replacement modes
@@ -733,8 +731,8 @@ namespace SabreTools.Library.DatFiles
                 || updateMode.HasFlag(UpdateMode.ReverseBaseReplace))
             {
                 // Populate the combined data
-                PopulateUserData(baseFileNames, descAsName, filter, splitType);
-                BaseReplace(inputFileNames, outDir, inplace, descAsName, filter, updateFields, onlySame);
+                PopulateUserData(baseFileNames, filter, useTags);
+                BaseReplace(inputFileNames, outDir, inplace, filter, useTags, updateFields, onlySame);
             }
 
             return;
@@ -744,15 +742,13 @@ namespace SabreTools.Library.DatFiles
         /// Populate the user DatData object from the input files
         /// </summary>
         /// <param name="inputs">Paths to DATs to parse</param>
-        /// <param name="descAsName">True to use game descriptions as the names, false otherwise (default)</param>
         /// <param name="filter">Filter object to be passed to the DatItem level</param>
-        /// <param name="splitType">Type of the split that should be performed (split, merged, fully merged)</param>
+        /// <param name="useTags">True if DatFile tags override splitting, false otherwise</param>
         /// <returns>List of DatData objects representing headers</returns>
         private List<DatHeader> PopulateUserData(
             List<string> inputs,
-            bool descAsName,
             Filter filter,
-            SplitType splitType)
+            bool useTags)
         {
             DatFile[] datFiles = new DatFile[inputs.Count];
             InternalStopwatch watch = new InternalStopwatch("Processing individual DATs");
@@ -763,7 +759,7 @@ namespace SabreTools.Library.DatFiles
                 string input = inputs[i];
                 Globals.Logger.User($"Adding DAT: {input.Split('¬')[0]}");
                 datFiles[i] = Create(DatHeader.CloneFiltering());
-                datFiles[i].Parse(input, i, splitType, keep: true, descAsName: descAsName);
+                datFiles[i].Parse(input, i, keep: true);
             });
 
             watch.Stop();
@@ -775,7 +771,7 @@ namespace SabreTools.Library.DatFiles
             });
 
             // Now that we have a merged DAT, filter it
-            filter.FilterDatFile(this);
+            filter.FilterDatFile(this, useTags);
 
             watch.Stop();
 
@@ -788,16 +784,16 @@ namespace SabreTools.Library.DatFiles
         /// <param name="inputFileNames">Names of the input files</param>
         /// <param name="outDir">Optional param for output directory</param>
         /// <param name="inplace">True if the output files should overwrite their inputs, false otherwise</param>
-        /// <param name="descAsName">True to allow SL DATs to have game names used instead of descriptions, false otherwise (default)</param>
         /// <param name="filter">Filter object to be passed to the DatItem level</param>
+        /// <param name="useTags">True if DatFile tags override splitting, false otherwise</param>
         /// <param name="updateFields">List of Fields representing what should be updated [only for base replacement]</param>
         /// <param name="onlySame">True if descriptions should only be replaced if the game name is the same, false otherwise</param>
         private void BaseReplace(
             List<string> inputFileNames,
             string outDir,
             bool inplace,
-            bool descAsName,
             Filter filter,
+            bool useTags,
             List<Field> updateFields,
             bool onlySame)
         {
@@ -865,8 +861,8 @@ namespace SabreTools.Library.DatFiles
 
                 // First we parse in the DAT internally
                 DatFile intDat = Create(DatHeader.CloneFiltering());
-                intDat.Parse(path, 1, keep: true, descAsName: descAsName);
-                filter.FilterDatFile(intDat);
+                intDat.Parse(path, 1, keep: true);
+                filter.FilterDatFile(intDat, useTags);
 
                 // If we are matching based on DatItem fields of any sort
                 if (updateFields.Intersect(datItemFields).Any())
@@ -1287,8 +1283,7 @@ namespace SabreTools.Library.DatFiles
         /// <param name="inputFileNames">Names of the input files</param>
         /// <param name="outDir">Optional param for output directory</param>
         /// <param name="inplace">True if the output files should overwrite their inputs, false otherwise</param>
-        /// <param name="descAsName">True to use game descriptions as the names, false otherwise (default)</param>
-        private void DiffAgainst(List<string> inputFileNames, string outDir, bool inplace, bool descAsName)
+        private void DiffAgainst(List<string> inputFileNames, string outDir, bool inplace)
         {
             // For comparison's sake, we want to use CRC as the base ordering
             BucketBy(SortedBy.CRC, DedupeType.Full);
@@ -1300,7 +1295,7 @@ namespace SabreTools.Library.DatFiles
 
                 // First we parse in the DAT internally
                 DatFile intDat = Create();
-                intDat.Parse(path, 1, keep: true, descAsName: descAsName);
+                intDat.Parse(path, 1, keep: true);
 
                 // For comparison's sake, we want to use CRC as the base ordering
                 intDat.BucketBy(SortedBy.CRC, DedupeType.Full);
@@ -1612,27 +1607,25 @@ namespace SabreTools.Library.DatFiles
         /// <param name="inputFileNames">Names of the input files and/or folders</param>
         /// <param name="outDir">Optional param for output directory</param>
         /// <param name="inplace">True if the output files should overwrite their inputs, false otherwise</param>
-        /// <param name="descAsName">True to use game descriptions as the names, false otherwise (default)</param>
         /// <param name="filter">Filter object to be passed to the DatItem level</param>
-        /// <param name="splitType">Type of the split that should be performed (split, merged, fully merged)</param>
+        /// <param name="useTags">True if DatFile tags override splitting, false otherwise</param>
         private void Update(
             List<string> inputFileNames,
             string outDir,
             bool inplace,
-            bool descAsName,
             Filter filter,
-            SplitType splitType)
+            bool useTags)
         {
             // Iterate over the files
             foreach (string file in inputFileNames)
             {
                 DatFile innerDatdata = Create(baseDat: this);
                 Globals.Logger.User($"Processing '{Path.GetFileName(file.Split('¬')[0])}'");
-                innerDatdata.Parse(file, splitType: splitType, keep: true, descAsName: descAsName,
+                innerDatdata.Parse(file, keep: true,
                     keepext: innerDatdata.DatHeader.DatFormat.HasFlag(DatFormat.TSV)
                         || innerDatdata.DatHeader.DatFormat.HasFlag(DatFormat.CSV)
                         || innerDatdata.DatHeader.DatFormat.HasFlag(DatFormat.SSV));
-                filter.FilterDatFile(innerDatdata);
+                filter.FilterDatFile(innerDatdata, useTags);
 
                 // Get the correct output path
                 string realOutDir = PathExtensions.GetOutputPath(outDir, file, inplace);
@@ -1676,65 +1669,6 @@ namespace SabreTools.Library.DatFiles
 
         // TODO: Can desc as name be part of Filter?
         #region Filtering
-
-        /// <summary>
-        /// Use game descriptions as names in the DAT, updating cloneof/romof/sampleof
-        /// </summary>
-        private void MachineDescriptionToName()
-        {
-            try
-            {
-                // First we want to get a mapping for all games to description
-                ConcurrentDictionary<string, string> mapping = new ConcurrentDictionary<string, string>();
-                List<string> keys = Keys;
-                Parallel.ForEach(keys, Globals.ParallelOptions, key =>
-                {
-                    List<DatItem> items = this[key];
-                    foreach (DatItem item in items)
-                    {
-                        // If the key mapping doesn't exist, add it
-                        mapping.TryAdd(item.MachineName, item.MachineDescription.Replace('/', '_').Replace("\"", "''").Replace(":", " -"));
-                    }
-                });
-
-                // Now we loop through every item and update accordingly
-                keys = Keys;
-                Parallel.ForEach(keys, Globals.ParallelOptions, key =>
-                {
-                    List<DatItem> items = this[key];
-                    List<DatItem> newItems = new List<DatItem>();
-                    foreach (DatItem item in items)
-                    {
-                        // Update machine name
-                        if (!string.IsNullOrWhiteSpace(item.MachineName) && mapping.ContainsKey(item.MachineName))
-                            item.MachineName = mapping[item.MachineName];
-
-                        // Update cloneof
-                        if (!string.IsNullOrWhiteSpace(item.CloneOf) && mapping.ContainsKey(item.CloneOf))
-                            item.CloneOf = mapping[item.CloneOf];
-
-                        // Update romof
-                        if (!string.IsNullOrWhiteSpace(item.RomOf) && mapping.ContainsKey(item.RomOf))
-                            item.RomOf = mapping[item.RomOf];
-
-                        // Update sampleof
-                        if (!string.IsNullOrWhiteSpace(item.SampleOf) && mapping.ContainsKey(item.SampleOf))
-                            item.SampleOf = mapping[item.SampleOf];
-
-                        // Add the new item to the output list
-                        newItems.Add(item);
-                    }
-
-                    // Replace the old list of roms with the new one
-                    Remove(key);
-                    AddRange(key, newItems);
-                });
-            }
-            catch (Exception ex)
-            {
-                Globals.Logger.Warning(ex.ToString());
-            }
-        }
 
         /// <summary>
         /// Ensure that all roms are in their own game (or at least try to ensure)
@@ -1807,495 +1741,6 @@ namespace SabreTools.Library.DatFiles
         #region Internal Merging/Splitting
 
         /// <summary>
-        /// Process items according to SplitType
-        /// </summary>
-        /// <param name="splitType">SplitType to implement</param>
-        /// <param name="useTags">True to use ForceMerge header value</param>
-        private void ProcessSplitType(SplitType splitType, bool useTags)
-        {
-            // If we are using tags from the DAT, set the proper input for split type unless overridden
-            if (useTags && splitType == SplitType.None)
-                splitType = DatHeader.ForceMerging.AsSplitType();
-
-            // Now we pre-process the DAT with the splitting/merging mode
-            switch (splitType)
-            {
-                case SplitType.None:
-                    // No-op
-                    break;
-                case SplitType.DeviceNonMerged:
-                    CreateDeviceNonMergedSets(DedupeType.None);
-                    break;
-                case SplitType.FullNonMerged:
-                    CreateFullyNonMergedSets(DedupeType.None);
-                    break;
-                case SplitType.NonMerged:
-                    CreateNonMergedSets(DedupeType.None);
-                    break;
-                case SplitType.Merged:
-                    CreateMergedSets(DedupeType.None);
-                    break;
-                case SplitType.Split:
-                    CreateSplitSets(DedupeType.None);
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Use cdevice_ref tags to get full non-merged sets and remove parenting tags
-        /// </summary>
-        /// <param name="mergeroms">Dedupe type to be used</param>
-        private void CreateDeviceNonMergedSets(DedupeType mergeroms)
-        {
-            Globals.Logger.User("Creating device non-merged sets from the DAT");
-
-            // For sake of ease, the first thing we want to do is sort by game
-            BucketBy(SortedBy.Game, mergeroms, norename: true);
-
-            // Now we want to loop through all of the games and set the correct information
-            while (AddRomsFromDevices(false, false)) ;
-            while (AddRomsFromDevices(true, false)) ;
-
-            // Then, remove the romof and cloneof tags so it's not picked up by the manager
-            RemoveTagsFromChild();
-        }
-
-        /// <summary>
-        /// Use cloneof tags to create non-merged sets and remove the tags plus using the device_ref tags to get full sets
-        /// </summary>
-        /// <param name="mergeroms">Dedupe type to be used</param>
-        private void CreateFullyNonMergedSets(DedupeType mergeroms)
-        {
-            Globals.Logger.User("Creating fully non-merged sets from the DAT");
-
-            // For sake of ease, the first thing we want to do is sort by game
-            BucketBy(SortedBy.Game, mergeroms, norename: true);
-
-            // Now we want to loop through all of the games and set the correct information
-            while (AddRomsFromDevices(true, true)) ;
-            AddRomsFromDevices(false, true);
-            AddRomsFromParent();
-
-            // Now that we have looped through the cloneof tags, we loop through the romof tags
-            AddRomsFromBios();
-
-            // Then, remove the romof and cloneof tags so it's not picked up by the manager
-            RemoveTagsFromChild();
-        }
-
-        /// <summary>
-        /// Use cloneof tags to create merged sets and remove the tags
-        /// </summary>
-        /// <param name="mergeroms">Dedupe type to be used</param>
-        private void CreateMergedSets(DedupeType mergeroms)
-        {
-            Globals.Logger.User("Creating merged sets from the DAT");
-
-            // For sake of ease, the first thing we want to do is sort by game
-            BucketBy(SortedBy.Game, mergeroms, norename: true);
-
-            // Now we want to loop through all of the games and set the correct information
-            AddRomsFromChildren();
-
-            // Now that we have looped through the cloneof tags, we loop through the romof tags
-            RemoveBiosRomsFromChild(false);
-            RemoveBiosRomsFromChild(true);
-
-            // Finally, remove the romof and cloneof tags so it's not picked up by the manager
-            RemoveTagsFromChild();
-        }
-
-        /// <summary>
-        /// Use cloneof tags to create non-merged sets and remove the tags
-        /// </summary>
-        /// <param name="mergeroms">Dedupe type to be used</param>
-        private void CreateNonMergedSets(DedupeType mergeroms)
-        {
-            Globals.Logger.User("Creating non-merged sets from the DAT");
-
-            // For sake of ease, the first thing we want to do is sort by game
-            BucketBy(SortedBy.Game, mergeroms, norename: true);
-
-            // Now we want to loop through all of the games and set the correct information
-            AddRomsFromParent();
-
-            // Now that we have looped through the cloneof tags, we loop through the romof tags
-            RemoveBiosRomsFromChild(false);
-            RemoveBiosRomsFromChild(true);
-
-            // Finally, remove the romof and cloneof tags so it's not picked up by the manager
-            RemoveTagsFromChild();
-        }
-
-        /// <summary>
-        /// Use cloneof and romof tags to create split sets and remove the tags
-        /// </summary>
-        /// <param name="mergeroms">Dedupe type to be used</param>
-        private void CreateSplitSets(DedupeType mergeroms)
-        {
-            Globals.Logger.User("Creating split sets from the DAT");
-
-            // For sake of ease, the first thing we want to do is sort by game
-            BucketBy(SortedBy.Game, mergeroms, norename: true);
-
-            // Now we want to loop through all of the games and set the correct information
-            RemoveRomsFromChild();
-
-            // Now that we have looped through the cloneof tags, we loop through the romof tags
-            RemoveBiosRomsFromChild(false);
-            RemoveBiosRomsFromChild(true);
-
-            // Finally, remove the romof and cloneof tags so it's not picked up by the manager
-            RemoveTagsFromChild();
-        }
-
-        /// <summary>
-        /// Use romof tags to add roms to the children
-        /// </summary>
-        private void AddRomsFromBios()
-        {
-            List<string> games = Keys;
-            foreach (string game in games)
-            {
-                // If the game has no items in it, we want to continue
-                if (this[game].Count == 0)
-                    continue;
-
-                // Determine if the game has a parent or not
-                string parent = null;
-                if (!string.IsNullOrWhiteSpace(this[game][0].RomOf))
-                    parent = this[game][0].RomOf;
-
-                // If the parent doesnt exist, we want to continue
-                if (string.IsNullOrWhiteSpace(parent))
-                    continue;
-
-                // If the parent doesn't have any items, we want to continue
-                if (this[parent].Count == 0)
-                    continue;
-
-                // If the parent exists and has items, we copy the items from the parent to the current game
-                DatItem copyFrom = this[game][0];
-                List<DatItem> parentItems = this[parent];
-                foreach (DatItem item in parentItems)
-                {
-                    DatItem datItem = (DatItem)item.Clone();
-                    datItem.CopyMachineInformation(copyFrom);
-                    if (this[game].Where(i => i.Name == datItem.Name).Count() == 0 && !this[game].Contains(datItem))
-                        Add(game, datItem);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Use device_ref and optionally slotoption tags to add roms to the children
-        /// </summary>
-        /// <param name="dev">True if only child device sets are touched, false for non-device sets (default)</param>
-        /// <param name="slotoptions">True if slotoptions tags are used as well, false otherwise</param>
-        private bool AddRomsFromDevices(bool dev = false, bool slotoptions = false)
-        {
-            bool foundnew = false;
-            List<string> games = Keys;
-            foreach (string game in games)
-            {
-                // If the game doesn't have items, we continue
-                if (this[game] == null || this[game].Count == 0)
-                    continue;
-
-                // If the game (is/is not) a bios, we want to continue
-                if (dev ^ (this[game][0].MachineType.HasFlag(MachineType.Device)))
-                    continue;
-
-                // If the game has no devices, we continue
-                if (this[game][0].Devices == null
-                    || this[game][0].Devices.Count == 0
-                    || (slotoptions && this[game][0].SlotOptions == null)
-                    || (slotoptions && this[game][0].SlotOptions.Count == 0))
-                {
-                    continue;
-                }
-
-                // Determine if the game has any devices or not
-                List<string> devices = this[game][0].Devices;
-                List<string> newdevs = new List<string>();
-                foreach (string device in devices)
-                {
-                    // If the device doesn't exist then we continue
-                    if (this[device].Count == 0)
-                        continue;
-
-                    // Otherwise, copy the items from the device to the current game
-                    DatItem copyFrom = this[game][0];
-                    List<DatItem> devItems = this[device];
-                    foreach (DatItem item in devItems)
-                    {
-                        DatItem datItem = (DatItem)item.Clone();
-                        newdevs.AddRange(datItem.Devices ?? new List<string>());
-                        datItem.CopyMachineInformation(copyFrom);
-                        if (this[game].Where(i => i.Name.ToLowerInvariant() == datItem.Name.ToLowerInvariant()).Count() == 0)
-                        {
-                            foundnew = true;
-                            Add(game, datItem);
-                        }
-                    }
-                }
-
-                // Now that every device is accounted for, add the new list of devices, if they don't already exist
-                foreach (string device in newdevs)
-                {
-                    if (!this[game][0].Devices.Contains(device))
-                        this[game][0].Devices.Add(device);
-                }
-
-                // If we're checking slotoptions too
-                if (slotoptions)
-                {
-                    // Determine if the game has any slotoptions or not
-                    List<string> slotopts = this[game][0].SlotOptions;
-                    List<string> newslotopts = new List<string>();
-                    foreach (string slotopt in slotopts)
-                    {
-                        // If the slotoption doesn't exist then we continue
-                        if (this[slotopt].Count == 0)
-                            continue;
-
-                        // Otherwise, copy the items from the slotoption to the current game
-                        DatItem copyFrom = this[game][0];
-                        List<DatItem> slotItems = this[slotopt];
-                        foreach (DatItem item in slotItems)
-                        {
-                            DatItem datItem = (DatItem)item.Clone();
-                            newslotopts.AddRange(datItem.SlotOptions ?? new List<string>());
-                            datItem.CopyMachineInformation(copyFrom);
-                            if (this[game].Where(i => i.Name.ToLowerInvariant() == datItem.Name.ToLowerInvariant()).Count() == 0)
-                            {
-                                foundnew = true;
-                                Add(game, datItem);
-                            }
-                        }
-                    }
-
-                    // Now that every slotoption is accounted for, add the new list of slotoptions, if they don't already exist
-                    foreach (string slotopt in newslotopts)
-                    {
-                        if (!this[game][0].SlotOptions.Contains(slotopt))
-                            this[game][0].SlotOptions.Add(slotopt);
-                    }
-                }
-            }
-
-            return foundnew;
-        }
-
-        /// <summary>
-        /// Use cloneof tags to add roms to the children, setting the new romof tag in the process
-        /// </summary>
-        private void AddRomsFromParent()
-        {
-            List<string> games = Keys;
-            foreach (string game in games)
-            {
-                // If the game has no items in it, we want to continue
-                if (this[game].Count == 0)
-                    continue;
-
-                // Determine if the game has a parent or not
-                string parent = null;
-                if (!string.IsNullOrWhiteSpace(this[game][0].CloneOf))
-                    parent = this[game][0].CloneOf;
-
-                // If the parent doesnt exist, we want to continue
-                if (string.IsNullOrWhiteSpace(parent))
-                    continue;
-
-                // If the parent doesn't have any items, we want to continue
-                if (this[parent].Count == 0)
-                    continue;
-
-                // If the parent exists and has items, we copy the items from the parent to the current game
-                DatItem copyFrom = this[game][0];
-                List<DatItem> parentItems = this[parent];
-                foreach (DatItem item in parentItems)
-                {
-                    DatItem datItem = (DatItem)item.Clone();
-                    datItem.CopyMachineInformation(copyFrom);
-                    if (this[game].Where(i => i.Name.ToLowerInvariant() == datItem.Name.ToLowerInvariant()).Count() == 0
-                        && !this[game].Contains(datItem))
-                    {
-                        Add(game, datItem);
-                    }
-                }
-
-                // Now we want to get the parent romof tag and put it in each of the items
-                List<DatItem> items = this[game];
-                string romof = this[parent][0].RomOf;
-                foreach (DatItem item in items)
-                {
-                    item.RomOf = romof;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Use cloneof tags to add roms to the parents, removing the child sets in the process
-        /// </summary>
-        private void AddRomsFromChildren()
-        {
-            List<string> games = Keys;
-            foreach (string game in games)
-            {
-                // If the game has no items in it, we want to continue
-                if (this[game].Count == 0)
-                    continue;
-
-                // Determine if the game has a parent or not
-                string parent = null;
-                if (!string.IsNullOrWhiteSpace(this[game][0].CloneOf))
-                    parent = this[game][0].CloneOf;
-
-                // If there is no parent, then we continue
-                if (string.IsNullOrWhiteSpace(parent))
-                    continue;
-
-                // Otherwise, move the items from the current game to a subfolder of the parent game
-                DatItem copyFrom = this[parent].Count == 0 ? new Rom { MachineName = parent, MachineDescription = parent } : this[parent][0];
-                List<DatItem> items = this[game];
-                foreach (DatItem item in items)
-                {
-                    // If the disk doesn't have a valid merge tag OR the merged file doesn't exist in the parent, then add it
-                    if (item.ItemType == ItemType.Disk && (((Disk)item).MergeTag == null || !this[parent].Select(i => i.Name).Contains(((Disk)item).MergeTag)))
-                    {
-                        item.CopyMachineInformation(copyFrom);
-                        Add(parent, item);
-                    }
-
-                    // Otherwise, if the parent doesn't already contain the non-disk (or a merge-equivalent), add it
-                    else if (item.ItemType != ItemType.Disk && !this[parent].Contains(item))
-                    {
-                        // Rename the child so it's in a subfolder
-                        item.Name = $"{item.MachineName}\\{item.Name}";
-
-                        // Update the machine to be the new parent
-                        item.CopyMachineInformation(copyFrom);
-
-                        // Add the rom to the parent set
-                        Add(parent, item);
-                    }
-                }
-
-                // Then, remove the old game so it's not picked up by the writer
-                Remove(game);
-            }
-        }
-
-        /// <summary>
-        /// Remove all BIOS and device sets
-        /// </summary>
-        private void RemoveBiosAndDeviceSets()
-        {
-            List<string> games = Keys;
-            foreach (string game in games)
-            {
-                if (this[game].Count > 0
-                    && (this[game][0].MachineType.HasFlag(MachineType.Bios)
-                        || this[game][0].MachineType.HasFlag(MachineType.Device)))
-                {
-                    Remove(game);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Use romof tags to remove bios roms from children
-        /// </summary>
-        /// <param name="bios">True if only child Bios sets are touched, false for non-bios sets (default)</param>
-        private void RemoveBiosRomsFromChild(bool bios = false)
-        {
-            // Loop through the romof tags
-            List<string> games = Keys;
-            foreach (string game in games)
-            {
-                // If the game has no items in it, we want to continue
-                if (this[game].Count == 0)
-                    continue;
-
-                // If the game (is/is not) a bios, we want to continue
-                if (bios ^ this[game][0].MachineType.HasFlag(MachineType.Bios))
-                    continue;
-
-                // Determine if the game has a parent or not
-                string parent = null;
-                if (!string.IsNullOrWhiteSpace(this[game][0].RomOf))
-                    parent = this[game][0].RomOf;
-
-                // If the parent doesnt exist, we want to continue
-                if (string.IsNullOrWhiteSpace(parent))
-                    continue;
-
-                // If the parent doesn't have any items, we want to continue
-                if (this[parent].Count == 0)
-                    continue;
-
-                // If the parent exists and has items, we remove the items that are in the parent from the current game
-                List<DatItem> parentItems = this[parent];
-                foreach (DatItem item in parentItems)
-                {
-                    DatItem datItem = (DatItem)item.Clone();
-                    while (this[game].Contains(datItem))
-                    {
-                        Remove(game, datItem);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Use cloneof tags to remove roms from the children
-        /// </summary>
-        private void RemoveRomsFromChild()
-        {
-            List<string> games = Keys;
-            foreach (string game in games)
-            {
-                // If the game has no items in it, we want to continue
-                if (this[game].Count == 0)
-                    continue;
-
-                // Determine if the game has a parent or not
-                string parent = null;
-                if (!string.IsNullOrWhiteSpace(this[game][0].CloneOf))
-                    parent = this[game][0].CloneOf;
-
-                // If the parent doesnt exist, we want to continue
-                if (string.IsNullOrWhiteSpace(parent))
-                    continue;
-
-                // If the parent doesn't have any items, we want to continue
-                if (this[parent].Count == 0)
-                    continue;
-
-                // If the parent exists and has items, we remove the parent items from the current game
-                List<DatItem> parentItems = this[parent];
-                foreach (DatItem item in parentItems)
-                {
-                    DatItem datItem = (DatItem)item.Clone();
-                    while (this[game].Contains(datItem))
-                    {
-                        Remove(game, datItem);
-                    }
-                }
-
-                // Now we want to get the parent romof tag and put it in each of the remaining items
-                List<DatItem> items = this[game];
-                string romof = this[parent][0].RomOf;
-                foreach (DatItem item in items)
-                {
-                    item.RomOf = romof;
-                }
-            }
-        }
-
-        /// <summary>
         /// Remove all romof and cloneof tags from all games
         /// </summary>
         private void RemoveTagsFromChild()
@@ -2336,22 +1781,15 @@ namespace SabreTools.Library.DatFiles
         /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="splitType">Type of the split that should be performed (split, merged, fully merged)</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
-        /// <param name="descAsName">True if descriptions should be used as names, false otherwise (default)</param>
         /// <param name="keepext">True if original extension should be kept, false otherwise (default)</param>
-        /// <param name="useTags">True if tags from the DAT should be used to merge the output, false otherwise (default)</param>
         public void Parse(
             // Standard Dat parsing
             string filename,
             int indexId = 0,
 
-            // Rom renaming
-            SplitType splitType = SplitType.None,
-
             // Miscellaneous
             bool keep = false,
-            bool descAsName = false,
-            bool keepext = false,
-            bool useTags = false)
+            bool keepext = false)
         {
             // Check if we have a split path and get the filename accordingly
             if (filename.Contains("¬"))
@@ -2377,13 +1815,6 @@ namespace SabreTools.Library.DatFiles
             {
                 Globals.Logger.Error($"Error with file '{filename}': {ex}");
             }
-
-            // If we want to use descriptions as names, update everything
-            if (descAsName)
-                MachineDescriptionToName();
-
-            // Process splitting, if needed
-            ProcessSplitType(splitType, useTags);
 
             // Finally, we remove any blanks, if we aren't supposed to have any
             if (!DatHeader.KeepEmptyGames)
@@ -2574,8 +2005,9 @@ namespace SabreTools.Library.DatFiles
         /// <param name="headerToCheckAgainst">Populated string representing the name of the skipper to use, a blank string to use the first available checker, null otherwise</param>
         /// <param name="chdsAsFiles">True if CHDs should be treated like regular files, false otherwise</param>
         /// <param name="filter">Filter object to be passed to the DatItem level</param>
+        /// <param name="useTags">True if DatFile tags override splitting, false otherwise</param>
         public bool PopulateFromDir(string basePath, Hash omitFromScan, bool bare, bool archivesAsFiles, SkipFileType skipFileType,
-            bool addBlanks, bool addDate, string tempDir, bool copyFiles, string headerToCheckAgainst, bool chdsAsFiles, Filter filter)
+            bool addBlanks, bool addDate, string tempDir, bool copyFiles, string headerToCheckAgainst, bool chdsAsFiles, Filter filter, bool useTags = false)
         {
             // If the description is defined but not the name, set the name from the description
             if (string.IsNullOrWhiteSpace(DatHeader.Name) && !string.IsNullOrWhiteSpace(DatHeader.Description))
@@ -2662,7 +2094,7 @@ namespace SabreTools.Library.DatFiles
 
             // If we have a valid filter, perform the filtering now
             if (filter != null && filter != default(Filter))
-                filter.FilterDatFile(this);
+                filter.FilterDatFile(this, useTags);
 
             return true;
         }

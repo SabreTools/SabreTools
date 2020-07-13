@@ -2309,8 +2309,14 @@ Some special strings that can be used:
                 filter.CRC.NegativeSet.AddRange(GetList(features, NotCrcListValue));
                 filter.CRC.PositiveSet.AddRange(GetList(features, CrcListValue));
 
+                // Machine description as machine name
+                filter.DescriptionAsName.Neutral = GetBoolean(features, DescriptionAsNameValue);
+
                 // Include 'of" in game filters
                 filter.IncludeOfInGame.Neutral = GetBoolean(features, MatchOfTagsValue);
+
+                // Internal splitting
+                filter.InternalSplit.Neutral = GetSplitType(features);
 
                 // Item name
                 filter.ItemName.NegativeSet.AddRange(GetList(features, NotItemNameListValue));
@@ -2995,7 +3001,6 @@ The following systems have headers that this program can work with:
                 string headerToCheckAgainst = GetString(features, HeaderStringValue);
                 string outDir = GetString(features, OutputDirStringValue);
                 var outputFormat = GetOutputFormat(features);
-                var splitType = GetSplitType(features);
 
                 // If we have TorrentGzip output and the romba flag, update
                 if (romba && outputFormat == OutputFormat.TorrentGzip)
@@ -3011,7 +3016,7 @@ The following systems have headers that this program can work with:
                     foreach (string datfile in datfiles)
                     {
                         DatFile datdata = DatFile.Create();
-                        datdata.Parse(datfile, 99, splitType, keep: true, useTags: true);
+                        datdata.Parse(datfile, 99, keep: true);
 
                         // If we have the depot flag, respect it
                         if (depot)
@@ -3030,7 +3035,7 @@ The following systems have headers that this program can work with:
                     DatFile datdata = DatFile.Create();
                     foreach (string datfile in datfiles)
                     {
-                        datdata.Parse(datfile, 99, splitType, keep: true, useTags: true);
+                        datdata.Parse(datfile, 99, keep: true);
                     }
 
                     watch.Stop();
@@ -3333,9 +3338,8 @@ The stats that are outputted are as follows:
                     updateMode,
                     GetBoolean(features, InplaceValue),
                     GetBoolean(features, SkipFirstOutputValue),
-                    GetBoolean(features, DescriptionAsNameValue),
                     GetFilter(features),
-                    GetSplitType(features),
+                    false, /* useTags */
                     updateFields,
                     GetBoolean(features, OnlySameValue));
             }
@@ -3416,7 +3420,6 @@ The stats that are outputted are as follows:
                 bool quickScan = GetBoolean(features, QuickValue);
                 string headerToCheckAgainst = GetDatHeader(features).Header;
                 var filter = GetFilter(features);
-                var splitType = GetSplitType(features);
 
                 // If we are in individual mode, process each DAT on their own
                 if (GetBoolean(features, IndividualValue))
@@ -3424,7 +3427,8 @@ The stats that are outputted are as follows:
                     foreach (string datfile in datfiles)
                     {
                         DatFile datdata = DatFile.Create();
-                        datdata.Parse(datfile, 99, splitType, keep: true, useTags: true);
+                        datdata.Parse(datfile, 99, keep: true);
+                        filter.FilterDatFile(datdata, true);
 
                         // If we have the depot flag, respect it
                         if (depot)
@@ -3442,7 +3446,8 @@ The stats that are outputted are as follows:
                     DatFile datdata = DatFile.Create();
                     foreach (string datfile in datfiles)
                     {
-                        datdata.Parse(datfile, 99, splitType, keep: true, useTags: true);
+                        datdata.Parse(datfile, 99, keep: true);
+                        filter.FilterDatFile(datdata, true);
                     }
 
                     watch.Stop();
