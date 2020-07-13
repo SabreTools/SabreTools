@@ -821,7 +821,7 @@ in -old DAT file. Ignores those entries in -old that are not in -new.";
 
                 // Now run the diff on the inputs
                 datfile.DetermineUpdateType(dats, basedats, outdat, UpdateMode.DiffAgainst, false /* inplace */, false /* skip */,
-                    new Filter(), false /* useTags */, new List<Field>(), false /* onlySame */);
+                    new Filter(), new List<Field>(), false /* onlySame */);
             }
         }
 
@@ -926,7 +926,7 @@ in -old DAT files. Ignores those entries in -old that are not in -new.";
 
                 // Now run the diff on the inputs
                 datfile.DetermineUpdateType(dats, basedats, outdat, UpdateMode.DiffAgainst, false /* inplace */, false /* skip */,
-                    new Filter(), false /* useTags */, new List<Field>(), false /* onlySame */);
+                    new Filter(), new List<Field>(), false /* onlySame */);
             }
         }
 

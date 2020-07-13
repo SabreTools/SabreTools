@@ -3339,7 +3339,6 @@ The stats that are outputted are as follows:
                     GetBoolean(features, InplaceValue),
                     GetBoolean(features, SkipFirstOutputValue),
                     GetFilter(features),
-                    false, /* useTags */
                     updateFields,
                     GetBoolean(features, OnlySameValue));
             }

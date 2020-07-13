@@ -218,6 +218,19 @@ namespace SabreTools.Library.DatFiles
                 // Run internal splitting
                 ProcessSplitType(datFile, this.InternalSplit.Neutral);
 
+                // Finally, we remove any blanks, if we aren't supposed to have any
+                if (!datFile.DatHeader.KeepEmptyGames)
+                {
+                    foreach (string key in datFile.Keys)
+                    {
+                        List<DatItem> items = datFile[key];
+                        List<DatItem> newitems = items.Where(i => i.ItemType != ItemType.Blank).ToList();
+
+                        datFile.Remove(key);
+                        datFile.AddRange(key, newitems);
+                    }
+                }
+
             }
             catch (Exception ex)
             {

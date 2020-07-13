@@ -659,7 +659,6 @@ namespace SabreTools.Library.DatFiles
         /// <param name="inplace">True if the output files should overwrite their inputs, false otherwise</param>
         /// <param name="skip">True if the first cascaded diff file should be skipped on output, false otherwise</param>
         /// <param name="filter">Filter object to be passed to the DatItem level</param>
-        /// <param name="useTags">True if DatFile tags override splitting, false otherwise</param>
         /// <param name="updateFields">List of Fields representing what should be updated [only for base replacement]</param>
         /// <param name="onlySame">True if descriptions should only be replaced if the game name is the same, false otherwise [only for base replacement]</param>
         public void DetermineUpdateType(
@@ -670,7 +669,6 @@ namespace SabreTools.Library.DatFiles
             bool inplace,
             bool skip,
             Filter filter,
-            bool useTags,
             List<Field> updateFields,
             bool onlySame)
         {
@@ -681,7 +679,7 @@ namespace SabreTools.Library.DatFiles
             // If we're in standard update mode, run through all of the inputs
             if (updateMode == UpdateMode.None)
             {
-                Update(inputFileNames, outDir, inplace, filter, useTags);
+                Update(inputFileNames, outDir, inplace, filter);
                 return;
             }
 
@@ -695,7 +693,7 @@ namespace SabreTools.Library.DatFiles
             if (updateMode.HasFlag(UpdateMode.Merge))
             {
                 // Populate the combined data and get the headers
-                PopulateUserData(inputFileNames, filter, useTags);
+                PopulateUserData(inputFileNames, filter);
                 MergeNoDiff(inputFileNames, outDir);
             }
 
@@ -705,7 +703,7 @@ namespace SabreTools.Library.DatFiles
                 || updateMode.HasFlag(UpdateMode.DiffIndividualsOnly))
             {
                 // Populate the combined data
-                PopulateUserData(inputFileNames, filter, useTags);
+                PopulateUserData(inputFileNames, filter);
                 DiffNoCascade(inputFileNames, outDir, updateMode);
             }
 
@@ -714,7 +712,7 @@ namespace SabreTools.Library.DatFiles
                 || updateMode.HasFlag(UpdateMode.DiffReverseCascade))
             {
                 // Populate the combined data and get the headers
-                List<DatHeader> datHeaders = PopulateUserData(inputFileNames, filter, useTags);
+                List<DatHeader> datHeaders = PopulateUserData(inputFileNames, filter);
                 DiffCascade(inputFileNames, datHeaders, outDir, inplace, skip);
             }
 
@@ -722,7 +720,7 @@ namespace SabreTools.Library.DatFiles
             else if (updateMode.HasFlag(UpdateMode.DiffAgainst))
             {
                 // Populate the combined data
-                PopulateUserData(baseFileNames, filter, useTags);
+                PopulateUserData(baseFileNames, filter);
                 DiffAgainst(inputFileNames, outDir, inplace);
             }
 
@@ -731,8 +729,8 @@ namespace SabreTools.Library.DatFiles
                 || updateMode.HasFlag(UpdateMode.ReverseBaseReplace))
             {
                 // Populate the combined data
-                PopulateUserData(baseFileNames, filter, useTags);
-                BaseReplace(inputFileNames, outDir, inplace, filter, useTags, updateFields, onlySame);
+                PopulateUserData(baseFileNames, filter);
+                BaseReplace(inputFileNames, outDir, inplace, filter, updateFields, onlySame);
             }
 
             return;
@@ -743,12 +741,8 @@ namespace SabreTools.Library.DatFiles
         /// </summary>
         /// <param name="inputs">Paths to DATs to parse</param>
         /// <param name="filter">Filter object to be passed to the DatItem level</param>
-        /// <param name="useTags">True if DatFile tags override splitting, false otherwise</param>
         /// <returns>List of DatData objects representing headers</returns>
-        private List<DatHeader> PopulateUserData(
-            List<string> inputs,
-            Filter filter,
-            bool useTags)
+        private List<DatHeader> PopulateUserData(List<string> inputs, Filter filter)
         {
             DatFile[] datFiles = new DatFile[inputs.Count];
             InternalStopwatch watch = new InternalStopwatch("Processing individual DATs");
@@ -771,7 +765,7 @@ namespace SabreTools.Library.DatFiles
             });
 
             // Now that we have a merged DAT, filter it
-            filter.FilterDatFile(this, useTags);
+            filter.FilterDatFile(this, false /* useTags */);
 
             watch.Stop();
 
@@ -785,7 +779,6 @@ namespace SabreTools.Library.DatFiles
         /// <param name="outDir">Optional param for output directory</param>
         /// <param name="inplace">True if the output files should overwrite their inputs, false otherwise</param>
         /// <param name="filter">Filter object to be passed to the DatItem level</param>
-        /// <param name="useTags">True if DatFile tags override splitting, false otherwise</param>
         /// <param name="updateFields">List of Fields representing what should be updated [only for base replacement]</param>
         /// <param name="onlySame">True if descriptions should only be replaced if the game name is the same, false otherwise</param>
         private void BaseReplace(
@@ -793,7 +786,6 @@ namespace SabreTools.Library.DatFiles
             string outDir,
             bool inplace,
             Filter filter,
-            bool useTags,
             List<Field> updateFields,
             bool onlySame)
         {
@@ -862,7 +854,7 @@ namespace SabreTools.Library.DatFiles
                 // First we parse in the DAT internally
                 DatFile intDat = Create(DatHeader.CloneFiltering());
                 intDat.Parse(path, 1, keep: true);
-                filter.FilterDatFile(intDat, useTags);
+                filter.FilterDatFile(intDat, false /* useTags */);
 
                 // If we are matching based on DatItem fields of any sort
                 if (updateFields.Intersect(datItemFields).Any())
@@ -1608,13 +1600,7 @@ namespace SabreTools.Library.DatFiles
         /// <param name="outDir">Optional param for output directory</param>
         /// <param name="inplace">True if the output files should overwrite their inputs, false otherwise</param>
         /// <param name="filter">Filter object to be passed to the DatItem level</param>
-        /// <param name="useTags">True if DatFile tags override splitting, false otherwise</param>
-        private void Update(
-            List<string> inputFileNames,
-            string outDir,
-            bool inplace,
-            Filter filter,
-            bool useTags)
+        private void Update(List<string> inputFileNames, string outDir, bool inplace, Filter filter)
         {
             // Iterate over the files
             foreach (string file in inputFileNames)
@@ -1625,7 +1611,7 @@ namespace SabreTools.Library.DatFiles
                     keepext: innerDatdata.DatHeader.DatFormat.HasFlag(DatFormat.TSV)
                         || innerDatdata.DatHeader.DatFormat.HasFlag(DatFormat.CSV)
                         || innerDatdata.DatHeader.DatFormat.HasFlag(DatFormat.SSV));
-                filter.FilterDatFile(innerDatdata, useTags);
+                filter.FilterDatFile(innerDatdata, false /* useTags */);
 
                 // Get the correct output path
                 string realOutDir = PathExtensions.GetOutputPath(outDir, file, inplace);
@@ -1667,7 +1653,7 @@ namespace SabreTools.Library.DatFiles
 
         #endregion
 
-        // TODO: Can desc as name be part of Filter?
+        // TODO: SceneDateStrip be part of Filter?
         #region Filtering
 
         /// <summary>
@@ -1738,29 +1724,7 @@ namespace SabreTools.Library.DatFiles
 
         #endregion
 
-        #region Internal Merging/Splitting
-
-        /// <summary>
-        /// Remove all romof and cloneof tags from all games
-        /// </summary>
-        private void RemoveTagsFromChild()
-        {
-            List<string> games = Keys;
-            foreach (string game in games)
-            {
-                List<DatItem> items = this[game];
-                foreach (DatItem item in items)
-                {
-                    item.CloneOf = null;
-                    item.RomOf = null;
-                }
-            }
-        }
-
-        #endregion
-
         // TODO: Should filter steps be separate feom parse?
-        // TODO: Merging should occur *before* doing filtering due to some of the changes like desc as name
         #region Parsing
 
         /// <summary>
@@ -1779,17 +1743,9 @@ namespace SabreTools.Library.DatFiles
         /// </summary>
         /// <param name="filename">Name of the file to be parsed</param>
         /// <param name="indexId">Index ID for the DAT</param>
-        /// <param name="splitType">Type of the split that should be performed (split, merged, fully merged)</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
         /// <param name="keepext">True if original extension should be kept, false otherwise (default)</param>
-        public void Parse(
-            // Standard Dat parsing
-            string filename,
-            int indexId = 0,
-
-            // Miscellaneous
-            bool keep = false,
-            bool keepext = false)
+        public void Parse(string filename, int indexId = 0, bool keep = false, bool keepext = false)
         {
             // Check if we have a split path and get the filename accordingly
             if (filename.Contains("¬"))
@@ -1814,19 +1770,6 @@ namespace SabreTools.Library.DatFiles
             catch (Exception ex)
             {
                 Globals.Logger.Error($"Error with file '{filename}': {ex}");
-            }
-
-            // Finally, we remove any blanks, if we aren't supposed to have any
-            if (!DatHeader.KeepEmptyGames)
-            {
-                foreach (string key in Keys)
-                {
-                    List<DatItem> items = this[key];
-                    List<DatItem> newitems = items.Where(i => i.ItemType != ItemType.Blank).ToList();
-
-                    this.Remove(key);
-                    this.AddRange(key, newitems);
-                }
             }
         }
 
@@ -1976,13 +1919,7 @@ namespace SabreTools.Library.DatFiles
         /// <param name="filename">Name of the file to be parsed</param>
         /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
-        protected abstract void ParseFile(
-            // Standard Dat parsing
-            string filename,
-            int indexId,
-
-            // Miscellaneous
-            bool keep);
+        protected abstract void ParseFile(string filename, int indexId, bool keep);
 
         #endregion
 
