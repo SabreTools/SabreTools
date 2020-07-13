@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 using SabreTools.Library.Data;
@@ -1851,7 +1849,6 @@ namespace SabreTools.Library.DatFiles
 
         #endregion
 
-        // TODO: Make xor cleaner instead of dupe code
         #region Populate DAT from Directory
 
         /// <summary>
@@ -2645,18 +2642,12 @@ namespace SabreTools.Library.DatFiles
             string sha1 = ((Rom)datItem).SHA1 ?? string.Empty;
 
             // Find if the file has duplicates in the DAT
-            bool hasDuplicates = HasDuplicates(datItem);
+            List<DatItem> dupes = GetDuplicates(datItem, remove: updateDat);
+            bool hasDuplicates = dupes.Count > 0;
 
-            // If it has duplicates and we're not filtering, rebuild it
-            if (hasDuplicates && !inverse)
+            // If either we have duplicates or we're filtering
+            if (hasDuplicates ^ inverse)
             {
-                // Get the list of duplicates to rebuild to
-                List<DatItem> dupes = GetDuplicates(datItem, remove: updateDat);
-
-                // If we don't have any duplicates, continue
-                if (dupes.Count == 0)
-                    return false;
-
                 // If we have a very specific TGZ->TGZ case, just copy it accordingly
                 GZipArchive tgz = new GZipArchive(file);
                 BaseFile rom = tgz.GetTorrentGZFileInfo();
@@ -2709,7 +2700,27 @@ namespace SabreTools.Library.DatFiles
                 if (fileStream.CanSeek)
                     fileStream.Seek(0, SeekOrigin.Begin);
 
-                Globals.Logger.User($"Matches found for '{Path.GetFileName(datItem.Name)}', rebuilding accordingly...");
+                // If we are inverse, create an output to rebuild to
+                if (inverse)
+                {
+                    string machinename = null;
+
+                    // Get the item from the current file
+                    Rom item = new Rom(fileStream.GetInfo(keepReadOpen: true));
+                    item.MachineName = Path.GetFileNameWithoutExtension(item.Name);
+                    item.MachineDescription = Path.GetFileNameWithoutExtension(item.Name);
+
+                    // If we are coming from an archive, set the correct machine name
+                    if (machinename != null)
+                    {
+                        item.MachineName = machinename;
+                        item.MachineDescription = machinename;
+                    }
+
+                    dupes.Add(item);
+                }
+
+                Globals.Logger.User($"{(inverse ? "No matches" : "Matches")} found for '{Path.GetFileName(datItem.Name)}', rebuilding accordingly...");
                 rebuilt = true;
 
                 // Now loop through the list and rebuild accordingly
@@ -2720,120 +2731,6 @@ namespace SabreTools.Library.DatFiles
 
                     // Now rebuild to the output file
                     outputArchive.Write(fileStream, outDir, (Rom)item, date: date, romba: outputFormat == OutputFormat.TorrentGzipRomba);
-                }
-
-                // Close the input stream
-                fileStream?.Dispose();
-            }
-
-            // If we have no duplicates and we're filtering, rebuild it
-            else if (!hasDuplicates && inverse)
-            {
-                string machinename = null;
-
-                // If we have a very specific TGZ->TGZ case, just copy it accordingly
-                GZipArchive tgz = new GZipArchive(file);
-                BaseFile rom = tgz.GetTorrentGZFileInfo();
-                if (isZip == false && rom != null && outputFormat == OutputFormat.TorrentGzip)
-                {
-                    Globals.Logger.User($"Matches found for '{Path.GetFileName(datItem.Name)}', rebuilding accordingly...");
-
-                    // Get the proper output path
-                    if (outputFormat == OutputFormat.TorrentGzipRomba)
-                        outDir = Path.Combine(outDir, PathExtensions.GetRombaPath(sha1));
-                    else
-                        outDir = Path.Combine(outDir, sha1 + ".gz");
-
-                    // Make sure the output folder is created
-                    Directory.CreateDirectory(Path.GetDirectoryName(outDir));
-
-                    // Now copy the file over
-                    try
-                    {
-                        File.Copy(file, outDir);
-                        return true;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
-                }
-
-                // Get a generic stream for the file
-                Stream fileStream = new MemoryStream();
-
-                // If we have a zipfile, extract the stream to memory
-                if (isZip != null)
-                {
-                    BaseArchive archive = BaseArchive.Create(file);
-                    if (archive != null)
-                        (fileStream, _) = archive.CopyToStream(datItem.Name);
-                }
-                // Otherwise, just open the filestream
-                else
-                {
-                    fileStream = FileExtensions.TryOpenRead(file);
-                }
-
-                // If the stream is null, then continue
-                if (fileStream == null)
-                    return false;
-
-                // Get the item from the current file
-                Rom item = new Rom(fileStream.GetInfo(keepReadOpen: true));
-                item.MachineName = Path.GetFileNameWithoutExtension(item.Name);
-                item.MachineDescription = Path.GetFileNameWithoutExtension(item.Name);
-
-                // If we are coming from an archive, set the correct machine name
-                if (machinename != null)
-                {
-                    item.MachineName = machinename;
-                    item.MachineDescription = machinename;
-                }
-
-                Globals.Logger.User($"No matches found for '{Path.GetFileName(datItem.Name)}', rebuilding accordingly from inverse flag...");
-
-                // Get the output archive, if possible
-                Folder outputArchive = Folder.Create(outputFormat);
-
-                // Now rebuild to the output file
-                if (outputArchive == null)
-                {
-                    string outfile = Path.Combine(outDir, Sanitizer.RemovePathUnsafeCharacters(item.MachineName), item.Name);
-
-                    // Make sure the output folder is created
-                    Directory.CreateDirectory(Path.GetDirectoryName(outfile));
-
-                    // Now copy the file over
-                    try
-                    {
-                        FileStream writeStream = FileExtensions.TryCreate(outfile);
-
-                        // Copy the input stream to the output
-                        int bufferSize = 4096 * 128;
-                        byte[] ibuffer = new byte[bufferSize];
-                        int ilen;
-                        while ((ilen = fileStream.Read(ibuffer, 0, bufferSize)) > 0)
-                        {
-                            writeStream.Write(ibuffer, 0, ilen);
-                            writeStream.Flush();
-                        }
-
-                        writeStream.Dispose();
-
-                        if (date && !string.IsNullOrWhiteSpace(item.Date))
-                            File.SetCreationTime(outfile, DateTime.Parse(item.Date));
-
-                        rebuilt &= true;
-                    }
-                    catch
-                    {
-                        rebuilt &= false;
-                    }
-                }
-                else
-                {
-                    rebuilt &= outputArchive.Write(fileStream, outDir, item, date: date, romba: outputFormat == OutputFormat.TorrentGzipRomba);
                 }
 
                 // Close the input stream
@@ -2877,18 +2774,12 @@ namespace SabreTools.Library.DatFiles
                         Rom headerless = new Rom(transformStream.GetInfo(keepReadOpen: true));
 
                         // Find if the file has duplicates in the DAT
-                        hasDuplicates = HasDuplicates(headerless);
+                        dupes = GetDuplicates(headerless, remove: updateDat);
+                        hasDuplicates = dupes.Count > 0;
 
                         // If it has duplicates and we're not filtering, rebuild it
                         if (hasDuplicates && !inverse)
                         {
-                            // Get the list of duplicates to rebuild to
-                            List<DatItem> dupes = GetDuplicates(headerless, remove: updateDat);
-
-                            // If we don't have any duplicates, continue
-                            if (dupes.Count == 0)
-                                return false;
-
                             Globals.Logger.User($"Headerless matches found for '{Path.GetFileName(datItem.Name)}', rebuilding accordingly...");
                             rebuilt = true;
 
