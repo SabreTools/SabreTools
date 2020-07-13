@@ -272,7 +272,7 @@ namespace SabreTools.Library.DatFiles
             string filename,
             int indexId)
         {
-            string hash = string.Empty, offset = string.Empty, type = string.Empty, remark = string.Empty;
+            string hash = string.Empty, offset = string.Empty, remark = string.Empty;
             bool containsItems = false;
 
             while (!reader.EOF)
@@ -297,7 +297,7 @@ namespace SabreTools.Library.DatFiles
                         break;
 
                     case "type":
-                        type = reader.ReadElementContentAsString();
+                        reader.ReadElementContentAsString();
                         break;
 
                     case "remark":
@@ -345,7 +345,7 @@ namespace SabreTools.Library.DatFiles
             string filename,
             int indexId)
         {
-            string hash = string.Empty, offset = string.Empty, type = string.Empty, remark = string.Empty;
+            string hash = string.Empty, offset = string.Empty, remark = string.Empty;
             bool containsItems = false;
 
             while (!reader.EOF)
@@ -370,7 +370,7 @@ namespace SabreTools.Library.DatFiles
                         break;
 
                     case "type":
-                        type = reader.ReadElementContentAsString();
+                        reader.ReadElementContentAsString();
                         break;
 
                     case "remark":
@@ -418,7 +418,7 @@ namespace SabreTools.Library.DatFiles
             string filename,
             int indexId)
         {
-            string hash = string.Empty, boot = string.Empty, remark = string.Empty;
+            string hash = string.Empty, remark = string.Empty;
             bool containsItems = false;
 
             while (!reader.EOF)
@@ -434,7 +434,7 @@ namespace SabreTools.Library.DatFiles
                 switch (reader.Name)
                 {
                     case "boot":
-                        boot = reader.ReadElementContentAsString();
+                        reader.ReadElementContentAsString();
                         break;
 
                     case "hash":

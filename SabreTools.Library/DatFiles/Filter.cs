@@ -1022,6 +1022,7 @@ namespace SabreTools.Library.DatFiles
         /// Ensure that all roms are in their own game (or at least try to ensure)
         /// </summary>
         /// <param name="datFile">DatFile to filter</param>
+        /// TODO: This is incorrect for the actual 1G1R logic... this is actually just silly
         private void OneRomPerGame(DatFile datFile)
         {
             // For each rom, we want to update the game to be "<game name>/<rom name>"

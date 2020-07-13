@@ -140,15 +140,15 @@ namespace SabreTools.Library.DatFiles
                         break;
 
                     case "system":
-                        string system = reader.ReadElementContentAsString();
+                        reader.ReadElementContentAsString();
                         break;
 
                     case "screenshotswidth":
-                        string screenshotsWidth = reader.ReadElementContentAsString(); // Int32?
+                        reader.ReadElementContentAsString(); // Int32?
                         break;
 
                     case "screenshotsheight":
-                        string screenshotsHeight = reader.ReadElementContentAsString(); // Int32?
+                        reader.ReadElementContentAsString(); // Int32?
                         break;
 
                     case "infos":
@@ -180,7 +180,7 @@ namespace SabreTools.Library.DatFiles
                         break;
 
                     case "romtitle":
-                        string romtitle = reader.ReadElementContentAsString();
+                        reader.ReadElementContentAsString();
                         break;
 
                     default:
@@ -217,93 +217,93 @@ namespace SabreTools.Library.DatFiles
                 switch (reader.Name.ToLowerInvariant())
                 {
                     case "title":
-                        string title_visible = reader.GetAttribute("visible"); // (true|false)
-                        string title_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
-                        string title_default = reader.GetAttribute("default"); // (true|false)
+                        reader.GetAttribute("visible"); // (true|false)
+                        reader.GetAttribute("inNamingOption"); // (true|false)
+                        reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
 
                     case "location":
-                        string location_visible = reader.GetAttribute("visible"); // (true|false)
-                        string location_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
-                        string location_default = reader.GetAttribute("default"); // (true|false)
+                        reader.GetAttribute("visible"); // (true|false)
+                        reader.GetAttribute("inNamingOption"); // (true|false)
+                        reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
 
                     case "publisher":
-                        string publisher_visible = reader.GetAttribute("visible"); // (true|false)
-                        string publisher_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
-                        string publisher_default = reader.GetAttribute("default"); // (true|false)
+                        reader.GetAttribute("visible"); // (true|false)
+                        reader.GetAttribute("inNamingOption"); // (true|false)
+                        reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
 
                     case "sourcerom":
-                        string sourceRom_visible = reader.GetAttribute("visible"); // (true|false)
-                        string sourceRom_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
-                        string sourceRom_default = reader.GetAttribute("default"); // (true|false)
+                        reader.GetAttribute("visible"); // (true|false)
+                        reader.GetAttribute("inNamingOption"); // (true|false)
+                        reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
 
                     case "savetype":
-                        string saveType_visible = reader.GetAttribute("visible"); // (true|false)
-                        string saveType_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
-                        string saveType_default = reader.GetAttribute("default"); // (true|false)
+                        reader.GetAttribute("visible"); // (true|false)
+                        reader.GetAttribute("inNamingOption"); // (true|false)
+                        reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
 
                     case "romsize":
-                        string romSize_visible = reader.GetAttribute("visible"); // (true|false)
-                        string romSize_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
-                        string romSize_default = reader.GetAttribute("default"); // (true|false)
+                        reader.GetAttribute("visible"); // (true|false)
+                        reader.GetAttribute("inNamingOption"); // (true|false)
+                        reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
 
                     case "releasenumber":
-                        string releaseNumber_visible = reader.GetAttribute("visible"); // (true|false)
-                        string releaseNumber_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
-                        string releaseNumber_default = reader.GetAttribute("default"); // (true|false)
+                        reader.GetAttribute("visible"); // (true|false)
+                        reader.GetAttribute("inNamingOption"); // (true|false)
+                        reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
 
                     case "languagenumber":
-                        string languageNumber_visible = reader.GetAttribute("visible"); // (true|false)
-                        string languageNumber_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
-                        string languageNumber_default = reader.GetAttribute("default"); // (true|false)
+                        reader.GetAttribute("visible"); // (true|false)
+                        reader.GetAttribute("inNamingOption"); // (true|false)
+                        reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
 
                     case "comment":
-                        string comment_visible = reader.GetAttribute("visible"); // (true|false)
-                        string comment_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
-                        string comment_default = reader.GetAttribute("default"); // (true|false)
+                        reader.GetAttribute("visible"); // (true|false)
+                        reader.GetAttribute("inNamingOption"); // (true|false)
+                        reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
 
                     case "romcrc":
-                        string romCRC_visible = reader.GetAttribute("visible"); // (true|false)
-                        string romCRC_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
-                        string romCRC_default = reader.GetAttribute("default"); // (true|false)
+                        reader.GetAttribute("visible"); // (true|false)
+                        reader.GetAttribute("inNamingOption"); // (true|false)
+                        reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
 
                     case "im1crc":
-                        string im1CRC_visible = reader.GetAttribute("visible"); // (true|false)
-                        string im1CRC_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
-                        string im1CRC_default = reader.GetAttribute("default"); // (true|false)
+                        reader.GetAttribute("visible"); // (true|false)
+                        reader.GetAttribute("inNamingOption"); // (true|false)
+                        reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
 
                     case "im2crc":
-                        string im2CRC_visible = reader.GetAttribute("visible"); // (true|false)
-                        string im2CRC_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
-                        string im2CRC_default = reader.GetAttribute("default"); // (true|false)
+                        reader.GetAttribute("visible"); // (true|false)
+                        reader.GetAttribute("inNamingOption"); // (true|false)
+                        reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
 
                     case "languages":
-                        string languages_visible = reader.GetAttribute("visible"); // (true|false)
-                        string languages_inNamingOption = reader.GetAttribute("inNamingOption"); // (true|false)
-                        string languages_default = reader.GetAttribute("default"); // (true|false)
+                        reader.GetAttribute("visible"); // (true|false)
+                        reader.GetAttribute("inNamingOption"); // (true|false)
+                        reader.GetAttribute("default"); // (true|false)
                         reader.Read();
                         break;
 
@@ -378,7 +378,7 @@ namespace SabreTools.Library.DatFiles
                 }
 
                 // Get all newdat items
-                string content = string.Empty;
+                string content;
                 switch (reader.Name.ToLowerInvariant())
                 {
                     case "datversionurl":
@@ -387,12 +387,12 @@ namespace SabreTools.Library.DatFiles
                         break;
 
                     case "daturl":
-                        // string fileName = reader.GetAttribute("fileName");
-                        string daturl = reader.ReadElementContentAsString();
+                        reader.GetAttribute("fileName");
+                        reader.ReadElementContentAsString();
                         break;
 
                     case "imurl":
-                        string imurl = reader.ReadElementContentAsString();
+                        reader.ReadElementContentAsString();
                         break;
 
                     default:
@@ -429,9 +429,9 @@ namespace SabreTools.Library.DatFiles
                 switch (reader.Name.ToLowerInvariant())
                 {
                     case "to":
-                        string value = reader.GetAttribute("value");
-                        string def = reader.GetAttribute("default"); // (true|false)
-                        string auto = reader.GetAttribute("auto"); // (true|false)
+                        reader.GetAttribute("value");
+                        reader.GetAttribute("default"); // (true|false)
+                        reader.GetAttribute("auto"); // (true|false)
 
                         ReadTo(reader.ReadSubtree());
 
@@ -470,14 +470,12 @@ namespace SabreTools.Library.DatFiles
                 }
 
                 // Get all search items
-                string content = string.Empty;
                 switch (reader.Name.ToLowerInvariant())
                 {
                     case "find":
-                        // string operation = reader.GetAttribute("operation");
-                        // string value = reader.GetAttribute("value"); // Int32?
-                        content = reader.ReadElementContentAsString();
-                        // string findValue = content;
+                        reader.GetAttribute("operation");
+                        reader.GetAttribute("value"); // Int32?
+                        reader.ReadElementContentAsString();
                         break;
 
                     default:
@@ -548,7 +546,7 @@ namespace SabreTools.Library.DatFiles
             int indexId)
         {
             // Prepare all internal variables
-            string releaseNumber = string.Empty, key = string.Empty, publisher = string.Empty, duplicateid = string.Empty;
+            string releaseNumber = string.Empty, publisher = string.Empty, duplicateid;
             long size = -1;
             List<Rom> roms = new List<Rom>();
             Machine machine = new Machine();
@@ -571,12 +569,10 @@ namespace SabreTools.Library.DatFiles
                 }
 
                 // Get all games items
-                string content = string.Empty;
                 switch (reader.Name.ToLowerInvariant())
                 {
                     case "imagenumber":
-                        content = reader.ReadElementContentAsString();
-                        // string imageNumber = content;
+                        reader.ReadElementContentAsString();
                         break;
 
                     case "releasenumber":
@@ -584,13 +580,11 @@ namespace SabreTools.Library.DatFiles
                         break;
 
                     case "title":
-                        content = reader.ReadElementContentAsString();
-                        machine.Name = content;
+                        machine.Name = reader.ReadElementContentAsString();
                         break;
 
                     case "savetype":
-                        content = reader.ReadElementContentAsString();
-                        // string saveType = content;
+                        reader.ReadElementContentAsString();
                         break;
 
                     case "romsize":
@@ -604,34 +598,30 @@ namespace SabreTools.Library.DatFiles
                         break;
 
                     case "location":
-                        content = reader.ReadElementContentAsString();
-                        // string location = content;
+                        reader.ReadElementContentAsString();
                         break;
 
                     case "sourcerom":
-                        content = reader.ReadElementContentAsString();
-                        // string sourceRom = content;
+                        reader.ReadElementContentAsString();
                         break;
 
                     case "language":
-                        content = reader.ReadElementContentAsString();
-                        // string language = content;
+                        reader.ReadElementContentAsString();
                         break;
 
                     case "files":
                         roms = ReadFiles(reader.ReadSubtree(), releaseNumber, machine.Name, filename, indexId);
+                        
                         // Skip the files node now that we've processed it
                         reader.Skip();
                         break;
 
                     case "im1crc":
-                        content = reader.ReadElementContentAsString();
-                        // string im1crc = content;
+                        reader.ReadElementContentAsString();
                         break;
 
                     case "im2crc":
-                        content = reader.ReadElementContentAsString();
-                        // string im2crc = content;
+                        reader.ReadElementContentAsString();
                         break;
 
                     case "comment":
@@ -659,7 +649,7 @@ namespace SabreTools.Library.DatFiles
                 roms[i].CopyMachineInformation(machine);
 
                 // Now process and add the rom
-                key = ParseAddHelper(roms[i]);
+                ParseAddHelper(roms[i]);
             }
         }
 

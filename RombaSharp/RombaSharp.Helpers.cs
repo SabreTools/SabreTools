@@ -59,8 +59,7 @@ namespace RombaSharp
                 webdir = "web",
                 baddir = "bad",
                 dats = "dats",
-                db = "db",
-                connectionString = string.Empty;
+                db = "db";
             Dictionary<string, Tuple<long, bool>> depots = new Dictionary<string, Tuple<long, bool>>();
 
             // Get the XML text reader for the configuration file, if possible
@@ -198,7 +197,7 @@ namespace RombaSharp
                 Directory.CreateDirectory(dats);
             
             db = $"{Path.GetFileNameWithoutExtension(db)}.sqlite";
-            connectionString = $"Data Source={db};Version = 3;";
+            string connectionString = $"Data Source={db};Version = 3;";
             foreach (string key in depots.Keys)
             {
                 if (!Directory.Exists(key))
@@ -253,7 +252,7 @@ namespace RombaSharp
             DatFile tempdat = DatFile.CreateAndParse(fullpath);
 
             // If the Dat wasn't empty, add the information
-            SqliteCommand slc = new SqliteCommand();
+            SqliteCommand slc;
             if (tempdat.GetCount() != 0)
             {
                 string crcquery = "INSERT OR IGNORE INTO crc (crc) VALUES";

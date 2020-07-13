@@ -17,7 +17,7 @@ namespace RombaSharp
         #region Private Flag features
 
         public const string CopyValue = "copy";
-        private static Feature copyFlag
+        private static Feature CopyFlag
         {
             get
             {
@@ -30,7 +30,7 @@ namespace RombaSharp
         } // Unique to RombaSharp
 
         public const string FixdatOnlyValue = "fixdat-only";
-        private static Feature fixdatOnlyFlag
+        private static Feature FixdatOnlyFlag
         {
             get
             {
@@ -43,7 +43,7 @@ namespace RombaSharp
         }
 
         public const string LogOnlyValue = "log-only";
-        private static Feature logOnlyFlag
+        private static Feature LogOnlyFlag
         {
             get
             {
@@ -56,7 +56,7 @@ namespace RombaSharp
         }
 
         public const string NoDbValue = "no-db";
-        private static Feature noDbFlag
+        private static Feature NoDbFlag
         {
             get
             {
@@ -69,7 +69,7 @@ namespace RombaSharp
         }
 
         public const string OnlyNeededValue = "only-needed";
-        private static Feature onlyNeededFlag
+        private static Feature OnlyNeededFlag
         {
             get
             {
@@ -82,7 +82,7 @@ namespace RombaSharp
         }
 
         public const string SkipInitialScanValue = "skip-initial-scan";
-        private static Feature skipInitialScanFlag
+        private static Feature SkipInitialScanFlag
         {
             get
             {
@@ -95,7 +95,7 @@ namespace RombaSharp
         }
 
         public const string UseGolangZipValue = "use-golang-zip";
-        private static Feature useGolangZipFlag
+        private static Feature UseGolangZipFlag
         {
             get
             {
@@ -112,7 +112,7 @@ namespace RombaSharp
         #region Private Int32 features
 
         public const string Include7ZipsInt32Value = "include-7zips";
-        private static Feature include7ZipsInt32Input
+        private static Feature Include7ZipsInt32Input
         {
             get
             {
@@ -125,7 +125,7 @@ namespace RombaSharp
         }
 
         public const string IncludeGZipsInt32Value = "include-gzips";
-        private static Feature includeGZipsInt32Input
+        private static Feature IncludeGZipsInt32Input
         {
             get
             {
@@ -138,7 +138,7 @@ namespace RombaSharp
         }
 
         public const string IncludeZipsInt32Value = "include-zips";
-        private static Feature includeZipsInt32Input
+        private static Feature IncludeZipsInt32Input
         {
             get
             {
@@ -151,7 +151,7 @@ namespace RombaSharp
         }
 
         public const string SubworkersInt32Value = "subworkers";
-        private static Feature subworkersInt32Input
+        private static Feature SubworkersInt32Input
         {
             get
             {
@@ -164,7 +164,7 @@ namespace RombaSharp
         } // Defaults to Workers count in config
 
         public const string WorkersInt32Value = "workers";
-        private static Feature workersInt32Input
+        private static Feature WorkersInt32Input
         {
             get
             {
@@ -181,7 +181,7 @@ namespace RombaSharp
         #region Private Int64 features
 
         public const string SizeInt64Value = "size";
-        private static Feature sizeInt64Input
+        private static Feature SizeInt64Input
         {
             get
             {
@@ -198,7 +198,7 @@ namespace RombaSharp
         #region Private List<String> features
 
         public const string DatsListStringValue = "dats";
-        private static Feature datsListStringInput
+        private static Feature DatsListStringInput
         {
             get
             {
@@ -211,7 +211,7 @@ namespace RombaSharp
         }
 
         public const string DepotListStringValue = "depot";
-        private static Feature depotListStringInput
+        private static Feature DepotListStringInput
         {
             get
             {
@@ -228,7 +228,7 @@ namespace RombaSharp
         #region Private String features
 
         public const string BackupStringValue = "backup";
-        private static Feature backupStringInput
+        private static Feature BackupStringInput
         {
             get
             {
@@ -241,7 +241,7 @@ namespace RombaSharp
         }
 
         public const string DescriptionStringValue = "description";
-        private static Feature descriptionStringInput
+        private static Feature DescriptionStringInput
         {
             get
             {
@@ -254,7 +254,7 @@ namespace RombaSharp
         }
 
         public const string MissingSha1sStringValue = "missing-sha1s";
-        private static Feature missingSha1sStringInput
+        private static Feature MissingSha1sStringInput
         {
             get
             {
@@ -267,7 +267,7 @@ namespace RombaSharp
         }
 
         public const string NameStringValue = "name";
-        private static Feature nameStringInput
+        private static Feature NameStringInput
         {
             get
             {
@@ -280,7 +280,7 @@ namespace RombaSharp
         }
 
         public const string NewStringValue = "new";
-        private static Feature newStringInput
+        private static Feature NewStringInput
         {
             get
             {
@@ -293,7 +293,7 @@ namespace RombaSharp
         }
 
         public const string OldStringValue = "old";
-        private static Feature oldStringInput
+        private static Feature OldStringInput
         {
             get
             {
@@ -306,7 +306,7 @@ namespace RombaSharp
         }
 
         public const string OutStringValue = "out";
-        private static Feature outStringInput
+        private static Feature OutStringInput
         {
             get
             {
@@ -319,7 +319,7 @@ namespace RombaSharp
         }
 
         public const string ResumeStringValue = "resume";
-        private static Feature resumeStringInput
+        private static Feature ResumeStringInput
         {
             get
             {
@@ -332,7 +332,7 @@ namespace RombaSharp
         }
 
         public const string SourceStringValue = "source";
-        private static Feature sourceStringInput
+        private static Feature SourceStringInput
         {
             get
             {
@@ -415,28 +415,24 @@ If -only-needed is set, only those files are put in the ROM archive that
 have a current entry in the DAT index.";
                 this.Features = new Dictionary<string, Feature>();
 
-                AddFeature(onlyNeededFlag);
-                AddFeature(resumeStringInput);
-                AddFeature(includeZipsInt32Input); // Defaults to 0
-                AddFeature(workersInt32Input);
-                AddFeature(includeGZipsInt32Input); // Defaults to 0
-                AddFeature(include7ZipsInt32Input); // Defaults to 0
-                AddFeature(skipInitialScanFlag);
-                AddFeature(useGolangZipFlag);
-                AddFeature(noDbFlag);
+                AddFeature(OnlyNeededFlag);
+                AddFeature(ResumeStringInput);
+                AddFeature(IncludeZipsInt32Input); // Defaults to 0
+                AddFeature(WorkersInt32Input);
+                AddFeature(IncludeGZipsInt32Input); // Defaults to 0
+                AddFeature(Include7ZipsInt32Input); // Defaults to 0
+                AddFeature(SkipInitialScanFlag);
+                AddFeature(UseGolangZipFlag);
+                AddFeature(NoDbFlag);
             }
 
             public override void ProcessFeatures(Dictionary<string, Feature> features)
             {
                 // Get the archive scanning level
+                // TODO: Remove usage
                 int sevenzip = GetInt32(features, Include7ZipsInt32Value);
-                sevenzip = sevenzip == Int32.MinValue ? 1 : sevenzip;
-
                 int gz = GetInt32(features, IncludeGZipsInt32Value);
-                gz = gz == Int32.MinValue ? 1 : gz;
-
                 int zip = GetInt32(features, IncludeZipsInt32Value);
-                zip = zip == Int32.MinValue ? 1 : zip;
 
                 // Get feature flags
                 bool noDb = GetBoolean(features, NoDbValue);
@@ -600,11 +596,11 @@ output dir. The files will be placed in the specified location using a folder
 structure according to the original DAT master directory tree structure.";
                 this.Features = new Dictionary<string, Feature>();
 
-                AddFeature(outStringInput);
-                AddFeature(fixdatOnlyFlag);
-                AddFeature(copyFlag);
-                AddFeature(workersInt32Input);
-                AddFeature(subworkersInt32Input);
+                AddFeature(OutStringInput);
+                AddFeature(FixdatOnlyFlag);
+                AddFeature(CopyFlag);
+                AddFeature(WorkersInt32Input);
+                AddFeature(SubworkersInt32Input);
             }
 
             public override void ProcessFeatures(Dictionary<string, Feature> features)
@@ -778,11 +774,11 @@ structure according to the original DAT master directory tree structure.";
 in -old DAT file. Ignores those entries in -old that are not in -new.";
                 this.Features = new Dictionary<string, Feature>();
 
-                AddFeature(outStringInput);
-                AddFeature(oldStringInput);
-                AddFeature(newStringInput);
-                AddFeature(nameStringInput);
-                AddFeature(descriptionStringInput);
+                AddFeature(OutStringInput);
+                AddFeature(OldStringInput);
+                AddFeature(NewStringInput);
+                AddFeature(NameStringInput);
+                AddFeature(DescriptionStringInput);
             }
 
             public override void ProcessFeatures(Dictionary<string, Feature> features)
@@ -838,10 +834,10 @@ in -old DAT file. Ignores those entries in -old that are not in -new.";
                 this.LongDescription = "Creates a DAT file for the specified input directory and saves it to the -out filename.";
                 this.Features = new Dictionary<string, Feature>();
 
-                AddFeature(outStringInput);
-                AddFeature(sourceStringInput);
-                AddFeature(nameStringInput); // Defaults to "untitled"
-                AddFeature(descriptionStringInput);
+                AddFeature(OutStringInput);
+                AddFeature(SourceStringInput);
+                AddFeature(NameStringInput); // Defaults to "untitled"
+                AddFeature(DescriptionStringInput);
             }
 
             public override void ProcessFeatures(Dictionary<string, Feature> features)
@@ -889,9 +885,9 @@ in -old DAT file. Ignores those entries in -old that are not in -new.";
 in -old DAT files. Ignores those entries in -old that are not in -new.";
                 this.Features = new Dictionary<string, Feature>();
 
-                AddFeature(outStringInput);
-                AddFeature(oldStringInput);
-                AddFeature(newStringInput);
+                AddFeature(OutStringInput);
+                AddFeature(OldStringInput);
+                AddFeature(NewStringInput);
             }
 
             public override void ProcessFeatures(Dictionary<string, Feature> features)
@@ -1006,10 +1002,10 @@ that DAT. If nothing is missing it doesn't create a fix DAT for that
 particular DAT.";
                 this.Features = new Dictionary<string, Feature>();
 
-                AddFeature(outStringInput);
-                AddFeature(fixdatOnlyFlag); // Enabled by default
-                AddFeature(workersInt32Input);
-                AddFeature(subworkersInt32Input);
+                AddFeature(OutStringInput);
+                AddFeature(FixdatOnlyFlag); // Enabled by default
+                AddFeature(WorkersInt32Input);
+                AddFeature(SubworkersInt32Input);
             }
 
             public override void ProcessFeatures(Dictionary<string, Feature> features)
@@ -1182,8 +1178,8 @@ particular DAT.";
                 this.LongDescription = "For each specified hash it looks up any available information (dat or rom).";
                 this.Features = new Dictionary<string, Feature>();
 
-                AddFeature(sizeInt64Input); // Defaults to -1
-                AddFeature(outStringInput);
+                AddFeature(SizeInt64Input); // Defaults to -1
+                AddFeature(OutStringInput);
             }
 
             public override void ProcessFeatures(Dictionary<string, Feature> features)
@@ -1336,10 +1332,10 @@ particular DAT.";
                 this.LongDescription = "Merges specified depot into current depot.";
                 this.Features = new Dictionary<string, Feature>();
 
-                AddFeature(onlyNeededFlag);
-                AddFeature(resumeStringInput);
-                AddFeature(workersInt32Input);
-                AddFeature(skipInitialScanFlag);
+                AddFeature(OnlyNeededFlag);
+                AddFeature(ResumeStringInput);
+                AddFeature(WorkersInt32Input);
+                AddFeature(SkipInitialScanFlag);
             }
 
             // TODO: Add way of specifying "current depot" since that's what Romba relies on
@@ -1462,11 +1458,11 @@ a folder structure according to the original DAT master directory tree
 structure. It also deletes the specified DATs from the DAT index.";
                 this.Features = new Dictionary<string, Feature>();
 
-                AddFeature(backupStringInput);
-                AddFeature(workersInt32Input);
-                AddFeature(depotListStringInput);
-                AddFeature(datsListStringInput);
-                AddFeature(logOnlyFlag);
+                AddFeature(BackupStringInput);
+                AddFeature(WorkersInt32Input);
+                AddFeature(DepotListStringInput);
+                AddFeature(DatsListStringInput);
+                AddFeature(LogOnlyFlag);
             }
 
             public override void ProcessFeatures(Dictionary<string, Feature> features)
@@ -1500,10 +1496,10 @@ a folder structure according to the original DAT master directory tree
 structure. It also deletes the specified DATs from the DAT index.";
                 this.Features = new Dictionary<string, Feature>();
 
-                AddFeature(workersInt32Input);
-                AddFeature(depotListStringInput);
-                AddFeature(datsListStringInput);
-                AddFeature(logOnlyFlag);
+                AddFeature(WorkersInt32Input);
+                AddFeature(DepotListStringInput);
+                AddFeature(DatsListStringInput);
+                AddFeature(LogOnlyFlag);
             }
 
             public override void ProcessFeatures(Dictionary<string, Feature> features)
@@ -1534,8 +1530,8 @@ accordingly, marking deleted or overwritten dats as orphaned and updating
 contents of any changed dats.";
                 this.Features = new Dictionary<string, Feature>();
 
-                AddFeature(workersInt32Input);
-                AddFeature(missingSha1sStringInput);
+                AddFeature(WorkersInt32Input);
+                AddFeature(MissingSha1sStringInput);
             }
 
             public override void ProcessFeatures(Dictionary<string, Feature> features)

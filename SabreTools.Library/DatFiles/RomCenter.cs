@@ -41,7 +41,6 @@ namespace SabreTools.Library.DatFiles
             bool keep)
         {
             // Prepare all intenral variables
-            Encoding enc = FileExtensions.GetEncoding(filename);
             IniReader ir = filename.GetIniReader(false);
 
             // If we got a null reader, just return
@@ -206,12 +205,10 @@ namespace SabreTools.Library.DatFiles
                 switch (kvp?.Key.ToLowerInvariant())
                 {
                     case "version":
-                        string rcVersion = kvp?.Value;
                         reader.ReadNextLine();
                         break;
 
                     case "plugin":
-                        string plugin = kvp?.Value;
                         reader.ReadNextLine();
                         break;
 
