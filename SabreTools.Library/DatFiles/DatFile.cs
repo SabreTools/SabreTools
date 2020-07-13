@@ -1653,78 +1653,6 @@ namespace SabreTools.Library.DatFiles
 
         #endregion
 
-        // TODO: SceneDateStrip be part of Filter?
-        #region Filtering
-
-        /// <summary>
-        /// Ensure that all roms are in their own game (or at least try to ensure)
-        /// </summary>
-        private void OneRomPerGame()
-        {
-            // For each rom, we want to update the game to be "<game name>/<rom name>"
-            Parallel.ForEach(Keys, Globals.ParallelOptions, key =>
-            {
-                List<DatItem> items = this[key];
-                for (int i = 0; i < items.Count; i++)
-                {
-                    string[] splitname = items[i].Name.Split('.');
-                    items[i].MachineName += $"/{string.Join(".", splitname.Take(splitname.Length > 1 ? splitname.Length - 1 : 1))}";
-                }
-            });
-        }
-
-        /// <summary>
-        /// Remove all items marked for removal from the DAT
-        /// </summary>
-        private void RemoveMarkedItems()
-        {
-            List<string> keys = Keys;
-            foreach (string key in keys)
-            {
-                List<DatItem> items = this[key];
-                List<DatItem> newItems = items.Where(i => !i.Remove).ToList();
-
-                Remove(key);
-                AddRange(key, newItems);
-            }
-        }
-
-        /// <summary>
-        /// Strip the dates from the beginning of scene-style set names
-        /// </summary>
-        private void StripSceneDatesFromItems()
-        {
-            // Output the logging statement
-            Globals.Logger.User("Stripping scene-style dates");
-
-            // Set the regex pattern to use
-            string pattern = @"([0-9]{2}\.[0-9]{2}\.[0-9]{2}-)(.*?-.*?)";
-
-            // Now process all of the roms
-            List<string> keys = Keys;
-            Parallel.ForEach(keys, Globals.ParallelOptions, key =>
-            {
-                List<DatItem> items = this[key];
-                for (int j = 0; j < items.Count; j++)
-                {
-                    DatItem item = items[j];
-                    if (Regex.IsMatch(item.MachineName, pattern))
-                        item.MachineName = Regex.Replace(item.MachineName, pattern, "$2");
-
-                    if (Regex.IsMatch(item.MachineDescription, pattern))
-                        item.MachineDescription = Regex.Replace(item.MachineDescription, pattern, "$2");
-
-                    items[j] = item;
-                }
-
-                Remove(key);
-                AddRange(key, items);
-            });
-        }
-
-        #endregion
-
-        // TODO: Should filter steps be separate feom parse?
         #region Parsing
 
         /// <summary>
@@ -3155,6 +3083,22 @@ namespace SabreTools.Library.DatFiles
             return success;
         }
 
+        /// <summary>
+        /// Remove all items marked for removal from the DAT
+        /// </summary>
+        private void RemoveMarkedItems()
+        {
+            List<string> keys = Keys;
+            foreach (string key in keys)
+            {
+                List<DatItem> items = this[key];
+                List<DatItem> newItems = items.Where(i => !i.Remove).ToList();
+
+                Remove(key);
+                AddRange(key, newItems);
+            }
+        }
+
         #endregion
 
         // TODO: Implement Level split
@@ -3730,10 +3674,6 @@ namespace SabreTools.Library.DatFiles
                 consoleOutput.ReplaceStatistics(DatHeader.FileName, Keys.Count(), DatStats);
             }
 
-            // Run the one rom per game logic, if required
-            if (DatHeader.OneRom)
-                OneRomPerGame();
-
             // Bucket and dedupe according to the flag
             if (DatHeader.DedupeRoms == DedupeType.Full)
                 BucketBy(SortedBy.CRC, DatHeader.DedupeRoms, norename: norename);
@@ -3745,10 +3685,6 @@ namespace SabreTools.Library.DatFiles
 
             // Output the number of items we're going to be writing
             Globals.Logger.User($"A total of {DatStats.Count} items will be written out to '{DatHeader.FileName}'");
-
-            // If we are removing scene dates, do that now
-            if (DatHeader.SceneDateStrip)
-                StripSceneDatesFromItems();
 
             // Get the outfile names
             Dictionary<DatFormat, string> outfiles = DatHeader.CreateOutFileNames(outDir, overwrite);

@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 using SabreTools.Library.Data;
@@ -19,15 +20,36 @@ namespace SabreTools.Library.DatFiles
     {
         #region Pubically facing variables
 
+        #region Machine Filters
+
         /// <summary>
         /// Include or exclude machine names
         /// </summary>
         public FilterItem<string> MachineName { get; set; } = new FilterItem<string>();
 
         /// <summary>
+        /// Include romof and cloneof when filtering machine names
+        /// </summary>
+        public FilterItem<bool> IncludeOfInGame { get; set; } = new FilterItem<bool>() { Neutral = false };
+
+        /// <summary>
         /// Include or exclude machine descriptions
         /// </summary>
         public FilterItem<string> MachineDescription { get; set; } = new FilterItem<string>();
+
+        /// <summary>
+        /// Include or exclude machine types
+        /// </summary>
+        public FilterItem<MachineType> MachineTypes { get; set; } = new FilterItem<MachineType>() { Positive = MachineType.NULL, Negative = MachineType.NULL };
+
+        /// <summary>
+        /// Include or exclude items with the "Runnable" tag
+        /// </summary>
+        public FilterItem<bool?> Runnable { get; set; } = new FilterItem<bool?>() { Neutral = null };
+
+        #endregion
+
+        #region DatItem Filters
 
         /// <summary>
         /// Include or exclude item names
@@ -38,6 +60,12 @@ namespace SabreTools.Library.DatFiles
         /// Include or exclude item types
         /// </summary>
         public FilterItem<string> ItemTypes { get; set; } = new FilterItem<string>();
+
+        /// <summary>
+        /// Include or exclude item sizes
+        /// </summary>
+        /// <remarks>Positive means "Greater than or equal", Negative means "Less than or equal", Neutral means "Equal"</remarks>
+        public FilterItem<long> Size { get; set; } = new FilterItem<long>() { Positive = -1, Negative = -1, Neutral = -1 };
 
         /// <summary>
         /// Include or exclude CRC32 hashes
@@ -81,26 +109,9 @@ namespace SabreTools.Library.DatFiles
         /// </summary>
         public FilterItem<ItemStatus> ItemStatuses { get; set; } = new FilterItem<ItemStatus>() { Positive = ItemStatus.NULL, Negative = ItemStatus.NULL };
 
-        /// <summary>
-        /// Include or exclude machine types
-        /// </summary>
-        public FilterItem<MachineType> MachineTypes { get; set; } = new FilterItem<MachineType>() { Positive = MachineType.NULL, Negative = MachineType.NULL };
+        #endregion
 
-        /// <summary>
-        /// Include or exclude item sizes
-        /// </summary>
-        /// <remarks>Positive means "Greater than or equal", Negative means "Less than or equal", Neutral means "Equal"</remarks>
-        public FilterItem<long> Size { get; set; } = new FilterItem<long>() { Positive = -1, Negative = -1, Neutral = -1 };
-
-        /// <summary>
-        /// Include romof and cloneof when filtering machine names
-        /// </summary>
-        public FilterItem<bool> IncludeOfInGame { get; set; } = new FilterItem<bool>() { Neutral = false };
-
-        /// <summary>
-        /// Include or exclude items with the "Runnable" tag
-        /// </summary>
-        public FilterItem<bool?> Runnable { get; set; } = new FilterItem<bool?>() { Neutral = null };
+        #region Manipulation Filters
 
         /// <summary>
         /// Clean all names to WoD standards
@@ -136,6 +147,8 @@ namespace SabreTools.Library.DatFiles
         /// Include root directory when determing trim sizes
         /// </summary>
         public FilterItem<string> Root { get; set; } = new FilterItem<string>() { Neutral = null };
+
+        #endregion
 
         #endregion // Pubically facing variables
 
@@ -218,7 +231,7 @@ namespace SabreTools.Library.DatFiles
                 // Run internal splitting
                 ProcessSplitType(datFile, this.InternalSplit.Neutral);
 
-                // Finally, we remove any blanks, if we aren't supposed to have any
+                // We remove any blanks, if we aren't supposed to have any
                 if (!datFile.DatHeader.KeepEmptyGames)
                 {
                     foreach (string key in datFile.Keys)
@@ -231,6 +244,13 @@ namespace SabreTools.Library.DatFiles
                     }
                 }
 
+                // If we are removing scene dates, do that now
+                if (datFile.DatHeader.SceneDateStrip)
+                    StripSceneDatesFromItems(datFile);
+
+                // Run the one rom per game logic, if required
+                if (datFile.DatHeader.OneRom)
+                    OneRomPerGame(datFile);
             }
             catch (Exception ex)
             {
@@ -936,6 +956,8 @@ namespace SabreTools.Library.DatFiles
 
         #endregion
 
+        #region Manipulation
+
         /// <summary>
         /// Use game descriptions as names in the DAT, updating cloneof/romof/sampleof
         /// </summary>
@@ -996,6 +1018,60 @@ namespace SabreTools.Library.DatFiles
             }
         }
 
+        /// <summary>
+        /// Ensure that all roms are in their own game (or at least try to ensure)
+        /// </summary>
+        /// <param name="datFile">DatFile to filter</param>
+        private void OneRomPerGame(DatFile datFile)
+        {
+            // For each rom, we want to update the game to be "<game name>/<rom name>"
+            Parallel.ForEach(datFile.Keys, Globals.ParallelOptions, key =>
+            {
+                List<DatItem> items = datFile[key];
+                for (int i = 0; i < items.Count; i++)
+                {
+                    string[] splitname = items[i].Name.Split('.');
+                    items[i].MachineName += $"/{string.Join(".", splitname.Take(splitname.Length > 1 ? splitname.Length - 1 : 1))}";
+                }
+            });
+        }
+
+        /// <summary>
+        /// Strip the dates from the beginning of scene-style set names
+        /// </summary>
+        /// <param name="datFile">DatFile to filter</param>
+        private void StripSceneDatesFromItems(DatFile datFile)
+        {
+            // Output the logging statement
+            Globals.Logger.User("Stripping scene-style dates");
+
+            // Set the regex pattern to use
+            string pattern = @"([0-9]{2}\.[0-9]{2}\.[0-9]{2}-)(.*?-.*?)";
+
+            // Now process all of the roms
+            List<string> keys = datFile.Keys;
+            Parallel.ForEach(keys, Globals.ParallelOptions, key =>
+            {
+                List<DatItem> items = datFile[key];
+                for (int j = 0; j < items.Count; j++)
+                {
+                    DatItem item = items[j];
+                    if (Regex.IsMatch(item.MachineName, pattern))
+                        item.MachineName = Regex.Replace(item.MachineName, pattern, "$2");
+
+                    if (Regex.IsMatch(item.MachineDescription, pattern))
+                        item.MachineDescription = Regex.Replace(item.MachineDescription, pattern, "$2");
+
+                    items[j] = item;
+                }
+
+                datFile.Remove(key);
+                datFile.AddRange(key, items);
+            });
+        }
+
         #endregion
+
+        #endregion // Instance Methods
     }
 }
