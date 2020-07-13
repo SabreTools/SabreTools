@@ -224,20 +224,7 @@ namespace SabreTools.Library.DatFiles
                             break;
 
                         case "Machine.Supported":
-                            switch (value.ToLowerInvariant())
-                            {
-                                case "yes":
-                                    machine.Supported = true;
-                                    break;
-                                case "no":
-                                    machine.Supported = false;
-                                    break;
-                                case "partial":
-                                default:
-                                    machine.Supported = null;
-                                    break;
-                            }
-
+                            machine.Supported = value.AsYesNo();
                             break;
 
                         case "Machine.SourceFile":
@@ -245,19 +232,7 @@ namespace SabreTools.Library.DatFiles
                             break;
 
                         case "Machine.Runnable":
-                            switch (value.ToLowerInvariant())
-                            {
-                                case "yes":
-                                    machine.Runnable = true;
-                                    break;
-                                case "no":
-                                    machine.Runnable = false;
-                                    break;
-                                default:
-                                    machine.Runnable = null;
-                                    break;
-                            }
-
+                            machine.Runnable = value.AsYesNo();
                             break;
 
                         case "Machine.Board":
@@ -347,19 +322,7 @@ namespace SabreTools.Library.DatFiles
                             break;
 
                         case "DatItem.Default":
-                            switch (value.ToLowerInvariant())
-                            {
-                                case "yes":
-                                    def = true;
-                                    break;
-                                case "no":
-                                    def = false;
-                                    break;
-                                default:
-                                    def = null;
-                                    break;
-                            }
-
+                            def = value.AsYesNo();
                             break;
 
                         case "DatItem.Description":
@@ -415,35 +378,11 @@ namespace SabreTools.Library.DatFiles
                             break;
 
                         case "DatItem.Writable":
-                            switch (value.ToLowerInvariant())
-                            {
-                                case "yes":
-                                    writable = true;
-                                    break;
-                                case "no":
-                                    writable = false;
-                                    break;
-                                default:
-                                    writable = null;
-                                    break;
-                            }
-
+                            writable = value.AsYesNo();
                             break;
 
                         case "DatItem.Optional":
-                            switch (value.ToLowerInvariant())
-                            {
-                                case "yes":
-                                    optional = true;
-                                    break;
-                                case "no":
-                                    optional = false;
-                                    break;
-                                default:
-                                    optional = null;
-                                    break;
-                            }
-
+                            optional = value.AsYesNo();
                             break;
 
                         case "DatItem.Status":

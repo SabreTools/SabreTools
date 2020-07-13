@@ -423,6 +423,7 @@ namespace SabreTools.Library.Tools
                     return true;
                 case "no":
                     return false;
+                case "partial":
                 default:
                     return null;
             }
