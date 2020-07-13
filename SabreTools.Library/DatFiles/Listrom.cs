@@ -31,8 +31,6 @@ namespace SabreTools.Library.DatFiles
         /// <param name="filename">Name of the file to be parsed</param>
         /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
-        /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         /// <remarks>
         /// In a new style MAME listrom DAT, each game has the following format:
         /// 
@@ -48,9 +46,7 @@ namespace SabreTools.Library.DatFiles
             int indexId,
 
             // Miscellaneous
-            bool keep,
-            bool clean,
-            bool remUnicode)
+            bool keep)
         {
             // Open a file reader
             Encoding enc = FileExtensions.GetEncoding(filename);
@@ -119,7 +115,7 @@ namespace SabreTools.Library.DatFiles
                             IndexSource = filename,
                         };
 
-                        ParseAddHelper(disk, clean, remUnicode);
+                        ParseAddHelper(disk);
                     }
 
                     // Baddump Disks have 4 pieces (name, BAD, sha1, BAD_DUMP)
@@ -137,7 +133,7 @@ namespace SabreTools.Library.DatFiles
                             IndexSource = filename,
                         };
 
-                        ParseAddHelper(disk, clean, remUnicode);
+                        ParseAddHelper(disk);
                     }
 
                     // Standard ROMs have 4 pieces (name, size, crc, sha1)
@@ -159,7 +155,7 @@ namespace SabreTools.Library.DatFiles
                             IndexSource = filename,
                         };
 
-                        ParseAddHelper(rom, clean, remUnicode);
+                        ParseAddHelper(rom);
                     }
 
                     // Nodump Disks have 5 pieces (name, NO, GOOD, DUMP, KNOWN)
@@ -176,7 +172,7 @@ namespace SabreTools.Library.DatFiles
                             IndexSource = filename,
                         };
 
-                        ParseAddHelper(disk, clean, remUnicode);
+                        ParseAddHelper(disk);
                     }
 
                     // Baddump ROMs have 6 pieces (name, size, BAD, crc, sha1, BAD_DUMP)
@@ -199,7 +195,7 @@ namespace SabreTools.Library.DatFiles
                             IndexSource = filename,
                         };
 
-                        ParseAddHelper(rom, clean, remUnicode);
+                        ParseAddHelper(rom);
                     }
 
                     // Nodump ROMs have 6 pieces (name, size, NO, GOOD, DUMP, KNOWN)
@@ -220,7 +216,7 @@ namespace SabreTools.Library.DatFiles
                             IndexSource = filename,
                         };
 
-                        ParseAddHelper(rom, clean, remUnicode);
+                        ParseAddHelper(rom);
                     }
 
                     // If we have something else, it's invalid

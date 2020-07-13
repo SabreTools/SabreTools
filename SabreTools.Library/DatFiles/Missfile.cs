@@ -30,17 +30,13 @@ namespace SabreTools.Library.DatFiles
         /// <param name="filename">Name of the file to be parsed</param>
         /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
-        /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         protected override void ParseFile(
             // Standard Dat parsing
             string filename,
             int indexId,
 
             // Miscellaneous
-            bool keep,
-            bool clean,
-            bool remUnicode)
+            bool keep)
         {
             // There is no consistent way to parse a missfile...
             throw new NotImplementedException();

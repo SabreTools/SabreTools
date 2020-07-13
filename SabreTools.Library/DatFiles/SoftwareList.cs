@@ -32,17 +32,13 @@ namespace SabreTools.Library.DatFiles
         /// <param name="filename">Name of the file to be parsed</param>
         /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
-        /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         protected override void ParseFile(
             // Standard Dat parsing
             string filename,
             int indexId,
 
             // Miscellaneous
-            bool keep,
-            bool clean,
-            bool remUnicode)
+            bool keep)
         {
             // Prepare all internal variables
             XmlReader xtr = filename.GetXmlTextReader();
@@ -83,7 +79,7 @@ namespace SabreTools.Library.DatFiles
 
                         // We want to process the entire subtree of the machine
                         case "software":
-                            ReadSoftware(xtr.ReadSubtree(), filename, indexId, keep, clean, remUnicode);
+                            ReadSoftware(xtr.ReadSubtree(), filename, indexId, keep);
 
                             // Skip the software now that we've processed it
                             xtr.Skip();
@@ -113,8 +109,6 @@ namespace SabreTools.Library.DatFiles
         /// <param name="filename">Name of the file to be parsed</param>
         /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
-        /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         private void ReadSoftware(
             XmlReader reader,
 
@@ -123,9 +117,7 @@ namespace SabreTools.Library.DatFiles
             int indexId,
 
             // Miscellaneous
-            bool keep,
-            bool clean,
-            bool remUnicode)
+            bool keep)
         {
             // If we have an empty software, skip it
             if (reader == null)
@@ -196,7 +188,7 @@ namespace SabreTools.Library.DatFiles
                         break;
 
                     case "part": // Contains all rom and disk information
-                        containsItems = ReadPart(reader.ReadSubtree(), machine, filename, indexId, keep, clean, remUnicode);
+                        containsItems = ReadPart(reader.ReadSubtree(), machine, filename, indexId, keep);
 
                         // Skip the part now that we've processed it
                         reader.Skip();
@@ -219,7 +211,7 @@ namespace SabreTools.Library.DatFiles
                 blank.CopyMachineInformation(machine);
 
                 // Now process and add the rom
-                ParseAddHelper(blank, clean, remUnicode);
+                ParseAddHelper(blank);
             }
         }
 
@@ -231,8 +223,6 @@ namespace SabreTools.Library.DatFiles
         /// <param name="filename">Name of the file to be parsed</param>
         /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
-        /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         private bool ReadPart(
             XmlReader reader,
             Machine machine,
@@ -242,9 +232,7 @@ namespace SabreTools.Library.DatFiles
             int indexId,
 
             // Miscellaneous
-            bool keep,
-            bool clean,
-            bool remUnicode)
+            bool keep)
         {
             string key = string.Empty, areaname = string.Empty, partname = string.Empty, partinterface = string.Empty;
             string temptype = reader.Name;
@@ -300,7 +288,7 @@ namespace SabreTools.Library.DatFiles
                         // string dataarea_endianness = reader.GetAttribute("endianness"); // endianness (big|little) "little"
 
                         containsItems = ReadDataArea(reader.ReadSubtree(), machine, features, areaname, areasize,
-                            partname, partinterface, filename, indexId, keep, clean, remUnicode);
+                            partname, partinterface, filename, indexId, keep);
 
                         // Skip the dataarea now that we've processed it
                         reader.Skip();
@@ -310,7 +298,7 @@ namespace SabreTools.Library.DatFiles
                         areaname = reader.GetAttribute("name");
 
                         containsItems = ReadDiskArea(reader.ReadSubtree(), machine, features, areaname, areasize,
-                            partname, partinterface, filename, indexId, keep, clean, remUnicode);
+                            partname, partinterface, filename, indexId, keep);
 
                         // Skip the diskarea now that we've processed it
                         reader.Skip();
@@ -351,8 +339,6 @@ namespace SabreTools.Library.DatFiles
         /// <param name="filename">Name of the file to be parsed</param>
         /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
-        /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         private bool ReadDataArea(
             XmlReader reader,
             Machine machine,
@@ -367,9 +353,7 @@ namespace SabreTools.Library.DatFiles
             int indexId,
 
             // Miscellaneous
-            bool keep,
-            bool clean,
-            bool remUnicode)
+            bool keep)
         {
             string key = string.Empty;
             string temptype = reader.Name;
@@ -436,7 +420,7 @@ namespace SabreTools.Library.DatFiles
                         rom.CopyMachineInformation(machine);
 
                         // Now process and add the rom
-                        key = ParseAddHelper(rom, clean, remUnicode);
+                        key = ParseAddHelper(rom);
 
                         reader.Read();
                         break;
@@ -463,8 +447,6 @@ namespace SabreTools.Library.DatFiles
         /// <param name="filename">Name of the file to be parsed</param>
         /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
-        /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         private bool ReadDiskArea(
             XmlReader reader,
             Machine machine,
@@ -479,9 +461,7 @@ namespace SabreTools.Library.DatFiles
             int indexId,
 
             // Miscellaneous
-            bool keep,
-            bool clean,
-            bool remUnicode)
+            bool keep)
         {
             string key = string.Empty;
             string temptype = reader.Name;
@@ -529,7 +509,7 @@ namespace SabreTools.Library.DatFiles
                         disk.CopyMachineInformation(machine);
 
                         // Now process and add the rom
-                        key = ParseAddHelper(disk, clean, remUnicode);
+                        key = ParseAddHelper(disk);
 
                         reader.Read();
                         break;

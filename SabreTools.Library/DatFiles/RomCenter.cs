@@ -32,17 +32,13 @@ namespace SabreTools.Library.DatFiles
         /// <param name="filename">Name of the file to be parsed</param>
         /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
-        /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         protected override void ParseFile(
             // Standard Dat parsing
             string filename,
             int indexId,
 
             // Miscellaneous
-            bool keep,
-            bool clean,
-            bool remUnicode)
+            bool keep)
         {
             // Prepare all intenral variables
             Encoding enc = FileExtensions.GetEncoding(filename);
@@ -83,7 +79,7 @@ namespace SabreTools.Library.DatFiles
                                 break;
 
                             case "games":
-                                ReadGamesSection(ir, filename, indexId, clean, remUnicode);
+                                ReadGamesSection(ir, filename, indexId);
                                 break;
 
                             // Unknown section so we ignore it
@@ -297,9 +293,7 @@ namespace SabreTools.Library.DatFiles
         /// <param name="reader">IniReader to use to parse the credits</param>
         /// <param name="filename">Name of the file to be parsed</param>
         /// <param name="indexId">Index ID for the DAT</param>
-        /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
-        private void ReadGamesSection(IniReader reader, string filename, int indexId, bool clean, bool remUnicode)
+        private void ReadGamesSection(IniReader reader, string filename, int indexId)
         {
             // If the reader is somehow null, skip it
             if (reader == null)
@@ -366,7 +360,7 @@ namespace SabreTools.Library.DatFiles
                 };
 
                 // Now process and add the rom
-                ParseAddHelper(rom, clean, remUnicode);
+                ParseAddHelper(rom);
 
                 reader.ReadNextLine();
             }

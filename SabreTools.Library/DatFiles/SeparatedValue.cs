@@ -37,17 +37,13 @@ namespace SabreTools.Library.DatFiles
         /// <param name="filename">Name of the file to be parsed</param>
         /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
-        /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         protected override void ParseFile(
             // Standard Dat parsing
             string filename,
             int indexId,
 
             // Miscellaneous
-            bool keep,
-            bool clean,
-            bool remUnicode)
+            bool keep)
         {
             // Open a file reader
             Encoding enc = FileExtensions.GetEncoding(filename);
@@ -497,7 +493,7 @@ namespace SabreTools.Library.DatFiles
                         };
 
                         archive.CopyMachineInformation(machine);
-                        ParseAddHelper(archive, clean, remUnicode);
+                        ParseAddHelper(archive);
                         break;
 
                     case ItemType.BiosSet:
@@ -518,7 +514,7 @@ namespace SabreTools.Library.DatFiles
                         };
 
                         biosset.CopyMachineInformation(machine);
-                        ParseAddHelper(biosset, clean, remUnicode);
+                        ParseAddHelper(biosset);
                         break;
 
                     case ItemType.Disk:
@@ -551,7 +547,7 @@ namespace SabreTools.Library.DatFiles
                         };
 
                         disk.CopyMachineInformation(machine);
-                        ParseAddHelper(disk, clean, remUnicode);
+                        ParseAddHelper(disk);
                         break;
 
                     case ItemType.Release:
@@ -574,7 +570,7 @@ namespace SabreTools.Library.DatFiles
                         };
 
                         release.CopyMachineInformation(machine);
-                        ParseAddHelper(release, clean, remUnicode);
+                        ParseAddHelper(release);
                         break;
 
                     case ItemType.Rom:
@@ -610,7 +606,7 @@ namespace SabreTools.Library.DatFiles
                         };
 
                         rom.CopyMachineInformation(machine);
-                        ParseAddHelper(rom, clean, remUnicode);
+                        ParseAddHelper(rom);
                         break;
 
                     case ItemType.Sample:
@@ -628,7 +624,7 @@ namespace SabreTools.Library.DatFiles
                         };
 
                         sample.CopyMachineInformation(machine);
-                        ParseAddHelper(sample, clean, remUnicode);
+                        ParseAddHelper(sample);
                         break;
                 }
             }

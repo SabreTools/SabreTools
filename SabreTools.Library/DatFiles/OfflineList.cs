@@ -32,8 +32,6 @@ namespace SabreTools.Library.DatFiles
         /// <param name="filename">Name of the file to be parsed</param>
         /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
-        /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         /// <remarks>
         /// </remarks>
         protected override void ParseFile(
@@ -42,9 +40,7 @@ namespace SabreTools.Library.DatFiles
             int indexId,
 
             // Miscellaneous
-            bool keep,
-            bool clean,
-            bool remUnicode)
+            bool keep)
         {
             XmlReader xtr = filename.GetXmlTextReader();
 
@@ -75,7 +71,7 @@ namespace SabreTools.Library.DatFiles
                             break;
 
                         case "games":
-                            ReadGames(xtr.ReadSubtree(), filename, indexId, clean, remUnicode);
+                            ReadGames(xtr.ReadSubtree(), filename, indexId);
 
                             // Skip the games node now that we've processed it
                             xtr.Skip();
@@ -497,18 +493,12 @@ namespace SabreTools.Library.DatFiles
         /// <param name="reader">XmlReader to use to parse the header</param>
         /// <param name="filename">Name of the file to be parsed</param>
         /// <param name="indexId">Index ID for the DAT</param>
-        /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         private void ReadGames(
             XmlReader reader,
 
             // Standard Dat parsing
             string filename,
-            int indexId,
-
-            // Miscellaneous
-            bool clean,
-            bool remUnicode)
+            int indexId)
         {
             // If there's no subtree to the configuration, skip it
             if (reader == null)
@@ -531,7 +521,7 @@ namespace SabreTools.Library.DatFiles
                 switch (reader.Name.ToLowerInvariant())
                 {
                     case "game":
-                        ReadGame(reader.ReadSubtree(), filename, indexId, clean, remUnicode);
+                        ReadGame(reader.ReadSubtree(), filename, indexId);
 
                         // Skip the game node now that we've processed it
                         reader.Skip();
@@ -550,18 +540,12 @@ namespace SabreTools.Library.DatFiles
         /// <param name="reader">XmlReader to use to parse the header</param>
         /// <param name="filename">Name of the file to be parsed</param>
         /// <param name="indexId">Index ID for the DAT</param>
-        /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         private void ReadGame(
             XmlReader reader,
 
             // Standard Dat parsing
             string filename,
-            int indexId,
-
-            // Miscellaneous
-            bool clean,
-            bool remUnicode)
+            int indexId)
         {
             // Prepare all internal variables
             string releaseNumber = string.Empty, key = string.Empty, publisher = string.Empty, duplicateid = string.Empty;
@@ -675,7 +659,7 @@ namespace SabreTools.Library.DatFiles
                 roms[i].CopyMachineInformation(machine);
 
                 // Now process and add the rom
-                key = ParseAddHelper(roms[i], clean, remUnicode);
+                key = ParseAddHelper(roms[i]);
             }
         }
 

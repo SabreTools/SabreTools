@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-
+using System.Reflection;
 using SabreTools.Library.Data;
 using SabreTools.Library.DatItems;
+using SabreTools.Library.Tools;
 
 namespace SabreTools.Library.DatFiles
 {
@@ -99,6 +100,16 @@ namespace SabreTools.Library.DatFiles
         public FilterItem<bool?> Runnable { get; set; } = new FilterItem<bool?>() { Neutral = null };
 
         /// <summary>
+        /// Clean all names to WoD standards
+        /// </summary>
+        public FilterItem<bool> Clean { get; set; } = new FilterItem<bool>() { Neutral = false };
+
+        /// <summary>
+        /// Remove all unicode characters
+        /// </summary>
+        public FilterItem<bool> RemoveUnicode { get; set; } = new FilterItem<bool>() { Neutral = false };
+
+        /// <summary>
         /// Change all machine names to "!"
         /// </summary>
         public FilterItem<bool> Single { get; set; } = new FilterItem<bool>() { Neutral = false };
@@ -138,6 +149,21 @@ namespace SabreTools.Library.DatFiles
                         // If the rom passes the filter, include it
                         if (ItemPasses(item))
                         {
+                            // If we're stripping unicode characters, do so from all relevant things
+                            if (this.RemoveUnicode.Neutral)
+                            {
+                                item.Name = Sanitizer.RemoveUnicodeCharacters(item.Name);
+                                item.MachineName = Sanitizer.RemoveUnicodeCharacters(item.MachineName);
+                                item.MachineDescription = Sanitizer.RemoveUnicodeCharacters(item.MachineDescription);
+                            }
+
+                            // If we're in cleaning mode, do so from all relevant things
+                            if (this.Clean.Neutral)
+                            {
+                                item.MachineName = Sanitizer.CleanGameName(item.MachineName);
+                                item.MachineDescription = Sanitizer.CleanGameName(item.MachineDescription);
+                            }
+
                             // If we are in single game mode, rename all games
                             if (this.Single.Neutral)
                                 item.MachineName = "!";

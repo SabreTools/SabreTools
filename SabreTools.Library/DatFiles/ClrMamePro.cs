@@ -32,17 +32,13 @@ namespace SabreTools.Library.DatFiles
         /// <param name="filename">Name of the file to be parsed</param>
         /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
-        /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         protected override void ParseFile(
             // Standard Dat parsing
             string filename,
             int indexId,
 
             // Miscellaneous
-            bool keep,
-            bool clean,
-            bool remUnicode)
+            bool keep)
         {
             // Open a file reader
             Encoding enc = FileExtensions.GetEncoding(filename);
@@ -72,10 +68,10 @@ namespace SabreTools.Library.DatFiles
                     case "set":         // Used by the most ancient DATs
                     case "game":        // Used by most CMP DATs
                     case "machine":     // Possibly used by MAME CMP DATs
-                        ReadSet(cmpr, false, filename, indexId, clean, remUnicode);
+                        ReadSet(cmpr, false, filename, indexId);
                         break;
                     case "resource":    // Used by some other DATs to denote a BIOS set
-                        ReadSet(cmpr, true, filename, indexId, clean, remUnicode);
+                        ReadSet(cmpr, true, filename, indexId);
                         break;
 
                     default:
@@ -193,19 +189,13 @@ namespace SabreTools.Library.DatFiles
         /// <param name="resource">True if the item is a resource (bios), false otherwise</param>
         /// <param name="filename">Name of the file to be parsed</param>
         /// <param name="indexId">Index ID for the DAT</param>
-        /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         private void ReadSet(
             ClrMameProReader cmpr,
             bool resource,
 
             // Standard Dat parsing
             string filename,
-            int indexId,
-
-            // Miscellaneous
-            bool clean,
-            bool remUnicode)
+            int indexId)
         {
             // Prepare all internal variables
             bool containsItems = false;
@@ -420,7 +410,7 @@ namespace SabreTools.Library.DatFiles
                     }
 
                     // Now process and add the rom
-                    ParseAddHelper(item, clean, remUnicode);
+                    ParseAddHelper(item);
                 }
             }
 
@@ -436,7 +426,7 @@ namespace SabreTools.Library.DatFiles
                 blank.CopyMachineInformation(machine);
 
                 // Now process and add the rom
-                ParseAddHelper(blank, clean, remUnicode);
+                ParseAddHelper(blank);
             }
         }
 

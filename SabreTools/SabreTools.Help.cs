@@ -2302,6 +2302,9 @@ Some special strings that can be used:
             {
                 Filter filter = new Filter();
 
+                // Clean names
+                filter.Clean.Neutral = GetBoolean(features, CleanValue);
+
                 // CRC
                 filter.CRC.NegativeSet.AddRange(GetList(features, NotCrcListValue));
                 filter.CRC.PositiveSet.AddRange(GetList(features, CrcListValue));
@@ -2348,6 +2351,9 @@ Some special strings that can be used:
                 // MD5
                 filter.MD5.NegativeSet.AddRange(GetList(features, NotMd5ListValue));
                 filter.MD5.PositiveSet.AddRange(GetList(features, Md5ListValue));
+
+                // Remove unicode characters
+                filter.RemoveUnicode.Neutral = GetBoolean(features, RemoveUnicodeValue);
 
 #if NET_FRAMEWORK
                 // RIPEMD160
@@ -3327,8 +3333,6 @@ The stats that are outputted are as follows:
                     updateMode,
                     GetBoolean(features, InplaceValue),
                     GetBoolean(features, SkipFirstOutputValue),
-                    GetBoolean(features, CleanValue),
-                    GetBoolean(features, RemoveUnicodeValue),
                     GetBoolean(features, DescriptionAsNameValue),
                     GetFilter(features),
                     GetSplitType(features),

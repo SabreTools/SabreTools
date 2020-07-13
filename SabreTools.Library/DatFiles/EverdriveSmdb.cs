@@ -31,17 +31,13 @@ namespace SabreTools.Library.DatFiles
         /// <param name="filename">Name of the file to be parsed</param>
         /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
-        /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         protected override void ParseFile(
             // Standard Dat parsing
             string filename,
             int indexId,
 
             // Miscellaneous
-            bool keep,
-            bool clean,
-            bool remUnicode)
+            bool keep)
         {
             // Open a file reader
             Encoding enc = FileExtensions.GetEncoding(filename);
@@ -81,7 +77,7 @@ namespace SabreTools.Library.DatFiles
                 };
 
                 // Now process and add the rom
-                ParseAddHelper(rom, clean, remUnicode);
+                ParseAddHelper(rom);
             }
 
             sr.Dispose();

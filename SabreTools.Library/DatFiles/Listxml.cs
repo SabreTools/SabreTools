@@ -32,8 +32,6 @@ namespace SabreTools.Library.DatFiles
         /// <param name="filename">Name of the file to be parsed</param>
         /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
-        /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         /// <remarks>
         /// </remarks>
         protected override void ParseFile(
@@ -42,9 +40,7 @@ namespace SabreTools.Library.DatFiles
             int indexId,
 
             // Miscellaneous
-            bool keep,
-            bool clean,
-            bool remUnicode)
+            bool keep)
         {
             // Prepare all internal variables
             XmlReader xtr = filename.GetXmlTextReader();
@@ -87,7 +83,7 @@ namespace SabreTools.Library.DatFiles
                         // We want to process the entire subtree of the machine
                         case "game": // Some older DATs still use "game"
                         case "machine":
-                            ReadMachine(xtr.ReadSubtree(), filename, indexId, clean, remUnicode);
+                            ReadMachine(xtr.ReadSubtree(), filename, indexId);
 
                             // Skip the machine now that we've processed it
                             xtr.Skip();
@@ -116,18 +112,12 @@ namespace SabreTools.Library.DatFiles
         /// <param name="reader">XmlReader representing a machine block</param>
         /// <param name="filename">Name of the file to be parsed</param>
         /// <param name="indexId">Index ID for the DAT</param>
-        /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         private void ReadMachine(
             XmlReader reader,
 
             // Standard Dat parsing
             string filename,
-            int indexId,
-
-            // Miscellaneous
-            bool clean,
-            bool remUnicode)
+            int indexId)
         {
             // If we have an empty machine, skip it
             if (reader == null)
@@ -209,7 +199,7 @@ namespace SabreTools.Library.DatFiles
                         biosset.CopyMachineInformation(machine);
 
                         // Now process and add the rom
-                        key = ParseAddHelper(biosset, clean, remUnicode);
+                        key = ParseAddHelper(biosset);
 
                         reader.Read();
                         break;
@@ -244,7 +234,7 @@ namespace SabreTools.Library.DatFiles
                         rom.CopyMachineInformation(machine);
 
                         // Now process and add the rom
-                        key = ParseAddHelper(rom, clean, remUnicode);
+                        key = ParseAddHelper(rom);
 
                         reader.Read();
                         break;
@@ -277,7 +267,7 @@ namespace SabreTools.Library.DatFiles
                         disk.CopyMachineInformation(machine);
 
                         // Now process and add the rom
-                        key = ParseAddHelper(disk, clean, remUnicode);
+                        key = ParseAddHelper(disk);
 
                         reader.Read();
                         break;
@@ -304,7 +294,7 @@ namespace SabreTools.Library.DatFiles
                         samplerom.CopyMachineInformation(machine);
 
                         // Now process and add the rom
-                        key = ParseAddHelper(samplerom, clean, remUnicode);
+                        key = ParseAddHelper(samplerom);
 
                         reader.Read();
                         break;
@@ -504,7 +494,7 @@ namespace SabreTools.Library.DatFiles
                 blank.CopyMachineInformation(machine);
 
                 // Now process and add the rom
-                ParseAddHelper(blank, clean, remUnicode);
+                ParseAddHelper(blank);
             }
         }
 

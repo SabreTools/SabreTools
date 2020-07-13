@@ -33,17 +33,13 @@ namespace SabreTools.Library.DatFiles
         /// <param name="filename">Name of the file to be parsed</param>
         /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
-        /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         protected override void ParseFile(
             // Standard Dat parsing
             string filename,
             int indexId,
 
             // Miscellaneous
-            bool keep,
-            bool clean,
-            bool remUnicode)
+            bool keep)
         {
             // Prepare all internal variables
             bool empty = true;
@@ -72,7 +68,7 @@ namespace SabreTools.Library.DatFiles
                             Rom rom = new Rom("null", tempgame);
 
                             // Now process and add the rom
-                            key = ParseAddHelper(rom, clean, remUnicode);
+                            key = ParseAddHelper(rom);
                         }
 
                         // Regardless, end the current folder
@@ -111,7 +107,7 @@ namespace SabreTools.Library.DatFiles
 
                         case "dir":
                         case "directory":
-                            empty = ReadDirectory(xtr.ReadSubtree(), parent, filename, indexId, keep, clean, remUnicode);
+                            empty = ReadDirectory(xtr.ReadSubtree(), parent, filename, indexId, keep);
 
                             // Skip the directory node now that we've processed it
                             xtr.Read();
@@ -229,8 +225,6 @@ namespace SabreTools.Library.DatFiles
         /// <param name="filename">Name of the file to be parsed</param>
         /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
-        /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         private bool ReadDirectory(XmlReader reader,
             List<string> parent,
 
@@ -239,9 +233,7 @@ namespace SabreTools.Library.DatFiles
             int indexId,
 
             // Miscellaneous
-            bool keep,
-            bool clean,
-            bool remUnicode)
+            bool keep)
         {
             // Prepare all internal variables
             XmlReader flagreader;
@@ -271,7 +263,7 @@ namespace SabreTools.Library.DatFiles
                         Rom rom = new Rom("null", tempgame);
 
                         // Now process and add the rom
-                        key = ParseAddHelper(rom, clean, remUnicode);
+                        key = ParseAddHelper(rom);
                     }
 
                     // Regardless, end the current folder
@@ -305,7 +297,7 @@ namespace SabreTools.Library.DatFiles
                     // Directories can contain directories
                     case "dir":
                     case "directory":
-                        ReadDirectory(reader.ReadSubtree(), parent, filename, indexId, keep, clean, remUnicode);
+                        ReadDirectory(reader.ReadSubtree(), parent, filename, indexId, keep);
 
                         // Skip the directory node now that we've processed it
                         reader.Read();
@@ -460,7 +452,7 @@ namespace SabreTools.Library.DatFiles
                         datItem?.CopyMachineInformation(dir);
 
                         // Now process and add the rom
-                        key = ParseAddHelper(datItem, clean, remUnicode);
+                        key = ParseAddHelper(datItem);
 
                         reader.Read();
                         break;

@@ -658,8 +658,6 @@ namespace SabreTools.Library.DatFiles
         /// <param name="updateMode">Non-zero flag for diffing mode, zero otherwise</param>
         /// <param name="inplace">True if the output files should overwrite their inputs, false otherwise</param>
         /// <param name="skip">True if the first cascaded diff file should be skipped on output, false otherwise</param>
-        /// <param name="clean">True to clean the game names to WoD standard, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         /// <param name="descAsName">True to use game descriptions as the names, false otherwise (default)</param>
         /// <param name="filter">Filter object to be passed to the DatItem level</param>
         /// <param name="splitType">Type of the split that should be performed (split, merged, fully merged)</param>
@@ -672,8 +670,6 @@ namespace SabreTools.Library.DatFiles
             UpdateMode updateMode,
             bool inplace,
             bool skip,
-            bool clean,
-            bool remUnicode,
             bool descAsName,
             Filter filter,
             SplitType splitType,
@@ -687,7 +683,7 @@ namespace SabreTools.Library.DatFiles
             // If we're in standard update mode, run through all of the inputs
             if (updateMode == UpdateMode.None)
             {
-                Update(inputFileNames, outDir, inplace, clean, remUnicode, descAsName, filter, splitType);
+                Update(inputFileNames, outDir, inplace, descAsName, filter, splitType);
                 return;
             }
 
@@ -701,7 +697,7 @@ namespace SabreTools.Library.DatFiles
             if (updateMode.HasFlag(UpdateMode.Merge))
             {
                 // Populate the combined data and get the headers
-                PopulateUserData(inputFileNames, clean, remUnicode, descAsName, filter, splitType);
+                PopulateUserData(inputFileNames, descAsName, filter, splitType);
                 MergeNoDiff(inputFileNames, outDir);
             }
 
@@ -711,7 +707,7 @@ namespace SabreTools.Library.DatFiles
                 || updateMode.HasFlag(UpdateMode.DiffIndividualsOnly))
             {
                 // Populate the combined data
-                PopulateUserData(inputFileNames, clean, remUnicode, descAsName, filter, splitType);
+                PopulateUserData(inputFileNames, descAsName, filter, splitType);
                 DiffNoCascade(inputFileNames, outDir, updateMode);
             }
 
@@ -720,7 +716,7 @@ namespace SabreTools.Library.DatFiles
                 || updateMode.HasFlag(UpdateMode.DiffReverseCascade))
             {
                 // Populate the combined data and get the headers
-                List<DatHeader> datHeaders = PopulateUserData(inputFileNames, clean, remUnicode, descAsName, filter, splitType);
+                List<DatHeader> datHeaders = PopulateUserData(inputFileNames, descAsName, filter, splitType);
                 DiffCascade(inputFileNames, datHeaders, outDir, inplace, skip);
             }
 
@@ -728,8 +724,8 @@ namespace SabreTools.Library.DatFiles
             else if (updateMode.HasFlag(UpdateMode.DiffAgainst))
             {
                 // Populate the combined data
-                PopulateUserData(baseFileNames, clean, remUnicode, descAsName, filter, splitType);
-                DiffAgainst(inputFileNames, outDir, inplace, clean, remUnicode, descAsName);
+                PopulateUserData(baseFileNames, descAsName, filter, splitType);
+                DiffAgainst(inputFileNames, outDir, inplace, descAsName);
             }
 
             // If we have one of the base replacement modes
@@ -737,8 +733,8 @@ namespace SabreTools.Library.DatFiles
                 || updateMode.HasFlag(UpdateMode.ReverseBaseReplace))
             {
                 // Populate the combined data
-                PopulateUserData(baseFileNames, clean, remUnicode, descAsName, filter, splitType);
-                BaseReplace(inputFileNames, outDir, inplace, clean, remUnicode, descAsName, filter, updateFields, onlySame);
+                PopulateUserData(baseFileNames, descAsName, filter, splitType);
+                BaseReplace(inputFileNames, outDir, inplace, descAsName, filter, updateFields, onlySame);
             }
 
             return;
@@ -748,16 +744,12 @@ namespace SabreTools.Library.DatFiles
         /// Populate the user DatData object from the input files
         /// </summary>
         /// <param name="inputs">Paths to DATs to parse</param>
-        /// <param name="clean">True to clean the game names to WoD standard, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         /// <param name="descAsName">True to use game descriptions as the names, false otherwise (default)</param>
         /// <param name="filter">Filter object to be passed to the DatItem level</param>
         /// <param name="splitType">Type of the split that should be performed (split, merged, fully merged)</param>
         /// <returns>List of DatData objects representing headers</returns>
         private List<DatHeader> PopulateUserData(
             List<string> inputs,
-            bool clean,
-            bool remUnicode,
             bool descAsName,
             Filter filter,
             SplitType splitType)
@@ -771,7 +763,7 @@ namespace SabreTools.Library.DatFiles
                 string input = inputs[i];
                 Globals.Logger.User($"Adding DAT: {input.Split('¬')[0]}");
                 datFiles[i] = Create(DatHeader.CloneFiltering());
-                datFiles[i].Parse(input, i, splitType, keep: true, clean: clean, remUnicode: remUnicode, descAsName: descAsName);
+                datFiles[i].Parse(input, i, splitType, keep: true, descAsName: descAsName);
             });
 
             watch.Stop();
@@ -796,8 +788,6 @@ namespace SabreTools.Library.DatFiles
         /// <param name="inputFileNames">Names of the input files</param>
         /// <param name="outDir">Optional param for output directory</param>
         /// <param name="inplace">True if the output files should overwrite their inputs, false otherwise</param>
-        /// <param name="clean">True to clean the game names to WoD standard, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         /// <param name="descAsName">True to allow SL DATs to have game names used instead of descriptions, false otherwise (default)</param>
         /// <param name="filter">Filter object to be passed to the DatItem level</param>
         /// <param name="updateFields">List of Fields representing what should be updated [only for base replacement]</param>
@@ -806,8 +796,6 @@ namespace SabreTools.Library.DatFiles
             List<string> inputFileNames,
             string outDir,
             bool inplace,
-            bool clean,
-            bool remUnicode,
             bool descAsName,
             Filter filter,
             List<Field> updateFields,
@@ -877,7 +865,7 @@ namespace SabreTools.Library.DatFiles
 
                 // First we parse in the DAT internally
                 DatFile intDat = Create(DatHeader.CloneFiltering());
-                intDat.Parse(path, 1, keep: true, clean: clean, remUnicode: remUnicode, descAsName: descAsName);
+                intDat.Parse(path, 1, keep: true, descAsName: descAsName);
                 filter.FilterDatFile(intDat);
 
                 // If we are matching based on DatItem fields of any sort
@@ -1299,16 +1287,8 @@ namespace SabreTools.Library.DatFiles
         /// <param name="inputFileNames">Names of the input files</param>
         /// <param name="outDir">Optional param for output directory</param>
         /// <param name="inplace">True if the output files should overwrite their inputs, false otherwise</param>
-        /// <param name="clean">True to clean the game names to WoD standard, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         /// <param name="descAsName">True to use game descriptions as the names, false otherwise (default)</param>
-        private void DiffAgainst(
-            List<string> inputFileNames,
-            string outDir,
-            bool inplace,
-            bool clean,
-            bool remUnicode,
-            bool descAsName)
+        private void DiffAgainst(List<string> inputFileNames, string outDir, bool inplace, bool descAsName)
         {
             // For comparison's sake, we want to use CRC as the base ordering
             BucketBy(SortedBy.CRC, DedupeType.Full);
@@ -1320,7 +1300,7 @@ namespace SabreTools.Library.DatFiles
 
                 // First we parse in the DAT internally
                 DatFile intDat = Create();
-                intDat.Parse(path, 1, keep: true, clean: clean, remUnicode: remUnicode, descAsName: descAsName);
+                intDat.Parse(path, 1, keep: true, descAsName: descAsName);
 
                 // For comparison's sake, we want to use CRC as the base ordering
                 intDat.BucketBy(SortedBy.CRC, DedupeType.Full);
@@ -1632,8 +1612,6 @@ namespace SabreTools.Library.DatFiles
         /// <param name="inputFileNames">Names of the input files and/or folders</param>
         /// <param name="outDir">Optional param for output directory</param>
         /// <param name="inplace">True if the output files should overwrite their inputs, false otherwise</param>
-        /// <param name="clean">True to clean the game names to WoD standard, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         /// <param name="descAsName">True to use game descriptions as the names, false otherwise (default)</param>
         /// <param name="filter">Filter object to be passed to the DatItem level</param>
         /// <param name="splitType">Type of the split that should be performed (split, merged, fully merged)</param>
@@ -1641,8 +1619,6 @@ namespace SabreTools.Library.DatFiles
             List<string> inputFileNames,
             string outDir,
             bool inplace,
-            bool clean,
-            bool remUnicode,
             bool descAsName,
             Filter filter,
             SplitType splitType)
@@ -1652,7 +1628,7 @@ namespace SabreTools.Library.DatFiles
             {
                 DatFile innerDatdata = Create(baseDat: this);
                 Globals.Logger.User($"Processing '{Path.GetFileName(file.Split('¬')[0])}'");
-                innerDatdata.Parse(file, splitType: splitType, keep: true, clean: clean, remUnicode: remUnicode, descAsName: descAsName,
+                innerDatdata.Parse(file, splitType: splitType, keep: true, descAsName: descAsName,
                     keepext: innerDatdata.DatHeader.DatFormat.HasFlag(DatFormat.TSV)
                         || innerDatdata.DatHeader.DatFormat.HasFlag(DatFormat.CSV)
                         || innerDatdata.DatHeader.DatFormat.HasFlag(DatFormat.SSV));
@@ -1698,6 +1674,7 @@ namespace SabreTools.Library.DatFiles
 
         #endregion
 
+        // TODO: Can desc as name be part of Filter?
         #region Filtering
 
         /// <summary>
@@ -1828,6 +1805,41 @@ namespace SabreTools.Library.DatFiles
         #endregion
 
         #region Internal Merging/Splitting
+
+        /// <summary>
+        /// Process items according to SplitType
+        /// </summary>
+        /// <param name="splitType">SplitType to implement</param>
+        /// <param name="useTags">True to use ForceMerge header value</param>
+        private void ProcessSplitType(SplitType splitType, bool useTags)
+        {
+            // If we are using tags from the DAT, set the proper input for split type unless overridden
+            if (useTags && splitType == SplitType.None)
+                splitType = DatHeader.ForceMerging.AsSplitType();
+
+            // Now we pre-process the DAT with the splitting/merging mode
+            switch (splitType)
+            {
+                case SplitType.None:
+                    // No-op
+                    break;
+                case SplitType.DeviceNonMerged:
+                    CreateDeviceNonMergedSets(DedupeType.None);
+                    break;
+                case SplitType.FullNonMerged:
+                    CreateFullyNonMergedSets(DedupeType.None);
+                    break;
+                case SplitType.NonMerged:
+                    CreateNonMergedSets(DedupeType.None);
+                    break;
+                case SplitType.Merged:
+                    CreateMergedSets(DedupeType.None);
+                    break;
+                case SplitType.Split:
+                    CreateSplitSets(DedupeType.None);
+                    break;
+            }
+        }
 
         /// <summary>
         /// Use cdevice_ref tags to get full non-merged sets and remove parenting tags
@@ -2302,6 +2314,8 @@ namespace SabreTools.Library.DatFiles
 
         #endregion
 
+        // TODO: Should filter steps be separate feom parse?
+        // TODO: Merging should occur *before* doing filtering due to some of the changes like desc as name
         #region Parsing
 
         /// <summary>
@@ -2322,8 +2336,6 @@ namespace SabreTools.Library.DatFiles
         /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="splitType">Type of the split that should be performed (split, merged, fully merged)</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
-        /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         /// <param name="descAsName">True if descriptions should be used as names, false otherwise (default)</param>
         /// <param name="keepext">True if original extension should be kept, false otherwise (default)</param>
         /// <param name="useTags">True if tags from the DAT should be used to merge the output, false otherwise (default)</param>
@@ -2337,8 +2349,6 @@ namespace SabreTools.Library.DatFiles
 
             // Miscellaneous
             bool keep = false,
-            bool clean = false,
-            bool remUnicode = false,
             bool descAsName = false,
             bool keepext = false,
             bool useTags = false)
@@ -2361,7 +2371,7 @@ namespace SabreTools.Library.DatFiles
             // Now parse the correct type of DAT
             try
             {
-                Create(filename.GetDatFormat(), this)?.ParseFile(filename, indexId, keep, clean, remUnicode);
+                Create(filename.GetDatFormat(), this)?.ParseFile(filename, indexId, keep);
             }
             catch (Exception ex)
             {
@@ -2372,32 +2382,8 @@ namespace SabreTools.Library.DatFiles
             if (descAsName)
                 MachineDescriptionToName();
 
-            // If we are using tags from the DAT, set the proper input for split type unless overridden
-            if (useTags && splitType == SplitType.None)
-                splitType = DatHeader.ForceMerging.AsSplitType();
-
-            // Now we pre-process the DAT with the splitting/merging mode
-            switch (splitType)
-            {
-                case SplitType.None:
-                    // No-op
-                    break;
-                case SplitType.DeviceNonMerged:
-                    CreateDeviceNonMergedSets(DedupeType.None);
-                    break;
-                case SplitType.FullNonMerged:
-                    CreateFullyNonMergedSets(DedupeType.None);
-                    break;
-                case SplitType.NonMerged:
-                    CreateNonMergedSets(DedupeType.None);
-                    break;
-                case SplitType.Merged:
-                    CreateMergedSets(DedupeType.None);
-                    break;
-                case SplitType.Split:
-                    CreateSplitSets(DedupeType.None);
-                    break;
-            }
+            // Process splitting, if needed
+            ProcessSplitType(splitType, useTags);
 
             // Finally, we remove any blanks, if we aren't supposed to have any
             if (!DatHeader.KeepEmptyGames)
@@ -2417,10 +2403,8 @@ namespace SabreTools.Library.DatFiles
         /// Add a rom to the Dat after checking
         /// </summary>
         /// <param name="item">Item data to check against</param>
-        /// <param name="clean">True if the names should be cleaned to WoD standards, false otherwise</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         /// <returns>The key for the item</returns>
-        protected string ParseAddHelper(DatItem item, bool clean, bool remUnicode)
+        protected string ParseAddHelper(DatItem item)
         {
             string key = string.Empty;
 
@@ -2429,17 +2413,6 @@ namespace SabreTools.Library.DatFiles
             {
                 Globals.Logger.Warning($"{DatHeader.FileName}: Rom with no name found! Skipping...");
                 return key;
-            }
-
-            // If we're in cleaning mode, sanitize the game name
-            item.MachineName = (clean ? Sanitizer.CleanGameName(item.MachineName) : item.MachineName);
-
-            // If we're stripping unicode characters, do so from all relevant things
-            if (remUnicode)
-            {
-                item.Name = Sanitizer.RemoveUnicodeCharacters(item.Name);
-                item.MachineName = Sanitizer.RemoveUnicodeCharacters(item.MachineName);
-                item.MachineDescription = Sanitizer.RemoveUnicodeCharacters(item.MachineDescription);
             }
 
             // If we have a Rom or a Disk, clean the hash data
@@ -2572,20 +2545,17 @@ namespace SabreTools.Library.DatFiles
         /// <param name="filename">Name of the file to be parsed</param>
         /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
-        /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         protected abstract void ParseFile(
             // Standard Dat parsing
             string filename,
             int indexId,
 
             // Miscellaneous
-            bool keep,
-            bool clean,
-            bool remUnicode);
+            bool keep);
 
         #endregion
 
+        // TODO: Make xor cleaner instead of dupe code
         #region Populate DAT from Directory
 
         /// <summary>
@@ -2933,6 +2903,7 @@ namespace SabreTools.Library.DatFiles
 
         #endregion
 
+        // TODO: Implement delete in depot path
         #region Rebuilding and Verifying
 
         /// <summary>
@@ -3817,6 +3788,7 @@ namespace SabreTools.Library.DatFiles
 
         #endregion
 
+        // TODO: Implement Level split
         #region Splitting
 
         /// <summary>

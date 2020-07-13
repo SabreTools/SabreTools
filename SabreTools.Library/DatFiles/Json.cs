@@ -31,17 +31,13 @@ namespace SabreTools.Library.DatFiles
         /// <param name="filename">Name of the file to be parsed</param>
         /// <param name="indexId">Index ID for the DAT</param>
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
-        /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         protected override void ParseFile(
             // Standard Dat parsing
             string filename,
             int indexId,
 
             // Miscellaneous
-            bool keep,
-            bool clean,
-            bool remUnicode)
+            bool keep)
         {
             // Prepare all internal variables
             StreamReader sr = new StreamReader(FileExtensions.TryOpenRead(filename), new UTF8Encoding(false));
@@ -74,7 +70,7 @@ namespace SabreTools.Library.DatFiles
 
                         // Machine array
                         case "machines":
-                            ReadMachines(sr, jtr, filename, indexId, clean, remUnicode);
+                            ReadMachines(sr, jtr, filename, indexId);
                             jtr.Read();
                             break;
 
@@ -228,19 +224,13 @@ namespace SabreTools.Library.DatFiles
         /// <param name="itr">JsonTextReader to use to parse the machine</param>
         /// <param name="filename">Name of the file to be parsed</param>
         /// <param name="indexId">Index ID for the DAT</param>
-        /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         private void ReadMachines(
             StreamReader sr,
             JsonTextReader jtr,
 
             // Standard Dat parsing
             string filename,
-            int indexId,
-
-            // Miscellaneous
-            bool clean,
-            bool remUnicode)
+            int indexId)
         {
             // If the reader is invalid, skip
             if (jtr == null)
@@ -260,7 +250,7 @@ namespace SabreTools.Library.DatFiles
                     continue;
                 }
 
-                ReadMachine(sr, jtr, filename, indexId, clean, remUnicode);
+                ReadMachine(sr, jtr, filename, indexId);
                 jtr.Read();
             }
         }
@@ -272,19 +262,13 @@ namespace SabreTools.Library.DatFiles
         /// <param name="itr">JsonTextReader to use to parse the machine</param>
         /// <param name="filename">Name of the file to be parsed</param>
         /// <param name="indexId">Index ID for the DAT</param>
-        /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
         private void ReadMachine(
             StreamReader sr,
             JsonTextReader jtr,
 
             // Standard Dat parsing
             string filename,
-            int indexId,
-
-            // Miscellaneous
-            bool clean,
-            bool remUnicode)
+            int indexId)
         {
             // If we have an empty machine, skip it
             if (jtr == null)
@@ -447,7 +431,7 @@ namespace SabreTools.Library.DatFiles
                         break;
 
                     case "items":
-                        ReadItems(sr, jtr, filename, indexId, clean, remUnicode, machine);
+                        ReadItems(sr, jtr, filename, indexId, machine);
                         break;
 
                     default:
@@ -462,11 +446,10 @@ namespace SabreTools.Library.DatFiles
         /// Read item array information
         /// </summary>
         /// <param name="sr">StreamReader to use to parse the header</param>
-        /// <param name="itr">JsonTextReader to use to parse the machine</param>
+        /// <param name="jtr">JsonTextReader to use to parse the machine</param>
         /// <param name="filename">Name of the file to be parsed</param>
         /// <param name="indexId">Index ID for the DAT</param>
-        /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
+        /// <param name="machine">Machine information to add to the parsed items</param>
         private void ReadItems(
             StreamReader sr,
             JsonTextReader jtr,
@@ -476,8 +459,6 @@ namespace SabreTools.Library.DatFiles
             int indexId,
 
             // Miscellaneous
-            bool clean,
-            bool remUnicode,
             Machine machine)
         {
             // If the reader is invalid, skip
@@ -498,7 +479,7 @@ namespace SabreTools.Library.DatFiles
                     continue;
                 }
 
-                ReadItem(sr, jtr, filename, indexId, clean, remUnicode, machine);
+                ReadItem(sr, jtr, filename, indexId, machine);
                 jtr.Read();
             }
         }
@@ -507,11 +488,10 @@ namespace SabreTools.Library.DatFiles
         /// Read item information
         /// </summary>
         /// <param name="sr">StreamReader to use to parse the header</param>
-        /// <param name="itr">JsonTextReader to use to parse the machine</param>
+        /// <param name="jtr">JsonTextReader to use to parse the machine</param>
         /// <param name="filename">Name of the file to be parsed</param>
         /// <param name="indexId">Index ID for the DAT</param>
-        /// <param name="clean">True if game names are sanitized, false otherwise (default)</param>
-        /// <param name="remUnicode">True if we should remove non-ASCII characters from output, false otherwise (default)</param>
+        /// <param name="machine">Machine information to add to the parsed items</param>
         private void ReadItem(
             StreamReader sr,
             JsonTextReader jtr,
@@ -521,8 +501,6 @@ namespace SabreTools.Library.DatFiles
             int indexId,
 
             // Miscellaneous
-            bool clean,
-            bool remUnicode,
             Machine machine)
         {
             // If we have an empty machine, skip it
@@ -630,7 +608,7 @@ namespace SabreTools.Library.DatFiles
                         (datItem as Rom).Optional = optional;
                     }
 
-                    ParseAddHelper(datItem, clean, remUnicode);
+                    ParseAddHelper(datItem);
 
                     return;
                 }
