@@ -2197,7 +2197,6 @@ namespace SabreTools.Library.DatFiles
 
         #endregion
 
-        // TODO: Implement delete in depot path
         #region Rebuilding and Verifying
 
         /// <summary>
@@ -2348,10 +2347,15 @@ namespace SabreTools.Library.DatFiles
                     continue;
 
                 // Otherwise, we rebuild that file to all locations that we need to
+                bool usedInternally;
                 if (this[hash][0].ItemType == ItemType.Disk)
-                    RebuildIndividualFile(new Disk(fileinfo), foundpath, outDir, date, inverse, outputFormat, updateDat, false /* isZip */, headerToCheckAgainst);
+                    usedInternally = RebuildIndividualFile(new Disk(fileinfo), foundpath, outDir, date, inverse, outputFormat, updateDat, false /* isZip */, headerToCheckAgainst);
                 else
-                    RebuildIndividualFile(new Rom(fileinfo), foundpath, outDir, date, inverse, outputFormat, updateDat, false /* isZip */, headerToCheckAgainst);
+                    usedInternally = RebuildIndividualFile(new Rom(fileinfo), foundpath, outDir, date, inverse, outputFormat, updateDat, false /* isZip */, headerToCheckAgainst);
+
+                // If we are supposed to delete the depot file, do so
+                if (delete && usedInternally)
+                    FileExtensions.TryDelete(foundpath);
             }
 
             watch.Stop();
