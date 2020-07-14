@@ -150,21 +150,21 @@ namespace SabreTools.Library.Tools
                 await Task.WhenAll(hashers.Select(h => h.Finalize()));
 
                 // Get the results
-                if (omitFromScan.HasFlag(Hash.CRC))
+                if (!omitFromScan.HasFlag(Hash.CRC))
                     rom.CRC = hashers.First(h => h.HashType == Hash.CRC).GetHash();
-                if (omitFromScan.HasFlag(Hash.MD5))
+                if (!omitFromScan.HasFlag(Hash.MD5))
                     rom.MD5 = hashers.First(h => h.HashType == Hash.MD5).GetHash();
 #if NET_FRAMEWORK
-                if (omitFromScan.HasFlag(Hash.RIPEMD160))
+                if (!omitFromScan.HasFlag(Hash.RIPEMD160))
                     rom.RIPEMD160 = hashers.First(h => h.HashType == Hash.RIPEMD160).GetHash();
 #endif
-                if (omitFromScan.HasFlag(Hash.SHA1))
+                if (!omitFromScan.HasFlag(Hash.SHA1))
                     rom.SHA1 = hashers.First(h => h.HashType == Hash.SHA1).GetHash();
-                if (omitFromScan.HasFlag(Hash.SHA256))
+                if (!omitFromScan.HasFlag(Hash.SHA256))
                     rom.SHA256 = hashers.First(h => h.HashType == Hash.SHA256).GetHash();
-                if (omitFromScan.HasFlag(Hash.SHA384))
+                if (!omitFromScan.HasFlag(Hash.SHA384))
                     rom.SHA384 = hashers.First(h => h.HashType == Hash.SHA384).GetHash();
-                if (omitFromScan.HasFlag(Hash.SHA512))
+                if (!omitFromScan.HasFlag(Hash.SHA512))
                     rom.SHA512 = hashers.First(h => h.HashType == Hash.SHA512).GetHash();
 
                 // Dispose of the hashers
