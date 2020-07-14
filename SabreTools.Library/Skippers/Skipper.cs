@@ -39,11 +39,15 @@ namespace SabreTools.Library.Skippers
         /// </summary>
         public string SourceFile { get; set; }
 
-        // Local paths
+        /// <summary>
+        /// Local paths
+        /// </summary>
         public static string LocalPath = Path.Combine(Globals.ExeDir, "Skippers") + Path.DirectorySeparatorChar;
 
-        // Header skippers represented by a list of skipper objects
-        public static List<Skipper> List { get; private set; }
+        /// <summary>
+        /// Header skippers represented by a list of skipper objects
+        /// </summary>
+        private static List<Skipper> List;
 
         #endregion
 

@@ -2240,7 +2240,7 @@ namespace SabreTools.Library.DatFiles
             }
 
             // Preload the Skipper list
-            int listcount = Skipper.List.Count;
+            Skipper.Init();
 
             #endregion
 

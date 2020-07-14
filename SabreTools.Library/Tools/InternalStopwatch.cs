@@ -54,7 +54,7 @@ namespace SabreTools.Library.Tools
         /// </summary>
         public void Stop()
         {
-            Globals.Logger.User($"{_subject} completed in {DateTime.Now.Subtract(_startTime):hh:mm:ss.fffff}");
+            Globals.Logger.User($"{_subject} completed in {DateTime.Now.Subtract(_startTime):G}");
         }
     }
 }
