@@ -315,7 +315,7 @@ namespace SabreTools.Library.DatFiles
                 Name = machine.Name + "_" + diskno + (!string.IsNullOrWhiteSpace(remark) ? " " + remark : string.Empty),
                 Offset = offset,
                 Size = -1,
-                SHA1 = Sanitizer.CleanSHA1(hash),
+                SHA1 = hash,
 
                 IndexId = indexId,
                 IndexSource = filename,
@@ -388,7 +388,7 @@ namespace SabreTools.Library.DatFiles
                 Name = machine.Name + "_" + diskno + (!string.IsNullOrWhiteSpace(remark) ? " " + remark : string.Empty),
                 Offset = offset,
                 Size = -1,
-                SHA1 = Sanitizer.CleanSHA1(hash),
+                SHA1 = hash,
 
                 IndexId = indexId,
                 IndexSource = filename,
@@ -456,7 +456,7 @@ namespace SabreTools.Library.DatFiles
             {
                 Name = machine.Name + "_" + diskno + (!string.IsNullOrWhiteSpace(remark) ? " " + remark : string.Empty),
                 Size = -1,
-                SHA1 = Sanitizer.CleanSHA1(hash),
+                SHA1 = hash,
 
                 IndexId = indexId,
                 IndexSource = filename,

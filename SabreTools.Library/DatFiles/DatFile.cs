@@ -1712,17 +1712,6 @@ namespace SabreTools.Library.DatFiles
             {
                 Rom itemRom = (Rom)item;
 
-                // Sanitize the hashes from null, hex sizes, and "true blank" strings
-                itemRom.CRC = Sanitizer.CleanCRC32(itemRom.CRC);
-                itemRom.MD5 = Sanitizer.CleanMD5(itemRom.MD5);
-#if NET_FRAMEWORK
-                itemRom.RIPEMD160 = Sanitizer.CleanRIPEMD160(itemRom.RIPEMD160);
-#endif
-                itemRom.SHA1 = Sanitizer.CleanSHA1(itemRom.SHA1);
-                itemRom.SHA256 = Sanitizer.CleanSHA256(itemRom.SHA256);
-                itemRom.SHA384 = Sanitizer.CleanSHA384(itemRom.SHA384);
-                itemRom.SHA512 = Sanitizer.CleanSHA512(itemRom.SHA512);
-
                 // If we have the case where there is SHA-1 and nothing else, we don't fill in any other part of the data
                 if (itemRom.Size == -1
                     && string.IsNullOrWhiteSpace(itemRom.CRC)
@@ -1795,16 +1784,6 @@ namespace SabreTools.Library.DatFiles
             else if (item.ItemType == ItemType.Disk)
             {
                 Disk itemDisk = (Disk)item;
-
-                // Sanitize the hashes from null, hex sizes, and "true blank" strings
-                itemDisk.MD5 = Sanitizer.CleanMD5(itemDisk.MD5);
-#if NET_FRAMEWORK
-                itemDisk.RIPEMD160 = Sanitizer.CleanRIPEMD160(itemDisk.RIPEMD160);
-#endif
-                itemDisk.SHA1 = Sanitizer.CleanSHA1(itemDisk.SHA1);
-                itemDisk.SHA256 = Sanitizer.CleanSHA256(itemDisk.SHA256);
-                itemDisk.SHA384 = Sanitizer.CleanSHA384(itemDisk.SHA384);
-                itemDisk.SHA512 = Sanitizer.CleanSHA512(itemDisk.SHA512);
 
                 // If the file has aboslutely no hashes, skip and log
                 if (itemDisk.ItemStatus != ItemStatus.Nodump

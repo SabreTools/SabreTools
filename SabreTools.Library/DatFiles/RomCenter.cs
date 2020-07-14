@@ -343,7 +343,7 @@ namespace SabreTools.Library.DatFiles
                 {
                     Name = rominfo[5],
                     Size = size,
-                    CRC = Sanitizer.CleanCRC32(rominfo[6]),
+                    CRC = rominfo[6],
                     ItemStatus = ItemStatus.None,
 
                     MachineName = rominfo[3],

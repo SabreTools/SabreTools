@@ -74,15 +74,15 @@ namespace SabreTools.Library.DatFiles
                 {
                     Name = name,
                     Size = -1,
-                    CRC = (_hash.HasFlag(Hash.CRC) ? Sanitizer.CleanCRC32(hash) : null),
-                    MD5 = (_hash.HasFlag(Hash.MD5) ? Sanitizer.CleanMD5(hash) : null),
+                    CRC = (_hash.HasFlag(Hash.CRC) ? hash : null),
+                    MD5 = (_hash.HasFlag(Hash.MD5) ? hash : null),
 #if NET_FRAMEWORK
-                    RIPEMD160 = (_hash.HasFlag(Hash.RIPEMD160) ? Sanitizer.CleanRIPEMD160(hash) : null),
+                    RIPEMD160 = (_hash.HasFlag(Hash.RIPEMD160) ? hash : null),
 #endif
-                    SHA1 = (_hash.HasFlag(Hash.SHA1) ? Sanitizer.CleanSHA1(hash) : null),
-                    SHA256 = (_hash.HasFlag(Hash.SHA256) ? Sanitizer.CleanSHA256(hash) : null),
-                    SHA384 = (_hash.HasFlag(Hash.SHA384) ? Sanitizer.CleanSHA384(hash) : null),
-                    SHA512 = (_hash.HasFlag(Hash.SHA512) ? Sanitizer.CleanSHA512(hash) : null),
+                    SHA1 = (_hash.HasFlag(Hash.SHA1) ? hash : null),
+                    SHA256 = (_hash.HasFlag(Hash.SHA256) ? hash : null),
+                    SHA384 = (_hash.HasFlag(Hash.SHA384) ? hash : null),
+                    SHA512 = (_hash.HasFlag(Hash.SHA512) ? hash : null),
                     ItemStatus = ItemStatus.None,
 
                     MachineName = Path.GetFileNameWithoutExtension(filename),

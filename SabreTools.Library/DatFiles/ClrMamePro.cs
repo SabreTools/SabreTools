@@ -322,51 +322,51 @@ namespace SabreTools.Library.DatFiles
                                 break;
                             case "crc":
                                 if (item.ItemType == ItemType.Rom)
-                                    (item as Rom).CRC = Sanitizer.CleanCRC32(attrVal);
+                                    (item as Rom).CRC = attrVal;
 
                                 break;
                             case "md5":
                                 if (item.ItemType == ItemType.Rom)
-                                    (item as Rom).MD5 = Sanitizer.CleanMD5(attrVal);
+                                    (item as Rom).MD5 = attrVal;
                                 else if (item.ItemType == ItemType.Disk)
-                                    ((Disk)item).MD5 = Sanitizer.CleanMD5(attrVal);
+                                    ((Disk)item).MD5 = attrVal;
 
                                 break;
 #if NET_FRAMEWORK
                             case "ripemd160":
                                 if (item.ItemType == ItemType.Rom)
-                                    (item as Rom).RIPEMD160 = Sanitizer.CleanRIPEMD160(attrVal);
+                                    (item as Rom).RIPEMD160 = attrVal;
                                 else if (item.ItemType == ItemType.Disk)
-                                    ((Disk)item).RIPEMD160 = Sanitizer.CleanRIPEMD160(attrVal);
+                                    ((Disk)item).RIPEMD160 = attrVal;
 
                                 break;
 #endif
                             case "sha1":
                                 if (item.ItemType == ItemType.Rom)
-                                    (item as Rom).SHA1 = Sanitizer.CleanSHA1(attrVal);
+                                    (item as Rom).SHA1 = attrVal;
                                 else if (item.ItemType == ItemType.Disk)
-                                    ((Disk)item).SHA1 = Sanitizer.CleanSHA1(attrVal);
+                                    ((Disk)item).SHA1 = attrVal;
 
                                 break;
                             case "sha256":
                                 if (item.ItemType == ItemType.Rom)
-                                    ((Rom)item).SHA256 = Sanitizer.CleanSHA256(attrVal);
+                                    ((Rom)item).SHA256 = attrVal;
                                 else if (item.ItemType == ItemType.Disk)
-                                    ((Disk)item).SHA256 = Sanitizer.CleanSHA256(attrVal);
+                                    ((Disk)item).SHA256 = attrVal;
 
                                 break;
                             case "sha384":
                                 if (item.ItemType == ItemType.Rom)
-                                    ((Rom)item).SHA384 = Sanitizer.CleanSHA384(attrVal);
+                                    ((Rom)item).SHA384 = attrVal;
                                 else if (item.ItemType == ItemType.Disk)
-                                    ((Disk)item).SHA384 = Sanitizer.CleanSHA384(attrVal);
+                                    ((Disk)item).SHA384 = attrVal;
 
                                 break;
                             case "sha512":
                                 if (item.ItemType == ItemType.Rom)
-                                    ((Rom)item).SHA512 = Sanitizer.CleanSHA512(attrVal);
+                                    ((Rom)item).SHA512 = attrVal;
                                 else if (item.ItemType == ItemType.Disk)
-                                    ((Disk)item).SHA512 = Sanitizer.CleanSHA512(attrVal);
+                                    ((Disk)item).SHA512 = attrVal;
 
                                 break;
                             case "status":

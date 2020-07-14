@@ -32,7 +32,7 @@ namespace SabreTools.Library.DatItems
         public string MD5
         {
             get { return _md5.IsNullOrEmpty() ? null : Utilities.ByteArrayToString(_md5); }
-            set { _md5 = Utilities.StringToByteArray(value); }
+            set { _md5 = Utilities.StringToByteArray(Sanitizer.CleanMD5(value)); }
         }
 
 #if NET_FRAMEWORK
@@ -43,7 +43,7 @@ namespace SabreTools.Library.DatItems
         public string RIPEMD160
         {
             get { return _ripemd160.IsNullOrEmpty() ? null : Utilities.ByteArrayToString(_ripemd160); }
-            set { _ripemd160 = Utilities.StringToByteArray(value); }
+            set { _ripemd160 = Utilities.StringToByteArray(Sanitizer.CleanRIPEMD160(value)); }
         }
 #endif
 
@@ -54,7 +54,7 @@ namespace SabreTools.Library.DatItems
         public string SHA1
         {
             get { return _sha1.IsNullOrEmpty() ? null : Utilities.ByteArrayToString(_sha1); }
-            set { _sha1 = Utilities.StringToByteArray(value); }
+            set { _sha1 = Utilities.StringToByteArray(Sanitizer.CleanSHA1(value)); }
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace SabreTools.Library.DatItems
         public string SHA256
         {
             get { return _sha256.IsNullOrEmpty() ? null : Utilities.ByteArrayToString(_sha256); }
-            set { _sha256 = Utilities.StringToByteArray(value); }
+            set { _sha256 = Utilities.StringToByteArray(Sanitizer.CleanSHA256(value)); }
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace SabreTools.Library.DatItems
         public string SHA384
         {
             get { return _sha384.IsNullOrEmpty() ? null : Utilities.ByteArrayToString(_sha384); }
-            set { _sha384 = Utilities.StringToByteArray(value); }
+            set { _sha384 = Utilities.StringToByteArray(Sanitizer.CleanSHA384(value)); }
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace SabreTools.Library.DatItems
         public string SHA512
         {
             get { return _sha512.IsNullOrEmpty() ? null : Utilities.ByteArrayToString(_sha512); }
-            set { _sha512 = Utilities.StringToByteArray(value); }
+            set { _sha512 = Utilities.StringToByteArray(Sanitizer.CleanSHA512(value)); }
         }
 
         /// <summary>

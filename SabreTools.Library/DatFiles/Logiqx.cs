@@ -432,15 +432,15 @@ namespace SabreTools.Library.DatFiles
                         {
                             Name = reader.GetAttribute("name"),
                             Size = Sanitizer.CleanSize(reader.GetAttribute("size")),
-                            CRC = Sanitizer.CleanCRC32(reader.GetAttribute("crc")),
-                            MD5 = Sanitizer.CleanMD5(reader.GetAttribute("md5")),
+                            CRC = reader.GetAttribute("crc"),
+                            MD5 = reader.GetAttribute("md5"),
 #if NET_FRAMEWORK
-                            RIPEMD160 = Sanitizer.CleanRIPEMD160(reader.GetAttribute("ripemd160")),
+                            RIPEMD160 = reader.GetAttribute("ripemd160"),
 #endif
-                            SHA1 = Sanitizer.CleanSHA1(reader.GetAttribute("sha1")),
-                            SHA256 = Sanitizer.CleanSHA256(reader.GetAttribute("sha256")),
-                            SHA384 = Sanitizer.CleanSHA384(reader.GetAttribute("sha384")),
-                            SHA512 = Sanitizer.CleanSHA512(reader.GetAttribute("sha512")),
+                            SHA1 = reader.GetAttribute("sha1"),
+                            SHA256 = reader.GetAttribute("sha256"),
+                            SHA384 = reader.GetAttribute("sha384"),
+                            SHA512 = reader.GetAttribute("sha512"),
                             MergeTag = reader.GetAttribute("merge"),
                             ItemStatus = reader.GetAttribute("status").AsItemStatus(),
                             Date = Sanitizer.CleanDate(reader.GetAttribute("date")),
@@ -463,14 +463,14 @@ namespace SabreTools.Library.DatFiles
                         DatItem disk = new Disk
                         {
                             Name = reader.GetAttribute("name"),
-                            MD5 = Sanitizer.CleanMD5(reader.GetAttribute("md5")),
+                            MD5 = reader.GetAttribute("md5"),
 #if NET_FRAMEWORK
-                            RIPEMD160 = Sanitizer.CleanRIPEMD160(reader.GetAttribute("ripemd160")),
+                            RIPEMD160 = reader.GetAttribute("ripemd160"),
 #endif
-                            SHA1 = Sanitizer.CleanSHA1(reader.GetAttribute("sha1")),
-                            SHA256 = Sanitizer.CleanSHA256(reader.GetAttribute("sha256")),
-                            SHA384 = Sanitizer.CleanSHA384(reader.GetAttribute("sha384")),
-                            SHA512 = Sanitizer.CleanSHA512(reader.GetAttribute("sha512")),
+                            SHA1 = reader.GetAttribute("sha1"),
+                            SHA256 = reader.GetAttribute("sha256"),
+                            SHA384 = reader.GetAttribute("sha384"),
+                            SHA512 = reader.GetAttribute("sha512"),
                             MergeTag = reader.GetAttribute("merge"),
                             ItemStatus = reader.GetAttribute("status").AsItemStatus(),
 

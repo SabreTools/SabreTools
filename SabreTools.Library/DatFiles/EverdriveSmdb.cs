@@ -63,10 +63,10 @@ namespace SabreTools.Library.DatFiles
                 {
                     Name = gameinfo[1].Substring(fullname[0].Length + 1),
                     Size = -1, // No size provided, but we don't want the size being 0
-                    CRC = Sanitizer.CleanCRC32(gameinfo[4]),
-                    MD5 = Sanitizer.CleanMD5(gameinfo[3]),
-                    SHA1 = Sanitizer.CleanSHA1(gameinfo[2]),
-                    SHA256 = Sanitizer.CleanSHA256(gameinfo[0]),
+                    CRC = gameinfo[4],
+                    MD5 = gameinfo[3],
+                    SHA1 = gameinfo[2],
+                    SHA256 = gameinfo[0],
                     ItemStatus = ItemStatus.None,
 
                     MachineName = fullname[0],

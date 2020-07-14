@@ -712,7 +712,7 @@ namespace SabreTools.Library.DatFiles
                 roms.Add(new Rom()
                 {
                     Name = (releaseNumber != "0" ? releaseNumber + " - " : string.Empty) + machineName + pair.Key,
-                    CRC = Sanitizer.CleanCRC32(pair.Value),
+                    CRC = pair.Value,
 
                     ItemStatus = ItemStatus.None,
 

@@ -338,33 +338,33 @@ namespace SabreTools.Library.DatFiles
                             break;
 
                         case "DatItem.CRC":
-                            crc = Sanitizer.CleanCRC32(value);
+                            crc = value;
                             break;
 
                         case "DatItem.MD5":
-                            md5 = Sanitizer.CleanMD5(value);
+                            md5 = value;
                             break;
 
 #if NET_FRAMEWORK
                         case "DatItem.RIPEMD160":
-                            ripemd160 = Sanitizer.CleanRIPEMD160(value);
+                            ripemd160 = value;
                             break;
 #endif
 
                         case "DatItem.SHA1":
-                            sha1 = Sanitizer.CleanSHA1(value);
+                            sha1 = value;
                             break;
 
                         case "DatItem.SHA256":
-                            sha256 = Sanitizer.CleanSHA256(value);
+                            sha256 = value;
                             break;
 
                         case "DatItem.SHA384":
-                            sha384 = Sanitizer.CleanSHA384(value);
+                            sha384 = value;
                             break;
 
                         case "DatItem.SHA512":
-                            sha512 = Sanitizer.CleanSHA512(value);
+                            sha512 = value;
                             break;
 
                         case "DatItem.Merge":

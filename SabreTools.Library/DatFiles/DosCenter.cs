@@ -229,7 +229,7 @@ namespace SabreTools.Library.DatFiles
                                 break;
 
                             case "crc":
-                                item.CRC = Sanitizer.CleanCRC32(attrVal);
+                                item.CRC = attrVal;
                                 break;
                             case "date":
                                 item.Date = attrVal;
