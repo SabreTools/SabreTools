@@ -30,11 +30,18 @@ namespace SabreTools.Library.Tools
             if (!File.Exists(input))
                 return;
 
+#if NET_FRAMEWORK
             using (FileStream fsr = TryOpenRead(input))
             using (FileStream fsw = TryOpenWrite(output))
             {
+#else
+            using FileStream fsr = TryOpenRead(input);
+            using FileStream fsw = TryOpenWrite(output);
+#endif
                 StreamExtensions.AppendBytes(fsr, fsw, bytesToAddToHead, bytesToAddToTail);
+#if NET_FRAMEWORK
             }
+#endif
         }
 
         /// <summary>

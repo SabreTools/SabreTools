@@ -805,6 +805,7 @@ namespace SabreTools.Library.DatItems
         /// <returns>DatItem of the specific internal type that corresponds to the inputs</returns>
         public static DatItem Create(ItemType itemType)
         {
+#if NET_FRAMEWORK
             switch (itemType)
             {
                 case ItemType.Archive:
@@ -813,19 +814,37 @@ namespace SabreTools.Library.DatItems
                 case ItemType.BiosSet:
                     return new BiosSet();
 
+                case ItemType.Blank:
+                    return new Blank();
+
                 case ItemType.Disk:
                     return new Disk();
 
                 case ItemType.Release:
                     return new Release();
 
+                case ItemType.Rom:
+                    return new Rom();
+
                 case ItemType.Sample:
                     return new Sample();
 
-                case ItemType.Rom:
                 default:
                     return new Rom();
             }
+#else
+            return itemType switch
+            {
+                ItemType.Archive => new Archive(),
+                ItemType.BiosSet => new BiosSet(),
+                ItemType.Blank => new Blank(),
+                ItemType.Disk => new Disk(),
+                ItemType.Release => new Release(),
+                ItemType.Rom => new Rom(),
+                ItemType.Sample => new Sample(),
+                _ => new Rom(),
+            };
+#endif
         }
 
         /// <summary>
@@ -1248,7 +1267,11 @@ namespace SabreTools.Library.DatItems
                     if (datItem.ItemType == ItemType.Disk || datItem.ItemType == ItemType.Rom)
                     {
                         datItem.Name += GetDuplicateSuffix(datItem);
+#if NET_FRAMEWORK
                         lastrenamed = lastrenamed ?? datItem.Name;
+#else
+                        lastrenamed ??= datItem.Name;
+#endif
                     }
 
                     // If we have a conflict with the last renamed item, do the right thing

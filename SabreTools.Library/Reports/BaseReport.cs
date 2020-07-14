@@ -60,6 +60,7 @@ namespace SabreTools.Library.Reports
         /// <returns>BaseReport of the specific internal type that corresponds to the inputs</returns>
         public static BaseReport Create(StatReportFormat statReportFormat, string filename, bool baddumpCol, bool nodumpCol)
         {
+#if NET_FRAMEWORK
             switch (statReportFormat)
             {
                 case StatReportFormat.None:
@@ -79,9 +80,22 @@ namespace SabreTools.Library.Reports
 
                 case StatReportFormat.TSV:
                     return new SeparatedValue(filename, '\t', baddumpCol, nodumpCol);
-            }
 
-            return null;
+                default:
+                    return null;
+            }
+#else
+            return statReportFormat switch
+            {
+                StatReportFormat.None => new Textfile(Console.OpenStandardOutput(), baddumpCol, nodumpCol),
+                StatReportFormat.Textfile => new Textfile(filename, baddumpCol, nodumpCol),
+                StatReportFormat.CSV => new SeparatedValue(filename, ',', baddumpCol, nodumpCol),
+                StatReportFormat.HTML => new Html(filename, baddumpCol, nodumpCol),
+                StatReportFormat.SSV => new SeparatedValue(filename, ';', baddumpCol, nodumpCol),
+                StatReportFormat.TSV => new SeparatedValue(filename, '\t', baddumpCol, nodumpCol),
+                _ => null,
+            };
+#endif
         }
 
         /// <summary>

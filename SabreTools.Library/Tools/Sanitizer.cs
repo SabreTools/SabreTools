@@ -53,7 +53,11 @@ namespace SabreTools.Library.Tools
         /// <returns>The cleaned name</returns>
         public static string CleanGameName(string[] game)
         {
+#if NET_FRAMEWORK
             game[game.Length - 1] = CleanGameName(game.Last());
+#else
+            game[^1] = CleanGameName(game[^1]);
+#endif
             string outgame = string.Join(Path.DirectorySeparatorChar.ToString(), game);
             outgame = outgame.TrimStart().TrimEnd();
             return outgame;

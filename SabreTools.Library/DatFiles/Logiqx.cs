@@ -572,7 +572,7 @@ namespace SabreTools.Library.DatFiles
                 switch (reader.Name)
                 {
                     case "titleid":
-                        string titleid = reader.ReadElementContentAsString();
+                        reader.ReadElementContentAsString();
                         break;
 
                     case "publisher":
@@ -588,31 +588,31 @@ namespace SabreTools.Library.DatFiles
                         break;
 
                     case "genre":
-                        string genre = reader.ReadElementContentAsString();
+                        reader.ReadElementContentAsString();
                         break;
 
                     case "subgenre":
-                        string subgenre = reader.ReadElementContentAsString();
+                        reader.ReadElementContentAsString();
                         break;
 
                     case "ratings":
-                        string ratings = reader.ReadElementContentAsString();
+                        reader.ReadElementContentAsString();
                         break;
 
                     case "score":
-                        string score = reader.ReadElementContentAsString();
+                        reader.ReadElementContentAsString();
                         break;
 
                     case "players":
-                        string players = reader.ReadElementContentAsString();
+                        reader.ReadElementContentAsString();
                         break;
 
                     case "enabled":
-                        string enabled = reader.ReadElementContentAsString();
+                        reader.ReadElementContentAsString();
                         break;
 
                     case "crc":
-                        bool? crc = reader.ReadElementContentAsString().AsYesNo();
+                        reader.ReadElementContentAsString().AsYesNo();
                         break;
 
                     case "source":
@@ -624,7 +624,7 @@ namespace SabreTools.Library.DatFiles
                         break;
 
                     case "relatedto":
-                        string relatedto = reader.ReadElementContentAsString();
+                        reader.ReadElementContentAsString();
                         break;
 
                     default:

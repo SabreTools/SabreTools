@@ -1,12 +1,11 @@
-﻿using System;
+﻿using SabreTools.Library.Data;
+using SabreTools.Library.FileTypes;
+using SabreTools.Library.Tools;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Xml;
-
-using SabreTools.Library.Data;
-using SabreTools.Library.FileTypes;
-using SabreTools.Library.Tools;
 
 namespace SabreTools.Library.Skippers
 {
@@ -211,13 +210,9 @@ namespace SabreTools.Library.Skippers
                                 {
                                     string offset = subreader.GetAttribute("offset");
                                     if (offset.ToLowerInvariant() == "eof")
-                                    {
                                         test.Offset = null;
-                                    }
                                     else
-                                    {
                                         test.Offset = Convert.ToInt64(offset, 16);
-                                    }
                                 }
 
                                 if (subreader.GetAttribute("value") != null)
@@ -236,16 +231,10 @@ namespace SabreTools.Library.Skippers
                                 if (subreader.GetAttribute("result") != null)
                                 {
                                     string result = subreader.GetAttribute("result");
-                                    switch (result.ToLowerInvariant())
-                                    {
-                                        case "false":
-                                            test.Result = false;
-                                            break;
-                                        case "true":
-                                        default:
-                                            test.Result = true;
-                                            break;
-                                    }
+                                    if (!bool.TryParse(result, out bool resultBool))
+                                        resultBool = true;
+
+                                    test.Result = resultBool;
                                 }
 
                                 if (subreader.GetAttribute("mask") != null)
@@ -265,18 +254,15 @@ namespace SabreTools.Library.Skippers
                                 {
                                     string size = subreader.GetAttribute("size");
                                     if (size.ToLowerInvariant() == "po2")
-                                    {
                                         test.Size = null;
-                                    }
                                     else
-                                    {
                                         test.Size = Convert.ToInt64(size, 16);
-                                    }
                                 }
 
                                 if (subreader.GetAttribute("operator") != null)
                                 {
                                     string oper = subreader.GetAttribute("operator");
+#if NET_FRAMEWORK
                                     switch (oper.ToLowerInvariant())
                                     {
                                         case "less":
@@ -290,6 +276,15 @@ namespace SabreTools.Library.Skippers
                                             test.Operator = HeaderSkipTestFileOperator.Equal;
                                             break;
                                     }
+#else
+                                    test.Operator = oper.ToLowerInvariant() switch
+                                    {
+                                        "less" => HeaderSkipTestFileOperator.Less,
+                                        "greater" => HeaderSkipTestFileOperator.Greater,
+                                        "equal" => HeaderSkipTestFileOperator.Equal,
+                                        _ => HeaderSkipTestFileOperator.Equal,
+                                    };
+#endif
                                 }
 
                                 // Add the created test to the rule
@@ -376,13 +371,19 @@ namespace SabreTools.Library.Skippers
             string hstr;
             try
             {
+                // Extract the header as a string for the database
+#if NET_FRAMEWORK
                 using (var fs = FileExtensions.TryOpenRead(file))
                 {
-                    // Extract the header as a string for the database
-                    byte[] hbin = new byte[(int)rule.StartOffset];
-                    fs.Read(hbin, 0, (int)rule.StartOffset);
-                    hstr = Utilities.ByteArrayToString(hbin);
+#else
+                using var fs = FileExtensions.TryOpenRead(file);
+#endif
+                byte[] hbin = new byte[(int)rule.StartOffset];
+                fs.Read(hbin, 0, (int)rule.StartOffset);
+                hstr = Utilities.ByteArrayToString(hbin);
+#if NET_FRAMEWORK
                 }
+#endif
             }
             catch
             {

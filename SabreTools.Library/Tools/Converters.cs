@@ -229,6 +229,7 @@ namespace SabreTools.Library.Tools
         /// <returns>ForceMerging value corresponding to the string</returns>
         public static ForceMerging AsForceMerging(this string forcemerge)
         {
+#if NET_FRAMEWORK
             switch (forcemerge?.ToLowerInvariant())
             {
                 case "split":
@@ -243,6 +244,17 @@ namespace SabreTools.Library.Tools
                 default:
                     return ForceMerging.None;
             }
+#else
+            return forcemerge?.ToLowerInvariant() switch
+            {
+                "split" => ForceMerging.Split,
+                "merged" => ForceMerging.Merged,
+                "nonmerged" => ForceMerging.NonMerged,
+                "full" => ForceMerging.Full,
+                "none" => ForceMerging.None,
+                _ => ForceMerging.None,
+            };
+#endif
         }
 
         /// <summary>
@@ -252,6 +264,7 @@ namespace SabreTools.Library.Tools
         /// <returns>ForceNodump value corresponding to the string</returns>
         public static ForceNodump AsForceNodump(this string forcend)
         {
+#if NET_FRAMEWORK
             switch (forcend?.ToLowerInvariant())
             {
                 case "obsolete":
@@ -264,6 +277,16 @@ namespace SabreTools.Library.Tools
                 default:
                     return ForceNodump.None;
             }
+#else
+            return forcend?.ToLowerInvariant() switch
+            {
+                "obsolete" => ForceNodump.Obsolete,
+                "required" => ForceNodump.Required,
+                "ignore" => ForceNodump.Ignore,
+                "none" => ForceNodump.None,
+                _ => ForceNodump.None,
+            };
+#endif
         }
 
         /// <summary>
@@ -273,6 +296,7 @@ namespace SabreTools.Library.Tools
         /// <returns>ForcePacking value corresponding to the string</returns>
         public static ForcePacking AsForcePacking(this string forcepack)
         {
+#if NET_FRAMEWORK
             switch (forcepack?.ToLowerInvariant())
             {
                 case "yes":
@@ -285,6 +309,17 @@ namespace SabreTools.Library.Tools
                 default:
                     return ForcePacking.None;
             }
+#else
+            return forcepack?.ToLowerInvariant() switch
+            {
+                "yes" => ForcePacking.Zip,
+                "zip" => ForcePacking.Zip,
+                "no" => ForcePacking.Unzip,
+                "unzip" => ForcePacking.Unzip,
+                "none" => ForcePacking.None,
+                _ => ForcePacking.None,
+            };
+#endif
         }
 
         /// <summary>
@@ -294,6 +329,7 @@ namespace SabreTools.Library.Tools
         /// <returns>ItemStatus value corresponding to the string</returns>
         public static ItemStatus AsItemStatus(this string status)
         {
+#if NET_FRAMEWORK
             switch (status?.ToLowerInvariant())
             {
                 case "good":
@@ -310,6 +346,19 @@ namespace SabreTools.Library.Tools
                 default:
                     return ItemStatus.None;
             }
+#else
+            return status?.ToLowerInvariant() switch
+            {
+                "good" => ItemStatus.Good,
+                "baddump" => ItemStatus.BadDump,
+                "nodump" => ItemStatus.Nodump,
+                "yes" => ItemStatus.Nodump,
+                "verified" => ItemStatus.Verified,
+                "none" => ItemStatus.None,
+                "no" => ItemStatus.None,
+                _ => ItemStatus.None,
+            };
+#endif
         }
 
         /// <summary>
@@ -319,12 +368,15 @@ namespace SabreTools.Library.Tools
         /// <returns>ItemType? value corresponding to the string</returns>
         public static ItemType? AsItemType(this string itemType)
         {
+#if NET_FRAMEWORK
             switch (itemType?.ToLowerInvariant())
             {
                 case "archive":
                     return ItemType.Archive;
                 case "biosset":
                     return ItemType.BiosSet;
+                case "blank":
+                    return ItemType.Blank;
                 case "disk":
                     return ItemType.Disk;
                 case "release":
@@ -336,6 +388,19 @@ namespace SabreTools.Library.Tools
                 default:
                     return null;
             }
+#else
+            return itemType?.ToLowerInvariant() switch
+            {
+                "archive" => ItemType.Archive,
+                "biosset" => ItemType.BiosSet,
+                "blank" => ItemType.Blank,
+                "disk" => ItemType.Disk,
+                "release" => ItemType.Release,
+                "rom" => ItemType.Rom,
+                "sample" => ItemType.Sample,
+                _ => null,
+            };
+#endif
         }
 
         /// <summary>
@@ -345,6 +410,7 @@ namespace SabreTools.Library.Tools
         /// <returns>MachineType value corresponding to the string</returns>
         public static MachineType AsMachineType(this string gametype)
         {
+#if NET_FRAMEWORK
             switch (gametype?.ToLowerInvariant())
             {
                 case "bios":
@@ -359,6 +425,18 @@ namespace SabreTools.Library.Tools
                 default:
                     return MachineType.None;
             }
+#else
+            return gametype?.ToLowerInvariant() switch
+            {
+                "bios" => MachineType.Bios,
+                "dev" => MachineType.Device,
+                "device" => MachineType.Device,
+                "mech" => MachineType.Mechanical,
+                "mechanical" => MachineType.Mechanical,
+                "none" => MachineType.None,
+                _ => MachineType.None,
+            };
+#endif
         }
 
         /// <summary>
@@ -368,6 +446,7 @@ namespace SabreTools.Library.Tools
         /// <returns>SplitType value corresponding to the string</returns>
         public static SplitType AsSplitType(this ForceMerging forceMerging)
         {
+#if NET_FRAMEWORK
             switch (forceMerging)
             {
                 case ForceMerging.Split:
@@ -382,6 +461,17 @@ namespace SabreTools.Library.Tools
                 default:
                     return SplitType.None;
             }
+#else
+            return forceMerging switch
+            {
+                ForceMerging.Split => SplitType.Split,
+                ForceMerging.Merged => SplitType.Merged,
+                ForceMerging.NonMerged => SplitType.NonMerged,
+                ForceMerging.Full => SplitType.FullNonMerged,
+                ForceMerging.None => SplitType.None,
+                _ => SplitType.None,
+            };
+#endif
         }
 
         /// <summary>
@@ -391,6 +481,7 @@ namespace SabreTools.Library.Tools
         /// <returns>StatReportFormat value corresponding to the string</returns>
         public static StatReportFormat AsStatReportFormat(this string input)
         {
+#if NET_FRAMEWORK
             switch (input?.Trim().ToLowerInvariant())
             {
                 case "all":
@@ -408,6 +499,18 @@ namespace SabreTools.Library.Tools
                 default:
                     return 0x0;
             }
+#else
+            return input?.Trim().ToLowerInvariant() switch
+            {
+                "all" => StatReportFormat.All,
+                "csv" => StatReportFormat.CSV,
+                "html" => StatReportFormat.HTML,
+                "ssv" => StatReportFormat.SSV,
+                "text" => StatReportFormat.Textfile,
+                "tsv" => StatReportFormat.TSV,
+                _ => 0x0,
+            };
+#endif
         }
 
         /// <summary>
@@ -417,6 +520,7 @@ namespace SabreTools.Library.Tools
         /// <returns>bool? corresponding to the string</returns>
         public static bool? AsYesNo(this string yesno)
         {
+#if NET_FRAMEWORK
             switch (yesno?.ToLowerInvariant())
             {
                 case "yes":
@@ -427,6 +531,15 @@ namespace SabreTools.Library.Tools
                 default:
                     return null;
             }
+#else
+            return yesno?.ToLowerInvariant() switch
+            {
+                "yes" => true,
+                "no" => false,
+                "partial" => null,
+                _ => null,
+            };
+#endif
         }
     }
 }
