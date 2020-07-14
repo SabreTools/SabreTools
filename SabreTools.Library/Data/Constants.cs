@@ -573,6 +573,15 @@ namespace SabreTools.Library.Data
         */
         public readonly static byte[] TorrentGZHeader = new byte[] { 0x1f, 0x8b, 0x08, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1c, 0x00 };
 
+        /* (Torrent)XZ Header Format
+            https://tukaani.org/xz/xz-file-format.txt
+
+            00-05		Identification (0xFD, '7', 'z', 'X', 'Z', 0x00) XzSignature
+            06			Flags (0x01 - CRC32, 0x04 - CRC64, 0x0A - SHA-256)
+            07-0A		Flags CRC32 (uint, little-endian)
+        */
+        public readonly static byte[] TorrentXZHeader = new byte[] { 0xfd, 0x37, 0x7a, 0x58, 0x5a, 0x00, 0x01, 0x69, 0x22, 0xde, 0x36 };
+
         #endregion
 
         #region ZIP internal signatures

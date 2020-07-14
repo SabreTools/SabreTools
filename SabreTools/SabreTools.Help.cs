@@ -1027,9 +1027,9 @@ namespace SabreTools
                 return new Feature(
                     TorrentXzValue,
                     new List<string>() { "-txz", "--torrent-xz" },
-                    "Enable Torrent XZ output [UNSUPPORTED]",
+                    "Enable Torrent XZ output [UNIMPLEMENTED]",
                     FeatureType.Flag,
-                    longDescription: "Instead of outputting files to folder, files will be rebuilt to Torrent XZ (TXZ) files. This format is based on the LZMA container format XZ, but with custom header information. This is currently unused by any major application. Currently does not produce proper Torrent-compatible outputs.");
+                    longDescription: "Instead of outputting files to folder, files will be rebuilt to Torrent XZ (TXZ) files. This format is based on the LZMA container format XZ, but with a file name replaced by the SHA-1 of the file inside. This is currently unused by any major application.");
             }
         }
 
@@ -3000,6 +3000,10 @@ The following systems have headers that this program can work with:
                 // If we have TorrentGzip output and the romba flag, update
                 if (romba && outputFormat == OutputFormat.TorrentGzip)
                     outputFormat = OutputFormat.TorrentGzipRomba;
+
+                // If we hae TorrentXZ output and the romba flag, update
+                if (romba && outputFormat == OutputFormat.TorrentXZ)
+                    outputFormat = OutputFormat.TorrentXZRomba;
 
                 // Get a list of files from the input datfiles
                 var datfiles = GetList(features, DatListValue);

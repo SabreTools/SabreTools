@@ -143,12 +143,13 @@
         TorrentZip,
         TorrentGzip,
         TorrentGzipRomba,
+        TorrentXZ,
+        TorrentXZRomba,
         TapeArchive,
 
         // Currently unimplemented fully
         Torrent7Zip,
         TorrentRar,
-        TorrentXZ,
         TorrentLRZip,
         TorrentLZ4,
         TorrentZstd,

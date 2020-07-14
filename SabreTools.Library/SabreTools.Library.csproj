@@ -21,7 +21,6 @@
     <None Remove="Skippers\psid.xml" />
     <None Remove="Skippers\snes.xml" />
     <None Remove="Skippers\spc.xml" />
-    <None Remove="sqlite3.dll" />
   </ItemGroup>
 
   <ItemGroup>
@@ -52,15 +51,11 @@
     <Content Include="Skippers\spc.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="sqlite3.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Mono.Data.Sqlite.Portable" Version="1.0.3.5" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="3.1.6" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="SevenZipSharp.Net45" Version="1.0.19" />
     <PackageReference Include="SharpCompress" Version="0.25.1" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>

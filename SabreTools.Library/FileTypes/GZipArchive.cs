@@ -145,7 +145,7 @@ namespace SabreTools.Library.FileTypes
         public override (MemoryStream, string) CopyToStream(string entryName)
         {
             MemoryStream ms = new MemoryStream();
-            string realEntry = null;
+            string realEntry;
 
             try
             {
@@ -266,9 +266,7 @@ namespace SabreTools.Library.FileTypes
         {
             // Check for the file existing first
             if (!File.Exists(this.Filename))
-            {
                 return false;
-            }
 
             string datum = Path.GetFileName(this.Filename).ToLowerInvariant();
             long filesize = new FileInfo(this.Filename).Length;
@@ -295,15 +293,11 @@ namespace SabreTools.Library.FileTypes
             }
 
             // Get the Romba-specific header data
-            byte[] header; // Get preamble header for checking
-            byte[] headermd5; // MD5
-            byte[] headercrc; // CRC
-            ulong headersz; // Int64 size
             BinaryReader br = new BinaryReader(FileExtensions.TryOpenRead(this.Filename));
-            header = br.ReadBytes(12);
-            headermd5 = br.ReadBytes(16);
-            headercrc = br.ReadBytes(4);
-            headersz = br.ReadUInt64();
+            byte[] header = br.ReadBytes(12); // Get preamble header for checking
+            br.ReadBytes(16); // headermd5
+            br.ReadBytes(4); // headercrc
+            br.ReadUInt64(); // headersz
             br.Dispose();
 
             // If the header is not correct, return a blank rom
@@ -312,15 +306,13 @@ namespace SabreTools.Library.FileTypes
             {
                 // This is a temp fix to ignore the modification time and OS until romba can be fixed
                 if (i == 4 || i == 5 || i == 6 || i == 7 || i == 9)
-                {
                     continue;
-                }
+
                 correct &= (header[i] == Constants.TorrentGZHeader[i]);
             }
+
             if (!correct)
-            {
                 return false;
-            }
 
             return true;
         }
@@ -428,6 +420,7 @@ namespace SabreTools.Library.FileTypes
                 Globals.Logger.Warning($"File '{inputFile}' does not exist!");
                 return false;
             }
+
             inputFile = Path.GetFullPath(inputFile);
 
             // Get the file stream for the file and write out
@@ -450,22 +443,19 @@ namespace SabreTools.Library.FileTypes
 
             // If the stream is not readable, return
             if (!inputStream.CanRead)
-            {
                 return success;
-            }
 
             // Make sure the output directory exists
             if (!Directory.Exists(outDir))
-            {
                 Directory.CreateDirectory(outDir);
-            }
+
             outDir = Path.GetFullPath(outDir);
 
             // Now get the Rom info for the file so we have hashes and size
             rom = new Rom(inputStream.GetInfo(keepReadOpen: true));
 
             // Get the output file name
-            string outfile = null;
+            string outfile;
 
             // If we have a romba output, add the romba path
             if (romba)

@@ -2250,6 +2250,7 @@ namespace SabreTools.Library.DatFiles
                     format = "TorrentRAR";
                     break;
                 case OutputFormat.TorrentXZ:
+                case OutputFormat.TorrentXZRomba:
                     format = "TorrentXZ";
                     break;
                 case OutputFormat.TorrentZip:
@@ -2434,6 +2435,7 @@ namespace SabreTools.Library.DatFiles
                     format = "TorrentRAR";
                     break;
                 case OutputFormat.TorrentXZ:
+                case OutputFormat.TorrentXZRomba:
                     format = "TorrentXZ";
                     break;
                 case OutputFormat.TorrentZip:
@@ -2604,9 +2606,13 @@ namespace SabreTools.Library.DatFiles
             // Set the initial output value
             bool rebuilt = false;
 
-            // If the DatItem is a Disk, force rebuilding to a folder except if TGZ
-            if (datItem.ItemType == ItemType.Disk && !(outputFormat == OutputFormat.TorrentGzip || outputFormat == OutputFormat.TorrentGzipRomba))
+            // If the DatItem is a Disk, force rebuilding to a folder except if TGZ or TXZ
+            if (datItem.ItemType == ItemType.Disk
+                && !(outputFormat == OutputFormat.TorrentGzip || outputFormat == OutputFormat.TorrentGzipRomba)
+                && !(outputFormat == OutputFormat.TorrentXZ || outputFormat == OutputFormat.TorrentXZRomba))
+            {
                 outputFormat = OutputFormat.Folder;
+            }
 
             // If we have a disk, change it into a Rom for later use
             if (datItem.ItemType == ItemType.Disk)
@@ -2625,8 +2631,8 @@ namespace SabreTools.Library.DatFiles
             {
                 // If we have a very specific TGZ->TGZ case, just copy it accordingly
                 GZipArchive tgz = new GZipArchive(file);
-                BaseFile rom = tgz.GetTorrentGZFileInfo();
-                if (isZip == false && rom != null && (outputFormat == OutputFormat.TorrentGzip || outputFormat == OutputFormat.TorrentGzipRomba))
+                BaseFile tgzRom = tgz.GetTorrentGZFileInfo();
+                if (isZip == false && tgzRom != null && (outputFormat == OutputFormat.TorrentGzip || outputFormat == OutputFormat.TorrentGzipRomba))
                 {
                     Globals.Logger.User($"Matches found for '{Path.GetFileName(datItem.Name)}', rebuilding accordingly...");
 
@@ -2635,6 +2641,34 @@ namespace SabreTools.Library.DatFiles
                         outDir = Path.Combine(outDir, PathExtensions.GetRombaPath(sha1));
                     else
                         outDir = Path.Combine(outDir, sha1 + ".gz");
+
+                    // Make sure the output folder is created
+                    Directory.CreateDirectory(Path.GetDirectoryName(outDir));
+
+                    // Now copy the file over
+                    try
+                    {
+                        File.Copy(file, outDir);
+                        return true;
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+                }
+
+                // If we have a very specific TXZ->TXZ case, just copy it accordingly
+                XZArchive txz = new XZArchive(file);
+                BaseFile txzRom = txz.GetTorrentXZFileInfo();
+                if (isZip == false && txzRom != null && (outputFormat == OutputFormat.TorrentXZ || outputFormat == OutputFormat.TorrentXZRomba))
+                {
+                    Globals.Logger.User($"Matches found for '{Path.GetFileName(datItem.Name)}', rebuilding accordingly...");
+
+                    // Get the proper output path
+                    if (outputFormat == OutputFormat.TorrentGzipRomba)
+                        outDir = Path.Combine(outDir, PathExtensions.GetRombaPath(sha1));
+                    else
+                        outDir = Path.Combine(outDir, sha1 + ".xz");
 
                     // Make sure the output folder is created
                     Directory.CreateDirectory(Path.GetDirectoryName(outDir));
@@ -2705,7 +2739,7 @@ namespace SabreTools.Library.DatFiles
                     Folder outputArchive = Folder.Create(outputFormat);
 
                     // Now rebuild to the output file
-                    outputArchive.Write(fileStream, outDir, (Rom)item, date: date, romba: outputFormat == OutputFormat.TorrentGzipRomba);
+                    outputArchive.Write(fileStream, outDir, (Rom)item, date: date, romba: outputFormat == OutputFormat.TorrentGzipRomba || outputFormat == OutputFormat.TorrentXZRomba);
                 }
 
                 // Close the input stream
@@ -2772,8 +2806,8 @@ namespace SabreTools.Library.DatFiles
                                 Folder outputArchive = Folder.Create(outputFormat);
 
                                 // Now rebuild to the output file
-                                eitherSuccess |= outputArchive.Write(transformStream, outDir, (Rom)item, date: date, romba: outputFormat == OutputFormat.TorrentGzipRomba);
-                                eitherSuccess |= outputArchive.Write(fileStream, outDir, (Rom)datItem, date: date, romba: outputFormat == OutputFormat.TorrentGzipRomba);
+                                eitherSuccess |= outputArchive.Write(transformStream, outDir, (Rom)item, date: date, romba: outputFormat == OutputFormat.TorrentGzipRomba || outputFormat == OutputFormat.TorrentXZRomba);
+                                eitherSuccess |= outputArchive.Write(fileStream, outDir, (Rom)datItem, date: date, romba: outputFormat == OutputFormat.TorrentGzipRomba || outputFormat == OutputFormat.TorrentXZRomba);
 
                                 // Now add the success of either rebuild
                                 rebuilt &= eitherSuccess;

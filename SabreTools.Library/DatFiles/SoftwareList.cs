@@ -125,7 +125,6 @@ namespace SabreTools.Library.DatFiles
             // Otherwise, add what is possible
             reader.MoveToContent();
 
-            string key;
             bool containsItems = false;
 
             // Create a new machine

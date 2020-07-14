@@ -3,7 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 
 using SabreTools.Library.Data;
-using Mono.Data.Sqlite;
+using Microsoft.Data.Sqlite;
 
 namespace SabreTools.Library.Tools
 {
@@ -20,8 +20,6 @@ namespace SabreTools.Library.Tools
         /// <param name="type">Name of the source skipper file</param>
         public static void AddHeaderToDatabase(string header, string SHA1, string source)
         {
-            bool exists = false;
-
             // Ensure the database exists
             EnsureDatabase(Constants.HeadererDbSchema, Constants.HeadererFileName, Constants.HeadererConnectionString);
 
@@ -32,7 +30,7 @@ namespace SabreTools.Library.Tools
             string query = $"SELECT * FROM data WHERE sha1='{SHA1}' AND header='{header}'";
             SqliteCommand slc = new SqliteCommand(query, dbc);
             SqliteDataReader sldr = slc.ExecuteReader();
-            exists = sldr.HasRows;
+            bool exists = sldr.HasRows;
 
             if (!exists)
             {
@@ -60,7 +58,7 @@ namespace SabreTools.Library.Tools
 
             // Make sure the file exists
             if (!File.Exists(db))
-                SqliteConnection.CreateFile(db);
+                File.Create(db);
 
             // Open the database connection
             SqliteConnection dbc = new SqliteConnection(connectionString);

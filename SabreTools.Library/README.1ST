@@ -661,12 +661,11 @@ Options:
 		  format but with custom header information. This is currently unused
 		  by any major application.
 
-	  -txz, --torrent-xz		  Enable Torrent XZ output [UNSUPPORTED]
+	  -txz, --torrent-xz		  Enable Torrent XZ output [UNIMPLEMENTED]
 		  Instead of outputting files to folder, files will be rebuilt to
 		  Torrent XZ (TXZ) files. This format is based on the LZMA container
-		  format XZ, but with custom header information. This is currently
-		  unused by any major application. Currently does not produce proper
-		  Torrent-compatible outputs.
+		  format XZ, but with a file name replaced by the SHA-1 of the file
+		  inside. This is currently unused by any major application.
 
 	  -tzip, --torrent-zip		Enable Torrent Zip output
 		  Instead of outputting files to folder, files will be rebuilt to

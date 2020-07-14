@@ -75,6 +75,7 @@ namespace SabreTools.Library.FileTypes
                     return new RarArchive();
 
                 case OutputFormat.TorrentXZ:
+                case OutputFormat.TorrentXZRomba:
                     return new XZArchive();
 
                 case OutputFormat.TorrentZip:

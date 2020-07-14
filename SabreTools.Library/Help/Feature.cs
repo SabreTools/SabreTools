@@ -1,9 +1,8 @@
-﻿using System;
+﻿using SabreTools.Library.Data;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
-using SabreTools.Library.Data;
 
 namespace SabreTools.Library.Help
 {
@@ -42,8 +41,10 @@ namespace SabreTools.Library.Help
         public Feature(string name, string flag, string description, FeatureType featureType, string longDescription = null)
         {
             this.Name = name;
-            this.Flags = new List<string>();
-            this.Flags.Add(flag);
+            this.Flags = new List<string>
+            {
+                flag
+            };
             this.Description = description;
             this.LongDescription = longDescription;
             this._featureType = featureType;
@@ -91,7 +92,7 @@ namespace SabreTools.Library.Help
             if (this.Features == null)
                 this.Features = new Dictionary<string, Feature>();
 
-            lock(this.Features)
+            lock (this.Features)
             {
                 this.Features[feature.Name] = feature;
             }
@@ -239,7 +240,11 @@ namespace SabreTools.Library.Help
                             output = CreatePadding(pre + 4);
                         }
 
+#if NET_FRAMEWORK
                         output += subsplit[subsplit.Length - 1];
+#else
+                        output += subsplit[^1];
+#endif
                         continue;
                     }
 
@@ -272,13 +277,7 @@ namespace SabreTools.Library.Help
         /// <returns>String with requested number of blank spaces</returns>
         private string CreatePadding(int spaces)
         {
-            string blank = string.Empty;
-            for (int i = 0; i < spaces; i++)
-            {
-                blank += " ";
-            }
-
-            return blank;
+            return string.Empty.PadRight(spaces);
         }
 
         /// <summary>
@@ -379,7 +378,11 @@ namespace SabreTools.Library.Help
                             output = CreatePadding(preAdjusted + 4);
                         }
 
+#if NET_FRAMEWORK
                         output += subsplit[subsplit.Length - 1];
+#else
+                        output += subsplit[^1];
+#endif
                         continue;
                     }
 
@@ -527,7 +530,7 @@ namespace SabreTools.Library.Help
             if (_featureType != FeatureType.Flag)
                 throw new ArgumentException("Feature is not a flag");
 
-            return (_value as bool?).HasValue ? (_value as bool?).Value : false;
+            return (_value as bool?) ?? false;
         }
 
         /// <summary>
@@ -549,7 +552,7 @@ namespace SabreTools.Library.Help
             if (_featureType != FeatureType.Int32)
                 throw new ArgumentException("Feature is not an int");
 
-            return (_value as int?).HasValue ? (_value as int?).Value : int.MinValue;
+            return (_value as int?) ?? int.MinValue;
         }
 
         /// <summary>
@@ -560,7 +563,7 @@ namespace SabreTools.Library.Help
             if (_featureType != FeatureType.Int64)
                 throw new ArgumentException("Feature is not a long");
 
-            return (_value as long?).HasValue ? (_value as long?).Value : long.MinValue;
+            return (_value as long?) ?? long.MinValue;
         }
 
         /// <summary>
@@ -580,6 +583,7 @@ namespace SabreTools.Library.Help
         /// <returns>True if the feature is enabled, false otherwise</returns>
         public bool IsEnabled()
         {
+#if NET_FRAMEWORK
             switch (_featureType)
             {
                 case FeatureType.Flag:
@@ -592,9 +596,20 @@ namespace SabreTools.Library.Help
                     return (_value as long?).HasValue && (_value as long?).Value != long.MinValue;
                 case FeatureType.List:
                     return (_value as List<string>) != null;
+                default:
+                    return false;
             }
-
-            return false;
+#else
+            return _featureType switch
+            {
+                FeatureType.Flag => (_value as bool?) == true,
+                FeatureType.String => (_value as string) != null,
+                FeatureType.Int32 => (_value as int?).HasValue && (_value as int?).Value != int.MinValue,
+                FeatureType.Int64 => (_value as long?).HasValue && (_value as long?).Value != long.MinValue,
+                FeatureType.List => (_value as List<string>) != null,
+                _ => false,
+            };
+#endif
         }
 
         #endregion
