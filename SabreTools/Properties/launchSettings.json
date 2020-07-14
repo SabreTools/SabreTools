@@ -2,7 +2,7 @@
   "profiles": {
     "SabreTools": {
       "commandName": "Project",
-      "commandLineArgs": "--stats \"C:\\Users\\Matt\\Downloads\\No-Intro\" --output-dir=\"C:\\Users\\Matt\\Downloads\" --baddump-column --nodump-column --individual"
+      "commandLineArgs": "--update \"C:\\Users\\Matt\\Downloads\\No-Intro\" --output-dir=\"C:\\Users\\Matt\\Downloads\\NI_TEMP\" --output-type=all"
     }
   }
 }

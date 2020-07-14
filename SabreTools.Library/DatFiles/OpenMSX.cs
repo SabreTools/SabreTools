@@ -14,7 +14,6 @@ namespace SabreTools.Library.DatFiles
     /// <summary>
     /// Represents parsing and writing of a openMSX softawre list XML DAT
     /// </summary>
-    /// TODO: Verify that all write for this DatFile type is correct
     internal class OpenMSX : DatFile
     {
         /// <summary>

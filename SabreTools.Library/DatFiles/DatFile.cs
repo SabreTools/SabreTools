@@ -869,14 +869,6 @@ namespace SabreTools.Library.DatFiles
                         List<DatItem> newDatItems = new List<DatItem>();
                         foreach (DatItem datItem in datItems)
                         {
-                            // If we have something other than a Rom or Disk, then this doesn't do anything
-                            // TODO: Make this do something
-                            if (datItem.ItemType != ItemType.Disk && datItem.ItemType != ItemType.Rom)
-                            {
-                                newDatItems.Add(datItem.Clone() as DatItem);
-                                continue;
-                            }
-
                             List<DatItem> dupes = GetDuplicates(datItem, sorted: true);
                             DatItem newDatItem = datItem.Clone() as DatItem;
 
@@ -3298,8 +3290,6 @@ namespace SabreTools.Library.DatFiles
                 // Then set the DAT name to be the parent directory name
                 tempDat.DatHeader.Name = Path.GetDirectoryName(key);
             });
-
-            // TODO: Investigate why this method seems incomplete
 
             return true;
         }

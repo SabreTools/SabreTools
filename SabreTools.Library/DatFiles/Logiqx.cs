@@ -17,7 +17,6 @@ namespace SabreTools.Library.DatFiles
     /// Represents parsing and writing of a Logiqx-derived DAT
     /// </summary>
     /// TODO: Add XSD validation for all XML DAT types (maybe?)
-    /// TODO: Verify that all write for this DatFile type is correct
     internal class Logiqx : DatFile
     {
         // Private instance variables specific to Logiqx DATs

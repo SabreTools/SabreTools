@@ -14,7 +14,6 @@ namespace SabreTools.Library.DatFiles
     /// <summary>
     /// Represents parsing and writing of an OfflineList XML DAT
     /// </summary>
-    /// TODO: Verify that all write for this DatFile type is correct
     internal class OfflineList : DatFile
     {
         /// <summary>

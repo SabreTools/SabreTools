@@ -503,7 +503,7 @@ namespace SabreTools.Library.DatFiles
             #region .json
 
             // JSON
-            if (!DatFormat.HasFlag(DatFormat.Json))
+            if (DatFormat.HasFlag(DatFormat.Json))
             {
                 outfileNames.Add(DatFormat.Json, CreateOutFileNamesHelper(outDir, ".json", overwrite));
                 usedExtensions.Add(".json");
@@ -514,7 +514,7 @@ namespace SabreTools.Library.DatFiles
             #region .md5
 
             // Redump MD5
-            if (!DatFormat.HasFlag(DatFormat.RedumpMD5))
+            if (DatFormat.HasFlag(DatFormat.RedumpMD5))
             {
                 outfileNames.Add(DatFormat.RedumpMD5, CreateOutFileNamesHelper(outDir, ".md5", overwrite));
                 usedExtensions.Add(".md5");
@@ -526,7 +526,7 @@ namespace SabreTools.Library.DatFiles
             #region .ripemd160
 
             // Redump RIPEMD160
-            if (!DatFormat.HasFlag(DatFormat.RedumpRIPEMD160))
+            if (DatFormat.HasFlag(DatFormat.RedumpRIPEMD160))
             {
                 outfileNames.Add(DatFormat.RedumpRIPEMD160, CreateOutFileNamesHelper(outDir, ".ripemd160", overwrite));
                 usedExtensions.Add(".ripemd160");
@@ -538,7 +538,7 @@ namespace SabreTools.Library.DatFiles
             #region .sfv
 
             // Redump SFV
-            if (!DatFormat.HasFlag(DatFormat.RedumpSFV))
+            if (DatFormat.HasFlag(DatFormat.RedumpSFV))
             {
                 outfileNames.Add(DatFormat.RedumpSFV, CreateOutFileNamesHelper(outDir, ".sfv", overwrite));
                 usedExtensions.Add(".sfv");
@@ -549,7 +549,7 @@ namespace SabreTools.Library.DatFiles
             #region .sha1
 
             // Redump SHA-1
-            if (!DatFormat.HasFlag(DatFormat.RedumpSHA1))
+            if (DatFormat.HasFlag(DatFormat.RedumpSHA1))
             {
                 outfileNames.Add(DatFormat.RedumpSHA1, CreateOutFileNamesHelper(outDir, ".sha1", overwrite));
                 usedExtensions.Add(".sha1");
@@ -560,7 +560,7 @@ namespace SabreTools.Library.DatFiles
             #region .sha256
 
             // Redump SHA-256
-            if (!DatFormat.HasFlag(DatFormat.RedumpSHA256))
+            if (DatFormat.HasFlag(DatFormat.RedumpSHA256))
             {
                 outfileNames.Add(DatFormat.RedumpSHA256, CreateOutFileNamesHelper(outDir, ".sha256", overwrite));
                 usedExtensions.Add(".sha256");
@@ -571,7 +571,7 @@ namespace SabreTools.Library.DatFiles
             #region .sha384
 
             // Redump SHA-384
-            if (!DatFormat.HasFlag(DatFormat.RedumpSHA384))
+            if (DatFormat.HasFlag(DatFormat.RedumpSHA384))
             {
                 outfileNames.Add(DatFormat.RedumpSHA384, CreateOutFileNamesHelper(outDir, ".sha384", overwrite));
                 usedExtensions.Add(".sha384");
@@ -582,7 +582,7 @@ namespace SabreTools.Library.DatFiles
             #region .sha512
 
             // Redump SHA-512
-            if (!DatFormat.HasFlag(DatFormat.RedumpSHA512))
+            if (DatFormat.HasFlag(DatFormat.RedumpSHA512))
             {
                 outfileNames.Add(DatFormat.RedumpSHA512, CreateOutFileNamesHelper(outDir, ".sha512", overwrite));
                 usedExtensions.Add(".sha512");
@@ -593,7 +593,7 @@ namespace SabreTools.Library.DatFiles
             #region .ssv
 
             // SSV
-            if (!DatFormat.HasFlag(DatFormat.SSV))
+            if (DatFormat.HasFlag(DatFormat.SSV))
             {
                 outfileNames.Add(DatFormat.SSV, CreateOutFileNamesHelper(outDir, ".ssv", overwrite));
                 usedExtensions.Add(".ssv");
@@ -604,7 +604,7 @@ namespace SabreTools.Library.DatFiles
             #region .tsv
 
             // TSV
-            if (!DatFormat.HasFlag(DatFormat.TSV))
+            if (DatFormat.HasFlag(DatFormat.TSV))
             {
                 outfileNames.Add(DatFormat.TSV, CreateOutFileNamesHelper(outDir, ".tsv", overwrite));
                 usedExtensions.Add(".tsv");
@@ -615,7 +615,7 @@ namespace SabreTools.Library.DatFiles
             #region .txt
 
             // AttractMode
-            if (!DatFormat.HasFlag(DatFormat.AttractMode))
+            if (DatFormat.HasFlag(DatFormat.AttractMode))
             {
                 outfileNames.Add(DatFormat.AttractMode, CreateOutFileNamesHelper(outDir, ".txt", overwrite));
                 usedExtensions.Add(".txt");
@@ -770,6 +770,7 @@ namespace SabreTools.Library.DatFiles
         private string CreateOutFileNamesHelper(string outDir, string extension, bool overwrite)
         {
             string filename = (string.IsNullOrWhiteSpace(FileName) ? Description : FileName);
+            filename = Path.GetFileNameWithoutExtension(filename);
             string outfile = $"{outDir}{filename}{extension}";
             outfile = outfile.Replace($"{Path.DirectorySeparatorChar}{Path.DirectorySeparatorChar}", Path.DirectorySeparatorChar.ToString());
 
