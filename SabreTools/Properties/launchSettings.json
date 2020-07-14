@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "SabreTools": {
-      "commandName": "Project",
-      "commandLineArgs": "--update \"C:\\Users\\Matt\\Downloads\\No-Intro\" --output-dir=\"C:\\Users\\Matt\\Downloads\\NI_TEMP\" --output-type=all"
-    }
-  }
-}
