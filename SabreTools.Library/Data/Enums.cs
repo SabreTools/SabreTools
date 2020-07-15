@@ -243,6 +243,26 @@
     #region DatFile related
 
     /// <summary>
+    /// Determines how the current dictionary is bucketed by
+    /// </summary>
+    public enum BucketedBy
+    {
+        Default = 0,
+        Size,
+        CRC,
+        MD5,
+#if NET_FRAMEWORK
+        RIPEMD160,
+#endif
+        SHA1,
+        SHA256,
+        SHA384,
+        SHA512,
+        Game,
+    }
+
+
+    /// <summary>
     /// Determines the DAT deduplication type
     /// </summary>
     public enum DedupeType
@@ -304,25 +324,6 @@
         None = 0,
         Archive,
         File,
-    }
-
-    /// <summary>
-    /// Determines how the current dictionary is sorted by
-    /// </summary>
-    public enum SortedBy
-    {
-        Default = 0,
-        Size,
-        CRC,
-        MD5,
-#if NET_FRAMEWORK
-        RIPEMD160,
-#endif
-        SHA1,
-        SHA256,
-        SHA384,
-        SHA512,
-        Game,
     }
 
     /// <summary>

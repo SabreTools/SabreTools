@@ -1566,7 +1566,7 @@ contents of any changed dats.";
 
                 // TODO: All instances of Hash.DeepHashes should be made into 0x0 eventually
                 datroot.PopulateFromDir(_dats, Hash.DeepHashes, false, false, SkipFileType.None, false, false, _tmpdir, false, null, true, null);
-                datroot.BucketBy(SortedBy.SHA1, DedupeType.None);
+                datroot.BucketBy(BucketedBy.SHA1, DedupeType.None);
 
                 // Create a List of dat hashes in the database (SHA-1)
                 List<string> databaseDats = new List<string>();
@@ -1595,7 +1595,7 @@ contents of any changed dats.";
                         unneeded.Add(hash);
                     }
                 }
-                datroot.BucketBy(SortedBy.Game, DedupeType.None, norename: true);
+                datroot.BucketBy(BucketedBy.Game, DedupeType.None, norename: true);
 
                 watch.Stop();
 
@@ -1693,7 +1693,7 @@ contents of any changed dats.";
                     DatFile depot = DatFile.Create();
                     // TODO: All instances of Hash.DeepHashes should be made into 0x0 eventually
                     depot.PopulateFromDir(depotname, Hash.DeepHashes, false, false, SkipFileType.None, false, false, _tmpdir, false, null, true, null);
-                    depot.BucketBy(SortedBy.SHA1, DedupeType.None);
+                    depot.BucketBy(BucketedBy.SHA1, DedupeType.None);
 
                     // Set the base queries to use
                     string crcquery = "INSERT OR IGNORE INTO crc (crc) VALUES";

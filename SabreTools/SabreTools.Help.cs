@@ -2779,7 +2779,7 @@ Some special strings that can be used:
                     if (Directory.Exists(path) || File.Exists(path))
                     {
                         // Clone the base Dat for information
-                        DatFile datdata = DatFile.Create(baseDat: basedat);
+                        DatFile datdata = DatFile.Create(basedat.DatHeader);
 
                         string basePath = Path.GetFullPath(path);
                         bool success = datdata.PopulateFromDir(

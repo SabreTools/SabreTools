@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 using SabreTools.Library.Data;
@@ -13,6 +15,7 @@ using SabreTools.Library.Skippers;
 using SabreTools.Library.Tools;
 using NaturalSort;
 
+[assembly: InternalsVisibleTo("SabreTools")]
 namespace SabreTools.Library.DatFiles
 {
     /// <summary>
@@ -26,7 +29,7 @@ namespace SabreTools.Library.DatFiles
         internal DatHeader DatHeader = new DatHeader();
 
         // DatItems dictionary
-        internal SortedDictionary<string, List<DatItem>> Items = new SortedDictionary<string, List<DatItem>>();
+        internal ConcurrentDictionary<string, List<DatItem>> Items = new ConcurrentDictionary<string, List<DatItem>>();
 
         // Internal statistical data
         internal DatStats DatStats = new DatStats();
@@ -34,7 +37,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Determine the sorting key for all items
         /// </summary>
-        private SortedBy SortedBy;
+        private BucketedBy BucketedBy;
 
         /// <summary>
         /// Determine merging type for all items
@@ -56,14 +59,11 @@ namespace SabreTools.Library.DatFiles
         {
             get
             {
-                lock (Items)
-                {
-                    // Ensure the key exists
-                    EnsureKey(key);
+                // Ensure the key exists
+                EnsureKey(key);
 
-                    // Now return the value
-                    return Items[key];
-                }
+                // Now return the value
+                return Items[key];
             }
         }
 
@@ -74,17 +74,14 @@ namespace SabreTools.Library.DatFiles
         /// <param name="value">Value to add to the dictionary</param>
         public void Add(string key, DatItem value)
         {
-            lock (Items)
-            {
-                // Ensure the key exists
-                EnsureKey(key);
+            // Ensure the key exists
+            EnsureKey(key);
 
-                // Now add the value
-                Items[key].Add(value);
+            // Now add the value
+            Items[key].Add(value);
 
-                // Now update the statistics
-                DatStats.AddItem(value);
-            }
+            // Now update the statistics
+            DatStats.AddItem(value);
         }
 
         /// <summary>
@@ -94,19 +91,16 @@ namespace SabreTools.Library.DatFiles
         /// <param name="value">Value to add to the dictionary</param>
         public void AddRange(string key, List<DatItem> value)
         {
-            lock (Items)
+            // Ensure the key exists
+            EnsureKey(key);
+
+            // Now add the value
+            Items[key].AddRange(value);
+
+            // Now update the statistics
+            foreach (DatItem item in value)
             {
-                // Ensure the key exists
-                EnsureKey(key);
-
-                // Now add the value
-                Items[key].AddRange(value);
-
-                // Now update the statistics
-                foreach (DatItem item in value)
-                {
-                    DatStats.AddItem(item);
-                }
+                DatStats.AddItem(item);
             }
         }
 
@@ -121,10 +115,7 @@ namespace SabreTools.Library.DatFiles
             if (key == null)
                 return false;
 
-            lock (Items)
-            {
-                return Items.ContainsKey(key);
-            }
+            return Items.ContainsKey(key);
         }
 
         /// <summary>
@@ -139,13 +130,10 @@ namespace SabreTools.Library.DatFiles
             if (key == null)
                 return false;
 
-            lock (Items)
-            {
-                if (Items.ContainsKey(key))
-                    return Items[key].Contains(value);
+            if (Items.ContainsKey(key))
+                return Items[key].Contains(value);
 
-                return false;
-            }
+            return false;
         }
 
         /// <summary>
@@ -170,13 +158,7 @@ namespace SabreTools.Library.DatFiles
         /// <returns>List of the keys</returns>
         public List<string> Keys
         {
-            get
-            {
-                lock (Items)
-                {
-                    return Items.Keys.Select(item => (String)item.Clone()).ToList();
-                }
-            }
+            get { return Items.Keys.Select(item => (string)item.Clone()).ToList(); }
         }
 
         /// <summary>
@@ -189,17 +171,14 @@ namespace SabreTools.Library.DatFiles
             if (!Contains(key))
                 return;
 
-            lock (Items)
+            // Remove the statistics first
+            foreach (DatItem item in Items[key])
             {
-                // Remove the statistics first
-                foreach (DatItem item in Items[key])
-                {
-                    DatStats.RemoveItem(item);
-                }
-
-                // Remove the key from the dictionary
-                Items.Remove(key);
+                DatStats.RemoveItem(item);
             }
+
+            // Remove the key from the dictionary
+            Items.TryRemove(key, out _);
         }
 
         /// <summary>
@@ -211,17 +190,12 @@ namespace SabreTools.Library.DatFiles
         {
             // If the key and value doesn't exist, return
             if (!Contains(key, value))
-            {
                 return;
-            }
 
-            lock (Items)
-            {
-                // Remove the statistics first
-                DatStats.RemoveItem(value);
+            // Remove the statistics first
+            DatStats.RemoveItem(value);
 
-                Items[key].Remove(value);
-            }
+            Items[key].Remove(value);
         }
 
         /// <summary>
@@ -278,7 +252,7 @@ namespace SabreTools.Library.DatFiles
         {
             // If the key is missing from the dictionary, add it
             if (!Items.ContainsKey(key))
-                Items.Add(key, new List<DatItem>());
+                Items.TryAdd(key, new List<DatItem>());
         }
 
         #endregion
@@ -288,23 +262,23 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Take the arbitrarily sorted Files Dictionary and convert to one sorted by a user-defined method
         /// </summary>
-        /// <param name="bucketBy">SortedBy enum representing how to sort the individual items</param>
+        /// <param name="bucketBy">BucketedBy enum representing how to sort the individual items</param>
         /// <param name="deduperoms">Dedupe type that should be used</param>
         /// <param name="lower">True if the key should be lowercased (default), false otherwise</param>
         /// <param name="norename">True if games should only be compared on game and file name, false if system and source are counted</param>
-        public void BucketBy(SortedBy bucketBy, DedupeType deduperoms, bool lower = true, bool norename = true)
+        public void BucketBy(BucketedBy bucketBy, DedupeType deduperoms, bool lower = true, bool norename = true)
         {
             // If we have a situation where there's no dictionary or no keys at all, we skip
             if (Items == null || Items.Count == 0)
                 return;
 
             // If the sorted type isn't the same, we want to sort the dictionary accordingly
-            if (this.SortedBy != bucketBy)
+            if (this.BucketedBy != bucketBy)
             {
                 Globals.Logger.User($"Organizing roms by {bucketBy}");
 
                 // Set the sorted type
-                this.SortedBy = bucketBy;
+                this.BucketedBy = bucketBy;
 
                 // Reset the merged type since this might change the merge
                 this.MergedBy = DedupeType.None;
@@ -355,7 +329,7 @@ namespace SabreTools.Library.DatFiles
                     DatItem.Sort(ref sortedlist, false);
 
                     // If we're merging the roms, do so
-                    if (deduperoms == DedupeType.Full || (deduperoms == DedupeType.Game && bucketBy == SortedBy.Game))
+                    if (deduperoms == DedupeType.Full || (deduperoms == DedupeType.Game && bucketBy == BucketedBy.Game))
                         sortedlist = DatItem.Merge(sortedlist);
 
                     // Add the list back to the dictionary
@@ -482,7 +456,7 @@ namespace SabreTools.Library.DatFiles
                 BucketBy(DatStats.GetBestAvailable(), DedupeType.None);
 
             // Now that we have the sorted type, we get the proper key
-            return datItem.GetKey(SortedBy);
+            return datItem.GetKey(BucketedBy);
         }
 
         #endregion
@@ -499,7 +473,7 @@ namespace SabreTools.Library.DatFiles
             {
                 DatHeader = datFile.DatHeader;
                 this.Items = datFile.Items;
-                this.SortedBy = datFile.SortedBy;
+                this.BucketedBy = datFile.BucketedBy;
                 this.MergedBy = datFile.MergedBy;
                 this.DatStats = datFile.DatStats;
             }
@@ -858,8 +832,8 @@ namespace SabreTools.Library.DatFiles
                 if (updateFields.Intersect(datItemFields).Any())
                 {
                     // For comparison's sake, we want to use CRC as the base ordering
-                    BucketBy(SortedBy.CRC, DedupeType.Full);
-                    intDat.BucketBy(SortedBy.CRC, DedupeType.None);
+                    BucketBy(BucketedBy.CRC, DedupeType.Full);
+                    intDat.BucketBy(BucketedBy.CRC, DedupeType.None);
 
                     // Then we do a hashwise comparison against the base DAT
                     List<string> keys = intDat.Keys;
@@ -1165,8 +1139,8 @@ namespace SabreTools.Library.DatFiles
                 if (updateFields.Intersect(machineFields).Any())
                 {
                     // For comparison's sake, we want to use Machine Name as the base ordering
-                    BucketBy(SortedBy.Game, DedupeType.Full);
-                    intDat.BucketBy(SortedBy.Game, DedupeType.None);
+                    BucketBy(BucketedBy.Game, DedupeType.Full);
+                    intDat.BucketBy(BucketedBy.Game, DedupeType.None);
 
                     // Then we do a namewise comparison against the base DAT
                     List<string> keys = intDat.Keys;
@@ -1268,7 +1242,7 @@ namespace SabreTools.Library.DatFiles
         private void DiffAgainst(List<string> inputFileNames, string outDir, bool inplace)
         {
             // For comparison's sake, we want to use CRC as the base ordering
-            BucketBy(SortedBy.CRC, DedupeType.Full);
+            BucketBy(BucketedBy.CRC, DedupeType.Full);
 
             // Now we want to compare each input DAT against the base
             foreach (string path in inputFileNames)
@@ -1280,7 +1254,7 @@ namespace SabreTools.Library.DatFiles
                 intDat.Parse(path, 1, keep: true);
 
                 // For comparison's sake, we want to use CRC as the base ordering
-                intDat.BucketBy(SortedBy.CRC, DedupeType.Full);
+                intDat.BucketBy(BucketedBy.CRC, DedupeType.Full);
 
                 // Then we do a hashwise comparison against the base DAT
                 List<string> keys = intDat.Keys;
@@ -1339,7 +1313,7 @@ namespace SabreTools.Library.DatFiles
                 }
                 else
                 {
-                    diffData = Create(baseDat: this);
+                    diffData = Create(DatHeader);
                     diffData.DatHeader.FileName += innerpost;
                     diffData.DatHeader.Name += innerpost;
                     diffData.DatHeader.Description += innerpost;
@@ -1353,7 +1327,7 @@ namespace SabreTools.Library.DatFiles
             watch.Stop();
 
             // Then, ensure that the internal dat can be sorted in the best possible way
-            BucketBy(SortedBy.CRC, DedupeType.None);
+            BucketBy(BucketedBy.CRC, DedupeType.None);
 
             // Now, loop through the dictionary and populate the correct DATs
             watch.Start("Populating all output DATs");
@@ -1425,7 +1399,7 @@ namespace SabreTools.Library.DatFiles
             if (diff.HasFlag(UpdateMode.DiffNoDupesOnly))
             {
                 post = " (No Duplicates)";
-                outerDiffData = Create(baseDat: this);
+                outerDiffData = Create(DatHeader);
                 outerDiffData.DatHeader.FileName += post;
                 outerDiffData.DatHeader.Name += post;
                 outerDiffData.DatHeader.Description += post;
@@ -1436,7 +1410,7 @@ namespace SabreTools.Library.DatFiles
             if (diff.HasFlag(UpdateMode.DiffDupesOnly))
             {
                 post = " (Duplicates)";
-                dupeData = Create(baseDat: this);
+                dupeData = Create(DatHeader);
                 dupeData.DatHeader.FileName += post;
                 dupeData.DatHeader.Name += post;
                 dupeData.DatHeader.Description += post;
@@ -1454,7 +1428,7 @@ namespace SabreTools.Library.DatFiles
                 Parallel.For(0, inputs.Count, Globals.ParallelOptions, j =>
                 {
                     string innerpost = $" ({j} - {PathExtensions.GetNormalizedFileName(inputs[j], true)} Only)";
-                    DatFile diffData = Create(baseDat: this);
+                    DatFile diffData = Create(DatHeader);
                     diffData.DatHeader.FileName += innerpost;
                     diffData.DatHeader.Name += innerpost;
                     diffData.DatHeader.Description += innerpost;
@@ -1595,7 +1569,7 @@ namespace SabreTools.Library.DatFiles
             // Iterate over the files
             foreach (string file in inputFileNames)
             {
-                DatFile innerDatdata = Create(baseDat: this);
+                DatFile innerDatdata = Create(DatHeader);
                 Globals.Logger.User($"Processing '{Path.GetFileName(file.Split('¬')[0])}'");
                 innerDatdata.Parse(file, keep: true,
                     keepext: innerDatdata.DatHeader.DatFormat.HasFlag(DatFormat.TSV)
@@ -1621,7 +1595,7 @@ namespace SabreTools.Library.DatFiles
         private void DeleteDictionary()
         {
             Items = null;
-            this.SortedBy = SortedBy.Default;
+            this.BucketedBy = BucketedBy.Default;
             this.MergedBy = DedupeType.None;
 
             // Reset statistics
@@ -1633,8 +1607,8 @@ namespace SabreTools.Library.DatFiles
         /// </summary>
         private void ResetDictionary()
         {
-            Items = new SortedDictionary<string, List<DatItem>>();
-            this.SortedBy = SortedBy.Default;
+            Items = new ConcurrentDictionary<string, List<DatItem>>();
+            this.BucketedBy = BucketedBy.Default;
             this.MergedBy = DedupeType.None;
 
             // Reset statistics
@@ -1678,7 +1652,7 @@ namespace SabreTools.Library.DatFiles
 
             // If the output type isn't set already, get the internal output type
             DatHeader.DatFormat = (DatHeader.DatFormat == 0 ? filename.GetDatFormat() : DatHeader.DatFormat);
-            this.SortedBy = SortedBy.CRC; // Setting this because it can reduce issues later
+            this.BucketedBy = BucketedBy.CRC; // Setting this because it can reduce issues later
 
             // Now parse the correct type of DAT
             try
@@ -1804,7 +1778,7 @@ namespace SabreTools.Library.DatFiles
             }
 
             // Get the key and add the file
-            key = item.GetKey(SortedBy.CRC);
+            key = item.GetKey(BucketedBy.CRC);
             Add(key, item);
 
             return key;
@@ -1960,7 +1934,7 @@ namespace SabreTools.Library.DatFiles
                 {
                     // Add the list if it doesn't exist already
                     Rom rom = new Rom(baseFile);
-                    Add(rom.GetKey(SortedBy.CRC), rom);
+                    Add(rom.GetKey(BucketedBy.CRC), rom);
                     Globals.Logger.User($"File added: {Path.GetFileNameWithoutExtension(item)}{Environment.NewLine}");
                 }
                 else
@@ -2086,7 +2060,7 @@ namespace SabreTools.Library.DatFiles
                 SetDatItemInfo(datItem, item, parent, basepath);
 
                 // Add the file information to the DAT
-                string key = datItem.GetKey(SortedBy.CRC);
+                string key = datItem.GetKey(BucketedBy.CRC);
                 Add(key, datItem);
 
                 Globals.Logger.User($"File added: {datItem.Name}{Environment.NewLine}");
@@ -2280,7 +2254,7 @@ namespace SabreTools.Library.DatFiles
                 return success;
 
             // Now that we have a list of depots, we want to sort the input DAT by SHA-1
-            BucketBy(SortedBy.SHA1, DedupeType.None);
+            BucketBy(BucketedBy.SHA1, DedupeType.None);
 
             // Then we want to loop through each of the hashes and see if we can rebuild
             List<string> hashes = Keys;
@@ -2854,7 +2828,7 @@ namespace SabreTools.Library.DatFiles
                 return success;
 
             // Now that we have a list of depots, we want to sort the input DAT by SHA-1
-            BucketBy(SortedBy.SHA1, DedupeType.None);
+            BucketBy(BucketedBy.SHA1, DedupeType.None);
 
             // Then we want to loop through each of the hashes and see if we can rebuild
             List<string> hashes = Keys;
@@ -2934,7 +2908,7 @@ namespace SabreTools.Library.DatFiles
             }
 
             // Setup the fixdat
-            DatFile matched = Create(baseDat: this);
+            DatFile matched = Create(DatHeader);
             matched.ResetDictionary();
             matched.DatHeader.FileName = $"fixDat_{matched.DatHeader.FileName}";
             matched.DatHeader.Name = $"fixDat_{matched.DatHeader.Name}";
@@ -2945,7 +2919,7 @@ namespace SabreTools.Library.DatFiles
             if (hashOnly)
             {
                 // First we need to sort and dedupe by hash to get duplicates
-                BucketBy(SortedBy.CRC, DedupeType.Full);
+                BucketBy(BucketedBy.CRC, DedupeType.Full);
 
                 // Then follow the same tactics as before
                 foreach (string key in Keys)
@@ -3271,10 +3245,10 @@ namespace SabreTools.Library.DatFiles
         private bool SplitByLevel(string outDir, bool shortname, bool basedat)
         {
             // First, organize by games so that we can do the right thing
-            BucketBy(SortedBy.Game, DedupeType.None, lower: false, norename: true);
+            BucketBy(BucketedBy.Game, DedupeType.None, lower: false, norename: true);
 
             // Create a temporary DAT to add things to
-            DatFile tempDat = Create(baseDat: this);
+            DatFile tempDat = Create(DatHeader);
             tempDat.DatHeader.Name = null;
 
             // Sort the input keys
@@ -3288,7 +3262,7 @@ namespace SabreTools.Library.DatFiles
                 if (tempDat.DatHeader.Name != null && tempDat.DatHeader.Name != Path.GetDirectoryName(key))
                 {
                     // Reset the DAT for the next items
-                    tempDat = Create(baseDat: this);
+                    tempDat = Create(DatHeader);
                     tempDat.DatHeader.Name = null;
                 }
 
@@ -3562,7 +3536,7 @@ namespace SabreTools.Library.DatFiles
                 if (DatStats.RomCount + DatStats.DiskCount == 0)
                     RecalculateStats();
 
-                BucketBy(SortedBy.Game, DedupeType.None, norename: true);
+                BucketBy(BucketedBy.Game, DedupeType.None, norename: true);
 
                 // TODO: How can the size be negative when dealing with Int64?
                 if (DatStats.TotalSize < 0)
@@ -3574,12 +3548,12 @@ namespace SabreTools.Library.DatFiles
 
             // Bucket and dedupe according to the flag
             if (DatHeader.DedupeRoms == DedupeType.Full)
-                BucketBy(SortedBy.CRC, DatHeader.DedupeRoms, norename: norename);
+                BucketBy(BucketedBy.CRC, DatHeader.DedupeRoms, norename: norename);
             else if (DatHeader.DedupeRoms == DedupeType.Game)
-                BucketBy(SortedBy.Game, DatHeader.DedupeRoms, norename: norename);
+                BucketBy(BucketedBy.Game, DatHeader.DedupeRoms, norename: norename);
 
             // Bucket roms by game name, if not already
-            BucketBy(SortedBy.Game, DedupeType.None, norename: norename);
+            BucketBy(BucketedBy.Game, DedupeType.None, norename: norename);
 
             // Output the number of items we're going to be writing
             Globals.Logger.User($"A total of {DatStats.Count} items will be written out to '{DatHeader.FileName}'");

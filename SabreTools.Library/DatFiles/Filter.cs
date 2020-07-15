@@ -479,8 +479,8 @@ namespace SabreTools.Library.DatFiles
         {
             Globals.Logger.User("Creating device non-merged sets from the DAT");
 
-            // For sake of ease, the first thing we want to do is sort by game
-            datFile.BucketBy(SortedBy.Game, mergeroms, norename: true);
+            // For sake of ease, the first thing we want to do is bucket by game
+            datFile.BucketBy(BucketedBy.Game, mergeroms, norename: true);
 
             // Now we want to loop through all of the games and set the correct information
             while (AddRomsFromDevices(datFile, false, false)) ;
@@ -500,7 +500,7 @@ namespace SabreTools.Library.DatFiles
             Globals.Logger.User("Creating fully non-merged sets from the DAT");
 
             // For sake of ease, the first thing we want to do is sort by game
-            datFile.BucketBy(SortedBy.Game, mergeroms, norename: true);
+            datFile.BucketBy(BucketedBy.Game, mergeroms, norename: true);
 
             // Now we want to loop through all of the games and set the correct information
             while (AddRomsFromDevices(datFile, true, true)) ;
@@ -524,7 +524,7 @@ namespace SabreTools.Library.DatFiles
             Globals.Logger.User("Creating merged sets from the DAT");
 
             // For sake of ease, the first thing we want to do is sort by game
-            datFile.BucketBy(SortedBy.Game, mergeroms, norename: true);
+            datFile.BucketBy(BucketedBy.Game, mergeroms, norename: true);
 
             // Now we want to loop through all of the games and set the correct information
             AddRomsFromChildren(datFile);
@@ -547,7 +547,7 @@ namespace SabreTools.Library.DatFiles
             Globals.Logger.User("Creating non-merged sets from the DAT");
 
             // For sake of ease, the first thing we want to do is sort by game
-            datFile.BucketBy(SortedBy.Game, mergeroms, norename: true);
+            datFile.BucketBy(BucketedBy.Game, mergeroms, norename: true);
 
             // Now we want to loop through all of the games and set the correct information
             AddRomsFromParent(datFile);
@@ -570,7 +570,7 @@ namespace SabreTools.Library.DatFiles
             Globals.Logger.User("Creating split sets from the DAT");
 
             // For sake of ease, the first thing we want to do is sort by game
-            datFile.BucketBy(SortedBy.Game, mergeroms, norename: true);
+            datFile.BucketBy(BucketedBy.Game, mergeroms, norename: true);
 
             // Now we want to loop through all of the games and set the correct information
             RemoveRomsFromChild(datFile);

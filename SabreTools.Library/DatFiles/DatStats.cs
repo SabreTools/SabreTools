@@ -254,39 +254,39 @@ namespace SabreTools.Library.DatFiles
         }
 
         /// <summary>
-        /// Get the highest-order SortedBy value that represents the statistics
+        /// Get the highest-order BucketedBy value that represents the statistics
         /// </summary>
-        public SortedBy GetBestAvailable()
+        public BucketedBy GetBestAvailable()
         {
             // If all items are supposed to have a SHA-512, we sort by that
             if (RomCount + DiskCount - NodumpCount == SHA512Count)
-                return SortedBy.SHA512;
+                return BucketedBy.SHA512;
 
             // If all items are supposed to have a SHA-384, we sort by that
             else if (RomCount + DiskCount - NodumpCount == SHA384Count)
-                return SortedBy.SHA384;
+                return BucketedBy.SHA384;
 
             // If all items are supposed to have a SHA-256, we sort by that
             else if (RomCount + DiskCount - NodumpCount == SHA256Count)
-                return SortedBy.SHA256;
+                return BucketedBy.SHA256;
 
             // If all items are supposed to have a SHA-1, we sort by that
             else if (RomCount + DiskCount - NodumpCount == SHA1Count)
-                return SortedBy.SHA1;
+                return BucketedBy.SHA1;
 
 #if NET_FRAMEWORK
             // If all items are supposed to have a RIPEMD160, we sort by that
             else if (RomCount + DiskCount - NodumpCount == RIPEMD160Count)
-                return SortedBy.RIPEMD160;
+                return BucketedBy.RIPEMD160;
 #endif
 
             // If all items are supposed to have a MD5, we sort by that
             else if (RomCount + DiskCount - NodumpCount == MD5Count)
-                return SortedBy.MD5;
+                return BucketedBy.MD5;
 
             // Otherwise, we sort by CRC
             else
-                return SortedBy.CRC;
+                return BucketedBy.CRC;
         }
 
         /// <summary>
@@ -476,7 +476,7 @@ namespace SabreTools.Library.DatFiles
                 Globals.Logger.Verbose($"Beginning stat collection for '{file}'", false);
                 List<string> games = new List<string>();
                 DatFile datdata = DatFile.CreateAndParse(file);
-                datdata.BucketBy(SortedBy.Game, DedupeType.None, norename: true);
+                datdata.BucketBy(BucketedBy.Game, DedupeType.None, norename: true);
 
                 // Output single DAT stats (if asked)
                 Globals.Logger.User($"Adding stats for file '{file}'\n", false);

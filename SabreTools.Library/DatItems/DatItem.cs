@@ -973,11 +973,11 @@ namespace SabreTools.Library.DatItems
         /// <summary>
         /// Get the dictionary key that should be used for a given item and sorting type
         /// </summary>
-        /// <param name="sortedBy">SortedBy enum representing what key to get</param>
+        /// <param name="sortedBy">BucketedBy enum representing what key to get</param>
         /// <param name="lower">True if the key should be lowercased (default), false otherwise</param>
         /// <param name="norename">True if games should only be compared on game and file name, false if system and source are counted</param>
         /// <returns>String representing the key to be used for the DatItem</returns>
-        public string GetKey(SortedBy sortedBy, bool lower = true, bool norename = true)
+        public string GetKey(BucketedBy sortedBy, bool lower = true, bool norename = true)
         {
             // Set the output key as the default blank string
             string key = string.Empty;
@@ -985,11 +985,11 @@ namespace SabreTools.Library.DatItems
             // Now determine what the key should be based on the sortedBy value
             switch (sortedBy)
             {
-                case SortedBy.CRC:
+                case BucketedBy.CRC:
                     key = (this.ItemType == ItemType.Rom ? ((Rom)this).CRC : Constants.CRCZero);
                     break;
 
-                case SortedBy.Game:
+                case BucketedBy.Game:
                     key = (norename ? string.Empty
                         : this.IndexId.ToString().PadLeft(10, '0')
                             + "-")
@@ -1005,7 +1005,7 @@ namespace SabreTools.Library.DatItems
                     key = WebUtility.HtmlEncode(key);
                     break;
 
-                case SortedBy.MD5:
+                case BucketedBy.MD5:
                     key = (this.ItemType == ItemType.Rom
                         ? ((Rom)this).MD5
                         : (this.ItemType == ItemType.Disk
@@ -1014,7 +1014,7 @@ namespace SabreTools.Library.DatItems
                     break;
 
 #if NET_FRAMEWORK
-                case SortedBy.RIPEMD160:
+                case BucketedBy.RIPEMD160:
                     key = (this.ItemType == ItemType.Rom
                         ? ((Rom)this).RIPEMD160
                         : (this.ItemType == ItemType.Disk
@@ -1023,7 +1023,7 @@ namespace SabreTools.Library.DatItems
                     break;
 #endif
 
-                case SortedBy.SHA1:
+                case BucketedBy.SHA1:
                     key = (this.ItemType == ItemType.Rom
                         ? ((Rom)this).SHA1
                         : (this.ItemType == ItemType.Disk
@@ -1031,7 +1031,7 @@ namespace SabreTools.Library.DatItems
                             : Constants.SHA1Zero));
                     break;
 
-                case SortedBy.SHA256:
+                case BucketedBy.SHA256:
                     key = (this.ItemType == ItemType.Rom
                         ? ((Rom)this).SHA256
                         : (this.ItemType == ItemType.Disk
@@ -1039,7 +1039,7 @@ namespace SabreTools.Library.DatItems
                             : Constants.SHA256Zero));
                     break;
 
-                case SortedBy.SHA384:
+                case BucketedBy.SHA384:
                     key = (this.ItemType == ItemType.Rom
                         ? ((Rom)this).SHA384
                         : (this.ItemType == ItemType.Disk
@@ -1047,7 +1047,7 @@ namespace SabreTools.Library.DatItems
                             : Constants.SHA384Zero));
                     break;
 
-                case SortedBy.SHA512:
+                case BucketedBy.SHA512:
                     key = (this.ItemType == ItemType.Rom
                         ? ((Rom)this).SHA512
                         : (this.ItemType == ItemType.Disk
