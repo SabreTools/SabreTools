@@ -263,10 +263,10 @@ namespace SabreTools.Library.DatFiles
         /// Take the arbitrarily sorted Files Dictionary and convert to one sorted by a user-defined method
         /// </summary>
         /// <param name="bucketBy">BucketedBy enum representing how to sort the individual items</param>
-        /// <param name="deduperoms">Dedupe type that should be used</param>
+        /// <param name="dedupeType">Dedupe type that should be used</param>
         /// <param name="lower">True if the key should be lowercased (default), false otherwise</param>
         /// <param name="norename">True if games should only be compared on game and file name, false if system and source are counted</param>
-        public void BucketBy(BucketedBy bucketBy, DedupeType deduperoms, bool lower = true, bool norename = true)
+        public void BucketBy(BucketedBy bucketBy, DedupeType dedupeType, bool lower = true, bool norename = true)
         {
             // If we have a situation where there's no dictionary or no keys at all, we skip
             if (Items == null || Items.Count == 0)
@@ -285,39 +285,39 @@ namespace SabreTools.Library.DatFiles
 
                 // First do the initial sort of all of the roms inplace
                 List<string> oldkeys = Keys;
-                for (int k = 0; k < oldkeys.Count; k++)
+                Parallel.For(0, oldkeys.Count, Globals.ParallelOptions, k =>
                 {
                     string key = oldkeys[k];
 
                     // Get the unsorted current list
-                    List<DatItem> roms = this[key];
+                    List<DatItem> items = this[key];
 
                     // Now add each of the roms to their respective keys
-                    for (int i = 0; i < roms.Count; i++)
+                    for (int i = 0; i < items.Count; i++)
                     {
-                        DatItem rom = roms[i];
+                        DatItem item = items[i];
 
                         // We want to get the key most appropriate for the given sorting type
-                        string newkey = rom.GetKey(bucketBy, lower, norename);
+                        string newkey = item.GetKey(bucketBy, lower, norename);
 
                         // If the key is different, move the item to the new key
                         if (newkey != key)
                         {
-                            Add(newkey, rom);
-                            Remove(key, rom);
+                            Add(newkey, item);
+                            Remove(key, item);
                             i--; // This make sure that the pointer stays on the correct since one was removed
                         }
                     }
-                }
+                });
             }
 
             // If the merge type isn't the same, we want to merge the dictionary accordingly
-            if (this.MergedBy != deduperoms)
+            if (this.MergedBy != dedupeType)
             {
-                Globals.Logger.User($"Deduping roms by {deduperoms}");
+                Globals.Logger.User($"Deduping roms by {dedupeType}");
 
                 // Set the sorted type
-                this.MergedBy = deduperoms;
+                this.MergedBy = dedupeType;
 
                 List<string> keys = Keys;
                 Parallel.ForEach(keys, Globals.ParallelOptions, key =>
@@ -329,7 +329,7 @@ namespace SabreTools.Library.DatFiles
                     DatItem.Sort(ref sortedlist, false);
 
                     // If we're merging the roms, do so
-                    if (deduperoms == DedupeType.Full || (deduperoms == DedupeType.Game && bucketBy == BucketedBy.Game))
+                    if (dedupeType == DedupeType.Full || (dedupeType == DedupeType.Game && bucketBy == BucketedBy.Game))
                         sortedlist = DatItem.Merge(sortedlist);
 
                     // Add the list back to the dictionary
