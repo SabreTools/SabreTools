@@ -1269,6 +1269,20 @@ namespace SabreTools
             }
         }
 
+        public const string CategoryListValue = "category-filter";
+        private static Feature CategoryListInput
+        {
+            get
+            {
+                return new Feature(
+                    CategoryListValue,
+                    new List<string>() { "-cat", "--category-filter" },
+                    "Filter by Category",
+                    FeatureType.List,
+                    longDescription: "Include only items with this Category in the output. Additionally, the user can specify an exact match or full C#-style regex for pattern matching. Multiple instances of this flag are allowed.");
+            }
+        }
+
         public const string CrcListValue = "crc";
         private static Feature CrcListInput
         {
@@ -1421,6 +1435,20 @@ Possible values are: None, Bios, Device, Mechanical");
                     "Filter by MD5 hash",
                     FeatureType.List,
                     longDescription: "Include only items with this MD5 hash in the output. Additionally, the user can specify an exact match or full C#-style regex for pattern matching. Multiple instances of this flag are allowed.");
+            }
+        }
+
+        public const string NotCategoryListValue = "not-category";
+        private static Feature NotCategoryListInput
+        {
+            get
+            {
+                return new Feature(
+                    NotCategoryListValue,
+                    new List<string>() { "-ncat", "--not-category" },
+                    "Filter by not Category",
+                    FeatureType.List,
+                    longDescription: "Include only items without this Category in the output. Additionally, the user can specify an exact match or full C#-style regex for pattern matching. Multiple instances of this flag are allowed.");
             }
         }
 
@@ -2055,6 +2083,7 @@ Some special strings that can be used:
 - %name% - Replaced with the Rom name
 - %manufacturer% - Replaced with game Manufacturer
 - %publisher% - Replaced with game Publisher
+- %category% - Replaced with game Category
 - %crc% - Replaced with the CRC
 - %md5% - Replaced with the MD5"
 #if NET_FRAMEWORK
@@ -2087,6 +2116,7 @@ Some special strings that can be used:
 - %name% - Replaced with the Rom name
 - %manufacturer% - Replaced with game Manufacturer
 - %publisher% - Replaced with game Publisher
+- %category% - Replaced with game Category
 - %crc% - Replaced with the CRC
 - %md5% - Replaced with the MD5
 - %sha1% - Replaced with the SHA-1
@@ -2296,6 +2326,10 @@ Some special strings that can be used:
             protected Filter GetFilter(Dictionary<string, Feature> features)
             {
                 Filter filter = new Filter();
+
+                // Category
+                filter.Category.NegativeSet.AddRange(GetList(features, NotCategoryListValue));
+                filter.Category.PositiveSet.AddRange(GetList(features, CategoryListValue));
 
                 // Clean names
                 filter.Clean.Neutral = GetBoolean(features, CleanValue);
@@ -2714,6 +2748,8 @@ Some special strings that can be used:
                 AddFeature(CopyFilesFlag);
                 AddFeature(HeaderStringInput);
                 AddFeature(ChdsAsFilesFlag);
+                AddFeature(CategoryListInput);
+                AddFeature(NotCategoryListInput);
                 AddFeature(GameNameListInput);
                 AddFeature(NotGameNameListInput);
                 AddFeature(GameDescriptionListInput);
@@ -3238,6 +3274,8 @@ The stats that are outputted are as follows:
                 this[DiffCascadeFlag].AddFeature(SkipFirstOutputFlag);
                 AddFeature(DiffReverseCascadeFlag);
                 this[DiffReverseCascadeFlag].AddFeature(SkipFirstOutputFlag);
+                AddFeature(CategoryListInput);
+                AddFeature(NotCategoryListInput);
                 AddFeature(GameNameListInput);
                 AddFeature(NotGameNameListInput);
                 AddFeature(GameDescriptionListInput);
@@ -3369,6 +3407,8 @@ The stats that are outputted are as follows:
                 AddFeature(DatDeviceNonMergedFlag);
                 AddFeature(DatNonMergedFlag);
                 AddFeature(DatFullNonMergedFlag);
+                AddFeature(CategoryListInput);
+                AddFeature(NotCategoryListInput);
                 AddFeature(GameNameListInput);
                 AddFeature(NotGameNameListInput);
                 AddFeature(GameDescriptionListInput);

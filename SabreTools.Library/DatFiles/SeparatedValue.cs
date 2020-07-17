@@ -213,6 +213,10 @@ namespace SabreTools.Library.DatFiles
                             machine.Publisher = value;
                             break;
 
+                        case "Machine.Category":
+                            machine.Category = value;
+                            break;
+
                         case "Machine.RomOf":
                             machine.RomOf = value;
                             break;

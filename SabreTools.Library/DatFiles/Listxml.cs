@@ -716,6 +716,8 @@ namespace SabreTools.Library.DatFiles
                     xtw.WriteElementString("year", datItem.Year);
                 if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Publisher, DatHeader.ExcludeFields)))
                     xtw.WriteElementString("publisher", datItem.Publisher);
+                if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Category, DatHeader.ExcludeFields)))
+                    xtw.WriteElementString("category", datItem.Category);
 
                 if (!DatHeader.ExcludeFields[(int)Field.Infos] && datItem.Infos != null && datItem.Infos.Count > 0)
                 {

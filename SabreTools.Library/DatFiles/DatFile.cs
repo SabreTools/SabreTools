@@ -1147,6 +1147,9 @@ namespace SabreTools.Library.DatFiles
                                 if (updateFields.Contains(Field.Publisher))
                                     newDatItem.Publisher = firstDupe.Publisher;
 
+                                if (updateFields.Contains(Field.Category))
+                                    newDatItem.Category = firstDupe.Category;
+
                                 if (updateFields.Contains(Field.RomOf))
                                     newDatItem.RomOf = firstDupe.RomOf;
 
@@ -3659,6 +3662,7 @@ namespace SabreTools.Library.DatFiles
                 name = item.Name,
                 manufacturer = item.Manufacturer,
                 publisher = item.Publisher,
+                category = item.Category,
                 crc = string.Empty,
                 md5 = string.Empty,
                 ripemd160 = string.Empty,
@@ -3709,6 +3713,7 @@ namespace SabreTools.Library.DatFiles
                 .Replace("%name%", name)
                 .Replace("%manufacturer%", manufacturer)
                 .Replace("%publisher%", publisher)
+                .Replace("%category%", category)
                 .Replace("%crc%", crc)
                 .Replace("%md5%", md5)
                 .Replace("%ripemd160%", ripemd160)

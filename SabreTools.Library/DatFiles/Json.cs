@@ -317,6 +317,10 @@ namespace SabreTools.Library.DatFiles
                         machine.Publisher = jtr.ReadAsString();
                         break;
 
+                    case "category":
+                        machine.Category = jtr.ReadAsString();
+                        break;
+
                     case "romof":
                         machine.RomOf = jtr.ReadAsString();
                         break;
@@ -1022,6 +1026,11 @@ namespace SabreTools.Library.DatFiles
                 {
                     jtw.WritePropertyName("publisher");
                     jtw.WriteValue(datItem.Publisher);
+                }
+                if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Category, DatHeader.ExcludeFields)))
+                {
+                    jtw.WritePropertyName("category");
+                    jtw.WriteValue(datItem.Category);
                 }
                 if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.RomOf, DatHeader.ExcludeFields)) && !string.Equals(datItem.MachineName, datItem.RomOf, StringComparison.OrdinalIgnoreCase))
                 {

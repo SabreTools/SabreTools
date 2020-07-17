@@ -49,6 +49,7 @@ namespace SabreTools.Library.DatItems
 
                 Supported = this.Supported,
                 Publisher = this.Publisher,
+                Category = this.Category,
                 Infos = this.Infos,
                 PartName = this.PartName,
                 PartInterface = this.PartInterface,

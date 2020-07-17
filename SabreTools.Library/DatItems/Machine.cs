@@ -50,6 +50,12 @@ namespace SabreTools.Library.DatItems
         public string Publisher { get; set; }
 
         /// <summary>
+        /// Category, if available
+        /// </summary>
+        [JsonProperty("category")]
+        public string Category { get; set; }
+
+        /// <summary>
         /// fomof parent
         /// </summary>
         [JsonProperty("romof")]
@@ -138,6 +144,7 @@ namespace SabreTools.Library.DatItems
             Year = null;
             Manufacturer = null;
             Publisher = null;
+            Category = null;
             RomOf = null;
             CloneOf = null;
             SampleOf = null;
@@ -165,6 +172,7 @@ namespace SabreTools.Library.DatItems
             Year = null;
             Manufacturer = null;
             Publisher = null;
+            Category = null;
             RomOf = null;
             CloneOf = null;
             SampleOf = null;
@@ -197,6 +205,7 @@ namespace SabreTools.Library.DatItems
                 Year = this.Year,
                 Manufacturer = this.Manufacturer,
                 Publisher = this.Publisher,
+                Category = this.Category,
                 RomOf = this.RomOf,
                 CloneOf = this.CloneOf,
                 SampleOf = this.SampleOf,

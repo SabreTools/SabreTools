@@ -334,6 +334,17 @@ Options:
 		  compare against the input DATs. This flag forces all CHDs to be
 		  treated like regular files.
 
+	  -cat=, --category-filter=		  Filter by category
+		  Include only items with this category in the output. Additionally,
+		  the user can specify an exact match or full C#-style regex for
+		  pattern matching. Multiple instances of this flag are allowed.
+
+	  -ncat=, --not-category=	 Filter by not category
+		  Include only items without this category in the output.
+		  Additionally, the user can specify an exact match or full C#-style
+		  regex for pattern matching. Multiple instances of this flag are
+		  allowed.
+
 	  -gn=, --game-name=		  Filter by game name
 		  Include only items with this game name in the output. Additionally,
 		  the user can specify an exact match or full C#-style regex for
@@ -950,6 +961,7 @@ Options:
 			  - %name% - Replaced with the Rom name
 			  - %manufacturer% - Replaced with game Manufacturer
 			  - %publisher% - Replaced with game Publisher
+			  - %category% - Replaced with game Category
 			  - %crc% - Replaced with the CRC
 			  - %md5% - Replaced with the MD5
 			  - %ripemd160% - Replaced with the RIPEMD160 (.NET Framework 4.8 only)
@@ -1276,6 +1288,17 @@ Options:
 			  second time, this will skip writing it. This can often speed up
 			  the output process. [Both diff-cascade and diff-reverse-cascade]
 
+	  -cat=, --category-filter=		  Filter by category
+		  Include only items with this category in the output. Additionally,
+		  the user can specify an exact match or full C#-style regex for
+		  pattern matching. Multiple instances of this flag are allowed.
+
+	  -ncat=, --not-category=	 Filter by not category
+		  Include only items without this category in the output.
+		  Additionally, the user can specify an exact match or full C#-style
+		  regex for pattern matching. Multiple instances of this flag are
+		  allowed.
+
 	  -gn=, --game-name=		  Filter by game name
 		  Include only items with this game name in the output. Additionally,
 		  the user can specify an exact match or full C#-style regex for
@@ -1532,6 +1555,17 @@ Options:
 		  Preprocess the DAT to have child sets contain all items from the
 		  parent sets based on the cloneof and romof tags as well as device
 		  references. This is incompatible with the other --dat-X flags.
+
+	  -cat=, --category-filter=		  Filter by category
+		  Include only items with this category in the output. Additionally,
+		  the user can specify an exact match or full C#-style regex for
+		  pattern matching. Multiple instances of this flag are allowed.
+
+	  -ncat=, --not-category=	 Filter by not category
+		  Include only items without this category in the output.
+		  Additionally, the user can specify an exact match or full C#-style
+		  regex for pattern matching. Multiple instances of this flag are
+		  allowed.
 
 	  -gn=, --game-name=		  Filter by game name
 		  Include only items with this game name in the output. Additionally,

@@ -173,6 +173,7 @@ namespace SabreTools.Library.DatItems
 
                 Supported = this.Supported,
                 Publisher = this.Publisher,
+                Category = this.Category,
                 Infos = this.Infos,
                 PartName = this.PartName,
                 PartInterface = this.PartInterface,
@@ -241,6 +242,7 @@ namespace SabreTools.Library.DatItems
                 Year = this.Year,
                 Manufacturer = this.Manufacturer,
                 Publisher = this.Publisher,
+                Category = this.Category,
                 RomOf = this.RomOf,
                 CloneOf = this.CloneOf,
                 SampleOf = this.SampleOf,

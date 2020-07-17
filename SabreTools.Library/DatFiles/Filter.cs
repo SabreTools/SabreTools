@@ -15,37 +15,144 @@ namespace SabreTools.Library.DatFiles
     /// <summary>
     /// Represents the filtering operations that need to be performed on a set of items, usually a DAT
     /// </summary>
-    /// TODO: Can this use `Field` instead of explicit filters?
     public class Filter
     {
+        #region Private instance variables
+
+        private Dictionary<string, object> Filters { get; set; } = new Dictionary<string, object>()
+        {
+            #region Machine Filters
+
+            { "Machine.Name", new FilterItem<string>() },
+            { "Machine.Comment", new FilterItem<string>() },
+            { "Machine.Description", new FilterItem<string>() },
+            { "Machine.Year", new FilterItem<string>() },
+            { "Machine.Manufacturer", new FilterItem<string>() },
+            { "Machine.Publisher", new FilterItem<string>() },
+            { "Machine.Category", new FilterItem<string>() },
+            { "Machine.RomOf", new FilterItem<string>() },
+            { "Machine.CloneOf", new FilterItem<string>() },
+            { "Machine.SampleOf", new FilterItem<string>() },
+            { "Machine.Supported", new FilterItem<bool?>() { Neutral = null } },
+            { "Machine.SourceFile", new FilterItem<string>() },
+            { "Machine.Runnable", new FilterItem<bool?>() { Neutral = null } },
+            { "Machine.Board", new FilterItem<string>() },
+            { "Machine.RebuildTo", new FilterItem<string>() },
+            { "Machine.Devices", new FilterItem<string>() }, // List<string>
+            { "Machine.SlotOptions", new FilterItem<string>() }, // List<string>
+            { "Machine.Infos", new FilterItem<string>() }, // List<KeyValuePair<string, string>>
+            { "Machine.MachineType", new FilterItem<MachineType>()  { Positive = MachineType.NULL, Negative = MachineType.NULL } },
+
+            { "IncludeOfInGame", new FilterItem<bool>() { Neutral = false } },
+
+            #endregion
+
+            #region DatItem Filters
+
+            { "DatItem.Type", new FilterItem<string>() },
+            { "DatItem.Name", new FilterItem<string>() },
+            { "DatItem.PartName", new FilterItem<string>() },
+            { "DatItem.PartInterface", new FilterItem<string>() },
+            { "DatItem.Features", new FilterItem<string>() }, // List<KeyValuePair<string, string>>
+            { "DatItem.AreaName", new FilterItem<string>() },
+            { "DatItem.AreaSize", new FilterItem<long?>() },
+            { "DatItem.Default", new FilterItem<bool?>() { Neutral = null } },
+            { "DatItem.Description", new FilterItem<string>() },
+            { "DatItem.Size", new FilterItem<long>() { Positive = -1, Negative = -1, Neutral = -1 } },
+            { "DatItem.CRC", new FilterItem<string>() },
+            { "DatItem.MD5", new FilterItem<string>() },
+#if NET_FRAMEWORK
+            { "DatItem.RIPEMD160", new FilterItem<string>() },
+#endif
+            { "DatItem.SHA1", new FilterItem<string>() },
+            { "DatItem.SHA256", new FilterItem<string>() },
+            { "DatItem.SHA384", new FilterItem<string>() },
+            { "DatItem.SHA512", new FilterItem<string>() },
+            { "DatItem.Merge", new FilterItem<string>() },
+            { "DatItem.Region", new FilterItem<string>() },
+            { "DatItem.Index", new FilterItem<string>() },
+            { "DatItem.Writable", new FilterItem<bool?>() { Neutral = null } },
+            { "DatItem.Optional", new FilterItem<bool?>() { Neutral = null } },
+            { "DatItem.Status", new FilterItem<ItemStatus>() { Positive = ItemStatus.NULL, Negative = ItemStatus.NULL } },
+            { "DatItem.Language", new FilterItem<string>() },
+            { "DatItem.Date", new FilterItem<string>() },
+            { "DatItem.Bios", new FilterItem<string>() },
+            { "DatItem.Offset", new FilterItem<string>() },
+
+            #endregion
+
+            #region Manipulation Filters
+
+            { "Clean", new FilterItem<bool>() { Neutral = false } },
+            { "DescriptionAsName", new FilterItem<bool>() { Neutral = false } },
+            { "InternalSplit", new FilterItem<SplitType>() { Neutral = SplitType.None } },
+            { "RemoveUnicode", new FilterItem<bool>() { Neutral = false } },
+            { "Root", new FilterItem<string>() { Neutral = null } },
+            { "Single", new FilterItem<bool>() { Neutral = false } },
+            { "Trim", new FilterItem<bool>() { Neutral = false } },
+
+            #endregion
+        };
+
+        #endregion
+
         #region Pubically facing variables
 
         #region Machine Filters
 
         /// <summary>
+        /// Include or exclude categories
+        /// </summary>
+        public FilterItem<string> Category
+        {
+            get { return Filters["Machine.Category"] as FilterItem<string>; }
+            set { Filters["Machine.Category"] = value; }
+        }
+
+        /// <summary>
         /// Include or exclude machine names
         /// </summary>
-        public FilterItem<string> MachineName { get; set; } = new FilterItem<string>();
+        public FilterItem<string> MachineName
+        {
+            get { return Filters["Machine.Name"] as FilterItem<string>; }
+            set { Filters["Machine.Name"] = value; }
+        }
 
         /// <summary>
         /// Include romof and cloneof when filtering machine names
         /// </summary>
-        public FilterItem<bool> IncludeOfInGame { get; set; } = new FilterItem<bool>() { Neutral = false };
+        public FilterItem<bool> IncludeOfInGame
+        {
+            get { return Filters["IncludeOfInGame"] as FilterItem<bool>; }
+            set { Filters["IncludeOfInGame"] = value; }
+        }
 
         /// <summary>
         /// Include or exclude machine descriptions
         /// </summary>
-        public FilterItem<string> MachineDescription { get; set; } = new FilterItem<string>();
+        public FilterItem<string> MachineDescription
+        {
+            get { return Filters["Machine.Description"] as FilterItem<string>; }
+            set { Filters["Machine.Description"] = value; }
+        }
 
         /// <summary>
         /// Include or exclude machine types
         /// </summary>
-        public FilterItem<MachineType> MachineTypes { get; set; } = new FilterItem<MachineType>() { Positive = MachineType.NULL, Negative = MachineType.NULL };
+        public FilterItem<MachineType> MachineTypes
+        {
+            get { return Filters["Machine.MachineType"] as FilterItem<MachineType>; }
+            set { Filters["Machine.MachineType"] = value; }
+        }
 
         /// <summary>
         /// Include or exclude items with the "Runnable" tag
         /// </summary>
-        public FilterItem<bool?> Runnable { get; set; } = new FilterItem<bool?>() { Neutral = null };
+        public FilterItem<bool?> Runnable
+        {
+            get { return Filters["Machine.Runnable"] as FilterItem<bool?>; }
+            set { Filters["Machine.Runnable"] = value; }
+        }
 
         #endregion
 
@@ -54,60 +161,104 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude item names
         /// </summary>
-        public FilterItem<string> ItemName { get; set; } = new FilterItem<string>();
+        public FilterItem<string> ItemName
+        {
+            get { return Filters["DatItem.Name"] as FilterItem<string>; }
+            set { Filters["DatItem.Name"] = value; }
+        }
 
         /// <summary>
         /// Include or exclude item types
         /// </summary>
-        public FilterItem<string> ItemTypes { get; set; } = new FilterItem<string>();
+        public FilterItem<string> ItemTypes
+        {
+            get { return Filters["DatItem.Type"] as FilterItem<string>; }
+            set { Filters["DatItem.Type"] = value; }
+        }
 
         /// <summary>
         /// Include or exclude item sizes
         /// </summary>
         /// <remarks>Positive means "Greater than or equal", Negative means "Less than or equal", Neutral means "Equal"</remarks>
-        public FilterItem<long> Size { get; set; } = new FilterItem<long>() { Positive = -1, Negative = -1, Neutral = -1 };
+        public FilterItem<long> Size
+        {
+            get { return Filters["DatItem.Size"] as FilterItem<long>; }
+            set { Filters["DatItem.Size"] = value; }
+        }
 
         /// <summary>
         /// Include or exclude CRC32 hashes
         /// </summary>
-        public FilterItem<string> CRC { get; set; } = new FilterItem<string>();
+        public FilterItem<string> CRC
+        {
+            get { return Filters["DatItem.CRC"] as FilterItem<string>; }
+            set { Filters["DatItem.CRC"] = value; }
+        }
 
         /// <summary>
         /// Include or exclude MD5 hashes
         /// </summary>
-        public FilterItem<string> MD5 { get; set; } = new FilterItem<string>();
+        public FilterItem<string> MD5
+        {
+            get { return Filters["DatItem.MD5"] as FilterItem<string>; }
+            set { Filters["DatItem.MD5"] = value; }
+        }
 
 #if NET_FRAMEWORK
         /// <summary>
         /// Include or exclude RIPEMD160 hashes
         /// </summary>
-        public FilterItem<string> RIPEMD160 { get; set; } = new FilterItem<string>();
+        public FilterItem<string> RIPEMD160
+        {
+            get { return Filters["DatItem.RIPEMD160"] as FilterItem<string>; }
+            set { Filters["DatItem.RIPEMD160"] = value; }
+        }
 #endif
 
         /// <summary>
         /// Include or exclude SHA-1 hashes
         /// </summary>
-        public FilterItem<string> SHA1 { get; set; } = new FilterItem<string>();
+        public FilterItem<string> SHA1
+        {
+            get { return Filters["DatItem.SHA1"] as FilterItem<string>; }
+            set { Filters["DatItem.SHA1"] = value; }
+        }
 
         /// <summary>
         /// Include or exclude SHA-256 hashes
         /// </summary>
-        public FilterItem<string> SHA256 { get; set; } = new FilterItem<string>();
+        public FilterItem<string> SHA256
+        {
+            get { return Filters["DatItem.SHA256"] as FilterItem<string>; }
+            set { Filters["DatItem.SHA256"] = value; }
+        }
 
         /// <summary>
         /// Include or exclude SHA-384 hashes
         /// </summary>
-        public FilterItem<string> SHA384 { get; set; } = new FilterItem<string>();
+        public FilterItem<string> SHA384
+        {
+            get { return Filters["DatItem.SHA384"] as FilterItem<string>; }
+            set { Filters["DatItem.SHA384"] = value; }
+        }
 
         /// <summary>
         /// Include or exclude SHA-512 hashes
         /// </summary>
-        public FilterItem<string> SHA512 { get; set; } = new FilterItem<string>();
+        public FilterItem<string> SHA512
+        {
+            get { return Filters["DatItem.SHA512"] as FilterItem<string>; }
+            set { Filters["DatItem.SHA512"] = value; }
+        }
 
         /// <summary>
         /// Include or exclude item statuses
         /// </summary>
-        public FilterItem<ItemStatus> ItemStatuses { get; set; } = new FilterItem<ItemStatus>() { Positive = ItemStatus.NULL, Negative = ItemStatus.NULL };
+        public FilterItem<ItemStatus> ItemStatuses
+        {
+            get { return Filters["DatItem.Status"] as FilterItem<ItemStatus>; }
+            set { Filters["DatItem.Status"] = value; }
+        }
 
         #endregion
 
@@ -116,37 +267,65 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Clean all names to WoD standards
         /// </summary>
-        public FilterItem<bool> Clean { get; set; } = new FilterItem<bool>() { Neutral = false };
+        public FilterItem<bool> Clean
+        {
+            get { return Filters["Clean"] as FilterItem<bool>; }
+            set { Filters["Clean"] = value; }
+        }
 
         /// <summary>
         /// Set Machine Description from Machine Name
         /// </summary>
-        public FilterItem<bool> DescriptionAsName { get; set; } = new FilterItem<bool>() { Neutral = false };
+        public FilterItem<bool> DescriptionAsName
+        {
+            get { return Filters["DescriptionAsName"] as FilterItem<bool>; }
+            set { Filters["DescriptionAsName"] = value; }
+        }
 
         /// <summary>
         /// Internally split a DatFile
         /// </summary>
-        public FilterItem<SplitType> InternalSplit { get; set; } = new FilterItem<SplitType>() { Neutral = SplitType.None };
+        public FilterItem<SplitType> InternalSplit
+        {
+            get { return Filters["InternalSplit"] as FilterItem<SplitType>; }
+            set { Filters["InternalSplit"] = value; }
+        }
 
         /// <summary>
         /// Remove all unicode characters
         /// </summary>
-        public FilterItem<bool> RemoveUnicode { get; set; } = new FilterItem<bool>() { Neutral = false };
-
-        /// <summary>
-        /// Change all machine names to "!"
-        /// </summary>
-        public FilterItem<bool> Single { get; set; } = new FilterItem<bool>() { Neutral = false };
-
-        /// <summary>
-        /// Trim total machine and item name to not exceed NTFS limits
-        /// </summary>
-        public FilterItem<bool> Trim { get; set; } = new FilterItem<bool>() { Neutral = false };
+        public FilterItem<bool> RemoveUnicode
+        {
+            get { return Filters["RemoveUnicode"] as FilterItem<bool>; }
+            set { Filters["RemoveUnicode"] = value; }
+        }
 
         /// <summary>
         /// Include root directory when determing trim sizes
         /// </summary>
-        public FilterItem<string> Root { get; set; } = new FilterItem<string>() { Neutral = null };
+        public FilterItem<string> Root
+        {
+            get { return Filters["Root"] as FilterItem<string>; }
+            set { Filters["Root"] = value; }
+        }
+
+        /// <summary>
+        /// Change all machine names to "!"
+        /// </summary>
+        public FilterItem<bool> Single
+        {
+            get { return Filters["Single"] as FilterItem<bool>; }
+            set { Filters["Single"] = value; }
+        }
+
+        /// <summary>
+        /// Trim total machine and item name to not exceed NTFS limits
+        /// </summary>
+        public FilterItem<bool> Trim
+        {
+            get { return Filters["Trim"] as FilterItem<bool>; }
+            set { Filters["Trim"] = value; }
+        }
 
         #endregion
 
@@ -276,6 +455,12 @@ namespace SabreTools.Library.DatFiles
             if (this.MachineTypes.MatchesPositive(MachineType.NULL, item.MachineType) == false)
                 return false;
             if (this.MachineTypes.MatchesNegative(MachineType.NULL, item.MachineType) == true)
+                return false;
+
+            // Filter on machine category
+            if (this.Category.MatchesPositiveSet(item.Category) == false)
+                return false;
+            if (this.Category.MatchesNegativeSet(item.Category) == true)
                 return false;
 
             // Filter on machine runability

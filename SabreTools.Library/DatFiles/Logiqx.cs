@@ -377,6 +377,10 @@ namespace SabreTools.Library.DatFiles
                         machine.Publisher = reader.ReadElementContentAsString();
                         break;
 
+                    case "category": // Not technically supported but used by some legacy DATs
+                        machine.Category = reader.ReadElementContentAsString();
+                        break;
+
                     case "trurip": // This is special metadata unique to TruRip
                         ReadTruRip(reader.ReadSubtree(), machine);
 
@@ -588,7 +592,7 @@ namespace SabreTools.Library.DatFiles
                         break;
 
                     case "genre":
-                        reader.ReadElementContentAsString();
+                        machine.Category = reader.ReadElementContentAsString();
                         break;
 
                     case "subgenre":
@@ -894,6 +898,8 @@ namespace SabreTools.Library.DatFiles
                     xtw.WriteElementString("publisher", datItem.Publisher);
                 if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Manufacturer, DatHeader.ExcludeFields)))
                     xtw.WriteElementString("manufacturer", datItem.Manufacturer);
+                if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Category, DatHeader.ExcludeFields)))
+                    xtw.WriteElementString("category", datItem.Category);
 
                 xtw.Flush();
             }

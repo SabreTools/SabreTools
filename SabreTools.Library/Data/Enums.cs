@@ -261,7 +261,6 @@
         Game,
     }
 
-
     /// <summary>
     /// Determines the DAT deduplication type
     /// </summary>
@@ -365,6 +364,7 @@
         Year,
         Manufacturer,
         Publisher,
+        Category,
         RomOf,
         CloneOf,
         SampleOf,

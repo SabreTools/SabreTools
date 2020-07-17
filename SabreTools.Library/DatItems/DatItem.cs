@@ -207,6 +207,32 @@ namespace SabreTools.Library.DatItems
         }
 
         /// <summary>
+        /// Machine category, if available
+        /// </summary>
+        [JsonIgnore]
+        public string Category
+        {
+            get
+            {
+                if (_machine == null)
+                {
+                    _machine = new Machine();
+                }
+
+                return _machine.Category;
+            }
+            set
+            {
+                if (_machine == null)
+                {
+                    _machine = new Machine();
+                }
+
+                _machine.Category = value;
+            }
+        }
+
+        /// <summary>
         /// Machine romof parent
         /// </summary>
         [JsonIgnore]
@@ -632,6 +658,9 @@ namespace SabreTools.Library.DatItems
                     break;
                 case Field.Publisher:
                     fieldValue = this.Publisher;
+                    break;
+                case Field.Category:
+                    fieldValue = this.Category;
                     break;
                 case Field.RomOf:
                     fieldValue = this.RomOf;

@@ -135,6 +135,9 @@ namespace SabreTools.Library.Tools
                     return Field.BiosDescription;
                 case "board":
                     return Field.Board;
+                case "category":
+                case "machinecategory":
+                    return Field.Category;
                 case "cloneof":
                     return Field.CloneOf;
                 case "comment":

@@ -241,6 +241,9 @@ namespace SabreTools.Library.DatFiles
                         case "manufacturer":
                             machine.Manufacturer = itemVal;
                             break;
+                        case "category":
+                            machine.Category = itemVal;
+                            break;
                         case "cloneof":
                             machine.CloneOf = itemVal;
                             break;
@@ -634,6 +637,8 @@ namespace SabreTools.Library.DatFiles
                     cmpw.WriteStandalone("year", datItem.Year);
                 if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Manufacturer, DatHeader.ExcludeFields)))
                     cmpw.WriteStandalone("manufacturer", datItem.Manufacturer);
+                if (!string.IsNullOrWhiteSpace(datItem.GetField(Field.Category, DatHeader.ExcludeFields)))
+                    cmpw.WriteStandalone("category", datItem.Category);
 
                 cmpw.Flush();
             }
