@@ -2354,11 +2354,11 @@ Some special strings that can be used:
                 // Item status
                 foreach (string stat in GetList(features, NotStatusListValue))
                 {
-                    filter.ItemStatuses.Negative |= stat.AsItemStatus();
+                    filter.Status.Negative |= stat.AsItemStatus();
                 }
                 foreach (string stat in GetList(features, StatusListValue))
                 {
-                    filter.ItemStatuses.Positive |= stat.AsItemStatus();
+                    filter.Status.Positive |= stat.AsItemStatus();
                 }
 
                 // Item type
