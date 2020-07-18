@@ -15,6 +15,7 @@ namespace SabreTools.Library.DatFiles
     /// <summary>
     /// Represents the filtering operations that need to be performed on a set of items, usually a DAT
     /// </summary>
+    /// TODO: Can clever use of Filtering allow for easier external splitting methods?
     public class Filter
     {
         #region Private instance variables
@@ -298,6 +299,8 @@ namespace SabreTools.Library.DatFiles
         #endregion // Pubically facing variables
 
         #region Instance methods
+
+        #region Filter Population
 
         /// <summary>
         /// Populate the filters object using a set of key:value filters
@@ -742,6 +745,8 @@ namespace SabreTools.Library.DatFiles
             }
         }
 
+        #endregion
+
         /// <summary>
         /// Filter a DatFile using the inputs
         /// </summary>
@@ -847,6 +852,114 @@ namespace SabreTools.Library.DatFiles
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Filter a DatFile outputting to a new DatFile
+        /// </summary>
+        /// <param name="datFile">DatFile to filter</param>
+        /// <param name="useTags">True if DatFile tags override splitting, false otherwise</param>
+        /// <returns>True if the DatFile was filtered, false on error</returns>
+        public DatFile FilterTo(DatFile datFile, bool useTags)
+        {
+            DatFile outDat = DatFile.Create(datFile.DatHeader);
+
+            try
+            {
+                // Loop over every key in the dictionary
+                List<string> keys = datFile.Keys;
+                foreach (string key in keys)
+                {
+                    // For every item in the current key
+                    List<DatItem> items = datFile[key];
+                    List<DatItem> newitems = new List<DatItem>();
+                    foreach (DatItem item in items)
+                    {
+                        // If the rom passes the filter, include it
+                        if (ItemPasses(item))
+                        {
+                            // If we're stripping unicode characters, do so from all relevant things
+                            if (this.RemoveUnicode)
+                            {
+                                item.Name = Sanitizer.RemoveUnicodeCharacters(item.Name);
+                                item.MachineName = Sanitizer.RemoveUnicodeCharacters(item.MachineName);
+                                item.MachineDescription = Sanitizer.RemoveUnicodeCharacters(item.MachineDescription);
+                            }
+
+                            // If we're in cleaning mode, do so from all relevant things
+                            if (this.Clean)
+                            {
+                                item.MachineName = Sanitizer.CleanGameName(item.MachineName);
+                                item.MachineDescription = Sanitizer.CleanGameName(item.MachineDescription);
+                            }
+
+                            // If we are in single game mode, rename all games
+                            if (this.Single)
+                                item.MachineName = "!";
+
+                            // If we are in NTFS trim mode, trim the game name
+                            if (this.Trim)
+                            {
+                                // Windows max name length is 260
+                                int usableLength = 260 - item.MachineName.Length - this.Root.Length;
+                                if (item.Name.Length > usableLength)
+                                {
+                                    string ext = Path.GetExtension(item.Name);
+                                    item.Name = item.Name.Substring(0, usableLength - ext.Length);
+                                    item.Name += ext;
+                                }
+                            }
+
+                            // Lock the list and add the item back
+                            lock (newitems)
+                            {
+                                newitems.Add(item);
+                            }
+                        }
+                    }
+
+                    outDat.AddRange(key, newitems);
+                }
+
+                // Process description to machine name
+                if (this.DescriptionAsName)
+                    MachineDescriptionToName(outDat);
+
+                // If we are using tags from the DAT, set the proper input for split type unless overridden
+                if (useTags && this.InternalSplit == SplitType.None)
+                    this.InternalSplit = outDat.DatHeader.ForceMerging.AsSplitType();
+
+                // Run internal splitting
+                ProcessSplitType(outDat, this.InternalSplit);
+
+                // We remove any blanks, if we aren't supposed to have any
+                if (!outDat.DatHeader.KeepEmptyGames)
+                {
+                    foreach (string key in outDat.Keys)
+                    {
+                        List<DatItem> items = outDat[key];
+                        List<DatItem> newitems = items.Where(i => i.ItemType != ItemType.Blank).ToList();
+
+                        outDat.Remove(key);
+                        outDat.AddRange(key, newitems);
+                    }
+                }
+
+                // If we are removing scene dates, do that now
+                if (outDat.DatHeader.SceneDateStrip)
+                    StripSceneDatesFromItems(outDat);
+
+                // Run the one rom per game logic, if required
+                if (outDat.DatHeader.OneRom)
+                    OneRomPerGame(outDat);
+            }
+            catch (Exception ex)
+            {
+                Globals.Logger.Error(ex.ToString());
+                return null;
+            }
+
+            return outDat;
         }
 
         /// <summary>
