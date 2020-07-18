@@ -350,6 +350,7 @@
         NULL = 0,
 
         // Generic DatItem
+        ItemType,
         Name,
         PartName,
         PartInterface,

@@ -19,455 +19,231 @@ namespace SabreTools.Library.DatFiles
     {
         #region Private instance variables
 
-        private Dictionary<string, object> Filters { get; set; } = new Dictionary<string, object>()
-        {
-            #region Machine Filters
-
-            { "Machine.Name", new FilterItem<string>() },
-            { "Machine.Comment", new FilterItem<string>() },
-            { "Machine.Description", new FilterItem<string>() },
-            { "Machine.Year", new FilterItem<string>() },
-            { "Machine.Manufacturer", new FilterItem<string>() },
-            { "Machine.Publisher", new FilterItem<string>() },
-            { "Machine.Category", new FilterItem<string>() },
-            { "Machine.RomOf", new FilterItem<string>() },
-            { "Machine.CloneOf", new FilterItem<string>() },
-            { "Machine.SampleOf", new FilterItem<string>() },
-            { "Machine.Supported", new FilterItem<bool?>() { Neutral = null } },
-            { "Machine.SourceFile", new FilterItem<string>() },
-            { "Machine.Runnable", new FilterItem<bool?>() { Neutral = null } },
-            { "Machine.Board", new FilterItem<string>() },
-            { "Machine.RebuildTo", new FilterItem<string>() },
-            { "Machine.Devices", new FilterItem<string>() }, // TODO: List<string>
-            { "Machine.SlotOptions", new FilterItem<string>() }, // TODO: List<string>
-            { "Machine.Infos", new FilterItem<string>() }, // TODO: List<KeyValuePair<string, string>>
-            { "Machine.MachineType", new FilterItem<MachineType>() { Positive = MachineType.NULL, Negative = MachineType.NULL } },
-
-            #endregion
-
-            #region DatItem Filters
-
-            { "DatItem.Type", new FilterItem<string>() },
-            { "DatItem.Name", new FilterItem<string>() },
-            { "DatItem.PartName", new FilterItem<string>() },
-            { "DatItem.PartInterface", new FilterItem<string>() },
-            { "DatItem.Features", new FilterItem<string>() }, // TODO: List<KeyValuePair<string, string>>
-            { "DatItem.AreaName", new FilterItem<string>() },
-            { "DatItem.AreaSize", new FilterItem<long?>() { Positive = null, Negative = null, Neutral = null } },
-            { "DatItem.Default", new FilterItem<bool?>() { Neutral = null } },
-            { "DatItem.Description", new FilterItem<string>() },
-            { "DatItem.Size", new FilterItem<long>() { Positive = -1, Negative = -1, Neutral = -1 } },
-            { "DatItem.CRC", new FilterItem<string>() },
-            { "DatItem.MD5", new FilterItem<string>() },
-#if NET_FRAMEWORK
-            { "DatItem.RIPEMD160", new FilterItem<string>() },
-#endif
-            { "DatItem.SHA1", new FilterItem<string>() },
-            { "DatItem.SHA256", new FilterItem<string>() },
-            { "DatItem.SHA384", new FilterItem<string>() },
-            { "DatItem.SHA512", new FilterItem<string>() },
-            { "DatItem.Merge", new FilterItem<string>() },
-            { "DatItem.Region", new FilterItem<string>() },
-            { "DatItem.Index", new FilterItem<string>() },
-            { "DatItem.Writable", new FilterItem<bool?>() { Neutral = null } },
-            { "DatItem.Optional", new FilterItem<bool?>() { Neutral = null } },
-            { "DatItem.Status", new FilterItem<ItemStatus>() { Positive = ItemStatus.NULL, Negative = ItemStatus.NULL } },
-            { "DatItem.Language", new FilterItem<string>() },
-            { "DatItem.Date", new FilterItem<string>() },
-            { "DatItem.Bios", new FilterItem<string>() },
-            { "DatItem.Offset", new FilterItem<string>() },
-
-            #endregion
-        };
-
-        // TODO: Can these explicit vars be removed eventually?
         #region Machine Filters
 
         /// <summary>
         /// Include or exclude machine names
         /// </summary>
-        private FilterItem<string> MachineName
-        {
-            get { return Filters["Machine.Name"] as FilterItem<string>; }
-            set { Filters["Machine.Name"] = value; }
-        }
+        private FilterItem<string> MachineName = new FilterItem<string>();
 
         /// <summary>
         /// Include or exclude machine comments
         /// </summary>
-        private FilterItem<string> Comment
-        {
-            get { return Filters["Machine.Comment"] as FilterItem<string>; }
-            set { Filters["Machine.Comment"] = value; }
-        }
+        private FilterItem<string> Comment = new FilterItem<string>();
 
         /// <summary>
         /// Include or exclude machine descriptions
         /// </summary>
-        private FilterItem<string> MachineDescription
-        {
-            get { return Filters["Machine.Description"] as FilterItem<string>; }
-            set { Filters["Machine.Description"] = value; }
-        }
+        private FilterItem<string> MachineDescription = new FilterItem<string>();
 
         /// <summary>
         /// Include or exclude machine years
         /// </summary>
-        private FilterItem<string> Year
-        {
-            get { return Filters["Machine.Year"] as FilterItem<string>; }
-            set { Filters["Machine.Year"] = value; }
-        }
+        private FilterItem<string> Year = new FilterItem<string>();
 
         /// <summary>
         /// Include or exclude machine manufacturers
         /// </summary>
-        private FilterItem<string> Manufacturer
-        {
-            get { return Filters["Machine.Manufacturer"] as FilterItem<string>; }
-            set { Filters["Machine.Manufacturer"] = value; }
-        }
+        private FilterItem<string> Manufacturer = new FilterItem<string>();
 
         /// <summary>
         /// Include or exclude machine publishers
         /// </summary>
-        private FilterItem<string> Publisher
-        {
-            get { return Filters["Machine.Publisher"] as FilterItem<string>; }
-            set { Filters["Machine.Publisher"] = value; }
-        }
+        private FilterItem<string> Publisher = new FilterItem<string>();
 
         /// <summary>
         /// Include or exclude machine categories
         /// </summary>
-        private FilterItem<string> Category
-        {
-            get { return Filters["Machine.Category"] as FilterItem<string>; }
-            set { Filters["Machine.Category"] = value; }
-        }
+        private FilterItem<string> Category = new FilterItem<string>();
 
         /// <summary>
         /// Include or exclude machine romof
         /// </summary>
-        private FilterItem<string> RomOf
-        {
-            get { return Filters["Machine.RomOf"] as FilterItem<string>; }
-            set { Filters["Machine.RomOf"] = value; }
-        }
+        private FilterItem<string> RomOf = new FilterItem<string>();
 
         /// <summary>
         /// Include or exclude machine cloneof
         /// </summary>
-        private FilterItem<string> CloneOf
-        {
-            get { return Filters["Machine.CloneOf"] as FilterItem<string>; }
-            set { Filters["Machine.CloneOf"] = value; }
-        }
+        private FilterItem<string> CloneOf = new FilterItem<string>();
 
         /// <summary>
         /// Include or exclude machine sampleof
         /// </summary>
-        private FilterItem<string> SampleOf
-        {
-            get { return Filters["Machine.SampleOf"] as FilterItem<string>; }
-            set { Filters["Machine.SampleOf"] = value; }
-        }
+        private FilterItem<string> SampleOf = new FilterItem<string>();
 
         /// <summary>
         /// Include or exclude items with the "Supported" tag
         /// </summary>
-        private FilterItem<bool?> Supported
-        {
-            get { return Filters["Machine.Supported"] as FilterItem<bool?>; }
-            set { Filters["Machine.Supported"] = value; }
-        }
+        private FilterItem<bool?> Supported = new FilterItem<bool?>() { Neutral = null };
 
         /// <summary>
         /// Include or exclude machine source file
         /// </summary>
-        private FilterItem<string> SourceFile
-        {
-            get { return Filters["Machine.SourceFile"] as FilterItem<string>; }
-            set { Filters["Machine.SourceFile"] = value; }
-        }
+        private FilterItem<string> SourceFile = new FilterItem<string>();
 
         /// <summary>
         /// Include or exclude items with the "Runnable" tag
         /// </summary>
-        private FilterItem<bool?> Runnable
-        {
-            get { return Filters["Machine.Runnable"] as FilterItem<bool?>; }
-            set { Filters["Machine.Runnable"] = value; }
-        }
+        private FilterItem<bool?> Runnable = new FilterItem<bool?>() { Neutral = null };
 
         /// <summary>
         /// Include or exclude machine board
         /// </summary>
-        private FilterItem<string> Board
-        {
-            get { return Filters["Machine.Board"] as FilterItem<string>; }
-            set { Filters["Machine.Board"] = value; }
-        }
+        private FilterItem<string> Board = new FilterItem<string>();
 
         /// <summary>
         /// Include or exclude machine rebuildto
         /// </summary>
-        private FilterItem<string> RebuildTo
-        {
-            get { return Filters["Machine.RebuildTo"] as FilterItem<string>; }
-            set { Filters["Machine.RebuildTo"] = value; }
-        }
+        private FilterItem<string> RebuildTo = new FilterItem<string>();
+
+        // TODO: Machine.Devices - List<string>
+        // TODO: Machine.SlotOptions - List<string>
+        // TODO: Machine.Infos - List<KeyValuePair<string, string>>
 
         /// <summary>
         /// Include or exclude machine types
         /// </summary>
-        private FilterItem<MachineType> MachineTypes
-        {
-            get { return Filters["Machine.MachineType"] as FilterItem<MachineType>; }
-            set { Filters["Machine.MachineType"] = value; }
-        }
+        private FilterItem<MachineType> MachineTypes = new FilterItem<MachineType>() { Positive = MachineType.NULL, Negative = MachineType.NULL };
 
         #endregion
 
-        // TODO: Can these explicit vars be removed eventually?
         #region DatItem Filters
 
         /// <summary>
         /// Include or exclude item types
         /// </summary>
-        private FilterItem<string> ItemTypes
-        {
-            get { return Filters["DatItem.Type"] as FilterItem<string>; }
-            set { Filters["DatItem.Type"] = value; }
-        }
+        private FilterItem<string> ItemTypes = new FilterItem<string>();
 
         /// <summary>
         /// Include or exclude item names
         /// </summary>
-        private FilterItem<string> ItemName
-        {
-            get { return Filters["DatItem.Name"] as FilterItem<string>; }
-            set { Filters["DatItem.Name"] = value; }
-        }
+        private FilterItem<string> ItemName = new FilterItem<string>();
+
+        // TODO: DatItem.Features - List<KeyValuePair<string, string>>
 
         /// <summary>
         /// Include or exclude part names
         /// </summary>
-        private FilterItem<string> PartName
-        {
-            get { return Filters["DatItem.PartName"] as FilterItem<string>; }
-            set { Filters["DatItem.PartName"] = value; }
-        }
+        private FilterItem<string> PartName = new FilterItem<string>();
 
         /// <summary>
         /// Include or exclude part interfaces
         /// </summary>
-        private FilterItem<string> PartInterface
-        {
-            get { return Filters["DatItem.PartInterface"] as FilterItem<string>; }
-            set { Filters["DatItem.PartInterface"] = value; }
-        }
+        private FilterItem<string> PartInterface = new FilterItem<string>();
 
         /// <summary>
         /// Include or exclude area names
         /// </summary>
-        private FilterItem<string> AreaName
-        {
-            get { return Filters["DatItem.AreaName"] as FilterItem<string>; }
-            set { Filters["DatItem.AreaName"] = value; }
-        }
+        private FilterItem<string> AreaName = new FilterItem<string>();
 
         /// <summary>
         /// Include or exclude area sizes
         /// </summary>
-        private FilterItem<long?> AreaSize
-        {
-            get { return Filters["DatItem.AreaSize"] as FilterItem<long?>; }
-            set { Filters["DatItem.AreaSize"] = value; }
-        }
+        /// <remarks>Positive means "Greater than or equal", Negative means "Less than or equal", Neutral means "Equal"</remarks>
+        private FilterItem<long?> AreaSize = new FilterItem<long?>() { Positive = null, Negative = null, Neutral = null };
 
         /// <summary>
         /// Include or exclude items with the "Default" tag
         /// </summary>
-        private FilterItem<bool?> Default
-        {
-            get { return Filters["DatItem.Default"] as FilterItem<bool?>; }
-            set { Filters["DatItem.Default"] = value; }
-        }
+        private FilterItem<bool?> Default = new FilterItem<bool?>() { Neutral = null };
 
         /// <summary>
         /// Include or exclude descriptions
         /// </summary>
-        private FilterItem<string> Description
-        {
-            get { return Filters["DatItem.Description"] as FilterItem<string>; }
-            set { Filters["DatItem.Description"] = value; }
-        }
+        private FilterItem<string> Description = new FilterItem<string>();
 
         /// <summary>
         /// Include or exclude item sizes
         /// </summary>
         /// <remarks>Positive means "Greater than or equal", Negative means "Less than or equal", Neutral means "Equal"</remarks>
-        private FilterItem<long> Size
-        {
-            get { return Filters["DatItem.Size"] as FilterItem<long>; }
-            set { Filters["DatItem.Size"] = value; }
-        }
+        private FilterItem<long> Size = new FilterItem<long>() { Positive = -1, Negative = -1, Neutral = -1 };
 
         /// <summary>
         /// Include or exclude CRC32 hashes
         /// </summary>
-        private FilterItem<string> CRC
-        {
-            get { return Filters["DatItem.CRC"] as FilterItem<string>; }
-            set { Filters["DatItem.CRC"] = value; }
-        }
+        private FilterItem<string> CRC = new FilterItem<string>();
 
         /// <summary>
         /// Include or exclude MD5 hashes
         /// </summary>
-        private FilterItem<string> MD5
-        {
-            get { return Filters["DatItem.MD5"] as FilterItem<string>; }
-            set { Filters["DatItem.MD5"] = value; }
-        }
+        private FilterItem<string> MD5 = new FilterItem<string>();
 
 #if NET_FRAMEWORK
         /// <summary>
         /// Include or exclude RIPEMD160 hashes
         /// </summary>
-        private FilterItem<string> RIPEMD160
-        {
-            get { return Filters["DatItem.RIPEMD160"] as FilterItem<string>; }
-            set { Filters["DatItem.RIPEMD160"] = value; }
-        }
+        private FilterItem<string> RIPEMD160 = new FilterItem<string>();
 #endif
 
         /// <summary>
         /// Include or exclude SHA-1 hashes
         /// </summary>
-        private FilterItem<string> SHA1
-        {
-            get { return Filters["DatItem.SHA1"] as FilterItem<string>; }
-            set { Filters["DatItem.SHA1"] = value; }
-        }
+        private FilterItem<string> SHA1 = new FilterItem<string>();
 
         /// <summary>
         /// Include or exclude SHA-256 hashes
         /// </summary>
-        private FilterItem<string> SHA256
-        {
-            get { return Filters["DatItem.SHA256"] as FilterItem<string>; }
-            set { Filters["DatItem.SHA256"] = value; }
-        }
+        private FilterItem<string> SHA256 = new FilterItem<string>();
 
         /// <summary>
         /// Include or exclude SHA-384 hashes
         /// </summary>
-        private FilterItem<string> SHA384
-        {
-            get { return Filters["DatItem.SHA384"] as FilterItem<string>; }
-            set { Filters["DatItem.SHA384"] = value; }
-        }
+        private FilterItem<string> SHA384 = new FilterItem<string>();
 
         /// <summary>
         /// Include or exclude SHA-512 hashes
         /// </summary>
-        private FilterItem<string> SHA512
-        {
-            get { return Filters["DatItem.SHA512"] as FilterItem<string>; }
-            set { Filters["DatItem.SHA512"] = value; }
-        }
+        private FilterItem<string> SHA512 = new FilterItem<string>();
 
         /// <summary>
         /// Include or exclude merge tags
         /// </summary>
-        private FilterItem<string> MergeTag
-        {
-            get { return Filters["DatItem.Merge"] as FilterItem<string>; }
-            set { Filters["DatItem.Merge"] = value; }
-        }
+        private FilterItem<string> MergeTag = new FilterItem<string>();
 
         /// <summary>
         /// Include or exclude regions
         /// </summary>
-        private FilterItem<string> Region
-        {
-            get { return Filters["DatItem.Region"] as FilterItem<string>; }
-            set { Filters["DatItem.Region"] = value; }
-        }
+        private FilterItem<string> Region = new FilterItem<string>();
 
         /// <summary>
         /// Include or exclude indexes
         /// </summary>
-        private FilterItem<string> Index
-        {
-            get { return Filters["DatItem.Index"] as FilterItem<string>; }
-            set { Filters["DatItem.Index"] = value; }
-        }
+        private FilterItem<string> Index = new FilterItem<string>();
 
         /// <summary>
         /// Include or exclude items with the "Writable" tag
         /// </summary>
-        private FilterItem<bool?> Writable
-        {
-            get { return Filters["DatItem.Writable"] as FilterItem<bool?>; }
-            set { Filters["DatItem.Writable"] = value; }
-        }
+        private FilterItem<bool?> Writable = new FilterItem<bool?>() { Neutral = null };
 
         /// <summary>
         /// Include or exclude items with the "Writable" tag
         /// </summary>
-        private FilterItem<bool?> Optional
-        {
-            get { return Filters["DatItem.Optional"] as FilterItem<bool?>; }
-            set { Filters["DatItem.Optional"] = value; }
-        }
+        private FilterItem<bool?> Optional = new FilterItem<bool?>() { Neutral = null };
 
         /// <summary>
         /// Include or exclude item statuses
         /// </summary>
-        private FilterItem<ItemStatus> Status
-        {
-            get { return Filters["DatItem.Status"] as FilterItem<ItemStatus>; }
-            set { Filters["DatItem.Status"] = value; }
-        }
+        private FilterItem<ItemStatus> Status = new FilterItem<ItemStatus>() { Positive = ItemStatus.NULL, Negative = ItemStatus.NULL };
 
         /// <summary>
         /// Include or exclude languages
         /// </summary>
-        private FilterItem<string> Language
-        {
-            get { return Filters["DatItem.Language"] as FilterItem<string>; }
-            set { Filters["DatItem.Language"] = value; }
-        }
+        private FilterItem<string> Language = new FilterItem<string>();
 
         /// <summary>
         /// Include or exclude dates
         /// </summary>
-        private FilterItem<string> Date
-        {
-            get { return Filters["DatItem.Date"] as FilterItem<string>; }
-            set { Filters["DatItem.Date"] = value; }
-        }
+        private FilterItem<string> Date = new FilterItem<string>();
 
         /// <summary>
         /// Include or exclude bioses
         /// </summary>
-        private FilterItem<string> Bios
-        {
-            get { return Filters["DatItem.Bios"] as FilterItem<string>; }
-            set { Filters["DatItem.Bios"] = value; }
-        }
+        private FilterItem<string> Bios = new FilterItem<string>();
 
         /// <summary>
         /// Include or exclude offsets
         /// </summary>
-        private FilterItem<string> Offset
-        {
-            get { return Filters["DatItem.Offset"] as FilterItem<string>; }
-            set { Filters["DatItem.Offset"] = value; }
-        }
+        private FilterItem<string> Offset = new FilterItem<string>();
 
         #endregion
 
@@ -535,9 +311,10 @@ namespace SabreTools.Library.DatFiles
                 bool negate = filterPairTrimmed.StartsWith("!") || filterPairTrimmed.StartsWith("~");
                 filterPairTrimmed = filterPairTrimmed.TrimStart('!', '~');
 
-                string filterField = filterPairTrimmed.Split(':')[0].ToLowerInvariant().Trim('"', ' ', '\t');
-                string filterValue = filterPairTrimmed.Substring(filterField.Length + 1).Trim('"', ' ', '\t');
+                string filterFieldString = filterPairTrimmed.Split(':')[0].ToLowerInvariant().Trim('"', ' ', '\t');
+                string filterValue = filterPairTrimmed.Substring(filterFieldString.Length + 1).Trim('"', ' ', '\t');
 
+                Field filterField = filterFieldString.AsField();
                 SetFilter(filterField, filterValue, negate);
             }
         }
@@ -548,7 +325,7 @@ namespace SabreTools.Library.DatFiles
         /// <param name="key">Key for the filter to be set</param>
         /// <param name="values">List of values for the filter</param>
         /// <param name="negate">True if negative filter, false otherwise</param>
-        public void SetFilter(string key, List<string> values, bool negate)
+        public void SetFilter(Field key, List<string> values, bool negate)
         {
             foreach (string value in values)
             {
@@ -562,143 +339,118 @@ namespace SabreTools.Library.DatFiles
         /// <param name="key">Key for the filter to be set</param>
         /// <param name="value">Value of the filter</param>
         /// <param name="negate">True if negative filter, false otherwise</param>
-        public void SetFilter(string key, string value, bool negate)
+        public void SetFilter(Field key, string value, bool negate)
         {
             switch (key)
             {
                 #region Machine Filters
 
-                // Machine.Name
-                case "game":
-                case "gamename":
-                case "machine":
-                case "machinename":
+                case Field.MachineName:
                     if (negate)
                         MachineName.NegativeSet.Add(value);
                     else
                         MachineName.PositiveSet.Add(value);
                     break;
 
-                // Machine.Comment
-                case "comment":
+                case Field.Comment:
                     if (negate)
                         Comment.NegativeSet.Add(value);
                     else
                         Comment.PositiveSet.Add(value);
                     break;
 
-                // Machine.Description
-                case "gamedesc":
-                case "gamedescription":
-                case "machinedesc":
-                case "machinedescription":
+                case Field.Description:
                     if (negate)
                         MachineDescription.NegativeSet.Add(value);
                     else
                         MachineDescription.PositiveSet.Add(value);
                     break;
 
-                // Machine.Year
-                case "year":
+                case Field.Year:
                     if (negate)
                         Year.NegativeSet.Add(value);
                     else
                         Year.PositiveSet.Add(value);
                     break;
 
-                // Machine.Manufacturer
-                case "manufacturer":
+                case Field.Manufacturer:
                     if (negate)
                         Manufacturer.NegativeSet.Add(value);
                     else
                         Manufacturer.PositiveSet.Add(value);
                     break;
 
-                // Machine.Publisher
-                case "publisher":
+                case Field.Publisher:
                     if (negate)
                         Publisher.NegativeSet.Add(value);
                     else
                         Publisher.PositiveSet.Add(value);
                     break;
 
-                // Machine.Category
-                case "category":
+                case Field.Category:
                     if (negate)
                         Category.NegativeSet.Add(value);
                     else
                         Category.PositiveSet.Add(value);
                     break;
 
-                // Machine.RomOf
-                case "romof":
+                case Field.RomOf:
                     if (negate)
                         RomOf.NegativeSet.Add(value);
                     else
                         RomOf.PositiveSet.Add(value);
                     break;
 
-                // Machine.CloneOf
-                case "cloneof":
+                case Field.CloneOf:
                     if (negate)
                         CloneOf.NegativeSet.Add(value);
                     else
                         CloneOf.PositiveSet.Add(value);
                     break;
 
-                // Machine.SampleOf
-                case "sampleof":
+                case Field.SampleOf:
                     if (negate)
                         SampleOf.NegativeSet.Add(value);
                     else
                         SampleOf.PositiveSet.Add(value);
                     break;
 
-                // Machine.Supported
-                case "supported":
+                case Field.Supported:
                     if (negate || value.Equals("false", StringComparison.OrdinalIgnoreCase))
                         Supported.Neutral = false;
                     else
                         Supported.Neutral = true;
                     break;
 
-                // Machine.SourceFile
-                case "source":
-                case "sourcefile":
+                case Field.SourceFile:
                     if (negate)
                         SourceFile.NegativeSet.Add(value);
                     else
                         SourceFile.PositiveSet.Add(value);
                     break;
 
-                // Machine.Runnable
-                case "runnable":
+                case Field.Runnable:
                     if (negate || value.Equals("false", StringComparison.OrdinalIgnoreCase))
                         Runnable.Neutral = false;
                     else
                         Runnable.Neutral = true;
                     break;
 
-                // Machine.Board
-                case "board":
+                case Field.Board:
                     if (negate)
                         Board.NegativeSet.Add(value);
                     else
                         Board.PositiveSet.Add(value);
                     break;
 
-                // Machine.RebuildTo
-                case "rebuild":
-                case "rebuildto":
+                case Field.RebuildTo:
                     if (negate)
                         RebuildTo.NegativeSet.Add(value);
                     else
                         RebuildTo.PositiveSet.Add(value);
                     break;
 
-                // Machine.MachineType
-                case "gametype":
-                case "machinetype":
+                case Field.MachineType:
                     if (negate)
                         MachineTypes.Negative |= value.AsMachineType();
                     else
@@ -709,9 +461,7 @@ namespace SabreTools.Library.DatFiles
 
                 #region DatItem Filters
 
-                // DatItem.Type
-                case "itemtype":
-                case "type":
+                case Field.ItemType:
                     if (value.AsItemType() == null)
                         return;
 
@@ -721,41 +471,35 @@ namespace SabreTools.Library.DatFiles
                         ItemTypes.PositiveSet.Add(value);
                     break;
 
-                // DatItem.Name
-                case "item":
-                case "itemname":
+                case Field.Name:
                     if (negate)
                         ItemName.NegativeSet.Add(value);
                     else
                         ItemName.PositiveSet.Add(value);
                     break;
 
-                // DatItem.PartName
-                case "partname":
+                case Field.PartName:
                     if (negate)
                         PartName.NegativeSet.Add(value);
                     else
                         PartName.PositiveSet.Add(value);
                     break;
 
-                // DatItem.PartInterface
-                case "partinterface":
+                case Field.PartInterface:
                     if (negate)
                         PartInterface.NegativeSet.Add(value);
                     else
                         PartInterface.PositiveSet.Add(value);
                     break;
 
-                // DatItem.AreaName
-                case "areaname":
+                case Field.AreaName:
                     if (negate)
                         AreaName.NegativeSet.Add(value);
                     else
                         AreaName.PositiveSet.Add(value);
                     break;
 
-                // DatItem.AreaSize
-                case "areasize":
+                case Field.AreaSize:
                     bool? asOperation = null;
                     if (value.StartsWith(">"))
                         asOperation = true;
@@ -807,28 +551,21 @@ namespace SabreTools.Library.DatFiles
 
                     break;
 
-                // DatItem.Default
-                case "default":
+                case Field.Default:
                     if (negate || value.Equals("false", StringComparison.OrdinalIgnoreCase))
                         Default.Neutral = false;
                     else
                         Default.Neutral = true;
                     break;
 
-                // DatItem.Description
-                case "biosdesc":
-                case "biosdescription":
-                case "description":
+                case Field.BiosDescription:
                     if (negate)
                         Description.NegativeSet.Add(value);
                     else
                         Description.PositiveSet.Add(value);
                     break;
 
-                // DatItem.Size
-                case "itemsize":
-                case "romsize":
-                case "size":
+                case Field.Size:
                     bool? sOperation = null;
                     if (value.StartsWith(">"))
                         sOperation = true;
@@ -880,17 +617,14 @@ namespace SabreTools.Library.DatFiles
 
                     break;
 
-                // DatItem.CRC
-                case "crc":
-                case "crc32":
+                case Field.CRC:
                     if (negate)
                         CRC.NegativeSet.Add(value);
                     else
                         CRC.PositiveSet.Add(value);
                     break;
 
-                // DatItem.MD5
-                case "md5":
+                case Field.MD5:
                     if (negate)
                         MD5.NegativeSet.Add(value);
                     else
@@ -898,8 +632,7 @@ namespace SabreTools.Library.DatFiles
                     break;
 
 #if NET_FRAMEWORK
-                // DatItem.RIPEMD160
-                case "ripemd160":
+                case Field.RIPEMD160:
                     if (negate)
                         RIPEMD160.NegativeSet.Add(value);
                     else
@@ -907,119 +640,98 @@ namespace SabreTools.Library.DatFiles
                     break;
 #endif
 
-                // DatItem.SHA1
-                case "sha1":
-                case "sha-1":
+                case Field.SHA1:
                     if (negate)
                         SHA1.NegativeSet.Add(value);
                     else
                         SHA1.PositiveSet.Add(value);
                     break;
 
-                // DatItem.SHA256
-                case "sha256":
-                case "sha-256":
+                case Field.SHA256:
                     if (negate)
                         SHA256.NegativeSet.Add(value);
                     else
                         SHA256.PositiveSet.Add(value);
                     break;
 
-                // DatItem.SHA384
-                case "sha384":
-                case "sha-384":
+                case Field.SHA384:
                     if (negate)
                         SHA384.NegativeSet.Add(value);
                     else
                         SHA384.PositiveSet.Add(value);
                     break;
 
-                // DatItem.SHA512
-                case "sha512":
-                case "sha-512":
+                case Field.SHA512:
                     if (negate)
                         SHA512.NegativeSet.Add(value);
                     else
                         SHA512.PositiveSet.Add(value);
                     break;
 
-                // DatItem.Merge
-                case "merge":
-                case "mergetag":
+                case Field.Merge:
                     if (negate)
                         MergeTag.NegativeSet.Add(value);
                     else
                         MergeTag.PositiveSet.Add(value);
                     break;
 
-                // DatItem.Region
-                case "region":
+                case Field.Region:
                     if (negate)
                         Region.NegativeSet.Add(value);
                     else
                         Region.PositiveSet.Add(value);
                     break;
 
-                // DatItem.Index
-                case "index":
+                case Field.Index:
                     if (negate)
                         Index.NegativeSet.Add(value);
                     else
                         Index.PositiveSet.Add(value);
                     break;
 
-                // DatItem.Writable
-                case "writable":
+                case Field.Writable:
                     if (negate || value.Equals("false", StringComparison.OrdinalIgnoreCase))
                         Writable.Neutral = false;
                     else
                         Writable.Neutral = true;
                     break;
 
-                // DatItem.Optional
-                case "optional":
+                case Field.Optional:
                     if (negate || value.Equals("false", StringComparison.OrdinalIgnoreCase))
                         Optional.Neutral = false;
                     else
                         Optional.Neutral = true;
                     break;
 
-                // DatItem.Status
-                case "itemstatus":
-                case "status":
+                case Field.Status:
                     if (negate)
                         Status.Negative |= value.AsItemStatus();
                     else
                         Status.Positive |= value.AsItemStatus();
                     break;
 
-                // DatItem.Language
-                case "lang":
-                case "language":
+                case Field.Language:
                     if (negate)
                         Language.NegativeSet.Add(value);
                     else
                         Language.PositiveSet.Add(value);
                     break;
 
-                // DatItem.Date
-                case "date":
+                case Field.Date:
                     if (negate)
                         Date.NegativeSet.Add(value);
                     else
                         Date.PositiveSet.Add(value);
                     break;
 
-                // DatItem.Bios
-                case "bios":
+                case Field.Bios:
                     if (negate)
                         Bios.NegativeSet.Add(value);
                     else
                         Bios.PositiveSet.Add(value);
                     break;
 
-                // DatItem.Offset
-                case "offset":
+                case Field.Offset:
                     if (negate)
                         Offset.NegativeSet.Add(value);
                     else

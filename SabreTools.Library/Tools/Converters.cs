@@ -164,6 +164,9 @@ namespace SabreTools.Library.Tools
                     return Field.Index;
                 case "infos":
                     return Field.Infos;
+                case "itemtype":
+                case "type":
+                    return Field.ItemType;
                 case "language":
                     return Field.Language;
                 case "manufacturer":
