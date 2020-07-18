@@ -307,8 +307,8 @@ namespace SabreTools.Library.DatFiles
         /// </summary>
         public FilterItem<long?> AreaSize
         {
-            get { return Filters["DatItem.AreaName"] as FilterItem<long?>; }
-            set { Filters["DatItem.AreaName"] = value; }
+            get { return Filters["DatItem.AreaSize"] as FilterItem<long?>; }
+            set { Filters["DatItem.AreaSize"] = value; }
         }
 
         /// <summary>
@@ -797,6 +797,7 @@ namespace SabreTools.Library.DatFiles
             #region DatItem Filters
 
             // Filter on item type
+            // TODO: Remove default filtering at some point
             if (this.ItemTypes.PositiveSet.Count == 0 && this.ItemTypes.NegativeSet.Count == 0
                 && item.ItemType != ItemType.Rom && item.ItemType != ItemType.Disk && item.ItemType != ItemType.Blank)
                 return false;
