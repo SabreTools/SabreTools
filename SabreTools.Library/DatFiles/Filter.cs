@@ -80,16 +80,12 @@ namespace SabreTools.Library.DatFiles
             #endregion
         };
 
-        #endregion
-
-        #region Pubically facing variables
-
         #region Machine Filters
 
         /// <summary>
         /// Include or exclude machine names
         /// </summary>
-        public FilterItem<string> MachineName
+        private FilterItem<string> MachineName
         {
             get { return Filters["Machine.Name"] as FilterItem<string>; }
             set { Filters["Machine.Name"] = value; }
@@ -98,7 +94,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude machine comments
         /// </summary>
-        public FilterItem<string> Comment
+        private FilterItem<string> Comment
         {
             get { return Filters["Machine.Comment"] as FilterItem<string>; }
             set { Filters["Machine.Comment"] = value; }
@@ -107,7 +103,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude machine descriptions
         /// </summary>
-        public FilterItem<string> MachineDescription
+        private FilterItem<string> MachineDescription
         {
             get { return Filters["Machine.Description"] as FilterItem<string>; }
             set { Filters["Machine.Description"] = value; }
@@ -116,7 +112,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude machine years
         /// </summary>
-        public FilterItem<string> Year
+        private FilterItem<string> Year
         {
             get { return Filters["Machine.Year"] as FilterItem<string>; }
             set { Filters["Machine.Year"] = value; }
@@ -125,7 +121,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude machine manufacturers
         /// </summary>
-        public FilterItem<string> Manufacturer
+        private FilterItem<string> Manufacturer
         {
             get { return Filters["Machine.Manufacturer"] as FilterItem<string>; }
             set { Filters["Machine.Manufacturer"] = value; }
@@ -134,7 +130,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude machine publishers
         /// </summary>
-        public FilterItem<string> Publisher
+        private FilterItem<string> Publisher
         {
             get { return Filters["Machine.Publisher"] as FilterItem<string>; }
             set { Filters["Machine.Publisher"] = value; }
@@ -143,7 +139,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude machine categories
         /// </summary>
-        public FilterItem<string> Category
+        private FilterItem<string> Category
         {
             get { return Filters["Machine.Category"] as FilterItem<string>; }
             set { Filters["Machine.Category"] = value; }
@@ -152,7 +148,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude machine romof
         /// </summary>
-        public FilterItem<string> RomOf
+        private FilterItem<string> RomOf
         {
             get { return Filters["Machine.RomOf"] as FilterItem<string>; }
             set { Filters["Machine.RomOf"] = value; }
@@ -161,7 +157,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude machine cloneof
         /// </summary>
-        public FilterItem<string> CloneOf
+        private FilterItem<string> CloneOf
         {
             get { return Filters["Machine.CloneOf"] as FilterItem<string>; }
             set { Filters["Machine.CloneOf"] = value; }
@@ -170,7 +166,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude machine sampleof
         /// </summary>
-        public FilterItem<string> SampleOf
+        private FilterItem<string> SampleOf
         {
             get { return Filters["Machine.SampleOf"] as FilterItem<string>; }
             set { Filters["Machine.SampleOf"] = value; }
@@ -179,7 +175,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude items with the "Supported" tag
         /// </summary>
-        public FilterItem<bool?> Supported
+        private FilterItem<bool?> Supported
         {
             get { return Filters["Machine.Supported"] as FilterItem<bool?>; }
             set { Filters["Machine.Supported"] = value; }
@@ -188,7 +184,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude machine source file
         /// </summary>
-        public FilterItem<string> SourceFile
+        private FilterItem<string> SourceFile
         {
             get { return Filters["Machine.SourceFile"] as FilterItem<string>; }
             set { Filters["Machine.SourceFile"] = value; }
@@ -197,7 +193,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude items with the "Runnable" tag
         /// </summary>
-        public FilterItem<bool?> Runnable
+        private FilterItem<bool?> Runnable
         {
             get { return Filters["Machine.Runnable"] as FilterItem<bool?>; }
             set { Filters["Machine.Runnable"] = value; }
@@ -206,7 +202,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude machine board
         /// </summary>
-        public FilterItem<string> Board
+        private FilterItem<string> Board
         {
             get { return Filters["Machine.Board"] as FilterItem<string>; }
             set { Filters["Machine.Board"] = value; }
@@ -215,7 +211,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude machine rebuildto
         /// </summary>
-        public FilterItem<string> RebuildTo
+        private FilterItem<string> RebuildTo
         {
             get { return Filters["Machine.RebuildTo"] as FilterItem<string>; }
             set { Filters["Machine.RebuildTo"] = value; }
@@ -224,7 +220,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude machine types
         /// </summary>
-        public FilterItem<MachineType> MachineTypes
+        private FilterItem<MachineType> MachineTypes
         {
             get { return Filters["Machine.MachineType"] as FilterItem<MachineType>; }
             set { Filters["Machine.MachineType"] = value; }
@@ -237,7 +233,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude item types
         /// </summary>
-        public FilterItem<string> ItemTypes
+        private FilterItem<string> ItemTypes
         {
             get { return Filters["DatItem.Type"] as FilterItem<string>; }
             set { Filters["DatItem.Type"] = value; }
@@ -246,7 +242,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude item names
         /// </summary>
-        public FilterItem<string> ItemName
+        private FilterItem<string> ItemName
         {
             get { return Filters["DatItem.Name"] as FilterItem<string>; }
             set { Filters["DatItem.Name"] = value; }
@@ -255,7 +251,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude part names
         /// </summary>
-        public FilterItem<string> PartName
+        private FilterItem<string> PartName
         {
             get { return Filters["DatItem.PartName"] as FilterItem<string>; }
             set { Filters["DatItem.PartName"] = value; }
@@ -264,7 +260,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude part interfaces
         /// </summary>
-        public FilterItem<string> PartInterface
+        private FilterItem<string> PartInterface
         {
             get { return Filters["DatItem.PartInterface"] as FilterItem<string>; }
             set { Filters["DatItem.PartInterface"] = value; }
@@ -273,7 +269,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude area names
         /// </summary>
-        public FilterItem<string> AreaName
+        private FilterItem<string> AreaName
         {
             get { return Filters["DatItem.AreaName"] as FilterItem<string>; }
             set { Filters["DatItem.AreaName"] = value; }
@@ -282,7 +278,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude area sizes
         /// </summary>
-        public FilterItem<long?> AreaSize
+        private FilterItem<long?> AreaSize
         {
             get { return Filters["DatItem.AreaSize"] as FilterItem<long?>; }
             set { Filters["DatItem.AreaSize"] = value; }
@@ -291,7 +287,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude items with the "Default" tag
         /// </summary>
-        public FilterItem<bool?> Default
+        private FilterItem<bool?> Default
         {
             get { return Filters["DatItem.Default"] as FilterItem<bool?>; }
             set { Filters["DatItem.Default"] = value; }
@@ -300,7 +296,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude descriptions
         /// </summary>
-        public FilterItem<string> Description
+        private FilterItem<string> Description
         {
             get { return Filters["DatItem.Description"] as FilterItem<string>; }
             set { Filters["DatItem.Description"] = value; }
@@ -310,7 +306,7 @@ namespace SabreTools.Library.DatFiles
         /// Include or exclude item sizes
         /// </summary>
         /// <remarks>Positive means "Greater than or equal", Negative means "Less than or equal", Neutral means "Equal"</remarks>
-        public FilterItem<long> Size
+        private FilterItem<long> Size
         {
             get { return Filters["DatItem.Size"] as FilterItem<long>; }
             set { Filters["DatItem.Size"] = value; }
@@ -319,7 +315,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude CRC32 hashes
         /// </summary>
-        public FilterItem<string> CRC
+        private FilterItem<string> CRC
         {
             get { return Filters["DatItem.CRC"] as FilterItem<string>; }
             set { Filters["DatItem.CRC"] = value; }
@@ -328,7 +324,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude MD5 hashes
         /// </summary>
-        public FilterItem<string> MD5
+        private FilterItem<string> MD5
         {
             get { return Filters["DatItem.MD5"] as FilterItem<string>; }
             set { Filters["DatItem.MD5"] = value; }
@@ -338,7 +334,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude RIPEMD160 hashes
         /// </summary>
-        public FilterItem<string> RIPEMD160
+        private FilterItem<string> RIPEMD160
         {
             get { return Filters["DatItem.RIPEMD160"] as FilterItem<string>; }
             set { Filters["DatItem.RIPEMD160"] = value; }
@@ -348,7 +344,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude SHA-1 hashes
         /// </summary>
-        public FilterItem<string> SHA1
+        private FilterItem<string> SHA1
         {
             get { return Filters["DatItem.SHA1"] as FilterItem<string>; }
             set { Filters["DatItem.SHA1"] = value; }
@@ -357,7 +353,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude SHA-256 hashes
         /// </summary>
-        public FilterItem<string> SHA256
+        private FilterItem<string> SHA256
         {
             get { return Filters["DatItem.SHA256"] as FilterItem<string>; }
             set { Filters["DatItem.SHA256"] = value; }
@@ -366,7 +362,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude SHA-384 hashes
         /// </summary>
-        public FilterItem<string> SHA384
+        private FilterItem<string> SHA384
         {
             get { return Filters["DatItem.SHA384"] as FilterItem<string>; }
             set { Filters["DatItem.SHA384"] = value; }
@@ -375,7 +371,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude SHA-512 hashes
         /// </summary>
-        public FilterItem<string> SHA512
+        private FilterItem<string> SHA512
         {
             get { return Filters["DatItem.SHA512"] as FilterItem<string>; }
             set { Filters["DatItem.SHA512"] = value; }
@@ -384,7 +380,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude merge tags
         /// </summary>
-        public FilterItem<string> MergeTag
+        private FilterItem<string> MergeTag
         {
             get { return Filters["DatItem.Merge"] as FilterItem<string>; }
             set { Filters["DatItem.Merge"] = value; }
@@ -393,7 +389,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude regions
         /// </summary>
-        public FilterItem<string> Region
+        private FilterItem<string> Region
         {
             get { return Filters["DatItem.Region"] as FilterItem<string>; }
             set { Filters["DatItem.Region"] = value; }
@@ -402,7 +398,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude indexes
         /// </summary>
-        public FilterItem<string> Index
+        private FilterItem<string> Index
         {
             get { return Filters["DatItem.Index"] as FilterItem<string>; }
             set { Filters["DatItem.Index"] = value; }
@@ -411,7 +407,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude items with the "Writable" tag
         /// </summary>
-        public FilterItem<bool?> Writable
+        private FilterItem<bool?> Writable
         {
             get { return Filters["DatItem.Writable"] as FilterItem<bool?>; }
             set { Filters["DatItem.Writable"] = value; }
@@ -420,7 +416,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude items with the "Writable" tag
         /// </summary>
-        public FilterItem<bool?> Optional
+        private FilterItem<bool?> Optional
         {
             get { return Filters["DatItem.Optional"] as FilterItem<bool?>; }
             set { Filters["DatItem.Optional"] = value; }
@@ -429,7 +425,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude item statuses
         /// </summary>
-        public FilterItem<ItemStatus> Status
+        private FilterItem<ItemStatus> Status
         {
             get { return Filters["DatItem.Status"] as FilterItem<ItemStatus>; }
             set { Filters["DatItem.Status"] = value; }
@@ -438,7 +434,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude languages
         /// </summary>
-        public FilterItem<string> Language
+        private FilterItem<string> Language
         {
             get { return Filters["DatItem.Language"] as FilterItem<string>; }
             set { Filters["DatItem.Language"] = value; }
@@ -447,7 +443,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude dates
         /// </summary>
-        public FilterItem<string> Date
+        private FilterItem<string> Date
         {
             get { return Filters["DatItem.Date"] as FilterItem<string>; }
             set { Filters["DatItem.Date"] = value; }
@@ -456,7 +452,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude bioses
         /// </summary>
-        public FilterItem<string> Bios
+        private FilterItem<string> Bios
         {
             get { return Filters["DatItem.Bios"] as FilterItem<string>; }
             set { Filters["DatItem.Bios"] = value; }
@@ -465,7 +461,7 @@ namespace SabreTools.Library.DatFiles
         /// <summary>
         /// Include or exclude offsets
         /// </summary>
-        public FilterItem<string> Offset
+        private FilterItem<string> Offset
         {
             get { return Filters["DatItem.Offset"] as FilterItem<string>; }
             set { Filters["DatItem.Offset"] = value; }
@@ -473,7 +469,10 @@ namespace SabreTools.Library.DatFiles
 
         #endregion
 
-        // TODO: Should these actually be FilterItems? It seems needless
+        #endregion // Private instance variables
+
+        #region Pubically facing variables
+
         #region Manipulation Flags
 
         /// <summary>
