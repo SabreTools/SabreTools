@@ -2337,7 +2337,6 @@ Some special strings that can be used:
             /// <summary>
             /// Get Filter from feature list
             /// </summary>
-            /// TODO: Re-enable logging on cleanup filters
             protected Filter GetFilter(Dictionary<string, Feature> features)
             {
                 Filter filter = new Filter();
@@ -2365,13 +2364,6 @@ Some special strings that can be used:
                     }
                 }
 
-                // Clean names
-                if (features.ContainsKey(CleanValue))
-                {
-                    //Globals.Logger.User($"This flag '{CleanValue}' is deprecated, please use {string.Join(", ", FilterListInput.Flags)} instead");
-                    filterPairs.Add($"clean:{GetBoolean(features, CleanValue)}");
-                }
-
                 // CRC
                 var notCrc = GetList(features, NotCrcListValue);
                 if (notCrc.Count != 0)
@@ -2391,28 +2383,6 @@ Some special strings that can be used:
                     {
                         filterPairs.Add($"crc:{s}");
                     }
-                }
-
-                // Machine description as machine name
-                if (features.ContainsKey(DescriptionAsNameValue))
-                {
-                    //Globals.Logger.User($"This flag '{DescriptionAsNameValue}' is deprecated, please use {string.Join(", ", FilterListInput.Flags)} instead");
-                    filterPairs.Add($"descasname:{GetBoolean(features, DescriptionAsNameValue)}");
-                }
-
-                // Include 'of" in game filters
-                if (features.ContainsKey(MatchOfTagsValue))
-                {
-                    //Globals.Logger.User($"This flag '{MatchOfTagsValue}' is deprecated, please use {string.Join(", ", FilterListInput.Flags)} instead");
-                    filterPairs.Add($"matchoftags:{GetBoolean(features, MatchOfTagsValue)}");
-                }
-
-                // Internal splitting
-                (SplitType splitType, string splitValue, string newkey) = GetSplitType(features);
-                if (splitType != SplitType.None)
-                {
-                    //Globals.Logger.User($"This flag '{splitValue}' is deprecated, please use {string.Join(", ", FilterListInput.Flags)} instead");
-                    filterPairs.Add($"splittype:{newkey}");
                 }
 
                 // Item name
@@ -2562,13 +2532,6 @@ Some special strings that can be used:
                     }
                 }
 
-                // Remove unicode characters
-                if (features.ContainsKey(RemoveUnicodeValue))
-                {
-                    //Globals.Logger.User($"This flag '{RemoveUnicodeValue}' is deprecated, please use {string.Join(", ", FilterListInput.Flags)} instead");
-                    filterPairs.Add($"remunicode:{GetBoolean(features, RemoveUnicodeValue)}");
-                }
-
 #if NET_FRAMEWORK
                 // RIPEMD160
                 var notRipemd160 = GetList(features, NotRipeMd160ListValue);
@@ -2593,11 +2556,7 @@ Some special strings that can be used:
 #endif
 
                 // Root directory
-                if (features.ContainsKey(RootDirStringValue))
-                {
-                    //Globals.Logger.User($"This flag '{RootDirStringValue}' is deprecated, please use {string.Join(", ", FilterListInput.Flags)} instead");
-                    filterPairs.Add($"rootdir:{GetString(features, RootDirStringValue)}");
-                }
+                filter.Root = GetString(features, RootDirStringValue);
 
                 // Runnable
                 var notRunnable = GetBoolean(features, NotRunnableValue);
@@ -2698,13 +2657,6 @@ Some special strings that can be used:
                     }
                 }
 
-                // Single game in output
-                if (features.ContainsKey(SingleSetValue))
-                {
-                    //Globals.Logger.User($"This flag '{SingleSetValue}' is deprecated, please use {string.Join(", ", FilterListInput.Flags)} instead");
-                    filterPairs.Add($"single:{GetBoolean(features, SingleSetValue)}");
-                }
-
                 // Size
                 if (features.ContainsKey(LessStringValue))
                 {
@@ -2727,14 +2679,29 @@ Some special strings that can be used:
                     filterPairs.Add($"size:>{value}");
                 }
 
-                // Trim to NTFS length
-                if (features.ContainsKey(TrimValue))
-                {
-                    //Globals.Logger.User($"This flag '{TrimValue}' is deprecated, please use {string.Join(", ", FilterListInput.Flags)} instead");
-                    filterPairs.Add($"trim:{GetBoolean(features, TrimValue)}");
-                }
-
+                // Populate the remaining filter fields
                 filter.PopulateFromList(filterPairs);
+
+                // Clean names
+                filter.Clean = GetBoolean(features, CleanValue);
+
+                // Machine description as machine name
+                filter.DescriptionAsName = GetBoolean(features, DescriptionAsNameValue);
+
+                // Include 'of" in game filters
+                filter.IncludeOfInGame = GetBoolean(features, MatchOfTagsValue);
+
+                // Internal splitting
+                filter.InternalSplit = GetSplitType(features);
+
+                // Remove unicode characters
+                filter.RemoveUnicode = GetBoolean(features, RemoveUnicodeValue);
+
+                // Single game in output
+                filter.Single = GetBoolean(features, SingleSetValue);
+
+                // Trim to NTFS length
+                filter.Trim = GetBoolean(features, TrimValue);
 
                 return filter;
             }
@@ -2809,44 +2776,21 @@ Some special strings that can be used:
             /// <summary>
             /// Get SplitType from feature list
             /// </summary>
-            protected (SplitType, string, string) GetSplitType(Dictionary<string, Feature> features)
+            protected SplitType GetSplitType(Dictionary<string, Feature> features)
             {
                 SplitType splitType = SplitType.None;
-                string value = string.Empty;
-                string newkey = string.Empty;
-
                 if (GetBoolean(features, DatDeviceNonMergedValue))
-                {
                     splitType = SplitType.DeviceNonMerged;
-                    value = DatDeviceNonMergedValue;
-                    newkey = "dnm";
-                }
                 else if (GetBoolean(features, DatFullNonMergedValue))
-                {
                     splitType = SplitType.FullNonMerged;
-                    value = DatFullNonMergedValue;
-                    newkey = "fnm";
-                }
                 else if (GetBoolean(features, DatMergedValue))
-                {
                     splitType = SplitType.Merged;
-                    value = DatMergedValue;
-                    newkey = "m";
-                }
                 else if (GetBoolean(features, DatNonMergedValue))
-                {
                     splitType = SplitType.NonMerged;
-                    value = DatNonMergedValue;
-                    newkey = "nm";
-                }
                 else if (GetBoolean(features, DatSplitValue))
-                {
                     splitType = SplitType.Split;
-                    value = DatSplitValue;
-                    newkey = "s";
-                }
 
-                return (splitType, value, newkey);
+                return splitType;
             }
 
             /// <summary>

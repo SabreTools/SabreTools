@@ -43,8 +43,6 @@ namespace SabreTools.Library.DatFiles
             { "Machine.Infos", new FilterItem<string>() }, // TODO: List<KeyValuePair<string, string>>
             { "Machine.MachineType", new FilterItem<MachineType>() { Positive = MachineType.NULL, Negative = MachineType.NULL } },
 
-            { "IncludeOfInGame", new FilterItem<bool>() { Neutral = false } },
-
             #endregion
 
             #region DatItem Filters
@@ -78,18 +76,6 @@ namespace SabreTools.Library.DatFiles
             { "DatItem.Date", new FilterItem<string>() },
             { "DatItem.Bios", new FilterItem<string>() },
             { "DatItem.Offset", new FilterItem<string>() },
-
-            #endregion
-
-            #region Manipulation Filters
-
-            { "Clean", new FilterItem<bool>() { Neutral = false } },
-            { "DescriptionAsName", new FilterItem<bool>() { Neutral = false } },
-            { "InternalSplit", new FilterItem<SplitType>() { Neutral = SplitType.None } },
-            { "RemoveUnicode", new FilterItem<bool>() { Neutral = false } },
-            { "Root", new FilterItem<string>() { Neutral = null } },
-            { "Single", new FilterItem<bool>() { Neutral = false } },
-            { "Trim", new FilterItem<bool>() { Neutral = false } },
 
             #endregion
         };
@@ -242,15 +228,6 @@ namespace SabreTools.Library.DatFiles
         {
             get { return Filters["Machine.MachineType"] as FilterItem<MachineType>; }
             set { Filters["Machine.MachineType"] = value; }
-        }
-
-        /// <summary>
-        /// Include romof and cloneof when filtering machine names
-        /// </summary>
-        public FilterItem<bool> IncludeOfInGame
-        {
-            get { return Filters["IncludeOfInGame"] as FilterItem<bool>; }
-            set { Filters["IncludeOfInGame"] = value; }
         }
 
         #endregion
@@ -496,70 +473,48 @@ namespace SabreTools.Library.DatFiles
 
         #endregion
 
-        #region Manipulation Filters
+        // TODO: Should these actually be FilterItems? It seems needless
+        #region Manipulation Flags
 
         /// <summary>
         /// Clean all names to WoD standards
         /// </summary>
-        public FilterItem<bool> Clean
-        {
-            get { return Filters["Clean"] as FilterItem<bool>; }
-            set { Filters["Clean"] = value; }
-        }
+        public bool Clean { get; set; }
 
         /// <summary>
         /// Set Machine Description from Machine Name
         /// </summary>
-        public FilterItem<bool> DescriptionAsName
-        {
-            get { return Filters["DescriptionAsName"] as FilterItem<bool>; }
-            set { Filters["DescriptionAsName"] = value; }
-        }
+        public bool DescriptionAsName { get; set; }
+
+        /// <summary>
+        /// Include romof and cloneof when filtering machine names
+        /// </summary>
+        public bool IncludeOfInGame { get; set; }
 
         /// <summary>
         /// Internally split a DatFile
         /// </summary>
-        public FilterItem<SplitType> InternalSplit
-        {
-            get { return Filters["InternalSplit"] as FilterItem<SplitType>; }
-            set { Filters["InternalSplit"] = value; }
-        }
+        public SplitType InternalSplit { get; set; }
 
         /// <summary>
         /// Remove all unicode characters
         /// </summary>
-        public FilterItem<bool> RemoveUnicode
-        {
-            get { return Filters["RemoveUnicode"] as FilterItem<bool>; }
-            set { Filters["RemoveUnicode"] = value; }
-        }
+        public bool RemoveUnicode { get; set; }
 
         /// <summary>
         /// Include root directory when determing trim sizes
         /// </summary>
-        public FilterItem<string> Root
-        {
-            get { return Filters["Root"] as FilterItem<string>; }
-            set { Filters["Root"] = value; }
-        }
+        public string Root { get; set; }
 
         /// <summary>
         /// Change all machine names to "!"
         /// </summary>
-        public FilterItem<bool> Single
-        {
-            get { return Filters["Single"] as FilterItem<bool>; }
-            set { Filters["Single"] = value; }
-        }
+        public bool Single { get; set; }
 
         /// <summary>
         /// Trim total machine and item name to not exceed NTFS limits
         /// </summary>
-        public FilterItem<bool> Trim
-        {
-            get { return Filters["Trim"] as FilterItem<bool>; }
-            set { Filters["Trim"] = value; }
-        }
+        public bool Trim { get; set; }
 
         #endregion
 
@@ -721,15 +676,6 @@ namespace SabreTools.Library.DatFiles
                             MachineTypes.Negative |= filterValue.AsMachineType();
                         else
                             MachineTypes.Positive |= filterValue.AsMachineType();
-                        break;
-
-                    // IncludeOfInGame
-                    case "includeofingame":
-                    case "matchoftags":
-                        if (negate || filterValue.Equals("false", StringComparison.OrdinalIgnoreCase))
-                            IncludeOfInGame.Neutral = false;
-                        else
-                            IncludeOfInGame.Neutral = true;
                         break;
 
                     #endregion
@@ -1054,100 +1000,6 @@ namespace SabreTools.Library.DatFiles
                         break;
 
                     #endregion
-
-                    #region Manipulation Filters
-
-                    // Clean
-                    case "clean":
-                        if (negate || filterValue.Equals("false", StringComparison.OrdinalIgnoreCase))
-                            Clean.Neutral = false;
-                        else
-                            Clean.Neutral = true;
-                        break;
-
-                    // DescriptionAsName
-                    case "descasname":
-                    case "descriptionasname":
-                    case "descriptionasgamename":
-                    case "descriptionasmachinename":
-                        if (negate || filterValue.Equals("false", StringComparison.OrdinalIgnoreCase))
-                            DescriptionAsName.Neutral = false;
-                        else
-                            DescriptionAsName.Neutral = true;
-                        break;
-
-                    // InternalSplit
-                    case "internalsplit":
-                    case "split":
-                        SplitType splitType = SplitType.None;
-                        switch (filterValue.ToLowerInvariant())
-                        {
-                            case "dnm":
-                            case "devicenonmerged":
-                                splitType = SplitType.DeviceNonMerged;
-                                break;
-
-                            case "fnm":
-                            case "fullnonmerged":
-                                splitType = SplitType.FullNonMerged;
-                                break;
-
-                            case "m":
-                            case "merge":
-                            case "merged":
-                                splitType = SplitType.Merged;
-                                break;
-
-                            case "nm":
-                            case "nonmerged":
-                                splitType = SplitType.NonMerged;
-                                break;
-
-                            case "s":
-                            case "split":
-                                splitType = SplitType.Split;
-                                break;
-                        }
-
-                        if (negate)
-                            InternalSplit.Neutral = splitType;
-                        else
-                            InternalSplit.Neutral = splitType;
-                        break;
-
-                    // RemoveUnicode
-                    case "remunicode":
-                    case "removeunicode":
-                        if (negate || filterValue.Equals("false", StringComparison.OrdinalIgnoreCase))
-                            RemoveUnicode.Neutral = false;
-                        else
-                            RemoveUnicode.Neutral = true;
-                        break;
-
-                    // Root
-                    case "root":
-                    case "rootdir":
-                        Root.Neutral = filterValue;
-                        break;
-
-                    // Single
-                    case "single":
-                        if (negate || filterValue.Equals("false", StringComparison.OrdinalIgnoreCase))
-                            Single.Neutral = false;
-                        else
-                            Single.Neutral = true;
-                        break;
-
-                    // Trim
-                    case "trim":
-                        if (negate || filterValue.Equals("false", StringComparison.OrdinalIgnoreCase))
-                            Trim.Neutral = false;
-                        else
-                            Trim.Neutral = true;
-                        break;
-
-
-                        #endregion
                 }
             }
         }
@@ -1175,7 +1027,7 @@ namespace SabreTools.Library.DatFiles
                         if (ItemPasses(item))
                         {
                             // If we're stripping unicode characters, do so from all relevant things
-                            if (this.RemoveUnicode.Neutral)
+                            if (this.RemoveUnicode)
                             {
                                 item.Name = Sanitizer.RemoveUnicodeCharacters(item.Name);
                                 item.MachineName = Sanitizer.RemoveUnicodeCharacters(item.MachineName);
@@ -1183,21 +1035,21 @@ namespace SabreTools.Library.DatFiles
                             }
 
                             // If we're in cleaning mode, do so from all relevant things
-                            if (this.Clean.Neutral)
+                            if (this.Clean)
                             {
                                 item.MachineName = Sanitizer.CleanGameName(item.MachineName);
                                 item.MachineDescription = Sanitizer.CleanGameName(item.MachineDescription);
                             }
 
                             // If we are in single game mode, rename all games
-                            if (this.Single.Neutral)
+                            if (this.Single)
                                 item.MachineName = "!";
 
                             // If we are in NTFS trim mode, trim the game name
-                            if (this.Trim.Neutral)
+                            if (this.Trim)
                             {
                                 // Windows max name length is 260
-                                int usableLength = 260 - item.MachineName.Length - this.Root.Neutral.Length;
+                                int usableLength = 260 - item.MachineName.Length - this.Root.Length;
                                 if (item.Name.Length > usableLength)
                                 {
                                     string ext = Path.GetExtension(item.Name);
@@ -1219,15 +1071,15 @@ namespace SabreTools.Library.DatFiles
                 }
 
                 // Process description to machine name
-                if (this.DescriptionAsName.Neutral)
+                if (this.DescriptionAsName)
                     MachineDescriptionToName(datFile);
 
                 // If we are using tags from the DAT, set the proper input for split type unless overridden
-                if (useTags && this.InternalSplit.Neutral == SplitType.None)
-                    this.InternalSplit.Neutral = datFile.DatHeader.ForceMerging.AsSplitType();
+                if (useTags && this.InternalSplit == SplitType.None)
+                    this.InternalSplit = datFile.DatHeader.ForceMerging.AsSplitType();
 
                 // Run internal splitting
-                ProcessSplitType(datFile, this.InternalSplit.Neutral);
+                ProcessSplitType(datFile, this.InternalSplit);
 
                 // We remove any blanks, if we aren't supposed to have any
                 if (!datFile.DatHeader.KeepEmptyGames)
@@ -1274,7 +1126,7 @@ namespace SabreTools.Library.DatFiles
 
             // Filter on machine name
             bool? machineNameFound = this.MachineName.MatchesPositiveSet(item.MachineName);
-            if (this.IncludeOfInGame.Neutral)
+            if (this.IncludeOfInGame)
             {
                 machineNameFound |= (this.MachineName.MatchesPositiveSet(item.CloneOf) == true);
                 machineNameFound |= (this.MachineName.MatchesPositiveSet(item.RomOf) == true);
@@ -1283,7 +1135,7 @@ namespace SabreTools.Library.DatFiles
                 return false;
 
             machineNameFound = this.MachineName.MatchesNegativeSet(item.MachineName);
-            if (this.IncludeOfInGame.Neutral)
+            if (this.IncludeOfInGame)
             {
                 machineNameFound |= (this.MachineName.MatchesNegativeSet(item.CloneOf) == true);
                 machineNameFound |= (this.MachineName.MatchesNegativeSet(item.RomOf) == true);
