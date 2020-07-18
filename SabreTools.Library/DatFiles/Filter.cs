@@ -543,6 +543,20 @@ namespace SabreTools.Library.DatFiles
         }
 
         /// <summary>
+        /// Set multiple filters from key
+        /// </summary>
+        /// <param name="key">Key for the filter to be set</param>
+        /// <param name="values">List of values for the filter</param>
+        /// <param name="negate">True if negative filter, false otherwise</param>
+        public void SetFilter(string key, List<string> values, bool negate)
+        {
+            foreach (string value in values)
+            {
+                SetFilter(key, value, negate);
+            }
+        }
+
+        /// <summary>
         /// Set a single filter from key
         /// </summary>
         /// <param name="key">Key for the filter to be set</param>
