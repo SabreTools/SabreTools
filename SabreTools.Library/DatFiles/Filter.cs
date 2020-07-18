@@ -311,8 +311,11 @@ namespace SabreTools.Library.DatFiles
             foreach (string filterPair in filters)
             {
                 string filterPairTrimmed = filterPair.Trim('"', ' ', '\t');
-                bool negate = filterPairTrimmed.StartsWith("!") || filterPairTrimmed.StartsWith("~");
+                bool negate = filterPairTrimmed.StartsWith("!")
+                    || filterPairTrimmed.StartsWith("~")
+                    || filterPairTrimmed.StartsWith("not-");
                 filterPairTrimmed = filterPairTrimmed.TrimStart('!', '~');
+                filterPairTrimmed = filterPairTrimmed.StartsWith("not-") ? filterPairTrimmed.Substring(4) : filterPairTrimmed;
 
                 string filterFieldString = filterPairTrimmed.Split(':')[0].ToLowerInvariant().Trim('"', ' ', '\t');
                 string filterValue = filterPairTrimmed.Substring(filterFieldString.Length + 1).Trim('"', ' ', '\t');

@@ -122,49 +122,76 @@ namespace SabreTools.Library.Tools
             switch (input?.ToLowerInvariant())
             {
                 case "areaname":
+                case "area-name":
                     return Field.AreaName;
                 case "areasize":
+                case "area-size":
                     return Field.AreaSize;
                 case "bios":
                     return Field.Bios;
                 case "biosdescription":
-                case "bios description":
+                case "bios-description":
                 case "biossetdescription":
-                case "biosset description":
-                case "bios set description":
+                case "biosset-description":
+                case "bios-set-description":
                     return Field.BiosDescription;
                 case "board":
                     return Field.Board;
                 case "category":
                 case "machinecategory":
+                case "machine-category":
                     return Field.Category;
                 case "cloneof":
                     return Field.CloneOf;
                 case "comment":
                     return Field.Comment;
                 case "crc":
+                case "crc32":
                     return Field.CRC;
                 case "default":
                     return Field.Default;
                 case "date":
                     return Field.Date;
+                case "desc":
                 case "description":
+                case "gamedesc":
+                case "gamedescription":
+                case "game-description":
+                case "machinedesc":
+                case "machinedescription":
+                case "machine-description":
                     return Field.Description;
                 case "devices":
                     return Field.Devices;
+                case "equal":
+                case "greater":
+                case "less":
+                case "size":
+                    return Field.Size;
                 case "features":
                     return Field.Features;
                 case "gamename":
                 case "machinename":
                     return Field.MachineName;
                 case "gametype":
+                case "game-type":
                 case "machinetype":
+                case "machine-type":
                     return Field.MachineType;
                 case "index":
                     return Field.Index;
                 case "infos":
                     return Field.Infos;
+                case "itemname":
+                case "item-name":
+                case "name":
+                    return Field.Name;
+                case "itemtatus":
+                case "item-status":
+                case "status":
+                    return Field.Status;
                 case "itemtype":
+                case "item-type":
                 case "type":
                     return Field.ItemType;
                 case "language":
@@ -174,16 +201,18 @@ namespace SabreTools.Library.Tools
                 case "md5":
                     return Field.MD5;
                 case "merge":
+                case "mergetag":
+                case "merge-tag":
                     return Field.Merge;
-                case "name":
-                    return Field.Name;
                 case "offset":
                     return Field.Offset;
                 case "optional":
                     return Field.Optional;
                 case "partinterface":
+                case "part-interface":
                     return Field.PartInterface;
                 case "partname":
+                case "part-name":
                     return Field.PartName;
                 case "publisher":
                     return Field.Publisher;
@@ -202,21 +231,23 @@ namespace SabreTools.Library.Tools
                 case "sampleof":
                     return Field.SampleOf;
                 case "sha1":
+                case "sha-1":
                     return Field.SHA1;
                 case "sha256":
+                case "sha-256":
                     return Field.SHA256;
                 case "sha384":
+                case "sha-384":
                     return Field.SHA384;
                 case "sha512":
+                case "sha-512":
                     return Field.SHA512;
-                case "size":
-                    return Field.Size;
                 case "slotoptions":
+                case "slot-options":
                     return Field.SlotOptions;
                 case "sourcefile":
+                case "source-file":
                     return Field.SourceFile;
-                case "status":
-                    return Field.Status;
                 case "supported":
                     return Field.Supported;
                 case "writable":
