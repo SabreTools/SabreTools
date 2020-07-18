@@ -80,6 +80,7 @@ namespace SabreTools.Library.DatFiles
             #endregion
         };
 
+        // TODO: Can these explicit vars be removed eventually?
         #region Machine Filters
 
         /// <summary>
@@ -228,6 +229,7 @@ namespace SabreTools.Library.DatFiles
 
         #endregion
 
+        // TODO: Can these explicit vars be removed eventually?
         #region DatItem Filters
 
         /// <summary>
@@ -536,470 +538,481 @@ namespace SabreTools.Library.DatFiles
                 string filterField = filterPairTrimmed.Split(':')[0].ToLowerInvariant().Trim('"', ' ', '\t');
                 string filterValue = filterPairTrimmed.Substring(filterField.Length + 1).Trim('"', ' ', '\t');
 
-                switch (filterField)
-                {
-                    #region Machine Filters
+                SetFilter(filterField, filterValue, negate);
+            }
+        }
 
-                    // Machine.Name
-                    case "game":
-                    case "gamename":
-                    case "machine":
-                    case "machinename":
-                        if (negate)
-                            MachineName.NegativeSet.Add(filterValue);
-                        else
-                            MachineName.PositiveSet.Add(filterValue);
-                        break;
+        /// <summary>
+        /// Set a single filter from key
+        /// </summary>
+        /// <param name="key">Key for the filter to be set</param>
+        /// <param name="value">Value of the filter</param>
+        /// <param name="negate">True if negative filter, false otherwise</param>
+        public void SetFilter(string key, string value, bool negate)
+        {
+            switch (key)
+            {
+                #region Machine Filters
 
-                    // Machine.Comment
-                    case "comment":
-                        if (negate)
-                            Comment.NegativeSet.Add(filterValue);
-                        else
-                            Comment.PositiveSet.Add(filterValue);
-                        break;
+                // Machine.Name
+                case "game":
+                case "gamename":
+                case "machine":
+                case "machinename":
+                    if (negate)
+                        MachineName.NegativeSet.Add(value);
+                    else
+                        MachineName.PositiveSet.Add(value);
+                    break;
 
-                    // Machine.Description
-                    case "gamedesc":
-                    case "gamedescription":
-                    case "machinedesc":
-                    case "machinedescription":
-                        if (negate)
-                            MachineDescription.NegativeSet.Add(filterValue);
-                        else
-                            MachineDescription.PositiveSet.Add(filterValue);
-                        break;
+                // Machine.Comment
+                case "comment":
+                    if (negate)
+                        Comment.NegativeSet.Add(value);
+                    else
+                        Comment.PositiveSet.Add(value);
+                    break;
 
-                    // Machine.Year
-                    case "year":
-                        if (negate)
-                            Year.NegativeSet.Add(filterValue);
-                        else
-                            Year.PositiveSet.Add(filterValue);
-                        break;
+                // Machine.Description
+                case "gamedesc":
+                case "gamedescription":
+                case "machinedesc":
+                case "machinedescription":
+                    if (negate)
+                        MachineDescription.NegativeSet.Add(value);
+                    else
+                        MachineDescription.PositiveSet.Add(value);
+                    break;
 
-                    // Machine.Manufacturer
-                    case "manufacturer":
-                        if (negate)
-                            Manufacturer.NegativeSet.Add(filterValue);
-                        else
-                            Manufacturer.PositiveSet.Add(filterValue);
-                        break;
+                // Machine.Year
+                case "year":
+                    if (negate)
+                        Year.NegativeSet.Add(value);
+                    else
+                        Year.PositiveSet.Add(value);
+                    break;
 
-                    // Machine.Publisher
-                    case "publisher":
-                        if (negate)
-                            Publisher.NegativeSet.Add(filterValue);
-                        else
-                            Publisher.PositiveSet.Add(filterValue);
-                        break;
+                // Machine.Manufacturer
+                case "manufacturer":
+                    if (negate)
+                        Manufacturer.NegativeSet.Add(value);
+                    else
+                        Manufacturer.PositiveSet.Add(value);
+                    break;
 
-                    // Machine.Category
-                    case "category":
-                        if (negate)
-                            Category.NegativeSet.Add(filterValue);
-                        else
-                            Category.PositiveSet.Add(filterValue);
-                        break;
+                // Machine.Publisher
+                case "publisher":
+                    if (negate)
+                        Publisher.NegativeSet.Add(value);
+                    else
+                        Publisher.PositiveSet.Add(value);
+                    break;
 
-                    // Machine.RomOf
-                    case "romof":
-                        if (negate)
-                            RomOf.NegativeSet.Add(filterValue);
-                        else
-                            RomOf.PositiveSet.Add(filterValue);
-                        break;
+                // Machine.Category
+                case "category":
+                    if (negate)
+                        Category.NegativeSet.Add(value);
+                    else
+                        Category.PositiveSet.Add(value);
+                    break;
 
-                    // Machine.CloneOf
-                    case "cloneof":
-                        if (negate)
-                            CloneOf.NegativeSet.Add(filterValue);
-                        else
-                            CloneOf.PositiveSet.Add(filterValue);
-                        break;
+                // Machine.RomOf
+                case "romof":
+                    if (negate)
+                        RomOf.NegativeSet.Add(value);
+                    else
+                        RomOf.PositiveSet.Add(value);
+                    break;
 
-                    // Machine.SampleOf
-                    case "sampleof":
-                        if (negate)
-                            SampleOf.NegativeSet.Add(filterValue);
-                        else
-                            SampleOf.PositiveSet.Add(filterValue);
-                        break;
+                // Machine.CloneOf
+                case "cloneof":
+                    if (negate)
+                        CloneOf.NegativeSet.Add(value);
+                    else
+                        CloneOf.PositiveSet.Add(value);
+                    break;
 
-                    // Machine.Supported
-                    case "supported":
-                        if (negate || filterValue.Equals("false", StringComparison.OrdinalIgnoreCase))
-                            Supported.Neutral = false;
-                        else
-                            Supported.Neutral = true;
-                        break;
+                // Machine.SampleOf
+                case "sampleof":
+                    if (negate)
+                        SampleOf.NegativeSet.Add(value);
+                    else
+                        SampleOf.PositiveSet.Add(value);
+                    break;
 
-                    // Machine.SourceFile
-                    case "source":
-                    case "sourcefile":
-                        if (negate)
-                            SourceFile.NegativeSet.Add(filterValue);
-                        else
-                            SourceFile.PositiveSet.Add(filterValue);
-                        break;
+                // Machine.Supported
+                case "supported":
+                    if (negate || value.Equals("false", StringComparison.OrdinalIgnoreCase))
+                        Supported.Neutral = false;
+                    else
+                        Supported.Neutral = true;
+                    break;
 
-                    // Machine.Runnable
-                    case "runnable":
-                        if (negate || filterValue.Equals("false", StringComparison.OrdinalIgnoreCase))
-                            Runnable.Neutral = false;
-                        else
-                            Runnable.Neutral = true;
-                        break;
+                // Machine.SourceFile
+                case "source":
+                case "sourcefile":
+                    if (negate)
+                        SourceFile.NegativeSet.Add(value);
+                    else
+                        SourceFile.PositiveSet.Add(value);
+                    break;
 
-                    // Machine.Board
-                    case "board":
-                        if (negate)
-                            Board.NegativeSet.Add(filterValue);
-                        else
-                            Board.PositiveSet.Add(filterValue);
-                        break;
+                // Machine.Runnable
+                case "runnable":
+                    if (negate || value.Equals("false", StringComparison.OrdinalIgnoreCase))
+                        Runnable.Neutral = false;
+                    else
+                        Runnable.Neutral = true;
+                    break;
 
-                    // Machine.RebuildTo
-                    case "rebuild":
-                    case "rebuildto":
-                        if (negate)
-                            RebuildTo.NegativeSet.Add(filterValue);
-                        else
-                            RebuildTo.PositiveSet.Add(filterValue);
-                        break;
+                // Machine.Board
+                case "board":
+                    if (negate)
+                        Board.NegativeSet.Add(value);
+                    else
+                        Board.PositiveSet.Add(value);
+                    break;
 
-                    // Machine.MachineType
-                    case "gametype":
-                    case "machinetype":
-                        if (negate)
-                            MachineTypes.Negative |= filterValue.AsMachineType();
-                        else
-                            MachineTypes.Positive |= filterValue.AsMachineType();
-                        break;
+                // Machine.RebuildTo
+                case "rebuild":
+                case "rebuildto":
+                    if (negate)
+                        RebuildTo.NegativeSet.Add(value);
+                    else
+                        RebuildTo.PositiveSet.Add(value);
+                    break;
 
-                    #endregion
+                // Machine.MachineType
+                case "gametype":
+                case "machinetype":
+                    if (negate)
+                        MachineTypes.Negative |= value.AsMachineType();
+                    else
+                        MachineTypes.Positive |= value.AsMachineType();
+                    break;
 
-                    #region DatItem Filters
+                #endregion
 
-                    // DatItem.Type
-                    case "itemtype":
-                    case "type":
-                        if (filterValue.AsItemType() == null)
-                            continue;
+                #region DatItem Filters
 
-                        if (negate)
-                            ItemTypes.NegativeSet.Add(filterValue);
-                        else
-                            ItemTypes.PositiveSet.Add(filterValue);
-                        break;
+                // DatItem.Type
+                case "itemtype":
+                case "type":
+                    if (value.AsItemType() == null)
+                        return;
 
-                    // DatItem.Name
-                    case "item":
-                    case "itemname":
-                        if (negate)
-                            ItemName.NegativeSet.Add(filterValue);
-                        else
-                            ItemName.PositiveSet.Add(filterValue);
-                        break;
+                    if (negate)
+                        ItemTypes.NegativeSet.Add(value);
+                    else
+                        ItemTypes.PositiveSet.Add(value);
+                    break;
 
-                    // DatItem.PartName
-                    case "partname":
-                        if (negate)
-                            PartName.NegativeSet.Add(filterValue);
-                        else
-                            PartName.PositiveSet.Add(filterValue);
-                        break;
+                // DatItem.Name
+                case "item":
+                case "itemname":
+                    if (negate)
+                        ItemName.NegativeSet.Add(value);
+                    else
+                        ItemName.PositiveSet.Add(value);
+                    break;
 
-                    // DatItem.PartInterface
-                    case "partinterface":
-                        if (negate)
-                            PartInterface.NegativeSet.Add(filterValue);
-                        else
-                            PartInterface.PositiveSet.Add(filterValue);
-                        break;
+                // DatItem.PartName
+                case "partname":
+                    if (negate)
+                        PartName.NegativeSet.Add(value);
+                    else
+                        PartName.PositiveSet.Add(value);
+                    break;
 
-                    // DatItem.AreaName
-                    case "areaname":
-                        if (negate)
-                            AreaName.NegativeSet.Add(filterValue);
-                        else
-                            AreaName.PositiveSet.Add(filterValue);
-                        break;
+                // DatItem.PartInterface
+                case "partinterface":
+                    if (negate)
+                        PartInterface.NegativeSet.Add(value);
+                    else
+                        PartInterface.PositiveSet.Add(value);
+                    break;
 
-                    // DatItem.AreaSize
-                    case "areasize":
-                        bool? asOperation = null;
-                        if (filterValue.StartsWith(">"))
-                            asOperation = true;
-                        else if (filterValue.StartsWith("<"))
-                            asOperation = false;
-                        else if (filterValue.StartsWith("="))
-                            asOperation = null;
+                // DatItem.AreaName
+                case "areaname":
+                    if (negate)
+                        AreaName.NegativeSet.Add(value);
+                    else
+                        AreaName.PositiveSet.Add(value);
+                    break;
 
-                        string areasizeString = filterValue.TrimStart('>', '<', '=');
-                        if (!Int64.TryParse(areasizeString, out long areasize))
-                            continue;
+                // DatItem.AreaSize
+                case "areasize":
+                    bool? asOperation = null;
+                    if (value.StartsWith(">"))
+                        asOperation = true;
+                    else if (value.StartsWith("<"))
+                        asOperation = false;
+                    else if (value.StartsWith("="))
+                        asOperation = null;
 
-                        // Equal
-                        if (asOperation == null && !negate)
-                        {
-                            AreaSize.Neutral = areasize;
-                        }
+                    string areasizeString = value.TrimStart('>', '<', '=');
+                    if (!Int64.TryParse(areasizeString, out long areasize))
+                        return;
 
-                        // Not Equal
-                        else if (asOperation == null && negate)
-                        {
-                            AreaSize.Negative = areasize - 1;
-                            AreaSize.Positive = areasize + 1;
-                        }
+                    // Equal
+                    if (asOperation == null && !negate)
+                    {
+                        AreaSize.Neutral = areasize;
+                    }
 
-                        // Greater Than or Equal
-                        else if (asOperation == true && !negate)
-                        {
-                            AreaSize.Positive = areasize;
-                        }
+                    // Not Equal
+                    else if (asOperation == null && negate)
+                    {
+                        AreaSize.Negative = areasize - 1;
+                        AreaSize.Positive = areasize + 1;
+                    }
 
-                        // Strictly Less Than
-                        else if (asOperation == true && negate)
-                        {
-                            AreaSize.Negative = areasize - 1;
-                        }
+                    // Greater Than or Equal
+                    else if (asOperation == true && !negate)
+                    {
+                        AreaSize.Positive = areasize;
+                    }
 
-                        // Less Than or Equal
-                        else if (asOperation == false && !negate)
-                        {
-                            AreaSize.Negative = areasize;
-                        }
+                    // Strictly Less Than
+                    else if (asOperation == true && negate)
+                    {
+                        AreaSize.Negative = areasize - 1;
+                    }
 
-                        // Strictly Greater Than
-                        else if (asOperation == false && negate)
-                        {
-                            AreaSize.Positive = areasize + 1;
-                        }
+                    // Less Than or Equal
+                    else if (asOperation == false && !negate)
+                    {
+                        AreaSize.Negative = areasize;
+                    }
 
-                        break;
+                    // Strictly Greater Than
+                    else if (asOperation == false && negate)
+                    {
+                        AreaSize.Positive = areasize + 1;
+                    }
 
-                    // DatItem.Default
-                    case "default":
-                        if (negate || filterValue.Equals("false", StringComparison.OrdinalIgnoreCase))
-                            Default.Neutral = false;
-                        else
-                            Default.Neutral = true;
-                        break;
+                    break;
 
-                    // DatItem.Description
-                    case "biosdesc":
-                    case "biosdescription":
-                    case "description":
-                        if (negate)
-                            Description.NegativeSet.Add(filterValue);
-                        else
-                            Description.PositiveSet.Add(filterValue);
-                        break;
+                // DatItem.Default
+                case "default":
+                    if (negate || value.Equals("false", StringComparison.OrdinalIgnoreCase))
+                        Default.Neutral = false;
+                    else
+                        Default.Neutral = true;
+                    break;
 
-                    // DatItem.Size
-                    case "itemsize":
-                    case "romsize":
-                    case "size":
-                        bool? sOperation = null;
-                        if (filterValue.StartsWith(">"))
-                            sOperation = true;
-                        else if (filterValue.StartsWith("<"))
-                            sOperation = false;
-                        else if (filterValue.StartsWith("="))
-                            sOperation = null;
+                // DatItem.Description
+                case "biosdesc":
+                case "biosdescription":
+                case "description":
+                    if (negate)
+                        Description.NegativeSet.Add(value);
+                    else
+                        Description.PositiveSet.Add(value);
+                    break;
 
-                        string sizeString = filterValue.TrimStart('>', '<', '=');
-                        if (!Int64.TryParse(sizeString, out long size))
-                            continue;
+                // DatItem.Size
+                case "itemsize":
+                case "romsize":
+                case "size":
+                    bool? sOperation = null;
+                    if (value.StartsWith(">"))
+                        sOperation = true;
+                    else if (value.StartsWith("<"))
+                        sOperation = false;
+                    else if (value.StartsWith("="))
+                        sOperation = null;
 
-                        // Equal
-                        if (sOperation == null && !negate)
-                        {
-                            Size.Neutral = size;
-                        }
+                    string sizeString = value.TrimStart('>', '<', '=');
+                    if (!Int64.TryParse(sizeString, out long size))
+                        return;
 
-                        // Not Equal
-                        else if (sOperation == null && negate)
-                        {
-                            Size.Negative = size - 1;
-                            Size.Positive = size + 1;
-                        }
+                    // Equal
+                    if (sOperation == null && !negate)
+                    {
+                        Size.Neutral = size;
+                    }
 
-                        // Greater Than or Equal
-                        else if (sOperation == true && !negate)
-                        {
-                            Size.Positive = size;
-                        }
+                    // Not Equal
+                    else if (sOperation == null && negate)
+                    {
+                        Size.Negative = size - 1;
+                        Size.Positive = size + 1;
+                    }
 
-                        // Strictly Less Than
-                        else if (sOperation == true && negate)
-                        {
-                            Size.Negative = size - 1;
-                        }
+                    // Greater Than or Equal
+                    else if (sOperation == true && !negate)
+                    {
+                        Size.Positive = size;
+                    }
 
-                        // Less Than or Equal
-                        else if (sOperation == false && !negate)
-                        {
-                            Size.Negative = size;
-                        }
+                    // Strictly Less Than
+                    else if (sOperation == true && negate)
+                    {
+                        Size.Negative = size - 1;
+                    }
 
-                        // Strictly Greater Than
-                        else if (sOperation == false && negate)
-                        {
-                            Size.Positive = size + 1;
-                        }
+                    // Less Than or Equal
+                    else if (sOperation == false && !negate)
+                    {
+                        Size.Negative = size;
+                    }
 
-                        break;
+                    // Strictly Greater Than
+                    else if (sOperation == false && negate)
+                    {
+                        Size.Positive = size + 1;
+                    }
 
-                    // DatItem.CRC
-                    case "crc":
-                    case "crc32":
-                        if (negate)
-                            CRC.NegativeSet.Add(filterValue);
-                        else
-                            CRC.PositiveSet.Add(filterValue);
-                        break;
+                    break;
 
-                    // DatItem.MD5
-                    case "md5":
-                        if (negate)
-                            MD5.NegativeSet.Add(filterValue);
-                        else
-                            MD5.PositiveSet.Add(filterValue);
-                        break;
+                // DatItem.CRC
+                case "crc":
+                case "crc32":
+                    if (negate)
+                        CRC.NegativeSet.Add(value);
+                    else
+                        CRC.PositiveSet.Add(value);
+                    break;
+
+                // DatItem.MD5
+                case "md5":
+                    if (negate)
+                        MD5.NegativeSet.Add(value);
+                    else
+                        MD5.PositiveSet.Add(value);
+                    break;
 
 #if NET_FRAMEWORK
-                    // DatItem.RIPEMD160
-                    case "ripemd160":
-                        if (negate)
-                            RIPEMD160.NegativeSet.Add(filterValue);
-                        else
-                            RIPEMD160.PositiveSet.Add(filterValue);
-                        break;
+                // DatItem.RIPEMD160
+                case "ripemd160":
+                    if (negate)
+                        RIPEMD160.NegativeSet.Add(value);
+                    else
+                        RIPEMD160.PositiveSet.Add(value);
+                    break;
 #endif
 
-                    // DatItem.SHA1
-                    case "sha1":
-                    case "sha-1":
-                        if (negate)
-                            SHA1.NegativeSet.Add(filterValue);
-                        else
-                            SHA1.PositiveSet.Add(filterValue);
-                        break;
+                // DatItem.SHA1
+                case "sha1":
+                case "sha-1":
+                    if (negate)
+                        SHA1.NegativeSet.Add(value);
+                    else
+                        SHA1.PositiveSet.Add(value);
+                    break;
 
-                    // DatItem.SHA256
-                    case "sha256":
-                    case "sha-256":
-                        if (negate)
-                            SHA256.NegativeSet.Add(filterValue);
-                        else
-                            SHA256.PositiveSet.Add(filterValue);
-                        break;
+                // DatItem.SHA256
+                case "sha256":
+                case "sha-256":
+                    if (negate)
+                        SHA256.NegativeSet.Add(value);
+                    else
+                        SHA256.PositiveSet.Add(value);
+                    break;
 
-                    // DatItem.SHA384
-                    case "sha384":
-                    case "sha-384":
-                        if (negate)
-                            SHA384.NegativeSet.Add(filterValue);
-                        else
-                            SHA384.PositiveSet.Add(filterValue);
-                        break;
+                // DatItem.SHA384
+                case "sha384":
+                case "sha-384":
+                    if (negate)
+                        SHA384.NegativeSet.Add(value);
+                    else
+                        SHA384.PositiveSet.Add(value);
+                    break;
 
-                    // DatItem.SHA512
-                    case "sha512":
-                    case "sha-512":
-                        if (negate)
-                            SHA512.NegativeSet.Add(filterValue);
-                        else
-                            SHA512.PositiveSet.Add(filterValue);
-                        break;
+                // DatItem.SHA512
+                case "sha512":
+                case "sha-512":
+                    if (negate)
+                        SHA512.NegativeSet.Add(value);
+                    else
+                        SHA512.PositiveSet.Add(value);
+                    break;
 
-                    // DatItem.Merge
-                    case "merge":
-                    case "mergetag":
-                        if (negate)
-                            MergeTag.NegativeSet.Add(filterValue);
-                        else
-                            MergeTag.PositiveSet.Add(filterValue);
-                        break;
+                // DatItem.Merge
+                case "merge":
+                case "mergetag":
+                    if (negate)
+                        MergeTag.NegativeSet.Add(value);
+                    else
+                        MergeTag.PositiveSet.Add(value);
+                    break;
 
-                    // DatItem.Region
-                    case "region":
-                        if (negate)
-                            Region.NegativeSet.Add(filterValue);
-                        else
-                            Region.PositiveSet.Add(filterValue);
-                        break;
+                // DatItem.Region
+                case "region":
+                    if (negate)
+                        Region.NegativeSet.Add(value);
+                    else
+                        Region.PositiveSet.Add(value);
+                    break;
 
-                    // DatItem.Index
-                    case "index":
-                        if (negate)
-                            Index.NegativeSet.Add(filterValue);
-                        else
-                            Index.PositiveSet.Add(filterValue);
-                        break;
+                // DatItem.Index
+                case "index":
+                    if (negate)
+                        Index.NegativeSet.Add(value);
+                    else
+                        Index.PositiveSet.Add(value);
+                    break;
 
-                    // DatItem.Writable
-                    case "writable":
-                        if (negate || filterValue.Equals("false", StringComparison.OrdinalIgnoreCase))
-                            Writable.Neutral = false;
-                        else
-                            Writable.Neutral = true;
-                        break;
+                // DatItem.Writable
+                case "writable":
+                    if (negate || value.Equals("false", StringComparison.OrdinalIgnoreCase))
+                        Writable.Neutral = false;
+                    else
+                        Writable.Neutral = true;
+                    break;
 
-                    // DatItem.Optional
-                    case "optional":
-                        if (negate || filterValue.Equals("false", StringComparison.OrdinalIgnoreCase))
-                            Optional.Neutral = false;
-                        else
-                            Optional.Neutral = true;
-                        break;
+                // DatItem.Optional
+                case "optional":
+                    if (negate || value.Equals("false", StringComparison.OrdinalIgnoreCase))
+                        Optional.Neutral = false;
+                    else
+                        Optional.Neutral = true;
+                    break;
 
-                    // DatItem.Status
-                    case "itemstatus":
-                    case "status":
-                        if (negate)
-                            Status.Negative |= filterValue.AsItemStatus();
-                        else
-                            Status.Positive |= filterValue.AsItemStatus();
-                        break;
+                // DatItem.Status
+                case "itemstatus":
+                case "status":
+                    if (negate)
+                        Status.Negative |= value.AsItemStatus();
+                    else
+                        Status.Positive |= value.AsItemStatus();
+                    break;
 
-                    // DatItem.Language
-                    case "lang":
-                    case "language":
-                        if (negate)
-                            Language.NegativeSet.Add(filterValue);
-                        else
-                            Language.PositiveSet.Add(filterValue);
-                        break;
+                // DatItem.Language
+                case "lang":
+                case "language":
+                    if (negate)
+                        Language.NegativeSet.Add(value);
+                    else
+                        Language.PositiveSet.Add(value);
+                    break;
 
-                    // DatItem.Date
-                    case "date":
-                        if (negate)
-                            Date.NegativeSet.Add(filterValue);
-                        else
-                            Date.PositiveSet.Add(filterValue);
-                        break;
+                // DatItem.Date
+                case "date":
+                    if (negate)
+                        Date.NegativeSet.Add(value);
+                    else
+                        Date.PositiveSet.Add(value);
+                    break;
 
-                    // DatItem.Bios
-                    case "bios":
-                        if (negate)
-                            Bios.NegativeSet.Add(filterValue);
-                        else
-                            Bios.PositiveSet.Add(filterValue);
-                        break;
+                // DatItem.Bios
+                case "bios":
+                    if (negate)
+                        Bios.NegativeSet.Add(value);
+                    else
+                        Bios.PositiveSet.Add(value);
+                    break;
 
-                    // DatItem.Offset
-                    case "offset":
-                        if (negate)
-                            Offset.NegativeSet.Add(filterValue);
-                        else
-                            Offset.PositiveSet.Add(filterValue);
-                        break;
+                // DatItem.Offset
+                case "offset":
+                    if (negate)
+                        Offset.NegativeSet.Add(value);
+                    else
+                        Offset.PositiveSet.Add(value);
+                    break;
 
                     #endregion
-                }
             }
         }
 
