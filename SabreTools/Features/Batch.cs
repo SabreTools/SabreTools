@@ -33,6 +33,7 @@ Parse new file(s):                  input(datpath, ...);
 Filter on a field and value:        filter(machine.field|item.field, value, [negate = false]);
 Apply a MAME Extra INI for a field: extra(field, inipath);
 Perform a split/merge:              merge(split|merged|nonmerged|full|device);
+Set game names from description:    descname();
 Run 1G1R on the items:              1g1r(region, ...);
 Add new output format(s):           format(datformat, ...);
 Set the output directory:           output(outdir);
@@ -192,6 +193,20 @@ Reset the internal state:           reset();";
 
                                 break;
 
+                            // Apply description-as-name logic
+                            case "descname":
+                                if (command.Arguments.Count != 0)
+                                {
+                                    Globals.Logger.User($"Invoked {command.Name} and expected no arguments, but {command.Arguments.Count} arguments were provided");
+                                    Globals.Logger.User("Usage: descname();");
+                                    continue;
+                                }
+
+                                // Apply the logic
+                                datFile.MachineDescriptionToName();
+
+                                break;
+
                             // Apply 1G1R
                             case "1g1r":
                                 if (command.Arguments.Count == 0)
@@ -215,7 +230,6 @@ Reset the internal state:           reset();";
 
 
                             // TODO: Implement field removal (good for post-Extras) (possible two steps? add + apply?)
-                            // TODO: Implement description to name
                             // TODO: Implement 1RPG
                             // TODO: Implement scene date strip
 
