@@ -165,7 +165,7 @@ namespace SabreTools.Library.IO
             List<ParentablePath> outputs = new List<ParentablePath>();
             for (int i = 0; i < inputs.Count; i++)
             {
-                string input = inputs[i];
+                string input = inputs[i].Trim('"');
 
                 // If we have a null or empty path
                 if (string.IsNullOrEmpty(input))

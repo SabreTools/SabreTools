@@ -1932,7 +1932,7 @@ namespace SabreTools.Library.DatFiles
         /// <param name="keepext">True if original extension should be kept, false otherwise (default)</param>
         public void Parse(string filename, int indexId = 0, bool keep = false, bool keepext = false)
         {
-            ParentablePath path = new ParentablePath(filename);
+            ParentablePath path = new ParentablePath(filename.Trim('"'));
             Parse(path, indexId, keep, keepext);
         }
 

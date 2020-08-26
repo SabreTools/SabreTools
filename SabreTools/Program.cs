@@ -103,6 +103,7 @@ namespace SabreTools
                     break;
 
                 // Require input verification
+                case Batch.Value:
                 case DatFromDir.Value:
                 case Extract.Value:
                 case Restore.Value:
@@ -152,6 +153,7 @@ namespace SabreTools
             help.Add(new DisplayHelp());
             help.Add(new DisplayHelpDetailed());
             help.Add(new Script());
+            help.Add(new Batch());
             help.Add(new DatFromDir());
             help.Add(new Extract());
             help.Add(new Restore());

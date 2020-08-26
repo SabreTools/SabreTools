@@ -8,6 +8,7 @@ using SabreTools.Library.Data;
 using SabreTools.Library.DatFiles;
 using SabreTools.Library.DatItems;
 using SabreTools.Library.Filtering;
+using SabreTools.Library.IO;
 using SabreTools.Library.Help;
 using SabreTools.Library.Tools;
 
@@ -37,7 +38,7 @@ namespace SabreTools.Features
                 // If the file doesn't exist, warn but continue
                 if (!File.Exists(path))
                 {
-                    Globals.Logger.Warning($"{path} does not exist. Skipping...");
+                    Globals.Logger.User($"{path} does not exist. Skipping...");
                     continue;
                 }
 
@@ -67,23 +68,28 @@ namespace SabreTools.Features
                         var command = BatchCommand.Create(line);
                         if (command == null)
                         {
-                            Globals.Logger.Warning($"Could not process {path} due to the following line: {line}");
+                            Globals.Logger.User($"Could not process {path} due to the following line: {line}");
                             break;
                         }
 
                         // Now switch on the command
+                        Globals.Logger.User($"Attempting to invoke {command.Name} with {(command.Arguments.Count == 0 ? "no arguments" : "the following argument(s): " + string.Join(", ", command.Arguments))}");
                         switch (command.Name.ToLowerInvariant())
                         {
                             // Parse in new input file(s)
                             case "input":
                                 if (command.Arguments.Count == 0)
                                 {
-                                    Globals.Logger.Warning($"Invoked {command.Name} but no arguments were provided");
+                                    Globals.Logger.User($"Invoked {command.Name} but no arguments were provided");
+                                    Globals.Logger.User("Usage: input(datpath, ...);");
                                     continue;
                                 }
 
+                                // Get only files from inputs
+                                List<ParentablePath> onlyFiles = DirectoryExtensions.GetFilesOnly(command.Arguments);
+
                                 // Assume there could be multiple
-                                foreach (string input in command.Arguments)
+                                foreach (ParentablePath input in onlyFiles)
                                 {
                                     datFile.Parse(input, index++);
                                 }
@@ -94,7 +100,8 @@ namespace SabreTools.Features
                             case "filter":
                                 if (command.Arguments.Count < 2 || command.Arguments.Count > 3)
                                 {
-                                    Globals.Logger.Warning($"Invoked {command.Name} and expected between 2-3 arguments, but {command.Arguments.Count} arguments were provided");
+                                    Globals.Logger.User($"Invoked {command.Name} and expected between 2-3 arguments, but {command.Arguments.Count} arguments were provided");
+                                    Globals.Logger.User("Usage: filter(field, value, [negate = false]);");
                                     continue;
                                 }
 
@@ -116,7 +123,8 @@ namespace SabreTools.Features
                             case "extra":
                                 if (command.Arguments.Count != 2)
                                 {
-                                    Globals.Logger.Warning($"Invoked {command.Name} and expected 2 arguments, but {command.Arguments.Count} arguments were provided");
+                                    Globals.Logger.User($"Invoked {command.Name} and expected 2 arguments, but {command.Arguments.Count} arguments were provided");
+                                    Globals.Logger.User("Usage: extra(field, inipath);");
                                     continue;
                                 }
 
@@ -142,13 +150,14 @@ namespace SabreTools.Features
                             // TODO: Implement 1G1R
                             // TODO: Implement 1RPG
                             // TODO: Implement scene date strip
+                            // TODO: Implement header value replacement
 
                             // Set new output format(s)
                             case "format":
-                            case "type":
                                 if (command.Arguments.Count == 0)
                                 {
-                                    Globals.Logger.Warning($"Invoked {command.Name} but no arguments were provided");
+                                    Globals.Logger.User($"Invoked {command.Name} but no arguments were provided");
+                                    Globals.Logger.User("Usage: format(datformat, ...);");
                                     continue;
                                 }
 
@@ -165,7 +174,8 @@ namespace SabreTools.Features
                             case "output":
                                 if (command.Arguments.Count != 1)
                                 {
-                                    Globals.Logger.Warning($"Invoked {command.Name} and expected exactly 1 argument, but {command.Arguments.Count} arguments were provided");
+                                    Globals.Logger.User($"Invoked {command.Name} and expected exactly 1 argument, but {command.Arguments.Count} arguments were provided");
+                                    Globals.Logger.User("Usage: output(outdir);");
                                     continue;
                                 }
 
@@ -177,7 +187,8 @@ namespace SabreTools.Features
                             case "write":
                                 if (command.Arguments.Count != 0)
                                 {
-                                    Globals.Logger.Warning($"Invoked {command.Name} and expected no arguments, but {command.Arguments.Count} arguments were provided");
+                                    Globals.Logger.User($"Invoked {command.Name} and expected no arguments, but {command.Arguments.Count} arguments were provided");
+                                    Globals.Logger.User("Usage: write();");
                                     continue;
                                 }
 
@@ -191,7 +202,8 @@ namespace SabreTools.Features
                             case "reset":
                                 if (command.Arguments.Count != 0)
                                 {
-                                    Globals.Logger.Warning($"Invoked {command.Name} and expected no arguments, but {command.Arguments.Count} arguments were provided");
+                                    Globals.Logger.User($"Invoked {command.Name} and expected no arguments, but {command.Arguments.Count} arguments were provided");
+                                    Globals.Logger.User("Usage: reset();");
                                     continue;
                                 }
 
@@ -201,11 +213,10 @@ namespace SabreTools.Features
                                 outputDirectory = null;
                                 break;
 
-                                /*
-                                 * Add base [Ignore for now, only needed in diffing]
-                                 * 1G1R, description as name, etc [Ignore for now]
-                                 * Set header values [Ignore for now]
-                                 */
+                            default:
+                                Globals.Logger.User($"Could not find a match for {command.Name}");
+                                Globals.Logger.User("Possible command names are: input, filter, extra, format, output, write, reset");
+                                break;
                         }
                     }
                 }
@@ -247,7 +258,7 @@ namespace SabreTools.Features
                     return null;
 
                 // Split into name and arguments
-                string splitRegex = @"^(\S+)\((.*?)\);?";
+                string splitRegex = @"^(\S+)\((.*?)\);";
                 var match = Regex.Match(line, splitRegex);
 
                 // If we didn't get a success, just return null
@@ -256,7 +267,13 @@ namespace SabreTools.Features
 
                 // Otherwise, get the name and arguments
                 string commandName = match.Groups[1].Value;
-                List<string> arguments = match.Groups[2].Value.Split(',').Select(s => s.Trim()).ToList();
+                List<string> arguments = match
+                    .Groups[2]
+                    .Value
+                    .Split(',')
+                    .Select(s => s.Trim().Trim('"').Trim())
+                    .Where(s => !string.IsNullOrWhiteSpace(s)) // TODO: This may interfere with header value replacement
+                    .ToList();
 
                 return new BatchCommand { Name = commandName, Arguments = arguments };
             }
