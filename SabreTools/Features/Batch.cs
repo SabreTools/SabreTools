@@ -32,6 +32,7 @@ Set a header field (if default):    set(header.field, value);
 Parse new file(s):                  input(datpath, ...);
 Filter on a field and value:        filter(machine.field|item.field, value, [negate = false]);
 Apply a MAME Extra INI for a field: extra(field, inipath);
+Perform a split/merge:              merge(split|merged|nonmerged|full|device);
 Run 1G1R on the items:              1g1r(region, ...);
 Add new output format(s):           format(datformat, ...);
 Set the output directory:           output(outdir);
@@ -174,6 +175,23 @@ Reset the internal state:           reset();";
 
                                 break;
 
+                            // Apply internal split/merge
+                            case "merge":
+                                if (command.Arguments.Count != 1)
+                                {
+                                    Globals.Logger.User($"Invoked {command.Name} and expected 1 argument, but {command.Arguments.Count} arguments were provided");
+                                    Globals.Logger.User("Usage: merge(split|merged|nonmerged|full|device);");
+                                    continue;
+                                }
+
+                                // Read in the individual arguments
+                                MergingFlag mergingFlag = command.Arguments[0].AsMergingFlag();
+
+                                // Apply the merging flag
+                                datFile.ProcessSplitType(mergingFlag);
+
+                                break;
+
                             // Apply 1G1R
                             case "1g1r":
                                 if (command.Arguments.Count == 0)
@@ -196,7 +214,6 @@ Reset the internal state:           reset();";
                                 break;
 
 
-                            // TODO: Implement internal split/merge
                             // TODO: Implement field removal (good for post-Extras) (possible two steps? add + apply?)
                             // TODO: Implement description to name
                             // TODO: Implement 1RPG
