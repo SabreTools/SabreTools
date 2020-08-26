@@ -24,7 +24,18 @@ namespace SabreTools.Features
             Flags = new List<string>() { "-bt", "--batch" };
             Description = "Enable batch mode";
             _featureType = FeatureType.Flag;
-            LongDescription = "Run a special mode that takes input files as lists of batch commands to run sequentially.";
+            LongDescription = @"Run a special mode that takes input files as lists of batch commands to run sequentially.
+
+The following commands are currently implemented:
+
+Parse new file(s):                  input(datpath, ...);
+Filter on a field and value:        filter(field, value, [negate = false]);
+Apply a MAME Extra INI for a field: extra(field, inipath);
+Run 1G1R on the items:              1g1r(region, ...);
+Add new output format(s):           format(datformat, ...);
+Set the output directory:           output(outdir);
+Write the internal items:           write([overwrite = true]);
+Reset the internal state:           reset();";
             Features = new Dictionary<string, Feature>();
         }
 
@@ -144,10 +155,31 @@ namespace SabreTools.Features
 
                                 break;
 
+                            // Apply 1G1R
+                            case "1g1r":
+                                if (command.Arguments.Count == 0)
+                                {
+                                    Globals.Logger.User($"Invoked {command.Name} but no arguments were provided");
+                                    Globals.Logger.User("Usage: 1g1r(region, ...);");
+                                    continue;
+                                }
+
+                                // Set the region list
+                                var tempRegionList = datFile.Header.RegionList;
+                                datFile.Header.RegionList = command.Arguments;
+
+                                // Run the 1G1R functionality
+                                datFile.OneGamePerRegion();
+
+                                // Reset the header value
+                                datFile.Header.RegionList = tempRegionList;
+
+                                break;
+
+
                             // TODO: Implement internal split/merge
                             // TODO: Implement field removal (good for post-Extras) (possible two steps? add + apply?)
                             // TODO: Implement description to name
-                            // TODO: Implement 1G1R
                             // TODO: Implement 1RPG
                             // TODO: Implement scene date strip
                             // TODO: Implement header value replacement
@@ -216,7 +248,7 @@ namespace SabreTools.Features
 
                             default:
                                 Globals.Logger.User($"Could not find a match for {command.Name}");
-                                Globals.Logger.User("Possible command names are: input, filter, extra, format, output, write, reset");
+                                Globals.Logger.User("Possible command names are: input, filter, extra, 1g1r, format, output, write, reset");
                                 break;
                         }
                     }
