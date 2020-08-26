@@ -150,6 +150,14 @@ Formerly included within this tool is a former standalone executable:
 	- OfflineMerge: Use merged DATs to create DATs used for managing offline
 		arrays
 
+For any command below that includes a `field` of any sort, the name are standardized:
+- If the field is in the header (such as filename, author, date),
+	the format will be `header.name`
+- If the field is in the game/machine (such as game name, publisher, manufacturer),
+	the format will be `game.name`
+- If the field is in the dat items (such as CRC, size, or optional flag),
+	the format will be `item.name`
+
 Usage:
 	SabreTools.exe [options] [filename|dirname] ...
 	
