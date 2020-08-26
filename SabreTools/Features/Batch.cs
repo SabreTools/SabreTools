@@ -35,6 +35,7 @@ Apply a MAME Extra INI for a field: extra(field, inipath);
 Perform a split/merge:              merge(split|merged|nonmerged|full|device);
 Set game names from description:    descname();
 Run 1G1R on the items:              1g1r(region, ...);
+Split into one rom per game:        orpg();
 Remove fields from games/items:     remove(machine.field|item.field, ...);
 Add new output format(s):           format(datformat, ...);
 Set the output directory:           output(outdir);
@@ -229,6 +230,20 @@ Reset the internal state:           reset();";
 
                                 break;
 
+                            // Apply one rom per game (ORPG)
+                            case "orpg":
+                                if (command.Arguments.Count != 0)
+                                {
+                                    Globals.Logger.User($"Invoked {command.Name} and expected no arguments, but {command.Arguments.Count} arguments were provided");
+                                    Globals.Logger.User("Usage: orpg();");
+                                    continue;
+                                }
+
+                                // Apply the logic
+                                datFile.OneRomPerGame();
+
+                                break;
+
                             // Remove a field
                             case "remove":
                                 if (command.Arguments.Count == 0)
@@ -250,7 +265,6 @@ Reset the internal state:           reset();";
 
                                 break;
 
-                            // TODO: Implement ORPG
                             // TODO: Implement scene date strip
 
                             // Set new output format(s)
