@@ -35,6 +35,7 @@ Apply a MAME Extra INI for a field: extra(field, inipath);
 Perform a split/merge:              merge(split|merged|nonmerged|full|device);
 Set game names from description:    descname();
 Run 1G1R on the items:              1g1r(region, ...);
+Remove fields from games/items:     remove(machine.field|item.field, ...);
 Add new output format(s):           format(datformat, ...);
 Set the output directory:           output(outdir);
 Write the internal items:           write([overwrite = true]);
@@ -228,9 +229,28 @@ Reset the internal state:           reset();";
 
                                 break;
 
+                            // Remove a field
+                            case "remove":
+                                if (command.Arguments.Count == 0)
+                                {
+                                    Globals.Logger.User($"Invoked {command.Name} but no arguments were provided");
+                                    Globals.Logger.User("Usage: remove(field, ...);");
+                                    continue;
+                                }
 
-                            // TODO: Implement field removal (good for post-Extras) (possible two steps? add + apply?)
-                            // TODO: Implement 1RPG
+                                // Set the field list
+                                var tempRemoveFields = datFile.Header.ExcludeFields;
+                                datFile.Header.ExcludeFields = command.Arguments.Select(s => s.AsField()).ToList();
+
+                                // Run the removal functionality
+                                datFile.RemoveFieldsFromItems();
+
+                                // Reset the header value
+                                datFile.Header.ExcludeFields = tempRemoveFields;
+
+                                break;
+
+                            // TODO: Implement ORPG
                             // TODO: Implement scene date strip
 
                             // Set new output format(s)
