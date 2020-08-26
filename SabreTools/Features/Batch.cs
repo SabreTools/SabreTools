@@ -185,17 +185,18 @@ namespace SabreTools.Features
 
                             // Write out the current DatFile
                             case "write":
-                                if (command.Arguments.Count != 0)
+                                if (command.Arguments.Count > 1)
                                 {
-                                    Globals.Logger.User($"Invoked {command.Name} and expected no arguments, but {command.Arguments.Count} arguments were provided");
-                                    Globals.Logger.User("Usage: write();");
+                                    Globals.Logger.User($"Invoked {command.Name} and expected 0-1 arguments, but {command.Arguments.Count} arguments were provided");
+                                    Globals.Logger.User("Usage: write([overwrite = true]);");
                                     continue;
                                 }
 
-                                // TODO: should argument be allowed for overwrite?
+                                // Get overwrite value, if possible
+                                bool overwrite = command.Arguments.Count == 1 ? command.Arguments[0].AsYesNo() ?? true : true;
 
                                 // Write out the dat with the current state
-                                datFile.Write(outputDirectory);
+                                datFile.Write(outputDirectory, overwrite: overwrite);
                                 break;
 
                             // Reset the internal state
@@ -224,19 +225,7 @@ namespace SabreTools.Features
                 {
                     Globals.Logger.Error($"There was an exception processing {path}: {ex}");
                     continue;
-                }                
-
-                // TODO: The following is needed here - 
-                /*
-                Limitations:
-
-                Multi outputs may not work, like split or diff outputs
-                Internal state might have to be set strangely
-                May not easily support sort and verify
-                May not easily support extract and restore
-                May not easily support DFD
-                Honesty beat supports the update path only, but should be a separate feature so it can be extended
-                */
+                }
             }
         }
 
