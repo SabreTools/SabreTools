@@ -166,6 +166,28 @@ Options:
 	  This flag allows the user to skip clearing the screen on run just like if
 	  the console was being redirected.
 
+  -bt, --batch				Enable batch mode
+	  Run a special mode that takes input files as lists of batch commands to
+	  run sequentially as read in from an input file.  Multiple batch files are
+	  allowed and each command has to be its own line.
+	  
+	  The following commands are currently implemented:
+
+	  Set a header field (if default):    set(header.field, value);
+	  Parse new file(s):                  input(datpath, ...);
+	  Filter on a field and value:        filter(machine.field|item.field, value, [negate = false]);
+	  Apply a MAME Extra INI for a field: extra(field, inipath);
+	  Perform a split/merge:              merge(split|merged|nonmerged|full|device);
+	  Set game names from description:    descname();
+	  Run 1G1R on the items:              1g1r(region, ...);
+	  Split into one rom per game:        orpg();
+	  Remove fields from games/items:     remove(machine.field|item.field, ...);
+	  Remove scene dates from names:      sds();
+	  Add new output format(s):           format(datformat, ...);
+	  Set the output directory:           output(outdir);
+	  Write the internal items:           write([overwrite = true]);
+	  Reset the internal state:           reset();";
+
   -d, --d2d, --dfd			Create DAT(s) from an input directory
 	  Create a DAT file from an input directory or set of files. By default,
 	  this will output a DAT named based on the input directory and the current

@@ -24,7 +24,7 @@ namespace SabreTools.Features
             Flags = new List<string>() { "-bt", "--batch" };
             Description = "Enable batch mode";
             _featureType = FeatureType.Flag;
-            LongDescription = @"Run a special mode that takes input files as lists of batch commands to run sequentially.
+            LongDescription = @"Run a special mode that takes input files as lists of batch commands to run sequentially as read in from an input file. Multiple batch files are allowed and each command has to be its own line.
 
 The following commands are currently implemented:
 
