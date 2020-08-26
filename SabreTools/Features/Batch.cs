@@ -28,8 +28,9 @@ namespace SabreTools.Features
 
 The following commands are currently implemented:
 
+Set a header field (if default):    set(header.field, value);
 Parse new file(s):                  input(datpath, ...);
-Filter on a field and value:        filter(field, value, [negate = false]);
+Filter on a field and value:        filter(machine.field|item.field, value, [negate = false]);
 Apply a MAME Extra INI for a field: extra(field, inipath);
 Run 1G1R on the items:              1g1r(region, ...);
 Add new output format(s):           format(datformat, ...);
@@ -87,6 +88,24 @@ Reset the internal state:           reset();";
                         Globals.Logger.User($"Attempting to invoke {command.Name} with {(command.Arguments.Count == 0 ? "no arguments" : "the following argument(s): " + string.Join(", ", command.Arguments))}");
                         switch (command.Name.ToLowerInvariant())
                         {
+                            // Set a header field
+                            case "set":
+                                if (command.Arguments.Count != 2)
+                                {
+                                    Globals.Logger.User($"Invoked {command.Name} but no arguments were provided");
+                                    Globals.Logger.User("Usage: set(header.field, value);");
+                                    continue;
+                                }
+
+                                // Read in the individual arguments
+                                Field field = command.Arguments[0].AsField();
+                                string value = command.Arguments[1];
+
+                                // Set the header field
+                                datFile.Header.SetFields(new Dictionary<Field, string> { [field] = value });
+
+                                break;
+
                             // Parse in new input file(s)
                             case "input":
                                 if (command.Arguments.Count == 0)
@@ -182,7 +201,6 @@ Reset the internal state:           reset();";
                             // TODO: Implement description to name
                             // TODO: Implement 1RPG
                             // TODO: Implement scene date strip
-                            // TODO: Implement header value replacement
 
                             // Set new output format(s)
                             case "format":
@@ -247,8 +265,7 @@ Reset the internal state:           reset();";
                                 break;
 
                             default:
-                                Globals.Logger.User($"Could not find a match for {command.Name}");
-                                Globals.Logger.User("Possible command names are: input, filter, extra, 1g1r, format, output, write, reset");
+                                Globals.Logger.User($"Could not find a match for '{command.Name}'. Please see the help text for more details.");
                                 break;
                         }
                     }
