@@ -37,6 +37,7 @@ Set game names from description:    descname();
 Run 1G1R on the items:              1g1r(region, ...);
 Split into one rom per game:        orpg();
 Remove fields from games/items:     remove(machine.field|item.field, ...);
+Remove scene dates from names:      sds();
 Add new output format(s):           format(datformat, ...);
 Set the output directory:           output(outdir);
 Write the internal items:           write([overwrite = true]);
@@ -265,7 +266,19 @@ Reset the internal state:           reset();";
 
                                 break;
 
-                            // TODO: Implement scene date strip
+                            // Apply scene date stripping
+                            case "sds":
+                                if (command.Arguments.Count != 0)
+                                {
+                                    Globals.Logger.User($"Invoked {command.Name} and expected no arguments, but {command.Arguments.Count} arguments were provided");
+                                    Globals.Logger.User("Usage: sds();");
+                                    continue;
+                                }
+
+                                // Apply the logic
+                                datFile.StripSceneDatesFromItems();
+
+                                break;
 
                             // Set new output format(s)
                             case "format":
