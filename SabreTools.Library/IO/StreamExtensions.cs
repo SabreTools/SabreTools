@@ -45,11 +45,12 @@ namespace SabreTools.Library.IO
         /// <param name="size">Size of the input stream</param>
         /// <param name="omitFromScan">Hash flag saying what hashes should not be calculated (defaults to none)</param>
         /// <param name="keepReadOpen">True if the underlying read stream should be kept open, false otherwise</param>
+        /// <param name="aaruFormatAsFiles">True if AaruFormats should be treated like regular files, false otherwise</param>
         /// <param name="chdsAsFiles">True if CHDs should be treated like regular files, false otherwise</param>
         /// <returns>Populated BaseFile object if success, empty one on error</returns>
-        public static BaseFile GetInfo(this Stream input, long size = -1, Hash omitFromScan = 0x0, bool keepReadOpen = false, bool chdsAsFiles = true)
+        public static BaseFile GetInfo(this Stream input, long size = -1, Hash omitFromScan = 0x0, bool keepReadOpen = false, bool aaruFormatAsFiles = true, bool chdsAsFiles = true)
         {
-            return GetInfoAsync(input, size, omitFromScan, keepReadOpen, chdsAsFiles).ConfigureAwait(false).GetAwaiter().GetResult();
+            return GetInfoAsync(input, size, omitFromScan, keepReadOpen, aaruFormatAsFiles, chdsAsFiles).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -59,15 +60,32 @@ namespace SabreTools.Library.IO
         /// <param name="size">Size of the input stream</param>
         /// <param name="omitFromScan">Hash flag saying what hashes should not be calculated (defaults to none)</param>
         /// <param name="keepReadOpen">True if the underlying read stream should be kept open, false otherwise</param>
+        /// <param name="aaruFormatAsFiles">True if AaruFormats should be treated like regular files, false otherwise</param>
         /// <param name="chdsAsFiles">True if CHDs should be treated like regular files, false otherwise</param>
         /// <returns>Populated BaseFile object if success, empty one on error</returns>
-        public static async Task<BaseFile> GetInfoAsync(Stream input, long size = -1, Hash omitFromScan = 0x0, bool keepReadOpen = false, bool chdsAsFiles = true)
+        public static async Task<BaseFile> GetInfoAsync(Stream input, long size = -1, Hash omitFromScan = 0x0, bool keepReadOpen = false, bool aaruFormatAsFiles = true, bool chdsAsFiles = true)
         {
             // If we want to automatically set the size
             if (size == -1)
                 size = input.Length;
 
-            // We first check to see if it's a CHD if we have to
+            // We first check to see if it's an AaruFormat if we have to
+            if (!aaruFormatAsFiles)
+            {
+                var aaruFormat = AaruFormat.Create(input);
+                input.SeekIfPossible();
+
+                // If we found a valid AaruFormat
+                if (aaruFormat != null)
+                {
+                    if (!keepReadOpen)
+                        input.Dispose();
+
+                    return aaruFormat;
+                }
+            }
+
+            // Then, we first check to see if it's a CHD if we have to
             if (!chdsAsFiles)
             {
                 var chd = CHDFile.Create(input);

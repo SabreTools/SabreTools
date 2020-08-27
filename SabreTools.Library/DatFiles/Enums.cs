@@ -255,5 +255,6 @@ namespace SabreTools.Library.DatFiles
     {
         CHDs = 1 << 0,
         Archives = 1 << 1,
+        AaruFormats = 1 << 2,
     }
 }

@@ -448,6 +448,9 @@ namespace SabreTools.Library.DatItems
                 case ItemType.Disk:
                     return new Disk();
 
+                case ItemType.Media:
+                    return new Media();
+
                 case ItemType.Release:
                     return new Release();
 
@@ -484,6 +487,9 @@ namespace SabreTools.Library.DatItems
         {
             switch (baseFile.Type)
             {
+                case FileType.AaruFormat:
+                    return new Media(baseFile);
+
                 case FileType.CHD:
                     return new Disk(baseFile);
 

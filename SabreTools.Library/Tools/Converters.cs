@@ -1528,6 +1528,8 @@ namespace SabreTools.Library.Tools
                     return ItemType.Chip;
                 case "disk":
                     return ItemType.Disk;
+                case "media":
+                    return ItemType.Media;
                 case "release":
                     return ItemType.Release;
                 case "rom":
@@ -1545,6 +1547,7 @@ namespace SabreTools.Library.Tools
                 "blank" => ItemType.Blank,
                 "chip" => ItemType.Chip,
                 "disk" => ItemType.Disk,
+                "media" => ItemType.Media,
                 "release" => ItemType.Release,
                 "rom" => ItemType.Rom,
                 "sample" => ItemType.Sample,

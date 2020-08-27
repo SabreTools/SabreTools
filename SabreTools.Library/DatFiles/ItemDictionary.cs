@@ -101,6 +101,12 @@ namespace SabreTools.Library.DatFiles
         public long DiskCount { get; private set; } = 0;
 
         /// <summary>
+        /// Number of Media items
+        /// </summary>
+        [JsonIgnore]
+        public long MediaCount { get; private set; } = 0;
+
+        /// <summary>
         /// Number of Release items
         /// </summary>
         [JsonIgnore]
@@ -399,46 +405,58 @@ namespace SabreTools.Library.DatFiles
                     break;
                 case ItemType.Disk:
                     DiskCount += 1;
-                    if (((Disk)item).ItemStatus != ItemStatus.Nodump)
+                    if ((item as Disk).ItemStatus != ItemStatus.Nodump)
                     {
-                        MD5Count += (string.IsNullOrWhiteSpace(((Disk)item).MD5) ? 0 : 1);
+                        MD5Count += (string.IsNullOrWhiteSpace((item as Disk).MD5) ? 0 : 1);
 #if NET_FRAMEWORK
-                        RIPEMD160Count += (string.IsNullOrWhiteSpace(((Disk)item).RIPEMD160) ? 0 : 1);
+                        RIPEMD160Count += (string.IsNullOrWhiteSpace((item as Disk).RIPEMD160) ? 0 : 1);
 #endif
-                        SHA1Count += (string.IsNullOrWhiteSpace(((Disk)item).SHA1) ? 0 : 1);
-                        SHA256Count += (string.IsNullOrWhiteSpace(((Disk)item).SHA256) ? 0 : 1);
-                        SHA384Count += (string.IsNullOrWhiteSpace(((Disk)item).SHA384) ? 0 : 1);
-                        SHA512Count += (string.IsNullOrWhiteSpace(((Disk)item).SHA512) ? 0 : 1);
+                        SHA1Count += (string.IsNullOrWhiteSpace((item as Disk).SHA1) ? 0 : 1);
+                        SHA256Count += (string.IsNullOrWhiteSpace((item as Disk).SHA256) ? 0 : 1);
+                        SHA384Count += (string.IsNullOrWhiteSpace((item as Disk).SHA384) ? 0 : 1);
+                        SHA512Count += (string.IsNullOrWhiteSpace((item as Disk).SHA512) ? 0 : 1);
                     }
 
-                    BaddumpCount += (((Disk)item).ItemStatus == ItemStatus.BadDump ? 1 : 0);
-                    GoodCount += (((Disk)item).ItemStatus == ItemStatus.Good ? 1 : 0);
-                    NodumpCount += (((Disk)item).ItemStatus == ItemStatus.Nodump ? 1 : 0);
-                    VerifiedCount += (((Disk)item).ItemStatus == ItemStatus.Verified ? 1 : 0);
+                    BaddumpCount += ((item as Disk).ItemStatus == ItemStatus.BadDump ? 1 : 0);
+                    GoodCount += ((item as Disk).ItemStatus == ItemStatus.Good ? 1 : 0);
+                    NodumpCount += ((item as Disk).ItemStatus == ItemStatus.Nodump ? 1 : 0);
+                    VerifiedCount += ((item as Disk).ItemStatus == ItemStatus.Verified ? 1 : 0);
+                    break;
+                case ItemType.Media:
+                    MediaCount += 1;
+                    CRCCount += (string.IsNullOrWhiteSpace((item as Media).CRC) ? 0 : 1);
+                    MD5Count += (string.IsNullOrWhiteSpace((item as Media).MD5) ? 0 : 1);
+#if NET_FRAMEWORK
+                    RIPEMD160Count += (string.IsNullOrWhiteSpace((item as Media).RIPEMD160) ? 0 : 1);
+#endif
+                    SHA1Count += (string.IsNullOrWhiteSpace((item as Media).SHA1) ? 0 : 1);
+                    SHA256Count += (string.IsNullOrWhiteSpace((item as Media).SHA256) ? 0 : 1);
+                    SHA384Count += (string.IsNullOrWhiteSpace((item as Media).SHA384) ? 0 : 1);
+                    SHA512Count += (string.IsNullOrWhiteSpace((item as Media).SHA512) ? 0 : 1);
                     break;
                 case ItemType.Release:
                     ReleaseCount += 1;
                     break;
                 case ItemType.Rom:
                     RomCount += 1;
-                    if (((Rom)item).ItemStatus != ItemStatus.Nodump)
+                    if ((item as Rom).ItemStatus != ItemStatus.Nodump)
                     {
-                        TotalSize += ((Rom)item).Size;
-                        CRCCount += (string.IsNullOrWhiteSpace(((Rom)item).CRC) ? 0 : 1);
-                        MD5Count += (string.IsNullOrWhiteSpace(((Rom)item).MD5) ? 0 : 1);
+                        TotalSize += (item as Rom).Size;
+                        CRCCount += (string.IsNullOrWhiteSpace((item as Rom).CRC) ? 0 : 1);
+                        MD5Count += (string.IsNullOrWhiteSpace((item as Rom).MD5) ? 0 : 1);
 #if NET_FRAMEWORK
-                        RIPEMD160Count += (string.IsNullOrWhiteSpace(((Rom)item).RIPEMD160) ? 0 : 1);
+                        RIPEMD160Count += (string.IsNullOrWhiteSpace((item as Rom).RIPEMD160) ? 0 : 1);
 #endif
-                        SHA1Count += (string.IsNullOrWhiteSpace(((Rom)item).SHA1) ? 0 : 1);
-                        SHA256Count += (string.IsNullOrWhiteSpace(((Rom)item).SHA256) ? 0 : 1);
-                        SHA384Count += (string.IsNullOrWhiteSpace(((Rom)item).SHA384) ? 0 : 1);
-                        SHA512Count += (string.IsNullOrWhiteSpace(((Rom)item).SHA512) ? 0 : 1);
+                        SHA1Count += (string.IsNullOrWhiteSpace((item as Rom).SHA1) ? 0 : 1);
+                        SHA256Count += (string.IsNullOrWhiteSpace((item as Rom).SHA256) ? 0 : 1);
+                        SHA384Count += (string.IsNullOrWhiteSpace((item as Rom).SHA384) ? 0 : 1);
+                        SHA512Count += (string.IsNullOrWhiteSpace((item as Rom).SHA512) ? 0 : 1);
                     }
 
-                    BaddumpCount += (((Rom)item).ItemStatus == ItemStatus.BadDump ? 1 : 0);
-                    GoodCount += (((Rom)item).ItemStatus == ItemStatus.Good ? 1 : 0);
-                    NodumpCount += (((Rom)item).ItemStatus == ItemStatus.Nodump ? 1 : 0);
-                    VerifiedCount += (((Rom)item).ItemStatus == ItemStatus.Verified ? 1 : 0);
+                    BaddumpCount += ((item as Rom).ItemStatus == ItemStatus.BadDump ? 1 : 0);
+                    GoodCount += ((item as Rom).ItemStatus == ItemStatus.Good ? 1 : 0);
+                    NodumpCount += ((item as Rom).ItemStatus == ItemStatus.Nodump ? 1 : 0);
+                    VerifiedCount += ((item as Rom).ItemStatus == ItemStatus.Verified ? 1 : 0);
                     break;
                 case ItemType.Sample:
                     SampleCount += 1;
@@ -456,7 +474,9 @@ namespace SabreTools.Library.DatFiles
 
             ArchiveCount += stats.ArchiveCount;
             BiosSetCount += stats.BiosSetCount;
+            ChipCount += stats.ChipCount;
             DiskCount += stats.DiskCount;
+            MediaCount += stats.MediaCount;
             ReleaseCount += stats.ReleaseCount;
             RomCount += stats.RomCount;
             SampleCount += stats.SampleCount;
@@ -522,46 +542,58 @@ namespace SabreTools.Library.DatFiles
                     break;
                 case ItemType.Disk:
                     DiskCount -= 1;
-                    if (((Disk)item).ItemStatus != ItemStatus.Nodump)
+                    if ((item as Disk).ItemStatus != ItemStatus.Nodump)
                     {
-                        MD5Count -= (string.IsNullOrWhiteSpace(((Disk)item).MD5) ? 0 : 1);
+                        MD5Count -= (string.IsNullOrWhiteSpace((item as Disk).MD5) ? 0 : 1);
 #if NET_FRAMEWORK
-                        RIPEMD160Count -= (string.IsNullOrWhiteSpace(((Disk)item).RIPEMD160) ? 0 : 1);
+                        RIPEMD160Count -= (string.IsNullOrWhiteSpace((item as Disk).RIPEMD160) ? 0 : 1);
 #endif
-                        SHA1Count -= (string.IsNullOrWhiteSpace(((Disk)item).SHA1) ? 0 : 1);
-                        SHA256Count -= (string.IsNullOrWhiteSpace(((Disk)item).SHA256) ? 0 : 1);
-                        SHA384Count -= (string.IsNullOrWhiteSpace(((Disk)item).SHA384) ? 0 : 1);
-                        SHA512Count -= (string.IsNullOrWhiteSpace(((Disk)item).SHA512) ? 0 : 1);
+                        SHA1Count -= (string.IsNullOrWhiteSpace((item as Disk).SHA1) ? 0 : 1);
+                        SHA256Count -= (string.IsNullOrWhiteSpace((item as Disk).SHA256) ? 0 : 1);
+                        SHA384Count -= (string.IsNullOrWhiteSpace((item as Disk).SHA384) ? 0 : 1);
+                        SHA512Count -= (string.IsNullOrWhiteSpace((item as Disk).SHA512) ? 0 : 1);
                     }
 
-                    BaddumpCount -= (((Disk)item).ItemStatus == ItemStatus.BadDump ? 1 : 0);
-                    GoodCount -= (((Disk)item).ItemStatus == ItemStatus.Good ? 1 : 0);
-                    NodumpCount -= (((Disk)item).ItemStatus == ItemStatus.Nodump ? 1 : 0);
-                    VerifiedCount -= (((Disk)item).ItemStatus == ItemStatus.Verified ? 1 : 0);
+                    BaddumpCount -= ((item as Disk).ItemStatus == ItemStatus.BadDump ? 1 : 0);
+                    GoodCount -= ((item as Disk).ItemStatus == ItemStatus.Good ? 1 : 0);
+                    NodumpCount -= ((item as Disk).ItemStatus == ItemStatus.Nodump ? 1 : 0);
+                    VerifiedCount -= ((item as Disk).ItemStatus == ItemStatus.Verified ? 1 : 0);
+                    break;
+                case ItemType.Media:
+                    MediaCount -= 1;
+                    CRCCount -= (string.IsNullOrWhiteSpace((item as Media).CRC) ? 0 : 1);
+                    MD5Count -= (string.IsNullOrWhiteSpace((item as Media).MD5) ? 0 : 1);
+#if NET_FRAMEWORK
+                    RIPEMD160Count -= (string.IsNullOrWhiteSpace((item as Media).RIPEMD160) ? 0 : 1);
+#endif
+                    SHA1Count -= (string.IsNullOrWhiteSpace((item as Media).SHA1) ? 0 : 1);
+                    SHA256Count -= (string.IsNullOrWhiteSpace((item as Media).SHA256) ? 0 : 1);
+                    SHA384Count -= (string.IsNullOrWhiteSpace((item as Media).SHA384) ? 0 : 1);
+                    SHA512Count -= (string.IsNullOrWhiteSpace((item as Media).SHA512) ? 0 : 1);
                     break;
                 case ItemType.Release:
                     ReleaseCount -= 1;
                     break;
                 case ItemType.Rom:
                     RomCount -= 1;
-                    if (((Rom)item).ItemStatus != ItemStatus.Nodump)
+                    if ((item as Rom).ItemStatus != ItemStatus.Nodump)
                     {
-                        TotalSize -= ((Rom)item).Size;
-                        CRCCount -= (string.IsNullOrWhiteSpace(((Rom)item).CRC) ? 0 : 1);
-                        MD5Count -= (string.IsNullOrWhiteSpace(((Rom)item).MD5) ? 0 : 1);
+                        TotalSize -= (item as Rom).Size;
+                        CRCCount -= (string.IsNullOrWhiteSpace((item as Rom).CRC) ? 0 : 1);
+                        MD5Count -= (string.IsNullOrWhiteSpace((item as Rom).MD5) ? 0 : 1);
 #if NET_FRAMEWORK
-                        RIPEMD160Count -= (string.IsNullOrWhiteSpace(((Rom)item).RIPEMD160) ? 0 : 1);
+                        RIPEMD160Count -= (string.IsNullOrWhiteSpace((item as Rom).RIPEMD160) ? 0 : 1);
 #endif
-                        SHA1Count -= (string.IsNullOrWhiteSpace(((Rom)item).SHA1) ? 0 : 1);
-                        SHA256Count -= (string.IsNullOrWhiteSpace(((Rom)item).SHA256) ? 0 : 1);
-                        SHA384Count -= (string.IsNullOrWhiteSpace(((Rom)item).SHA384) ? 0 : 1);
-                        SHA512Count -= (string.IsNullOrWhiteSpace(((Rom)item).SHA512) ? 0 : 1);
+                        SHA1Count -= (string.IsNullOrWhiteSpace((item as Rom).SHA1) ? 0 : 1);
+                        SHA256Count -= (string.IsNullOrWhiteSpace((item as Rom).SHA256) ? 0 : 1);
+                        SHA384Count -= (string.IsNullOrWhiteSpace((item as Rom).SHA384) ? 0 : 1);
+                        SHA512Count -= (string.IsNullOrWhiteSpace((item as Rom).SHA512) ? 0 : 1);
                     }
 
-                    BaddumpCount -= (((Rom)item).ItemStatus == ItemStatus.BadDump ? 1 : 0);
-                    GoodCount -= (((Rom)item).ItemStatus == ItemStatus.Good ? 1 : 0);
-                    NodumpCount -= (((Rom)item).ItemStatus == ItemStatus.Nodump ? 1 : 0);
-                    VerifiedCount -= (((Rom)item).ItemStatus == ItemStatus.Verified ? 1 : 0);
+                    BaddumpCount -= ((item as Rom).ItemStatus == ItemStatus.BadDump ? 1 : 0);
+                    GoodCount -= ((item as Rom).ItemStatus == ItemStatus.Good ? 1 : 0);
+                    NodumpCount -= ((item as Rom).ItemStatus == ItemStatus.Nodump ? 1 : 0);
+                    VerifiedCount -= ((item as Rom).ItemStatus == ItemStatus.Verified ? 1 : 0);
                     break;
                 case ItemType.Sample:
                     SampleCount -= 1;
@@ -817,29 +849,29 @@ namespace SabreTools.Library.DatFiles
         private Field GetBestAvailable()
         {
             // If all items are supposed to have a SHA-512, we bucket by that
-            if (RomCount + DiskCount - NodumpCount == SHA512Count)
+            if (DiskCount + MediaCount + RomCount - NodumpCount == SHA512Count)
                 return Field.DatItem_SHA512;
 
             // If all items are supposed to have a SHA-384, we bucket by that
-            else if (RomCount + DiskCount - NodumpCount == SHA384Count)
+            else if (DiskCount + MediaCount + RomCount - NodumpCount == SHA384Count)
                 return Field.DatItem_SHA384;
 
             // If all items are supposed to have a SHA-256, we bucket by that
-            else if (RomCount + DiskCount - NodumpCount == SHA256Count)
+            else if (DiskCount + MediaCount + RomCount - NodumpCount == SHA256Count)
                 return Field.DatItem_SHA256;
 
             // If all items are supposed to have a SHA-1, we bucket by that
-            else if (RomCount + DiskCount - NodumpCount == SHA1Count)
+            else if (DiskCount + MediaCount + RomCount - NodumpCount == SHA1Count)
                 return Field.DatItem_SHA1;
 
 #if NET_FRAMEWORK
             // If all items are supposed to have a RIPEMD160, we bucket by that
-            else if (RomCount + DiskCount - NodumpCount == RIPEMD160Count)
+            else if (DiskCount + MediaCount + RomCount - NodumpCount == RIPEMD160Count)
                 return Field.DatItem_RIPEMD160;
 #endif
 
             // If all items are supposed to have a MD5, we bucket by that
-            else if (RomCount + DiskCount - NodumpCount == MD5Count)
+            else if (DiskCount + MediaCount + RomCount - NodumpCount == MD5Count)
                 return Field.DatItem_MD5;
 
             // Otherwise, we bucket by CRC
@@ -856,7 +888,9 @@ namespace SabreTools.Library.DatFiles
 
             ArchiveCount = 0;
             BiosSetCount = 0;
+            ChipCount = 0;
             DiskCount = 0;
+            MediaCount = 0;
             ReleaseCount = 0;
             RomCount = 0;
             SampleCount = 0;

@@ -262,33 +262,8 @@ namespace SabreTools.Library.DatFiles
                     containsItems = true;
                     string itemKey = cmpr.InternalName;
 
-                    ItemType itemType = ItemType.Rom;
-                    switch (itemKey)
-                    {
-                        case "archive":
-                            itemType = ItemType.Archive;
-                            break;
-                        case "biosset":
-                            itemType = ItemType.BiosSet;
-                            break;
-                        case "chip":
-                            itemType = ItemType.Chip;
-                            break;
-                        case "disk":
-                            itemType = ItemType.Disk;
-                            break;
-                        case "release":
-                            itemType = ItemType.Release;
-                            break;
-                        case "rom":
-                            itemType = ItemType.Rom;
-                            break;
-                        case "sample":
-                            itemType = ItemType.Sample;
-                            break;
-                    }
-
                     // Create the proper DatItem based on the type
+                    ItemType itemType = itemKey.AsItemType() ?? ItemType.Rom;
                     DatItem item = DatItem.Create(itemType);
 
                     // Then populate it with information
@@ -318,111 +293,125 @@ namespace SabreTools.Library.DatFiles
                                 if (item.ItemType == ItemType.Rom)
                                 {
                                     if (Int64.TryParse(attrVal, out long size))
-                                        ((Rom)item).Size = size;
+                                        (item as Rom).Size = size;
                                     else
-                                        ((Rom)item).Size = -1;
+                                        (item as Rom).Size = -1;
                                 }
 
                                 break;
                             case "crc":
-                                if (item.ItemType == ItemType.Rom)
+                                if (item.ItemType == ItemType.Media)
+                                    (item as Media).CRC = attrVal;
+                                else if (item.ItemType == ItemType.Rom)
                                     (item as Rom).CRC = attrVal;
 
                                 break;
                             case "md5":
-                                if (item.ItemType == ItemType.Rom)
+                                if (item.ItemType == ItemType.Disk)
+                                    (item as Disk).MD5 = attrVal;
+                                else if (item.ItemType == ItemType.Media)
+                                    (item as Media).MD5 = attrVal;
+                                else if (item.ItemType == ItemType.Rom)
                                     (item as Rom).MD5 = attrVal;
-                                else if (item.ItemType == ItemType.Disk)
-                                    ((Disk)item).MD5 = attrVal;
 
                                 break;
 #if NET_FRAMEWORK
                             case "ripemd160":
-                                if (item.ItemType == ItemType.Rom)
+                                if (item.ItemType == ItemType.Disk)
+                                    (item as Disk).RIPEMD160 = attrVal;
+                                else if (item.ItemType == ItemType.Media)
+                                    (item as Media).RIPEMD160 = attrVal;
+                                else if (item.ItemType == ItemType.Rom)
                                     (item as Rom).RIPEMD160 = attrVal;
-                                else if (item.ItemType == ItemType.Disk)
-                                    ((Disk)item).RIPEMD160 = attrVal;
 
                                 break;
 #endif
                             case "sha1":
-                                if (item.ItemType == ItemType.Rom)
+                                if (item.ItemType == ItemType.Disk)
+                                    (item as Disk).SHA1 = attrVal;
+                                else if (item.ItemType == ItemType.Media)
+                                    (item as Media).SHA1 = attrVal;
+                                else if (item.ItemType == ItemType.Rom)
                                     (item as Rom).SHA1 = attrVal;
-                                else if (item.ItemType == ItemType.Disk)
-                                    ((Disk)item).SHA1 = attrVal;
 
                                 break;
                             case "sha256":
-                                if (item.ItemType == ItemType.Rom)
-                                    ((Rom)item).SHA256 = attrVal;
-                                else if (item.ItemType == ItemType.Disk)
-                                    ((Disk)item).SHA256 = attrVal;
-
+                                if (item.ItemType == ItemType.Disk)
+                                    (item as Disk).SHA256 = attrVal;
+                                else if (item.ItemType == ItemType.Media)
+                                    (item as Media).SHA256 = attrVal;
+                                else if (item.ItemType == ItemType.Rom)
+                                    (item as Rom).SHA256 = attrVal;
+                                
                                 break;
                             case "sha384":
-                                if (item.ItemType == ItemType.Rom)
-                                    ((Rom)item).SHA384 = attrVal;
-                                else if (item.ItemType == ItemType.Disk)
-                                    ((Disk)item).SHA384 = attrVal;
+                                if (item.ItemType == ItemType.Disk)
+                                    (item as Disk).SHA384 = attrVal;
+                                else if (item.ItemType == ItemType.Media)
+                                    (item as Media).SHA384 = attrVal;
+                                else if (item.ItemType == ItemType.Rom)
+                                    (item as Rom).SHA384 = attrVal;
 
                                 break;
                             case "sha512":
-                                if (item.ItemType == ItemType.Rom)
-                                    ((Rom)item).SHA512 = attrVal;
-                                else if (item.ItemType == ItemType.Disk)
-                                    ((Disk)item).SHA512 = attrVal;
+                                if (item.ItemType == ItemType.Disk)
+                                    (item as Disk).SHA512 = attrVal;
+                                else if (item.ItemType == ItemType.Media)
+                                    (item as Media).SHA512 = attrVal;
+                                else if (item.ItemType == ItemType.Rom)
+                                    (item as Rom).SHA512 = attrVal;
 
                                 break;
                             case "status":
                                 ItemStatus tempFlagStatus = attrVal.AsItemStatus();
-                                if (item.ItemType == ItemType.Rom)
-                                    ((Rom)item).ItemStatus = tempFlagStatus;
-                                else if (item.ItemType == ItemType.Disk)
-                                    ((Disk)item).ItemStatus = tempFlagStatus;
+                                if (item.ItemType == ItemType.Disk)
+                                    (item as Disk).ItemStatus = tempFlagStatus;
+                                else if (item.ItemType == ItemType.Rom)
+                                    (item as Rom).ItemStatus = tempFlagStatus;
 
                                 break;
                             case "date":
-                                if (item.ItemType == ItemType.Rom)
-                                    ((Rom)item).Date = attrVal;
-                                else if (item.ItemType == ItemType.Release)
-                                    ((Release)item).Date = attrVal;
+                                if (item.ItemType == ItemType.Release)
+                                    (item as Release).Date = attrVal;
+                                else if (item.ItemType == ItemType.Rom)
+                                    (item as Rom).Date = attrVal;
 
                                 break;
                             case "default":
                                 if (item.ItemType == ItemType.BiosSet)
-                                    ((BiosSet)item).Default = attrVal.AsYesNo();
+                                    (item as BiosSet).Default = attrVal.AsYesNo();
                                 else if (item.ItemType == ItemType.Release)
-                                    ((Release)item).Default = attrVal.AsYesNo();
+                                    (item as Release).Default = attrVal.AsYesNo();
 
                                 break;
                             case "description":
                                 if (item.ItemType == ItemType.BiosSet)
-                                    ((BiosSet)item).Description = attrVal;
+                                    (item as BiosSet).Description = attrVal;
 
                                 break;
                             case "region":
                                 if (item.ItemType == ItemType.Release)
-                                    ((Release)item).Region = attrVal;
+                                    (item as Release).Region = attrVal;
 
                                 break;
                             case "language":
                                 if (item.ItemType == ItemType.Release)
-                                    ((Release)item).Language = attrVal;
+                                    (item as Release).Language = attrVal;
 
                                 break;
                             case "tag":
                                 if (item.ItemType == ItemType.Chip)
-                                    ((Chip)item).Tag = attrVal;
+                                    (item as Chip).Tag = attrVal;
 
                                 break;
                             case "type":
                                 if (item.ItemType == ItemType.Chip)
-                                    ((Chip)item).ChipType = attrVal;
+                                    (item as Chip).ChipType = attrVal;
 
                                 break;
                             case "clock":
                                 if (item.ItemType == ItemType.Chip)
-                                    ((Chip)item).Clock = attrVal;
+                                    (item as Chip).Clock = attrVal;
 
                                 break;
                         }
@@ -715,6 +704,22 @@ namespace SabreTools.Library.DatFiles
                         cmpw.WriteOptionalAttributeString("sha384", disk.SHA384?.ToLowerInvariant());
                         cmpw.WriteOptionalAttributeString("sha512", disk.SHA512?.ToLowerInvariant());
                         cmpw.WriteOptionalAttributeString("flags", disk.ItemStatus.FromItemStatus(false));
+                        cmpw.WriteEndElement();
+                        break;
+
+                    case ItemType.Media:
+                        var media = datItem as Media;
+                        cmpw.WriteStartElement("media");
+                        cmpw.WriteRequiredAttributeString("name", media.Name);
+                        cmpw.WriteOptionalAttributeString("crc", media.CRC?.ToLowerInvariant());
+                        cmpw.WriteOptionalAttributeString("md5", media.MD5?.ToLowerInvariant());
+#if NET_FRAMEWORK
+                        cmpw.WriteOptionalAttributeString("ripemd160", media.RIPEMD160?.ToLowerInvariant());
+#endif
+                        cmpw.WriteOptionalAttributeString("sha1", media.SHA1?.ToLowerInvariant());
+                        cmpw.WriteOptionalAttributeString("sha256", media.SHA256?.ToLowerInvariant());
+                        cmpw.WriteOptionalAttributeString("sha384", media.SHA384?.ToLowerInvariant());
+                        cmpw.WriteOptionalAttributeString("sha512", media.SHA512?.ToLowerInvariant());
                         cmpw.WriteEndElement();
                         break;
 

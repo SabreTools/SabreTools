@@ -458,6 +458,7 @@ namespace SabreTools.Library.DatItems
         BiosSet = 4,
         Archive = 5,
         Chip = 6,
+        Media = 7,
 
         Blank = 99, // This is not a real type, only used internally
     }

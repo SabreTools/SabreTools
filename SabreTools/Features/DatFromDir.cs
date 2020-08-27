@@ -31,7 +31,9 @@ namespace SabreTools.Features
             AddFeature(SkipSha512Flag);
 
             AddFeature(NoAutomaticDateFlag);
+            AddFeature(AaruFormatsAsFilesFlag);
             AddFeature(ArchivesAsFilesFlag);
+            AddFeature(ChdsAsFilesFlag);
             AddFeature(OutputTypeListInput);
             this[OutputTypeListInput].AddFeature(DeprecatedFlag);
             AddFeature(RombaFlag);
@@ -43,7 +45,6 @@ namespace SabreTools.Features
             AddFeature(AddDateFlag);
             AddFeature(CopyFilesFlag);
             AddFeature(HeaderStringInput);
-            AddFeature(ChdsAsFilesFlag);
             AddFeature(ExtraIniListInput);
             AddFilteringFeatures();
             AddFeature(TempStringInput);

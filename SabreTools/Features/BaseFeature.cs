@@ -66,6 +66,20 @@ namespace SabreTools.Features
 
         #region Flag features
 
+        internal const string AaruFormatsAsFilesValue = "aaruformats-as-files";
+        internal static Feature AaruFormatsAsFilesFlag
+        {
+            get
+            {
+                return new Feature(
+                    AaruFormatsAsFilesValue,
+                    new List<string>() { "-caf", "--aaruformats-as-files" },
+                    "Treat AaruFormats as files",
+                    FeatureType.Flag,
+                    longDescription: "Normally, AaruFormats would be processed using their internal hash to compare against the input DATs. This flag forces all AaruFormats to be treated like regular files.");
+            }
+        }
+
         internal const string AddBlankFilesValue = "add-blank-files";
         internal static Feature AddBlankFilesFlag
         {
@@ -2530,6 +2544,8 @@ Some special strings that can be used:
         protected TreatAsFiles GetTreatAsFiles(Dictionary<string, Feature> features)
         {
             TreatAsFiles asFiles = 0x00;
+            if (GetBoolean(features, AaruFormatsAsFilesValue))
+                asFiles |= TreatAsFiles.AaruFormats;
             if (GetBoolean(features, ArchivesAsFilesValue))
                 asFiles |= TreatAsFiles.Archives;
             if (GetBoolean(features, ChdsAsFilesValue))

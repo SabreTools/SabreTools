@@ -209,7 +209,7 @@ namespace SabreTools.Library.FileTypes
                     else
                     {
                         Stream entryStream = entry.OpenEntryStream();
-                        BaseFile tarEntryRom = entryStream.GetInfo(entry.Size, omitFromScan);
+                        BaseFile tarEntryRom = entryStream.GetInfo(size: entry.Size, omitFromScan: omitFromScan);
                         tarEntryRom.Filename = entry.Key;
                         tarEntryRom.Parent = gamename;
                         tarEntryRom.Date = entry.LastModifiedTime?.ToString("yyyy/MM/dd hh:mm:ss");

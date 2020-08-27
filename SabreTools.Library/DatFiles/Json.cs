@@ -238,6 +238,9 @@ namespace SabreTools.Library.DatFiles
                     case ItemType.Disk:
                         datItem = datItemObj.ToObject<Disk>();
                         break;
+                    case ItemType.Media:
+                        datItem = datItemObj.ToObject<Media>();
+                        break;
                     case ItemType.Release:
                         datItem = datItemObj.ToObject<Release>();
                         break;

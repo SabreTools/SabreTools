@@ -118,7 +118,7 @@ namespace SabreTools.Library.Skippers
             // Now add the information to the database if it's not already there
             if (!nostore)
             {
-                BaseFile baseFile = FileExtensions.GetInfo(newfile, chdsAsFiles: true);
+                BaseFile baseFile = FileExtensions.GetInfo(newfile, aaruFormatAsFiles: true, chdsAsFiles: true);
                 DatabaseTools.AddHeaderToDatabase(hstr, Utilities.ByteArrayToString(baseFile.SHA1), rule.SourceFile);
             }
 
@@ -138,7 +138,7 @@ namespace SabreTools.Library.Skippers
                 Directory.CreateDirectory(outDir);
 
             // First, get the SHA-1 hash of the file
-            BaseFile baseFile = FileExtensions.GetInfo(file, chdsAsFiles: true);
+            BaseFile baseFile = FileExtensions.GetInfo(file, aaruFormatAsFiles: true, chdsAsFiles: true);
 
             // Retrieve a list of all related headers from the database
             List<string> headers = DatabaseTools.RetrieveHeadersFromDatabase(Utilities.ByteArrayToString(baseFile.SHA1));

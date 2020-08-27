@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+using SabreTools.Library.Data;
 using SabreTools.Library.FileTypes;
 using SabreTools.Library.Filtering;
 using SabreTools.Library.Tools;
@@ -10,13 +11,14 @@ using Newtonsoft.Json.Converters;
 namespace SabreTools.Library.DatItems
 {
     /// <summary>
-    /// Represents Compressed Hunks of Data (CHD) formatted disks which use internal hashes
+    /// Represents Aaruformat images which use internal hashes
     /// </summary>
-    [JsonObject("disk")]
-    public class Disk : DatItem
+    [JsonObject("media")]
+    public class Media : DatItem
     {
         #region Private instance variables
 
+        private byte[] _crc; // 8 bytes
         private byte[] _md5; // 16 bytes
 #if NET_FRAMEWORK
         private byte[] _ripemd160; // 20 bytes
@@ -29,6 +31,16 @@ namespace SabreTools.Library.DatItems
         #endregion
 
         #region Fields
+
+        /// <summary>
+        /// Data CRC32 hash
+        /// </summary>
+        [JsonProperty("crc", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public string CRC
+        {
+            get { return _crc.IsNullOrEmpty() ? null : Utilities.ByteArrayToString(_crc); }
+            set { _crc = (value == "null" ? Constants.CRCZeroBytes : Utilities.StringToByteArray(Sanitizer.CleanCRC32(value))); }
+        }
 
         /// <summary>
         /// Data MD5 hash
@@ -92,43 +104,6 @@ namespace SabreTools.Library.DatItems
             set { _sha512 = Utilities.StringToByteArray(Sanitizer.CleanSHA512(value)); }
         }
 
-        /// <summary>
-        /// Disk name to merge from parent
-        /// </summary>
-        [JsonProperty("merge", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string MergeTag { get; set; }
-
-        /// <summary>
-        /// Disk region
-        /// </summary>
-        [JsonProperty("region", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string Region { get; set; }
-
-        /// <summary>
-        /// Disk index
-        /// </summary>
-        [JsonProperty("index", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string Index { get; set; }
-
-        /// <summary>
-        /// Disk writable flag
-        /// </summary>
-        [JsonProperty("writable", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public bool? Writable { get; set; }
-
-        /// <summary>
-        /// Disk dump status
-        /// </summary>
-        [JsonProperty("status", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public ItemStatus ItemStatus { get; set; }
-
-        /// <summary>
-        /// Determine if the disk is optional in the set
-        /// </summary>
-        [JsonProperty("optional", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public bool? Optional { get; set; }
-
         #endregion
 
         #region Accessors
@@ -142,7 +117,10 @@ namespace SabreTools.Library.DatItems
             // Set base fields
             base.SetFields(mappings);
 
-            // Handle Disk-specific fields
+            // Handle Media-specific fields
+            if (mappings.Keys.Contains(Field.DatItem_CRC))
+                CRC = mappings[Field.DatItem_CRC];
+
             if (mappings.Keys.Contains(Field.DatItem_MD5))
                 MD5 = mappings[Field.DatItem_MD5];
 
@@ -162,24 +140,6 @@ namespace SabreTools.Library.DatItems
 
             if (mappings.Keys.Contains(Field.DatItem_SHA512))
                 SHA512 = mappings[Field.DatItem_SHA512];
-
-            if (mappings.Keys.Contains(Field.DatItem_Merge))
-                MergeTag = mappings[Field.DatItem_Merge];
-
-            if (mappings.Keys.Contains(Field.DatItem_Region))
-                Region = mappings[Field.DatItem_Region];
-
-            if (mappings.Keys.Contains(Field.DatItem_Index))
-                Index = mappings[Field.DatItem_Index];
-
-            if (mappings.Keys.Contains(Field.DatItem_Writable))
-                Writable = mappings[Field.DatItem_Writable].AsYesNo();
-
-            if (mappings.Keys.Contains(Field.DatItem_Status))
-                ItemStatus = mappings[Field.DatItem_Status].AsItemStatus();
-
-            if (mappings.Keys.Contains(Field.DatItem_Optional))
-                Optional = mappings[Field.DatItem_Optional].AsYesNo();
         }
 
         #endregion
@@ -187,23 +147,23 @@ namespace SabreTools.Library.DatItems
         #region Constructors
 
         /// <summary>
-        /// Create a default, empty Disk object
+        /// Create a default, empty Media object
         /// </summary>
-        public Disk()
+        public Media()
         {
             Name = string.Empty;
-            ItemType = ItemType.Disk;
+            ItemType = ItemType.Media;
             DupeType = 0x00;
-            ItemStatus = ItemStatus.None;
         }
 
         /// <summary>
-        /// Create a Disk object from a BaseFile
+        /// Create a Media object from a BaseFile
         /// </summary>
         /// <param name="baseFile"></param>
-        public Disk(BaseFile baseFile)
+        public Media(BaseFile baseFile)
         {
             Name = baseFile.Filename;
+            _crc = baseFile.CRC;
             _md5 = baseFile.MD5;
 #if NET_FRAMEWORK
             _ripemd160 = baseFile.RIPEMD160;
@@ -213,9 +173,8 @@ namespace SabreTools.Library.DatItems
             _sha384 = baseFile.SHA384;
             _sha512 = baseFile.SHA512;
 
-            ItemType = ItemType.Disk;
+            ItemType = ItemType.Media;
             DupeType = 0x00;
-            ItemStatus = ItemStatus.None;
         }
 
         #endregion
@@ -224,7 +183,7 @@ namespace SabreTools.Library.DatItems
 
         public override object Clone()
         {
-            return new Disk()
+            return new Media()
             {
                 Name = this.Name,
                 ItemType = this.ItemType,
@@ -252,6 +211,7 @@ namespace SabreTools.Library.DatItems
                 Source = this.Source.Clone() as Source,
                 Remove = this.Remove,
 
+                _crc = this._crc,
                 _md5 = this._md5,
 #if NET_FRAMEWORK
                 _ripemd160 = this._ripemd160,
@@ -260,12 +220,6 @@ namespace SabreTools.Library.DatItems
                 _sha256 = this._sha256,
                 _sha384 = this._sha384,
                 _sha512 = this._sha512,
-                MergeTag = this.MergeTag,
-                Region = this.Region,
-                Index = this.Index,
-                Writable = this.Writable,
-                ItemStatus = this.ItemStatus,
-                Optional = this.Optional,
             };
         }
 
@@ -303,12 +257,7 @@ namespace SabreTools.Library.DatItems
                 Source = this.Source.Clone() as Source,
                 Remove = this.Remove,
 
-                MergeTag = this.MergeTag,
-                Region = this.Region,
-                ItemStatus = this.ItemStatus,
-                Optional = this.Optional,
-
-                CRC = null,
+                CRC = this.CRC,
                 MD5 = this.MD5,
 #if NET_FRAMEWORK
                 RIPEMD160 = this.RIPEMD160,
@@ -330,36 +279,29 @@ namespace SabreTools.Library.DatItems
         {
             bool dupefound = false;
 
-            // If we don't have a rom, return false
+            // If we don't have a Media, return false
             if (ItemType != other.ItemType)
                 return dupefound;
 
-            // Otherwise, treat it as a Disk
-            Disk newOther = other as Disk;
+            // Otherwise, treat it as a Media
+            Media newOther = other as Media;
 
-            // If all hashes are empty but they're both nodump and the names match, then they're dupes
-            if ((ItemStatus == ItemStatus.Nodump && newOther.ItemStatus == ItemStatus.Nodump)
-                && Name == newOther.Name
-                && !HasHashes() && !newOther.HasHashes())
-            {
+            // If we get a partial match
+            if (HashMatch(newOther))
                 dupefound = true;
-            }
-
-            // Otherwise if we get a partial match
-            else if (HashMatch(newOther))
-            {
-                dupefound = true;
-            }
 
             return dupefound;
         }
 
         /// <summary>
-        /// Fill any missing size and hash information from another Disk
+        /// Fill any missing size and hash information from another Media
         /// </summary>
-        /// <param name="other">Disk to fill information from</param>
-        public void FillMissingInformation(Disk other)
+        /// <param name="other">Media to fill information from</param>
+        public void FillMissingInformation(Media other)
         {
+            if (_crc.IsNullOrEmpty() && !other._crc.IsNullOrEmpty())
+                _crc = other._crc;
+
             if (_md5.IsNullOrEmpty() && !other._md5.IsNullOrEmpty())
                 _md5 = other._md5;
 
@@ -387,7 +329,9 @@ namespace SabreTools.Library.DatItems
         /// <returns>String representing the suffix</returns>
         public string GetDuplicateSuffix()
         {
-            if (!_md5.IsNullOrEmpty())
+            if (!_crc.IsNullOrEmpty())
+                return $"_{CRC}";
+            else if (!_md5.IsNullOrEmpty())
                 return $"_{MD5}";
             else if (!_sha1.IsNullOrEmpty())
                 return $"_{SHA1}";
@@ -402,13 +346,14 @@ namespace SabreTools.Library.DatItems
         }
 
         /// <summary>
-        /// Returns if there are no, non-empty hashes in common with another Disk
+        /// Returns if there are no, non-empty hashes in common with another Media
         /// </summary>
-        /// <param name="other">Disk to compare against</param>
+        /// <param name="other">Media to compare against</param>
         /// <returns>True if at least one hash is not mutually exclusive, false otherwise</returns>
-        private bool HasCommonHash(Disk other)
+        private bool HasCommonHash(Media other)
         {
-            return !(_md5.IsNullOrEmpty() ^ other._md5.IsNullOrEmpty())
+            return !(_crc.IsNullOrEmpty() ^ other._crc.IsNullOrEmpty())
+                || !(_md5.IsNullOrEmpty() ^ other._md5.IsNullOrEmpty())
 #if NET_FRAMEWORK
                 || !(_ripemd160.IsNullOrEmpty() || other._ripemd160.IsNullOrEmpty())
 #endif
@@ -419,12 +364,13 @@ namespace SabreTools.Library.DatItems
         }
 
         /// <summary>
-        /// Returns if the Disk contains any hashes
+        /// Returns if the Media contains any hashes
         /// </summary>
         /// <returns>True if any hash exists, false otherwise</returns>
         private bool HasHashes()
         {
-            return !_md5.IsNullOrEmpty()
+            return !_crc.IsNullOrEmpty()
+                || !_md5.IsNullOrEmpty()
 #if NET_FRAMEWORK
                 || !_ripemd160.IsNullOrEmpty()
 #endif
@@ -435,11 +381,11 @@ namespace SabreTools.Library.DatItems
         }
 
         /// <summary>
-        /// Returns if any hashes are common with another Disk
+        /// Returns if any hashes are common with another Media
         /// </summary>
-        /// <param name="other">Disk to compare against</param>
+        /// <param name="other">Media to compare against</param>
         /// <returns>True if any hashes are in common, false otherwise</returns>
-        private bool HashMatch(Disk other)
+        private bool HashMatch(Media other)
         {
             // If either have no hashes, we return false, otherwise this would be a false positive
             if (!HasHashes() || !other.HasHashes())
@@ -450,7 +396,8 @@ namespace SabreTools.Library.DatItems
                 return false;
 
             // Return if all hashes match according to merge rules
-            return ConditionalHashEquals(_md5, other._md5)
+            return ConditionalHashEquals(_crc, other._crc)
+                && ConditionalHashEquals(_md5, other._md5)
 #if NET_FRAMEWORK
                 && ConditionalHashEquals(_ripemd160, other._ripemd160)
 #endif
@@ -473,6 +420,12 @@ namespace SabreTools.Library.DatItems
         {
             // Check common fields first
             if (!base.PassesFilter(filter))
+                return false;
+
+            // Filter on CRC
+            if (filter.DatItem_CRC.MatchesPositiveSet(CRC) == false)
+                return false;
+            if (filter.DatItem_CRC.MatchesNegativeSet(CRC) == true)
                 return false;
 
             // Filter on MD5
@@ -513,38 +466,6 @@ namespace SabreTools.Library.DatItems
             if (filter.DatItem_SHA512.MatchesNegativeSet(SHA512) == true)
                 return false;
 
-            // Filter on merge tag
-            if (filter.DatItem_Merge.MatchesPositiveSet(MergeTag) == false)
-                return false;
-            if (filter.DatItem_Merge.MatchesNegativeSet(MergeTag) == true)
-                return false;
-
-            // Filter on region
-            if (filter.DatItem_Region.MatchesPositiveSet(Region) == false)
-                return false;
-            if (filter.DatItem_Region.MatchesNegativeSet(Region) == true)
-                return false;
-
-            // Filter on index
-            if (filter.DatItem_Index.MatchesPositiveSet(Index) == false)
-                return false;
-            if (filter.DatItem_Index.MatchesNegativeSet(Index) == true)
-                return false;
-
-            // Filter on writable
-            if (filter.DatItem_Writable.MatchesNeutral(null, Writable) == false)
-                return false;
-
-            // Filter on status
-            if (filter.DatItem_Status.MatchesPositive(ItemStatus.NULL, ItemStatus) == false)
-                return false;
-            if (filter.DatItem_Status.MatchesNegative(ItemStatus.NULL, ItemStatus) == true)
-                return false;
-
-            // Filter on optional
-            if (filter.DatItem_Optional.MatchesNeutral(null, Optional) == false)
-                return false;
-
             return true;
         }
 
@@ -558,6 +479,9 @@ namespace SabreTools.Library.DatItems
             base.RemoveFields(fields);
 
             // Remove the fields
+            if (fields.Contains(Field.DatItem_CRC))
+                CRC = null;
+
             if (fields.Contains(Field.DatItem_MD5))
                 MD5 = null;
 
@@ -577,24 +501,6 @@ namespace SabreTools.Library.DatItems
 
             if (fields.Contains(Field.DatItem_SHA512))
                 SHA512 = null;
-
-            if (fields.Contains(Field.DatItem_Merge))
-                MergeTag = null;
-
-            if (fields.Contains(Field.DatItem_Region))
-                Region = null;
-
-            if (fields.Contains(Field.DatItem_Index))
-                Index = null;
-
-            if (fields.Contains(Field.DatItem_Writable))
-                Writable = null;
-
-            if (fields.Contains(Field.DatItem_Status))
-                ItemStatus = ItemStatus.NULL;
-
-            if (fields.Contains(Field.DatItem_Optional))
-                Optional = null;
         }
 
         #endregion
@@ -664,14 +570,20 @@ namespace SabreTools.Library.DatItems
             // Replace common fields first
             base.ReplaceFields(item, fields);
 
-            // If we don't have a Disk to replace from, ignore specific fields
-            if (item.ItemType != ItemType.Disk)
+            // If we don't have a Media to replace from, ignore specific fields
+            if (item.ItemType != ItemType.Media)
                 return;
 
             // Cast for easier access
-            Disk newItem = item as Disk;
+            Media newItem = item as Media;
 
             // Replace the fields
+            if (fields.Contains(Field.DatItem_CRC))
+            {
+                if (string.IsNullOrEmpty(CRC) && !string.IsNullOrEmpty(newItem.CRC))
+                    CRC = newItem.CRC;
+            }
+
             if (fields.Contains(Field.DatItem_MD5))
             {
                 if (string.IsNullOrEmpty(MD5) && !string.IsNullOrEmpty(newItem.MD5))
@@ -709,24 +621,6 @@ namespace SabreTools.Library.DatItems
                 if (string.IsNullOrEmpty(SHA512) && !string.IsNullOrEmpty(newItem.SHA512))
                     SHA512 = newItem.SHA512;
             }
-
-            if (fields.Contains(Field.DatItem_Merge))
-                MergeTag = newItem.MergeTag;
-
-            if (fields.Contains(Field.DatItem_Region))
-                Region = newItem.Region;
-
-            if (fields.Contains(Field.DatItem_Index))
-                Index = newItem.Index;
-
-            if (fields.Contains(Field.DatItem_Writable))
-                Writable = newItem.Writable;
-
-            if (fields.Contains(Field.DatItem_Status))
-                ItemStatus = newItem.ItemStatus;
-
-            if (fields.Contains(Field.DatItem_Optional))
-                Optional = newItem.Optional;
         }
 
         #endregion

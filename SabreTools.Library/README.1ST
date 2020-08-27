@@ -233,10 +233,20 @@ Options:
 		  Normally, the DAT will be created with the date in the file name in
 		  brackets. This flag removes that instead of the default.
 
+	  -caf, --aaruformats-as-files		Treat AaruFormats as regular files
+		  Normally, AaruFormats would be processed using their internal hash to
+		  compare against the input DATs. This flag forces all AaruFormats to be
+		  treated like regular files.
+
 	  -aaf, --archives-as-files   Treat archives as files
 		  Instead of trying to enumerate the files within archives, treat the
 		  archives as files themselves. This is good for uncompressed sets that
 		  include archives that should be read as-is.
+
+	  -ic, --chds-as-files		Treat CHDs as regular files
+		  Normally, CHDs would be processed using their internal hash to
+		  compare against the input DATs. This flag forces all CHDs to be
+		  treated like regular files.
 
 	  -ot=, --output-type=		Output DATs to a specified format
 		  Add outputting the created DAT to known format. Multiple instances of
@@ -386,11 +396,6 @@ Options:
 		  rebuilding, this flag allows for either all copier headers (using string.Empty)
 		  or specific copier headers by name (such as "fds.xml") to determine
 		  if a file matches or not.
-
-	  -ic, --chds-as-files		Treat CHDs as regular files
-		  Normally, CHDs would be processed using their internal hash to
-		  compare against the input DATs. This flag forces all CHDs to be
-		  treated like regular files.
 
 	  -ini=, --extra-ini=       Apply a MAME INI for given field(s)
 		  Apply any valid MAME INI for any valid field in the DatFile. Inputs are

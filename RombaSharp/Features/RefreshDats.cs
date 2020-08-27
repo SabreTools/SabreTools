@@ -62,7 +62,7 @@ contents of any changed dats.";
             // First get a list of SHA-1's from the input DATs
             DatFile datroot = DatFile.Create();
             datroot.Header.Type = "SuperDAT";
-            datroot.PopulateFromDir(_dats, asFiles: TreatAsFiles.CHDs);
+            datroot.PopulateFromDir(_dats, asFiles: TreatAsFiles.AaruFormats | TreatAsFiles.CHDs);
             datroot.Items.BucketBy(Field.DatItem_SHA1, DedupeType.None);
 
             // Create a List of dat hashes in the database (SHA-1)

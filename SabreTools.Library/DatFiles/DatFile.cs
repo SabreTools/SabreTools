@@ -2349,7 +2349,13 @@ namespace SabreTools.Library.DatFiles
         private void ProcessFile(string item, string basePath, Hash omitFromScan, bool addDate, TreatAsFiles asFiles)
         {
             Globals.Logger.Verbose($"'{Path.GetFileName(item)}' treated like a file");
-            BaseFile baseFile = FileExtensions.GetInfo(item, omitFromScan: omitFromScan, date: addDate, header: Header.HeaderSkipper, chdsAsFiles: asFiles.HasFlag(TreatAsFiles.CHDs));
+            BaseFile baseFile = FileExtensions.GetInfo(
+                item,
+                omitFromScan: omitFromScan,
+                date: addDate,
+                header: Header.HeaderSkipper,
+                aaruFormatAsFiles: asFiles.HasFlag(TreatAsFiles.AaruFormats),
+                chdsAsFiles: asFiles.HasFlag(TreatAsFiles.CHDs));
             ProcessFileHelper(item, DatItem.Create(baseFile), basePath, string.Empty);
         }
 
@@ -2810,11 +2816,17 @@ namespace SabreTools.Library.DatFiles
             // Scan the file externally
 
             // TODO: All instances of Hash.DeepHashes should be made into 0x0 eventually
-            BaseFile externalFileInfo = FileExtensions.GetInfo(file, omitFromScan: (quickScan ? Hash.SecureHashes : Hash.DeepHashes),
-                header: Header.HeaderSkipper, chdsAsFiles: asFiles.HasFlag(TreatAsFiles.CHDs));
+            BaseFile externalFileInfo = FileExtensions.GetInfo(
+                file,
+                omitFromScan: (quickScan ? Hash.SecureHashes : Hash.DeepHashes),
+                header: Header.HeaderSkipper,
+                aaruFormatAsFiles: asFiles.HasFlag(TreatAsFiles.AaruFormats),
+                chdsAsFiles: asFiles.HasFlag(TreatAsFiles.CHDs));
 
             DatItem externalDatItem = null;
-            if (externalFileInfo.Type == FileType.CHD)
+            if (externalFileInfo.Type == FileType.AaruFormat)
+                externalDatItem = new Media(externalFileInfo);
+            else if (externalFileInfo.Type == FileType.CHD)
                 externalDatItem = new Disk(externalFileInfo);
             else if (externalFileInfo.Type == FileType.None)
                 externalDatItem = new Rom(externalFileInfo);
@@ -2844,10 +2856,16 @@ namespace SabreTools.Library.DatFiles
             if (entries == null && File.Exists(file))
             {
                 // TODO: All instances of Hash.DeepHashes should be made into 0x0 eventually
-                BaseFile internalFileInfo = FileExtensions.GetInfo(file, omitFromScan: (quickScan ? Hash.SecureHashes : Hash.DeepHashes), chdsAsFiles: asFiles.HasFlag(TreatAsFiles.CHDs));
+                BaseFile internalFileInfo = FileExtensions.GetInfo(
+                    file,
+                    omitFromScan: (quickScan ? Hash.SecureHashes : Hash.DeepHashes),
+                    aaruFormatAsFiles: asFiles.HasFlag(TreatAsFiles.AaruFormats),
+                    chdsAsFiles: asFiles.HasFlag(TreatAsFiles.CHDs));
 
                 DatItem internalDatItem = null;
-                if (internalFileInfo.Type == FileType.CHD)
+                if (internalFileInfo.Type == FileType.AaruFormat)
+                    internalDatItem = new Media(internalFileInfo);
+                else if (internalFileInfo.Type == FileType.CHD)
                     internalDatItem = new Disk(internalFileInfo);
                 else if (internalFileInfo.Type == FileType.None)
                     internalDatItem = new Rom(internalFileInfo);

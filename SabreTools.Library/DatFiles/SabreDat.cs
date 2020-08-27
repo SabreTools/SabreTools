@@ -421,6 +421,28 @@ namespace SabreTools.Library.DatFiles
                                 };
                                 break;
 
+                            case "media":
+                                datItem = new Media
+                                {
+                                    Name = reader.GetAttribute("name"),
+                                    CRC = reader.GetAttribute("crc"),
+                                    MD5 = reader.GetAttribute("md5"),
+#if NET_FRAMEWORK
+                                    RIPEMD160 = reader.GetAttribute("ripemd160"),
+#endif
+                                    SHA1 = reader.GetAttribute("sha1"),
+                                    SHA256 = reader.GetAttribute("sha256"),
+                                    SHA384 = reader.GetAttribute("sha384"),
+                                    SHA512 = reader.GetAttribute("sha512"),
+
+                                    Source = new Source
+                                    {
+                                        Index = indexId,
+                                        Name = filename,
+                                    },
+                                };
+                                break;
+
                             case "release":
                                 datItem = new Release
                                 {
@@ -907,6 +929,23 @@ namespace SabreTools.Library.DatFiles
                             // End flags
                             xtw.WriteEndElement();
                         }
+                        xtw.WriteEndElement();
+                        break;
+
+                    case ItemType.Media:
+                        var media = datItem as Media;
+                        xtw.WriteStartElement("file");
+                        xtw.WriteAttributeString("type", "media");
+                        xtw.WriteRequiredAttributeString("name", media.Name);
+                        xtw.WriteOptionalAttributeString("crc", media.CRC?.ToLowerInvariant());
+                        xtw.WriteOptionalAttributeString("md5", media.MD5?.ToLowerInvariant());
+#if NET_FRAMEWORK
+                        xtw.WriteOptionalAttributeString("ripemd160", media.RIPEMD160?.ToLowerInvariant());
+#endif
+                        xtw.WriteOptionalAttributeString("sha1", media.SHA1?.ToLowerInvariant());
+                        xtw.WriteOptionalAttributeString("sha256", media.SHA256?.ToLowerInvariant());
+                        xtw.WriteOptionalAttributeString("sha384", media.SHA384?.ToLowerInvariant());
+                        xtw.WriteOptionalAttributeString("sha512", media.SHA512?.ToLowerInvariant());
                         xtw.WriteEndElement();
                         break;
 
