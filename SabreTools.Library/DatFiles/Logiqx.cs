@@ -237,13 +237,13 @@ namespace SabreTools.Library.DatFiles
                         if (Header.System == null)
                             Header.System = reader.GetAttribute("plugin");
 
-                        if (Header.RomMode == null)
+                        if (Header.RomMode == MergingFlag.None)
                             Header.RomMode = reader.GetAttribute("rommode").AsMergingFlag();
 
-                        if (Header.BiosMode == null)
+                        if (Header.BiosMode == MergingFlag.None)
                             Header.BiosMode = reader.GetAttribute("biosmode").AsMergingFlag();
 
-                        if (Header.SampleMode == null)
+                        if (Header.SampleMode == MergingFlag.None)
                             Header.SampleMode = reader.GetAttribute("samplemode").AsMergingFlag();
 
                         if (Header.LockRomMode == null)

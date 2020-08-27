@@ -77,6 +77,8 @@ namespace SabreTools.Library.IO
             switch (ext)
             {
                 case "7z":
+                case "aif":
+                case "chd":
                 case "gz":
                 case "lzma":
                 case "rar":

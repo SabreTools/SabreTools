@@ -2362,8 +2362,9 @@ namespace SabreTools.Library.DatFiles
         /// <param name="parent">Parent game to be used</param>
         private void ProcessFileHelper(string item, DatItem datItem, string basepath, string parent)
         {
-            // If we somehow got something other than a Rom or Disk, cancel out
-            if (datItem.ItemType != ItemType.Rom && datItem.ItemType != ItemType.Disk)
+            // If we didn't get an accepted parsed type somehow, cancel out
+            List<ItemType> parsed = new List<ItemType> { ItemType.Disk, ItemType.Media, ItemType.Rom };
+            if (!parsed.Contains(datItem.ItemType))
                 return;
 
             try
