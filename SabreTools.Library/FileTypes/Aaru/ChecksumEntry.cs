@@ -27,7 +27,7 @@ namespace SabreTools.Library.FileTypes.Aaru
 
             using (BinaryReader br = new BinaryReader(stream, Encoding.Default, true))
             {
-                checksumEntry.type = (AaruChecksumAlgorithm)br.ReadUInt32();
+                checksumEntry.type = (AaruChecksumAlgorithm)br.ReadByte();
                 checksumEntry.length = br.ReadUInt32();
                 if (checksumEntry.length == 0)
                     return null;

@@ -18,8 +18,8 @@ namespace SabreTools.Library.FileTypes
 
         #region Header
 
-        protected char[] Identifier = new char[8];      // 'AARUFRMT' (0x544D524655524141)
-        protected char[] Application = new char[32];    // Name of application that created image
+        protected ulong Identifier;                     // 'AARUFRMT' (0x544D524655524141)
+        protected string Application;                   // Name of application that created image
         protected byte ImageMajorVersion;               // Image format major version
         protected byte ImageMinorVersion;               // Image format minor version
         protected byte ApplicationMajorVersion;         // Major version of application that created image
@@ -33,7 +33,6 @@ namespace SabreTools.Library.FileTypes
 
         #region Internal Values
 
-        // TODO: Read https://github.com/aaru-dps/Aaru/blob/master/Aaru.Images/AaruFormat/Verify.cs
         protected IndexHeader IndexHeader;
         protected IndexEntry[] IndexEntries;
 
@@ -41,9 +40,6 @@ namespace SabreTools.Library.FileTypes
 
         #region Hashes
 
-        public byte[] md5 = new byte[16];
-        public byte[] sha1 = new byte[20];
-        public byte[] sha256 = new byte[32];
         // TODO: Support SpamSum
 
         #endregion
@@ -128,8 +124,8 @@ namespace SabreTools.Library.FileTypes
 
                 using (BinaryReader br = new BinaryReader(stream, Encoding.Default, true))
                 {
-                    aif.Identifier = br.ReadChars(8);
-                    aif.Application = br.ReadChars(32);
+                    aif.Identifier = br.ReadUInt64();
+                    aif.Application = Encoding.Unicode.GetString(br.ReadBytes(64), 0, 64);
                     aif.ImageMajorVersion = br.ReadByte();
                     aif.ImageMinorVersion = br.ReadByte();
                     aif.ApplicationMajorVersion = br.ReadByte();
@@ -154,48 +150,67 @@ namespace SabreTools.Library.FileTypes
                     for (ushort index = 0; index < aif.IndexHeader.entries; index++)
                     {
                         aif.IndexEntries[index] = IndexEntry.Deserialize(stream);
-
-                        // If we get a checksum block, read in the values
-                        if (aif.IndexEntries[index].blockType == AaruBlockType.ChecksumBlock)
+                        switch (aif.IndexEntries[index].blockType)
                         {
-                            // If the offset is bigger than the stream, we can't read it
-                            if (aif.IndexEntries[index].offset > (ulong)stream.Length)
-                                return null;
+                            // We don't do anything with these block types currently
+                            case AaruBlockType.DataBlock:
+                            case AaruBlockType.DeDuplicationTable:
+                            case AaruBlockType.Index:
+                            case AaruBlockType.Index2:
+                            case AaruBlockType.GeometryBlock:
+                            case AaruBlockType.MetadataBlock:
+                            case AaruBlockType.TracksBlock:
+                            case AaruBlockType.CicmBlock:
+                            case AaruBlockType.DataPositionMeasurementBlock:
+                            case AaruBlockType.SnapshotBlock:
+                            case AaruBlockType.ParentBlock:
+                            case AaruBlockType.DumpHardwareBlock:
+                            case AaruBlockType.TapeFileBlock:
+                            case AaruBlockType.TapePartitionBlock:
+                            case AaruBlockType.CompactDiscIndexesBlock:
+                                // No-op
+                                break;
 
-                            // Otherwise, we read in the block
-                            stream.Seek((long)aif.IndexEntries[index].offset, SeekOrigin.Begin);
-                            ChecksumHeader checksumHeader = ChecksumHeader.Deserialize(stream);
-                            if (checksumHeader.entries == 0)
-                                return null;
+                            // Read in all available hashes
+                            case AaruBlockType.ChecksumBlock:
+                                // If the offset is bigger than the stream, we can't read it
+                                if (aif.IndexEntries[index].offset > (ulong)stream.Length)
+                                    return null;
 
-                            // Read through each and pick out the ones we care about
-                            for (byte entry = 0; entry < checksumHeader.entries; entry++)
-                            {
-                                ChecksumEntry checksumEntry = ChecksumEntry.Deserialize(stream);
-                                if (checksumEntry == null)
-                                    continue;
+                                // Otherwise, we read in the block
+                                stream.Seek((long)aif.IndexEntries[index].offset, SeekOrigin.Begin);
+                                ChecksumHeader checksumHeader = ChecksumHeader.Deserialize(stream);
+                                if (checksumHeader.entries == 0)
+                                    return null;
 
-                                switch (checksumEntry.type)
+                                // Read through each and pick out the ones we care about
+                                for (byte entry = 0; entry < checksumHeader.entries; entry++)
                                 {
-                                    case AaruChecksumAlgorithm.Invalid:
-                                        break;
-                                    case AaruChecksumAlgorithm.Md5:
-                                        aif.md5 = checksumEntry.checksum;
-                                        break;
-                                    case AaruChecksumAlgorithm.Sha1:
-                                        aif.sha1 = checksumEntry.checksum;
-                                        break;
-                                    case AaruChecksumAlgorithm.Sha256:
-                                        aif.sha256 = checksumEntry.checksum;
-                                        break;
-                                    case AaruChecksumAlgorithm.SpamSum:
-                                        // TODO: Support SpamSum
-                                        break;
-                                }
-                            }
+                                    ChecksumEntry checksumEntry = ChecksumEntry.Deserialize(stream);
+                                    if (checksumEntry == null)
+                                        continue;
 
-                            // Once we got hashes, we return early
-                            return aif;
+                                    switch (checksumEntry.type)
+                                    {
+                                        case AaruChecksumAlgorithm.Invalid:
+                                            break;
+                                        case AaruChecksumAlgorithm.Md5:
+                                            aif.MD5 = checksumEntry.checksum;
+                                            break;
+                                        case AaruChecksumAlgorithm.Sha1:
+                                            aif.SHA1 = checksumEntry.checksum;
+                                            break;
+                                        case AaruChecksumAlgorithm.Sha256:
+                                            aif.SHA256 = checksumEntry.checksum;
+                                            break;
+                                        case AaruChecksumAlgorithm.SpamSum:
+                                            // TODO: Support SpamSum
+                                            break;
+                                    }
+                                }
+
+                                // Once we got hashes, we return early
+                                return aif;
                         }
                     }
                 }
