@@ -644,8 +644,6 @@ namespace SabreTools.Library.DatFiles
                                 reader.ReadElementContentAsString().ToLowerInvariant()));
                         break;
 
-                    // TODO: Should I support the "custom" romMD5 and romSHA1 tags I write out?
-
                     default:
                         reader.Read();
                         break;
@@ -727,22 +725,22 @@ namespace SabreTools.Library.DatFiles
 
                         // If we have a "null" game (created by DATFromDir or something similar), log it to file
                         if (rom.ItemType == ItemType.Rom
-                            && ((Rom)rom).Size == -1
-                            && ((Rom)rom).CRC == "null")
+                            && (rom as Rom).Size == -1
+                            && (rom as Rom).CRC == "null")
                         {
                             Globals.Logger.Verbose($"Empty folder found: {rom.Machine.Name}");
 
                             rom.Name = (rom.Name == "null" ? "-" : rom.Name);
-                            ((Rom)rom).Size = Constants.SizeZero;
-                            ((Rom)rom).CRC = ((Rom)rom).CRC == "null" ? Constants.CRCZero : null;
-                            ((Rom)rom).MD5 = ((Rom)rom).MD5 == "null" ? Constants.MD5Zero : null;
+                            (rom as Rom).Size = Constants.SizeZero;
+                            (rom as Rom).CRC = (rom as Rom).CRC == "null" ? Constants.CRCZero : null;
+                            (rom as Rom).MD5 = (rom as Rom).MD5 == "null" ? Constants.MD5Zero : null;
 #if NET_FRAMEWORK
-                            ((Rom)rom).RIPEMD160 = ((Rom)rom).RIPEMD160 == "null" ? Constants.RIPEMD160Zero : null;
+                            (rom as Rom).RIPEMD160 = (rom as Rom).RIPEMD160 == "null" ? Constants.RIPEMD160Zero : null;
 #endif
-                            ((Rom)rom).SHA1 = ((Rom)rom).SHA1 == "null" ? Constants.SHA1Zero : null;
-                            ((Rom)rom).SHA256 = ((Rom)rom).SHA256 == "null" ? Constants.SHA256Zero : null;
-                            ((Rom)rom).SHA384 = ((Rom)rom).SHA384 == "null" ? Constants.SHA384Zero : null;
-                            ((Rom)rom).SHA512 = ((Rom)rom).SHA512 == "null" ? Constants.SHA512Zero : null;
+                            (rom as Rom).SHA1 = (rom as Rom).SHA1 == "null" ? Constants.SHA1Zero : null;
+                            (rom as Rom).SHA256 = (rom as Rom).SHA256 == "null" ? Constants.SHA256Zero : null;
+                            (rom as Rom).SHA384 = (rom as Rom).SHA384 == "null" ? Constants.SHA384Zero : null;
+                            (rom as Rom).SHA512 = (rom as Rom).SHA512 == "null" ? Constants.SHA512Zero : null;
                         }
 
                         // Now, output the rom data
@@ -929,29 +927,7 @@ namespace SabreTools.Library.DatFiles
                 xtw.WriteElementString("sourceRom", "None");
                 xtw.WriteElementString("language", "0");
 
-                if (datItem.ItemType == ItemType.Disk)
-                {
-                    var disk = datItem as Disk;
-                    xtw.WriteStartElement("files");
-                    if (!string.IsNullOrWhiteSpace(disk.MD5))
-                    {
-                        xtw.WriteStartElement("romMD5");
-                        xtw.WriteAttributeString("extension", ".chd");
-                        xtw.WriteString(disk.MD5?.ToUpperInvariant());
-                        xtw.WriteEndElement();
-                    }
-                    else if (!string.IsNullOrWhiteSpace(disk.SHA1))
-                    {
-                        xtw.WriteStartElement("romSHA1");
-                        xtw.WriteAttributeString("extension", ".chd");
-                        xtw.WriteString(disk.SHA1?.ToUpperInvariant());
-                        xtw.WriteEndElement();
-                    }
-
-                    // End files
-                    xtw.WriteEndElement();
-                }
-                else if (datItem.ItemType == ItemType.Rom)
+                if (datItem.ItemType == ItemType.Rom)
                 {
                     var rom = datItem as Rom;
                     string tempext = "." + PathExtensions.GetNormalizedExtension(rom.Name);
@@ -962,20 +938,6 @@ namespace SabreTools.Library.DatFiles
                         xtw.WriteStartElement("romCRC");
                         xtw.WriteRequiredAttributeString("extension", tempext);
                         xtw.WriteString(rom.CRC?.ToUpperInvariant());
-                        xtw.WriteEndElement();
-                    }
-                    else if (!string.IsNullOrWhiteSpace(rom.MD5))
-                    {
-                        xtw.WriteStartElement("romMD5");
-                        xtw.WriteRequiredAttributeString("extension", tempext);
-                        xtw.WriteString(rom.MD5?.ToUpperInvariant());
-                        xtw.WriteEndElement();
-                    }
-                    else if (!string.IsNullOrWhiteSpace(rom.SHA1))
-                    {
-                        xtw.WriteStartElement("romSHA1");
-                        xtw.WriteRequiredAttributeString("extension", tempext);
-                        xtw.WriteString(rom.SHA1?.ToUpperInvariant());
                         xtw.WriteEndElement();
                     }
 

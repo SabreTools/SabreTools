@@ -175,13 +175,13 @@ namespace SabreTools.Library.DatFiles
 
                         // If we have a "null" game (created by DATFromDir or something similar), log it to file
                         if (item.ItemType == ItemType.Rom
-                            && ((Rom)item).Size == -1
-                            && ((Rom)item).CRC == "null")
+                            && (item as Rom).Size == -1
+                            && (item as Rom).CRC == "null")
                         {
                             Globals.Logger.Verbose($"Empty folder found: {item.Machine.Name}");
 
                             item.Name = (item.Name == "null" ? "-" : item.Name);
-                            ((Rom)item).Size = Constants.SizeZero;
+                            (item as Rom).Size = Constants.SizeZero;
                         }
 
                         // Set the new data to compare against
@@ -255,7 +255,7 @@ namespace SabreTools.Library.DatFiles
         private bool WriteDatItem(SeparatedValueWriter svw, DatItem datItem, bool ignoreblanks = false)
         {
             // If we are in ignore blanks mode AND we have a blank (0-size) rom, skip
-            if (ignoreblanks && (datItem.ItemType == ItemType.Rom && (((Rom)datItem).Size == 0 || ((Rom)datItem).Size == -1)))
+            if (ignoreblanks && (datItem.ItemType == ItemType.Rom && ((datItem as Rom).Size == 0 || (datItem as Rom).Size == -1)))
                 return true;
 
             try

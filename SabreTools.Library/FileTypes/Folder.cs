@@ -362,9 +362,9 @@ namespace SabreTools.Library.FileTypes
 
                     if (rom.ItemType == ItemType.Rom)
                     {
-                        if (date && !string.IsNullOrWhiteSpace(((Rom)rom).Date))
+                        if (date && !string.IsNullOrWhiteSpace((rom as Rom).Date))
                         {
-                            File.SetCreationTime(fileName, DateTime.Parse(((Rom)rom).Date));
+                            File.SetCreationTime(fileName, DateTime.Parse((rom as Rom).Date));
                         }
                     }
 

@@ -692,6 +692,11 @@ Options:
 		  can only get the CRC and size from most archive formats, leading to
 		  possible issues.
 
+	  -caf, --aaruformats-as-files		Treat AaruFormats as regular files
+		  Normally, AaruFormats would be processed using their internal hash to
+		  compare against the input DATs. This flag forces all AaruFormats to be
+		  treated like regular files.
+
 	  -ic, --chds-as-files		Treat CHDs as regular files
 		  Normally, CHDs would be processed using their internal hash to
 		  compare against the input DATs. This flag forces all CHDs to be
@@ -1610,6 +1615,11 @@ Options:
 		  rebuilding, this flag allows for either all copier headers (using string.Empty)
 		  or specific copier headers by name (such as "fds.xml") to determine
 		  if a file matches or not.
+
+	  -caf, --aaruformats-as-files		Treat AaruFormats as regular files
+		  Normally, AaruFormats would be processed using their internal hash to
+		  compare against the input DATs. This flag forces all AaruFormats to be
+		  treated like regular files.
 
 	  -ic, --chds-as-files		Treat CHDs as regular files
 		  Normally, CHDs would be processed using their internal hash to

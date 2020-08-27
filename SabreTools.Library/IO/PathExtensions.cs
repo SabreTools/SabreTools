@@ -76,9 +76,15 @@ namespace SabreTools.Library.IO
             // Check against the list of known archive extensions
             switch (ext)
             {
-                case "7z":
+                // Aaruformat
+                case "aaru":
+                case "aaruf":
+                case "aaruformat":
                 case "aif":
-                case "chd":
+                case "dicf":
+
+                // Archives
+                case "7z":
                 case "gz":
                 case "lzma":
                 case "rar":
@@ -90,6 +96,9 @@ namespace SabreTools.Library.IO
                 case "tlz":
                 case "zip":
                 case "zipx":
+
+                // CHD
+                case "chd":
                     return true;
                 default:
                     return false;

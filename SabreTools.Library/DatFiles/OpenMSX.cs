@@ -572,8 +572,8 @@ namespace SabreTools.Library.DatFiles
 
                         // If we have a "null" game (created by DATFromDir or something similar), log it to file
                         if (rom.ItemType == ItemType.Rom
-                            && ((Rom)rom).Size == -1
-                            && ((Rom)rom).CRC == "null")
+                            && (rom as Rom).Size == -1
+                            && (rom as Rom).CRC == "null")
                         {
                             Globals.Logger.Verbose($"Empty folder found: {rom.Machine.Name}");
 

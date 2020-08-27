@@ -1986,94 +1986,92 @@ namespace SabreTools.Library.DatFiles
                 return key;
             }
 
-            // If we have a Rom or a Disk, clean the hash data
-            if (item.ItemType == ItemType.Rom)
+            // If we have a Disk, Media, or Rom, clean the hash data
+            if (item.ItemType == ItemType.Disk)
             {
-                Rom itemRom = item as Rom;
+                Disk disk = item as Disk;
+
+                // If the file has aboslutely no hashes, skip and log
+                if (disk.ItemStatus != ItemStatus.Nodump
+                    && string.IsNullOrWhiteSpace(disk.MD5)
+                    && string.IsNullOrWhiteSpace(disk.SHA1))
+                {
+                    Globals.Logger.Verbose($"Incomplete entry for '{disk.Name}' will be output as nodump");
+                    disk.ItemStatus = ItemStatus.Nodump;
+                }
+
+                item = disk;
+            }
+            else if (item.ItemType == ItemType.Rom)
+            {
+                Rom rom = item as Rom;
 
                 // If we have the case where there is SHA-1 and nothing else, we don't fill in any other part of the data
-                if (itemRom.Size == -1
-                    && string.IsNullOrWhiteSpace(itemRom.CRC)
-                    && string.IsNullOrWhiteSpace(itemRom.MD5)
+                if (rom.Size == -1
+                    && string.IsNullOrWhiteSpace(rom.CRC)
+                    && string.IsNullOrWhiteSpace(rom.MD5)
 #if NET_FRAMEWORK
-                    && string.IsNullOrWhiteSpace(itemRom.RIPEMD160)
+                    && string.IsNullOrWhiteSpace(rom.RIPEMD160)
 #endif
-                    && !string.IsNullOrWhiteSpace(itemRom.SHA1)
-                    && string.IsNullOrWhiteSpace(itemRom.SHA256)
-                    && string.IsNullOrWhiteSpace(itemRom.SHA384)
-                    && string.IsNullOrWhiteSpace(itemRom.SHA512))
+                    && !string.IsNullOrWhiteSpace(rom.SHA1)
+                    && string.IsNullOrWhiteSpace(rom.SHA256)
+                    && string.IsNullOrWhiteSpace(rom.SHA384)
+                    && string.IsNullOrWhiteSpace(rom.SHA512))
                 {
                     // No-op, just catch it so it doesn't go further
-                    Globals.Logger.Verbose($"{Header.FileName}: Entry with only SHA-1 found - '{itemRom.Name}'");
+                    Globals.Logger.Verbose($"{Header.FileName}: Entry with only SHA-1 found - '{rom.Name}'");
                 }
 
                 // If we have a rom and it's missing size AND the hashes match a 0-byte file, fill in the rest of the info
-                else if ((itemRom.Size == 0 || itemRom.Size == -1)
-                    && ((itemRom.CRC == Constants.CRCZero || string.IsNullOrWhiteSpace(itemRom.CRC))
-                        || itemRom.MD5 == Constants.MD5Zero
+                else if ((rom.Size == 0 || rom.Size == -1)
+                    && ((rom.CRC == Constants.CRCZero || string.IsNullOrWhiteSpace(rom.CRC))
+                        || rom.MD5 == Constants.MD5Zero
 #if NET_FRAMEWORK
-                        || itemRom.RIPEMD160 == Constants.RIPEMD160Zero
+                        || rom.RIPEMD160 == Constants.RIPEMD160Zero
 #endif
-                        || itemRom.SHA1 == Constants.SHA1Zero
-                        || itemRom.SHA256 == Constants.SHA256Zero
-                        || itemRom.SHA384 == Constants.SHA384Zero
-                        || itemRom.SHA512 == Constants.SHA512Zero))
+                        || rom.SHA1 == Constants.SHA1Zero
+                        || rom.SHA256 == Constants.SHA256Zero
+                        || rom.SHA384 == Constants.SHA384Zero
+                        || rom.SHA512 == Constants.SHA512Zero))
                 {
                     // TODO: All instances of Hash.DeepHashes should be made into 0x0 eventually
-                    itemRom.Size = Constants.SizeZero;
-                    itemRom.CRC = Constants.CRCZero;
-                    itemRom.MD5 = Constants.MD5Zero;
+                    rom.Size = Constants.SizeZero;
+                    rom.CRC = Constants.CRCZero;
+                    rom.MD5 = Constants.MD5Zero;
 #if NET_FRAMEWORK
-                    itemRom.RIPEMD160 = null;
-                    //itemRom.RIPEMD160 = Constants.RIPEMD160Zero;
+                    rom.RIPEMD160 = null; // Constants.RIPEMD160Zero;
 #endif
-                    itemRom.SHA1 = Constants.SHA1Zero;
-                    itemRom.SHA256 = null;
-                    //itemRom.SHA256 = Constants.SHA256Zero;
-                    itemRom.SHA384 = null;
-                    //itemRom.SHA384 = Constants.SHA384Zero;
-                    itemRom.SHA512 = null;
-                    //itemRom.SHA512 = Constants.SHA512Zero;
+                    rom.SHA1 = Constants.SHA1Zero;
+                    rom.SHA256 = null; // Constants.SHA256Zero;
+                    rom.SHA384 = null; // Constants.SHA384Zero;
+                    rom.SHA512 = null; // Constants.SHA512Zero;
                 }
+
                 // If the file has no size and it's not the above case, skip and log
-                else if (itemRom.ItemStatus != ItemStatus.Nodump && (itemRom.Size == 0 || itemRom.Size == -1))
+                else if (rom.ItemStatus != ItemStatus.Nodump && (rom.Size == 0 || rom.Size == -1))
                 {
-                    Globals.Logger.Verbose($"{Header.FileName}: Incomplete entry for '{itemRom.Name}' will be output as nodump");
-                    itemRom.ItemStatus = ItemStatus.Nodump;
+                    Globals.Logger.Verbose($"{Header.FileName}: Incomplete entry for '{rom.Name}' will be output as nodump");
+                    rom.ItemStatus = ItemStatus.Nodump;
                 }
+
                 // If the file has a size but aboslutely no hashes, skip and log
-                else if (itemRom.ItemStatus != ItemStatus.Nodump
-                    && itemRom.Size > 0
-                    && string.IsNullOrWhiteSpace(itemRom.CRC)
-                    && string.IsNullOrWhiteSpace(itemRom.MD5)
+                else if (rom.ItemStatus != ItemStatus.Nodump
+                    && rom.Size > 0
+                    && string.IsNullOrWhiteSpace(rom.CRC)
+                    && string.IsNullOrWhiteSpace(rom.MD5)
 #if NET_FRAMEWORK
-                    && string.IsNullOrWhiteSpace(itemRom.RIPEMD160)
+                    && string.IsNullOrWhiteSpace(rom.RIPEMD160)
 #endif
-                    && string.IsNullOrWhiteSpace(itemRom.SHA1)
-                    && string.IsNullOrWhiteSpace(itemRom.SHA256)
-                    && string.IsNullOrWhiteSpace(itemRom.SHA384)
-                    && string.IsNullOrWhiteSpace(itemRom.SHA512))
+                    && string.IsNullOrWhiteSpace(rom.SHA1)
+                    && string.IsNullOrWhiteSpace(rom.SHA256)
+                    && string.IsNullOrWhiteSpace(rom.SHA384)
+                    && string.IsNullOrWhiteSpace(rom.SHA512))
                 {
-                    Globals.Logger.Verbose($"{Header.FileName}: Incomplete entry for '{itemRom.Name}' will be output as nodump");
-                    itemRom.ItemStatus = ItemStatus.Nodump;
+                    Globals.Logger.Verbose($"{Header.FileName}: Incomplete entry for '{rom.Name}' will be output as nodump");
+                    rom.ItemStatus = ItemStatus.Nodump;
                 }
 
-                item = itemRom;
-            }
-            else if (item.ItemType == ItemType.Disk)
-            {
-                Disk itemDisk = item as Disk;
-
-                // If the file has aboslutely no hashes, skip and log
-                if (itemDisk.ItemStatus != ItemStatus.Nodump
-                    && string.IsNullOrWhiteSpace(itemDisk.MD5)
-                    && string.IsNullOrWhiteSpace(itemDisk.SHA1))
-                {
-                    Globals.Logger.Verbose($"Incomplete entry for '{itemDisk.Name}' will be output as nodump");
-                    itemDisk.ItemStatus = ItemStatus.Nodump;
-                }
-
-                item = itemDisk;
+                item = rom;
             }
 
             // Get the key and add the file
@@ -2402,7 +2400,7 @@ namespace SabreTools.Library.DatFiles
         private void SetDatItemInfo(DatItem datItem, string item, string parent, string basepath)
         {
             // Get the data to be added as game and item names
-            string gamename, romname;
+            string machineName, itemName;
 
             // If the parent is blank, then we have a non-archive file
             if (string.IsNullOrWhiteSpace(parent))
@@ -2410,15 +2408,15 @@ namespace SabreTools.Library.DatFiles
                 // If we have a SuperDAT, we want anything that's not the base path as the game, and the file as the rom
                 if (Header.Type == "SuperDAT")
                 {
-                    gamename = Path.GetDirectoryName(item.Remove(0, basepath.Length));
-                    romname = Path.GetFileName(item);
+                    machineName = Path.GetDirectoryName(item.Remove(0, basepath.Length));
+                    itemName = Path.GetFileName(item);
                 }
 
                 // Otherwise, we want just the top level folder as the game, and the file as everything else
                 else
                 {
-                    gamename = item.Remove(0, basepath.Length).Split(Path.DirectorySeparatorChar)[0];
-                    romname = item.Remove(0, (Path.Combine(basepath, gamename).Length));
+                    machineName = item.Remove(0, basepath.Length).Split(Path.DirectorySeparatorChar)[0];
+                    itemName = item.Remove(0, (Path.Combine(basepath, machineName).Length));
                 }
             }
 
@@ -2428,36 +2426,58 @@ namespace SabreTools.Library.DatFiles
                 // If we have a SuperDAT, we want the archive name as the game, and the file as everything else (?)
                 if (Header.Type == "SuperDAT")
                 {
-                    gamename = parent;
-                    romname = datItem.Name;
+                    machineName = parent;
+                    itemName = datItem.Name;
                 }
 
                 // Otherwise, we want the archive name as the game, and the file as everything else
                 else
                 {
-                    gamename = parent;
-                    romname = datItem.Name;
+                    machineName = parent;
+                    itemName = datItem.Name;
                 }
             }
 
             // Sanitize the names
-            gamename = gamename.Trim(Path.DirectorySeparatorChar);
-            romname = romname?.Trim(Path.DirectorySeparatorChar) ?? string.Empty;
+            machineName = machineName.Trim(Path.DirectorySeparatorChar);
+            itemName = itemName?.Trim(Path.DirectorySeparatorChar) ?? string.Empty;
 
-            if (!string.IsNullOrWhiteSpace(gamename) && string.IsNullOrWhiteSpace(romname))
+            if (!string.IsNullOrWhiteSpace(machineName) && string.IsNullOrWhiteSpace(itemName))
             {
-                romname = gamename;
-                gamename = "Default";
+                itemName = machineName;
+                machineName = "Default";
             }
 
-            // Update rom information
-            datItem.Name = romname;
-            datItem.Machine.Name = gamename;
-            datItem.Machine.Description = gamename;
+            // Update machine information
+            datItem.Machine.Name = machineName;
+            datItem.Machine.Description = machineName;
 
             // If we have a Disk, then the ".chd" extension needs to be removed
-            if (datItem.ItemType == ItemType.Disk)
-                datItem.Name = datItem.Name.Replace(".chd", string.Empty);
+            if (datItem.ItemType == ItemType.Disk && datItem.Name.EndsWith(".chd"))
+            {
+                datItem.Name = itemName.Substring(0, itemName.Length - 4);
+            }
+
+            // If we have a Media, then the extension needs to be removed
+            else if (datItem.ItemType == ItemType.Media)
+            {
+                if (datItem.Name.EndsWith(".dicf"))
+                    datItem.Name = itemName.Substring(0, itemName.Length - 5);
+                else if (datItem.Name.EndsWith(".aaru"))
+                    datItem.Name = itemName.Substring(0, itemName.Length - 5);
+                else if (datItem.Name.EndsWith(".aaruformat"))
+                    datItem.Name = itemName.Substring(0, itemName.Length - 11);
+                else if (datItem.Name.EndsWith(".aaruf"))
+                    datItem.Name = itemName.Substring(0, itemName.Length - 6);
+                else if (datItem.Name.EndsWith(".aif"))
+                    datItem.Name = itemName.Substring(0, itemName.Length - 3);
+            }
+
+            // All others leave the extension alone
+            else
+            {
+                datItem.Name = itemName;
+            }
         }
 
         #endregion
@@ -2618,6 +2638,8 @@ namespace SabreTools.Library.DatFiles
                 bool usedInternally;
                 if (Items[hash][0].ItemType == ItemType.Disk)
                     usedInternally = RebuildIndividualFile(new Disk(fileinfo), foundpath, outDir, date, inverse, outputFormat, updateDat, false /* isZip */);
+                else if (Items[hash][0].ItemType == ItemType.Media)
+                    usedInternally = RebuildIndividualFile(new Media(fileinfo), foundpath, outDir, date, inverse, outputFormat, updateDat, false /* isZip */);
                 else
                     usedInternally = RebuildIndividualFile(new Rom(fileinfo), foundpath, outDir, date, inverse, outputFormat, updateDat, false /* isZip */);
 
@@ -2907,21 +2929,23 @@ namespace SabreTools.Library.DatFiles
             // Set the initial output value
             bool rebuilt = false;
 
-            // If the DatItem is a Disk, force rebuilding to a folder except if TGZ or TXZ
-            if (datItem.ItemType == ItemType.Disk
+            // If the DatItem is a Disk or Media, force rebuilding to a folder except if TGZ or TXZ
+            if ((datItem.ItemType == ItemType.Disk || datItem.ItemType == ItemType.Media)
                 && !(outputFormat == OutputFormat.TorrentGzip || outputFormat == OutputFormat.TorrentGzipRomba)
                 && !(outputFormat == OutputFormat.TorrentXZ || outputFormat == OutputFormat.TorrentXZRomba))
             {
                 outputFormat = OutputFormat.Folder;
             }
 
-            // If we have a disk, change it into a Rom for later use
+            // If we have a disk or media, change it into a Rom for later use
             if (datItem.ItemType == ItemType.Disk)
-                datItem = ((Disk)datItem).ConvertToRom();
+                datItem = (datItem as Disk).ConvertToRom();
+            if (datItem.ItemType == ItemType.Media)
+                datItem = (datItem as Media).ConvertToRom();
 
             // Prepopluate a few key strings
-            string crc = ((Rom)datItem).CRC ?? string.Empty;
-            string sha1 = ((Rom)datItem).SHA1 ?? string.Empty;
+            string crc = (datItem as Rom).CRC ?? string.Empty;
+            string sha1 = (datItem as Rom).SHA1 ?? string.Empty;
 
             // Find if the file has duplicates in the DAT
             List<DatItem> dupes = Items.GetDuplicates(datItem, remove: updateDat);
@@ -3108,7 +3132,7 @@ namespace SabreTools.Library.DatFiles
 
                                 // Now rebuild to the output file
                                 eitherSuccess |= outputArchive.Write(transformStream, outDir, item as Rom, date: date, depth: Header.OutputDepot.Depth);
-                                eitherSuccess |= outputArchive.Write(fileStream, outDir, (Rom)datItem, date: date, depth: Header.OutputDepot.Depth);
+                                eitherSuccess |= outputArchive.Write(fileStream, outDir, datItem as Rom, date: date, depth: Header.OutputDepot.Depth);
 
                                 // Now add the success of either rebuild
                                 rebuilt &= eitherSuccess;
@@ -3266,13 +3290,17 @@ namespace SabreTools.Library.DatFiles
                 var keys = Items.SortedKeys.ToList();
                 foreach (string key in keys)
                 {
-                    List<DatItem> roms = Items[key];
-                    foreach (DatItem rom in roms)
+                    List<DatItem> items = Items[key];
+                    foreach (DatItem datItem in items)
                     {
-                        if (rom.Source.Index == 99)
+                        if (datItem.Source.Index == 99)
                         {
-                            if (rom.ItemType == ItemType.Disk || rom.ItemType == ItemType.Rom)
-                                matched.Items.Add(((Disk)rom).SHA1, rom);
+                            if (datItem.ItemType == ItemType.Disk)
+                                matched.Items.Add((datItem as Disk).SHA1, datItem);
+                            else if (datItem.ItemType == ItemType.Media)
+                                matched.Items.Add((datItem as Media).SHA1, datItem);
+                            else if (datItem.ItemType == ItemType.Rom)
+                                matched.Items.Add((datItem as Rom).SHA1, datItem);
                         }
                     }
                 }
@@ -3282,9 +3310,9 @@ namespace SabreTools.Library.DatFiles
             {
                 foreach (string key in Items.Keys)
                 {
-                    List<DatItem> roms = Items[key];
-                    List<DatItem> newroms = DatItem.Merge(roms);
-                    foreach (Rom rom in newroms)
+                    List<DatItem> items = Items[key];
+                    List<DatItem> newItems = DatItem.Merge(items);
+                    foreach (Rom rom in newItems)
                     {
                         if (rom.Source.Index == 99)
                             matched.Items.Add($"{rom.Size}-{rom.CRC}", rom);
@@ -3427,8 +3455,8 @@ namespace SabreTools.Library.DatFiles
                 List<DatItem> items = Items[key];
                 foreach (DatItem item in items)
                 {
-                    // If the file is not a Rom or Disk, continue
-                    if (item.ItemType != ItemType.Disk && item.ItemType != ItemType.Rom)
+                    // If the file is not a Disk, Media, or Rom, continue
+                    if (item.ItemType != ItemType.Disk && item.ItemType != ItemType.Media && item.ItemType != ItemType.Rom)
                         return;
 
                     // If the file is a nodump
@@ -3454,7 +3482,8 @@ namespace SabreTools.Library.DatFiles
                         sha256.Items.Add(key, item);
                     }
                     // If the file has a SHA-1
-                    else if ((item.ItemType == ItemType.Media && !string.IsNullOrWhiteSpace((item as Media).SHA1))
+                    else if ((item.ItemType == ItemType.Disk && !string.IsNullOrWhiteSpace((item as Disk).SHA1))
+                        || (item.ItemType == ItemType.Media && !string.IsNullOrWhiteSpace((item as Media).SHA1))
                         || (item.ItemType == ItemType.Rom && !string.IsNullOrWhiteSpace((item as Rom).SHA1)))
                     {
                         sha1.Items.Add(key, item);
@@ -3467,9 +3496,10 @@ namespace SabreTools.Library.DatFiles
                     }
 #endif
                     // If the file has an MD5
-                    else if ((item.ItemType == ItemType.Rom && !string.IsNullOrWhiteSpace((item as Rom).MD5))
-                        || (item.ItemType == ItemType.Media && !string.IsNullOrWhiteSpace((item as Media).MD5))
-                        || (item.ItemType == ItemType.Disk && !string.IsNullOrWhiteSpace((item as Disk).MD5)))
+                    else if ((item.ItemType == ItemType.Disk && !string.IsNullOrWhiteSpace((item as Disk).MD5))
+                        || (item.ItemType == ItemType.Media && !string.IsNullOrWhiteSpace((item as Media).MD5)
+                        || (item.ItemType == ItemType.Rom && !string.IsNullOrWhiteSpace((item as Rom).MD5)))
+                        )
                     {
                         md5.Items.Add(key, item);
                     }
@@ -3658,15 +3688,20 @@ namespace SabreTools.Library.DatFiles
             // Create each of the respective output DATs
             Globals.Logger.User("Creating and populating new DATs");
 
-            DatFile romdat = Create(Header.CloneStandard());
-            romdat.Header.FileName += " (ROM)";
-            romdat.Header.Name += " (ROM)";
-            romdat.Header.Description += " (ROM)";
-
             DatFile diskdat = Create(Header.CloneStandard());
             diskdat.Header.FileName += " (Disk)";
             diskdat.Header.Name += " (Disk)";
             diskdat.Header.Description += " (Disk)";
+
+            DatFile mediadat = Create(Header.CloneStandard());
+            mediadat.Header.FileName += " (Media)";
+            mediadat.Header.Name += " (Media)";
+            mediadat.Header.Description += " (Media)";
+
+            DatFile romdat = Create(Header.CloneStandard());
+            romdat.Header.FileName += " (Rom)";
+            romdat.Header.Name += " (Rom)";
+            romdat.Header.Description += " (Rom)";
 
             DatFile sampledat = Create(Header.CloneStandard());
             sampledat.Header.FileName += " (Sample)";
@@ -3679,13 +3714,17 @@ namespace SabreTools.Library.DatFiles
                 List<DatItem> items = Items[key];
                 foreach (DatItem item in items)
                 {
-                    // If the file is a Rom
-                    if (item.ItemType == ItemType.Rom)
-                        romdat.Items.Add(key, item);
-
                     // If the file is a Disk
-                    else if (item.ItemType == ItemType.Disk)
+                    if (item.ItemType == ItemType.Disk)
                         diskdat.Items.Add(key, item);
+
+                    // If the file is a Media
+                    else if (item.ItemType == ItemType.Media)
+                        mediadat.Items.Add(key, item);
+
+                    // If the file is a Rom
+                    else if (item.ItemType == ItemType.Rom)
+                        romdat.Items.Add(key, item);
 
                     // If the file is a Sample
                     else if (item.ItemType == ItemType.Sample)
@@ -3696,8 +3735,9 @@ namespace SabreTools.Library.DatFiles
             // Now, output all of the files to the output directory
             Globals.Logger.User("DAT information created, outputting new files");
             bool success = true;
-            success &= romdat.Write(outDir);
             success &= diskdat.Write(outDir);
+            success &= mediadat.Write(outDir);
+            success &= romdat.Write(outDir);
             success &= sampledat.Write(outDir);
 
             return success;
@@ -3856,28 +3896,40 @@ namespace SabreTools.Library.DatFiles
             // If we're in Depot mode, take care of that instead
             if (Header.OutputDepot?.IsActive ?? false)
             {
-                if (item.ItemType == ItemType.Rom)
+                if (item.ItemType == ItemType.Disk)
                 {
-                    Rom romItem = item as Rom;
+                    Disk disk = item as Disk;
 
                     // We can only write out if there's a SHA-1
-                    if (!string.IsNullOrWhiteSpace(romItem.SHA1))
+                    if (!string.IsNullOrWhiteSpace(disk.SHA1))
                     {
-                        name = PathExtensions.GetDepotPath(romItem.SHA1, Header.OutputDepot.Depth).Replace('\\', '/');
-                        item.Name = $"{pre}{name}{post}";
-                    }
-                }
-                else if (item.ItemType == ItemType.Disk)
-                {
-                    Disk diskItem = item as Disk;
-
-                    // We can only write out if there's a SHA-1
-                    if (!string.IsNullOrWhiteSpace(diskItem.SHA1))
-                    {
-                        name = PathExtensions.GetDepotPath(diskItem.SHA1, Header.OutputDepot.Depth).Replace('\\', '/');
+                        name = PathExtensions.GetDepotPath(disk.SHA1, Header.OutputDepot.Depth).Replace('\\', '/');
                         item.Name = pre + name + post;
                     }
                 }
+                else if (item.ItemType == ItemType.Media)
+                {
+                    Media media = item as Media;
+
+                    // We can only write out if there's a SHA-1
+                    if (!string.IsNullOrWhiteSpace(media.SHA1))
+                    {
+                        name = PathExtensions.GetDepotPath(media.SHA1, Header.OutputDepot.Depth).Replace('\\', '/');
+                        item.Name = pre + name + post;
+                    }
+                }
+                else if (item.ItemType == ItemType.Rom)
+                {
+                    Rom rom = item as Rom;
+
+                    // We can only write out if there's a SHA-1
+                    if (!string.IsNullOrWhiteSpace(rom.SHA1))
+                    {
+                        name = PathExtensions.GetDepotPath(rom.SHA1, Header.OutputDepot.Depth).Replace('\\', '/');
+                        item.Name = $"{pre}{name}{post}";
+                    }
+                }
+
 
                 return;
             }

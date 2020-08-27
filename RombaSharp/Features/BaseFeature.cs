@@ -629,7 +629,39 @@ namespace RombaSharp.Features
                 {
                     Globals.Logger.Verbose($"Checking and adding file '{datItem.Name}'");
 
-                    if (datItem.ItemType == ItemType.Rom)
+                    if (datItem.ItemType == ItemType.Disk)
+                    {
+                        Disk disk = (Disk)datItem;
+                        hasItems = true;
+
+                        if (!string.IsNullOrWhiteSpace(disk.MD5))
+                            md5query += $" (\"{disk.MD5}\"),";
+
+                        if (!string.IsNullOrWhiteSpace(disk.SHA1))
+                        {
+                            sha1query += $" (\"{disk.SHA1}\"),";
+
+                            if (!string.IsNullOrWhiteSpace(disk.MD5))
+                                md5sha1query += $" (\"{disk.MD5}\", \"{disk.SHA1}\"),";
+                        }
+                    }
+                    else if (datItem.ItemType == ItemType.Media)
+                    {
+                        Media media = (Media)datItem;
+                        hasItems = true;
+
+                        if (!string.IsNullOrWhiteSpace(media.MD5))
+                            md5query += $" (\"{media.MD5}\"),";
+
+                        if (!string.IsNullOrWhiteSpace(media.SHA1))
+                        {
+                            sha1query += $" (\"{media.SHA1}\"),";
+
+                            if (!string.IsNullOrWhiteSpace(media.MD5))
+                                md5sha1query += $" (\"{media.MD5}\", \"{media.SHA1}\"),";
+                        }
+                    }
+                    else if (datItem.ItemType == ItemType.Rom)
                     {
                         Rom rom = (Rom)datItem;
                         hasItems = true;
@@ -649,22 +681,6 @@ namespace RombaSharp.Features
 
                             if (!string.IsNullOrWhiteSpace(rom.MD5))
                                 md5sha1query += $" (\"{rom.MD5}\", \"{rom.SHA1}\"),";
-                        }
-                    }
-                    else if (datItem.ItemType == ItemType.Disk)
-                    {
-                        Disk disk = (Disk)datItem;
-                        hasItems = true;
-
-                        if (!string.IsNullOrWhiteSpace(disk.MD5))
-                            md5query += $" (\"{disk.MD5}\"),";
-
-                        if (!string.IsNullOrWhiteSpace(disk.SHA1))
-                        {
-                            sha1query += $" (\"{disk.SHA1}\"),";
-
-                            if (!string.IsNullOrWhiteSpace(disk.MD5))
-                                md5sha1query += $" (\"{disk.MD5}\", \"{disk.SHA1}\"),";
                         }
                     }
                 }

@@ -318,19 +318,19 @@ namespace SabreTools.Library.DatFiles
 
                         // If we have a "null" game (created by DATFromDir or something similar), log it to file
                         if (rom.ItemType == ItemType.Rom
-                            && ((Rom)rom).Size == -1
-                            && ((Rom)rom).CRC == "null")
+                            && (rom as Rom).Size == -1
+                            && (rom as Rom).CRC == "null")
                         {
                             Globals.Logger.Verbose($"Empty folder found: {rom.Machine.Name}");
 
                             rom.Name = (rom.Name == "null" ? "-" : rom.Name);
-                            ((Rom)rom).Size = Constants.SizeZero;
-                            ((Rom)rom).CRC = ((Rom)rom).CRC == "null" ? Constants.CRCZero : null;
-                            ((Rom)rom).MD5 = ((Rom)rom).MD5 == "null" ? Constants.MD5Zero : null;
-                            ((Rom)rom).SHA1 = ((Rom)rom).SHA1 == "null" ? Constants.SHA1Zero : null;
-                            ((Rom)rom).SHA256 = ((Rom)rom).SHA256 == "null" ? Constants.SHA256Zero : null;
-                            ((Rom)rom).SHA384 = ((Rom)rom).SHA384 == "null" ? Constants.SHA384Zero : null;
-                            ((Rom)rom).SHA512 = ((Rom)rom).SHA512 == "null" ? Constants.SHA512Zero : null;
+                            (rom as Rom).Size = Constants.SizeZero;
+                            (rom as Rom).CRC = (rom as Rom).CRC == "null" ? Constants.CRCZero : null;
+                            (rom as Rom).MD5 = (rom as Rom).MD5 == "null" ? Constants.MD5Zero : null;
+                            (rom as Rom).SHA1 = (rom as Rom).SHA1 == "null" ? Constants.SHA1Zero : null;
+                            (rom as Rom).SHA256 = (rom as Rom).SHA256 == "null" ? Constants.SHA256Zero : null;
+                            (rom as Rom).SHA384 = (rom as Rom).SHA384 == "null" ? Constants.SHA384Zero : null;
+                            (rom as Rom).SHA512 = (rom as Rom).SHA512 == "null" ? Constants.SHA512Zero : null;
                         }
 
                         // Now, output the rom data

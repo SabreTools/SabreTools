@@ -28,6 +28,7 @@ namespace SabreTools.Features
             AddFeature(HashOnlyFlag);
             AddFeature(QuickFlag);
             AddFeature(HeaderStringInput);
+            AddFeature(AaruFormatsAsFilesFlag);
             AddFeature(ChdsAsFilesFlag);
             AddFeature(IndividualFlag);
             AddInternalSplitFeatures();

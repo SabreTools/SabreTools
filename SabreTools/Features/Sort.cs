@@ -29,6 +29,7 @@ namespace SabreTools.Features
             AddFeature(DeleteFlag);
             AddFeature(InverseFlag);
             AddFeature(QuickFlag);
+            AddFeature(AaruFormatsAsFilesFlag);
             AddFeature(ChdsAsFilesFlag);
             AddFeature(AddDateFlag);
             AddFeature(IndividualFlag);

@@ -204,6 +204,14 @@ namespace SabreTools.Library.DatFiles
                         name += disk.Name;
                         break;
 
+                    case ItemType.Media:
+                        var media = datItem as Media;
+                        if (Header.GameName)
+                            name = $"{media.Machine.Name}{Path.DirectorySeparatorChar}";
+
+                        name += media.Name;
+                        break;
+
                     case ItemType.Rom:
                         var rom = datItem as Rom;
                         if (Header.GameName)

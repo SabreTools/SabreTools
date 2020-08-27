@@ -203,7 +203,7 @@ namespace SabreTools.Library.DatItems
         {
             var rom = new Rom()
             {
-                Name = this.Name,
+                Name = this.Name + ".chd",
                 ItemType = ItemType.Rom,
                 DupeType = this.DupeType,
 

@@ -158,7 +158,7 @@ namespace SabreTools.Library.DatItems
         {
             var rom = new Rom()
             {
-                Name = this.Name,
+                Name = this.Name + ".aif",
                 ItemType = ItemType.Rom,
                 DupeType = this.DupeType,
 
