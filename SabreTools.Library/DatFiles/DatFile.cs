@@ -1989,7 +1989,7 @@ namespace SabreTools.Library.DatFiles
             // If we have a Rom or a Disk, clean the hash data
             if (item.ItemType == ItemType.Rom)
             {
-                Rom itemRom = (Rom)item;
+                Rom itemRom = item as Rom;
 
                 // If we have the case where there is SHA-1 and nothing else, we don't fill in any other part of the data
                 if (itemRom.Size == -1
@@ -2062,18 +2062,12 @@ namespace SabreTools.Library.DatFiles
             }
             else if (item.ItemType == ItemType.Disk)
             {
-                Disk itemDisk = (Disk)item;
+                Disk itemDisk = item as Disk;
 
                 // If the file has aboslutely no hashes, skip and log
                 if (itemDisk.ItemStatus != ItemStatus.Nodump
                     && string.IsNullOrWhiteSpace(itemDisk.MD5)
-#if NET_FRAMEWORK
-                    && string.IsNullOrWhiteSpace(itemDisk.RIPEMD160)
-#endif
-                    && string.IsNullOrWhiteSpace(itemDisk.SHA1)
-                    && string.IsNullOrWhiteSpace(itemDisk.SHA256)
-                    && string.IsNullOrWhiteSpace(itemDisk.SHA384)
-                    && string.IsNullOrWhiteSpace(itemDisk.SHA512))
+                    && string.IsNullOrWhiteSpace(itemDisk.SHA1))
                 {
                     Globals.Logger.Verbose($"Incomplete entry for '{itemDisk.Name}' will be output as nodump");
                     itemDisk.ItemStatus = ItemStatus.Nodump;
@@ -3045,7 +3039,7 @@ namespace SabreTools.Library.DatFiles
                     Folder outputArchive = Folder.Create(outputFormat);
 
                     // Now rebuild to the output file
-                    outputArchive.Write(fileStream, outDir, (Rom)item, date: date, depth: Header.OutputDepot.Depth);
+                    outputArchive.Write(fileStream, outDir, item as Rom, date: date, depth: Header.OutputDepot.Depth);
                 }
 
                 // Close the input stream
@@ -3112,7 +3106,7 @@ namespace SabreTools.Library.DatFiles
                                 Folder outputArchive = Folder.Create(outputFormat);
 
                                 // Now rebuild to the output file
-                                eitherSuccess |= outputArchive.Write(transformStream, outDir, (Rom)item, date: date, depth: Header.OutputDepot.Depth);
+                                eitherSuccess |= outputArchive.Write(transformStream, outDir, item as Rom, date: date, depth: Header.OutputDepot.Depth);
                                 eitherSuccess |= outputArchive.Write(fileStream, outDir, (Rom)datItem, date: date, depth: Header.OutputDepot.Depth);
 
                                 // Now add the success of either rebuild
@@ -3437,54 +3431,54 @@ namespace SabreTools.Library.DatFiles
                         return;
 
                     // If the file is a nodump
-                    if ((item.ItemType == ItemType.Rom && ((Rom)item).ItemStatus == ItemStatus.Nodump)
-                        || (item.ItemType == ItemType.Disk && ((Disk)item).ItemStatus == ItemStatus.Nodump))
+                    if ((item.ItemType == ItemType.Rom && (item as Rom).ItemStatus == ItemStatus.Nodump)
+                        || (item.ItemType == ItemType.Disk && (item as Disk).ItemStatus == ItemStatus.Nodump))
                     {
                         nodump.Items.Add(key, item);
                     }
                     // If the file has a SHA-512
-                    else if ((item.ItemType == ItemType.Rom && !string.IsNullOrWhiteSpace(((Rom)item).SHA512))
-                        || (item.ItemType == ItemType.Disk && !string.IsNullOrWhiteSpace(((Disk)item).SHA512)))
+                    else if ((item.ItemType == ItemType.Rom && !string.IsNullOrWhiteSpace((item as Rom).SHA512)))
                     {
                         sha512.Items.Add(key, item);
                     }
                     // If the file has a SHA-384
-                    else if ((item.ItemType == ItemType.Rom && !string.IsNullOrWhiteSpace(((Rom)item).SHA384))
-                        || (item.ItemType == ItemType.Disk && !string.IsNullOrWhiteSpace(((Disk)item).SHA384)))
+                    else if ((item.ItemType == ItemType.Rom && !string.IsNullOrWhiteSpace((item as Rom).SHA384)))
                     {
                         sha384.Items.Add(key, item);
                     }
                     // If the file has a SHA-256
-                    else if ((item.ItemType == ItemType.Rom && !string.IsNullOrWhiteSpace(((Rom)item).SHA256))
-                        || (item.ItemType == ItemType.Disk && !string.IsNullOrWhiteSpace(((Disk)item).SHA256)))
+                    else if ((item.ItemType == ItemType.Media && !string.IsNullOrWhiteSpace((item as Media).SHA256))
+                        || (item.ItemType == ItemType.Rom && !string.IsNullOrWhiteSpace((item as Rom).SHA256)))
                     {
                         sha256.Items.Add(key, item);
                     }
                     // If the file has a SHA-1
-                    else if ((item.ItemType == ItemType.Rom && !string.IsNullOrWhiteSpace(((Rom)item).SHA1))
-                        || (item.ItemType == ItemType.Disk && !string.IsNullOrWhiteSpace(((Disk)item).SHA1)))
+                    else if ((item.ItemType == ItemType.Media && !string.IsNullOrWhiteSpace((item as Media).SHA1))
+                        || (item.ItemType == ItemType.Rom && !string.IsNullOrWhiteSpace((item as Rom).SHA1)))
                     {
                         sha1.Items.Add(key, item);
                     }
 #if NET_FRAMEWORK
                     // If the file has a RIPEMD160
-                    else if ((item.ItemType == ItemType.Rom && !string.IsNullOrWhiteSpace(((Rom)item).RIPEMD160))
-                        || (item.ItemType == ItemType.Disk && !string.IsNullOrWhiteSpace(((Disk)item).RIPEMD160)))
+                    else if ((item.ItemType == ItemType.Rom && !string.IsNullOrWhiteSpace((item as Rom).RIPEMD160)))
                     {
                         ripemd160.Items.Add(key, item);
                     }
 #endif
                     // If the file has an MD5
-                    else if ((item.ItemType == ItemType.Rom && !string.IsNullOrWhiteSpace(((Rom)item).MD5))
-                        || (item.ItemType == ItemType.Disk && !string.IsNullOrWhiteSpace(((Disk)item).MD5)))
+                    else if ((item.ItemType == ItemType.Rom && !string.IsNullOrWhiteSpace((item as Rom).MD5))
+                        || (item.ItemType == ItemType.Media && !string.IsNullOrWhiteSpace((item as Media).MD5))
+                        || (item.ItemType == ItemType.Disk && !string.IsNullOrWhiteSpace((item as Disk).MD5)))
                     {
                         md5.Items.Add(key, item);
                     }
+
                     // If the file has a CRC
-                    else if ((item.ItemType == ItemType.Rom && !string.IsNullOrWhiteSpace(((Rom)item).CRC)))
+                    else if ((item.ItemType == ItemType.Rom && !string.IsNullOrWhiteSpace((item as Rom).CRC)))
                     {
                         crc.Items.Add(key, item);
                     }
+
                     else
                     {
                         other.Items.Add(key, item);
@@ -3635,11 +3629,11 @@ namespace SabreTools.Library.DatFiles
                         lessDat.Items.Add(key, item);
 
                     // If the file is a Rom and less than the radix, put it in the "lesser" dat
-                    else if (item.ItemType == ItemType.Rom && ((Rom)item).Size < radix)
+                    else if (item.ItemType == ItemType.Rom && (item as Rom).Size < radix)
                         lessDat.Items.Add(key, item);
 
                     // If the file is a Rom and greater than or equal to the radix, put it in the "greater" dat
-                    else if (item.ItemType == ItemType.Rom && ((Rom)item).Size >= radix)
+                    else if (item.ItemType == ItemType.Rom && (item as Rom).Size >= radix)
                         greaterEqualDat.Items.Add(key, item);
                 }
             });
@@ -3944,29 +3938,29 @@ namespace SabreTools.Library.DatFiles
                 fix = (Header.Quotes ? "\"" : string.Empty) + Header.Postfix;
 
             // Ensure we have the proper values for replacement
-            if (item.ItemType == ItemType.Rom)
+            if (item.ItemType == ItemType.Disk)
             {
-                crc = ((Rom)item).CRC ?? string.Empty;
-                md5 = ((Rom)item).MD5 ?? string.Empty;
-#if NET_FRAMEWORK
-                ripemd160 = ((Rom)item).RIPEMD160 ?? string.Empty;
-#endif
-                sha1 = ((Rom)item).SHA1 ?? string.Empty;
-                sha256 = ((Rom)item).SHA256 ?? string.Empty;
-                sha384 = ((Rom)item).SHA384 ?? string.Empty;
-                sha512 = ((Rom)item).SHA512 ?? string.Empty;
-                size = ((Rom)item).Size.ToString();
+                md5 = (item as Disk).MD5 ?? string.Empty;
+                sha1 = (item as Disk).SHA1 ?? string.Empty;
             }
-            else if (item.ItemType == ItemType.Disk)
+            else if (item.ItemType == ItemType.Media)
             {
-                md5 = ((Disk)item).MD5 ?? string.Empty;
+                md5 = (item as Media).MD5 ?? string.Empty;
+                sha1 = (item as Media).SHA1 ?? string.Empty;
+                sha256 = (item as Media).SHA256 ?? string.Empty;
+            }
+            else if (item.ItemType == ItemType.Rom)
+            {
+                crc = (item as Rom).CRC ?? string.Empty;
+                md5 = (item as Rom).MD5 ?? string.Empty;
 #if NET_FRAMEWORK
-                ripemd160 = ((Disk)item).RIPEMD160 ?? string.Empty;
+                ripemd160 = (item as Rom).RIPEMD160 ?? string.Empty;
 #endif
-                sha1 = ((Disk)item).SHA1 ?? string.Empty;
-                sha256 = ((Disk)item).SHA256 ?? string.Empty;
-                sha384 = ((Disk)item).SHA384 ?? string.Empty;
-                sha512 = ((Disk)item).SHA512 ?? string.Empty;
+                sha1 = (item as Rom).SHA1 ?? string.Empty;
+                sha256 = (item as Rom).SHA256 ?? string.Empty;
+                sha384 = (item as Rom).SHA384 ?? string.Empty;
+                sha512 = (item as Rom).SHA512 ?? string.Empty;
+                size = (item as Rom).Size.ToString();
             }
 
             // Now do bulk replacement where possible

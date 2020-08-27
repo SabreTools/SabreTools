@@ -18,13 +18,7 @@ namespace SabreTools.Library.DatItems
         #region Private instance variables
 
         private byte[] _md5; // 16 bytes
-#if NET_FRAMEWORK
-        private byte[] _ripemd160; // 20 bytes
-#endif
         private byte[] _sha1; // 20 bytes
-        private byte[] _sha256; // 32 bytes
-        private byte[] _sha384; // 48 bytes
-        private byte[] _sha512; // 64 bytes
 
         #endregion
 
@@ -40,18 +34,6 @@ namespace SabreTools.Library.DatItems
             set { _md5 = Utilities.StringToByteArray(Sanitizer.CleanMD5(value)); }
         }
 
-#if NET_FRAMEWORK
-        /// <summary>
-        /// Data RIPEMD160 hash
-        /// </summary>
-        [JsonProperty("ripemd160", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string RIPEMD160
-        {
-            get { return _ripemd160.IsNullOrEmpty() ? null : Utilities.ByteArrayToString(_ripemd160); }
-            set { _ripemd160 = Utilities.StringToByteArray(Sanitizer.CleanRIPEMD160(value)); }
-        }
-#endif
-
         /// <summary>
         /// Data SHA-1 hash
         /// </summary>
@@ -60,36 +42,6 @@ namespace SabreTools.Library.DatItems
         {
             get { return _sha1.IsNullOrEmpty() ? null : Utilities.ByteArrayToString(_sha1); }
             set { _sha1 = Utilities.StringToByteArray(Sanitizer.CleanSHA1(value)); }
-        }
-
-        /// <summary>
-        /// Data SHA-256 hash
-        /// </summary>
-        [JsonProperty("sha256", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string SHA256
-        {
-            get { return _sha256.IsNullOrEmpty() ? null : Utilities.ByteArrayToString(_sha256); }
-            set { _sha256 = Utilities.StringToByteArray(Sanitizer.CleanSHA256(value)); }
-        }
-
-        /// <summary>
-        /// Data SHA-384 hash
-        /// </summary>
-        [JsonProperty("sha384", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string SHA384
-        {
-            get { return _sha384.IsNullOrEmpty() ? null : Utilities.ByteArrayToString(_sha384); }
-            set { _sha384 = Utilities.StringToByteArray(Sanitizer.CleanSHA384(value)); }
-        }
-
-        /// <summary>
-        /// Data SHA-512 hash
-        /// </summary>
-        [JsonProperty("sha512", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string SHA512
-        {
-            get { return _sha512.IsNullOrEmpty() ? null : Utilities.ByteArrayToString(_sha512); }
-            set { _sha512 = Utilities.StringToByteArray(Sanitizer.CleanSHA512(value)); }
         }
 
         /// <summary>
@@ -146,22 +98,8 @@ namespace SabreTools.Library.DatItems
             if (mappings.Keys.Contains(Field.DatItem_MD5))
                 MD5 = mappings[Field.DatItem_MD5];
 
-#if NET_FRAMEWORK
-            if (mappings.Keys.Contains(Field.DatItem_RIPEMD160))
-                RIPEMD160 = mappings[Field.DatItem_RIPEMD160];
-#endif
-
             if (mappings.Keys.Contains(Field.DatItem_SHA1))
                 SHA1 = mappings[Field.DatItem_SHA1];
-
-            if (mappings.Keys.Contains(Field.DatItem_SHA256))
-                SHA256 = mappings[Field.DatItem_SHA256];
-
-            if (mappings.Keys.Contains(Field.DatItem_SHA384))
-                SHA384 = mappings[Field.DatItem_SHA384];
-
-            if (mappings.Keys.Contains(Field.DatItem_SHA512))
-                SHA512 = mappings[Field.DatItem_SHA512];
 
             if (mappings.Keys.Contains(Field.DatItem_Merge))
                 MergeTag = mappings[Field.DatItem_Merge];
@@ -205,13 +143,7 @@ namespace SabreTools.Library.DatItems
         {
             Name = baseFile.Filename;
             _md5 = baseFile.MD5;
-#if NET_FRAMEWORK
-            _ripemd160 = baseFile.RIPEMD160;
-#endif
             _sha1 = baseFile.SHA1;
-            _sha256 = baseFile.SHA256;
-            _sha384 = baseFile.SHA384;
-            _sha512 = baseFile.SHA512;
 
             ItemType = ItemType.Disk;
             DupeType = 0x00;
@@ -253,13 +185,7 @@ namespace SabreTools.Library.DatItems
                 Remove = this.Remove,
 
                 _md5 = this._md5,
-#if NET_FRAMEWORK
-                _ripemd160 = this._ripemd160,
-#endif
                 _sha1 = this._sha1,
-                _sha256 = this._sha256,
-                _sha384 = this._sha384,
-                _sha512 = this._sha512,
                 MergeTag = this.MergeTag,
                 Region = this.Region,
                 Index = this.Index,
@@ -308,15 +234,8 @@ namespace SabreTools.Library.DatItems
                 ItemStatus = this.ItemStatus,
                 Optional = this.Optional,
 
-                CRC = null,
                 MD5 = this.MD5,
-#if NET_FRAMEWORK
-                RIPEMD160 = this.RIPEMD160,
-#endif
                 SHA1 = this.SHA1,
-                SHA256 = this.SHA256,
-                SHA384 = this.SHA384,
-                SHA512 = this.SHA512,
             };
 
             return rom;
@@ -363,22 +282,8 @@ namespace SabreTools.Library.DatItems
             if (_md5.IsNullOrEmpty() && !other._md5.IsNullOrEmpty())
                 _md5 = other._md5;
 
-#if NET_FRAMEWORK
-            if (_ripemd160.IsNullOrEmpty() && !other._ripemd160.IsNullOrEmpty())
-                _ripemd160 = other._ripemd160;
-#endif
-
             if (_sha1.IsNullOrEmpty() && !other._sha1.IsNullOrEmpty())
                 _sha1 = other._sha1;
-
-            if (_sha256.IsNullOrEmpty() && !other._sha256.IsNullOrEmpty())
-                _sha256 = other._sha256;
-
-            if (_sha384.IsNullOrEmpty() && !other._sha384.IsNullOrEmpty())
-                _sha384 = other._sha384;
-
-            if (_sha512.IsNullOrEmpty() && !other._sha512.IsNullOrEmpty())
-                _sha512 = other._sha512;
         }
 
         /// <summary>
@@ -391,12 +296,6 @@ namespace SabreTools.Library.DatItems
                 return $"_{MD5}";
             else if (!_sha1.IsNullOrEmpty())
                 return $"_{SHA1}";
-            else if (!_sha256.IsNullOrEmpty())
-                return $"_{SHA256}";
-            else if (!_sha384.IsNullOrEmpty())
-                return $"_{SHA384}";
-            else if (!_sha512.IsNullOrEmpty())
-                return $"_{SHA512}";
             else
                 return "_1";
         }
@@ -409,13 +308,7 @@ namespace SabreTools.Library.DatItems
         private bool HasCommonHash(Disk other)
         {
             return !(_md5.IsNullOrEmpty() ^ other._md5.IsNullOrEmpty())
-#if NET_FRAMEWORK
-                || !(_ripemd160.IsNullOrEmpty() || other._ripemd160.IsNullOrEmpty())
-#endif
-                || !(_sha1.IsNullOrEmpty() ^ other._sha1.IsNullOrEmpty())
-                || !(_sha256.IsNullOrEmpty() ^ other._sha256.IsNullOrEmpty())
-                || !(_sha384.IsNullOrEmpty() ^ other._sha384.IsNullOrEmpty())
-                || !(_sha512.IsNullOrEmpty() ^ other._sha512.IsNullOrEmpty());
+                || !(_sha1.IsNullOrEmpty() ^ other._sha1.IsNullOrEmpty());
         }
 
         /// <summary>
@@ -425,13 +318,7 @@ namespace SabreTools.Library.DatItems
         private bool HasHashes()
         {
             return !_md5.IsNullOrEmpty()
-#if NET_FRAMEWORK
-                || !_ripemd160.IsNullOrEmpty()
-#endif
-                || !_sha1.IsNullOrEmpty()
-                || !_sha256.IsNullOrEmpty()
-                || !_sha384.IsNullOrEmpty()
-                || !_sha512.IsNullOrEmpty();
+                || !_sha1.IsNullOrEmpty();
         }
 
         /// <summary>
@@ -451,13 +338,7 @@ namespace SabreTools.Library.DatItems
 
             // Return if all hashes match according to merge rules
             return ConditionalHashEquals(_md5, other._md5)
-#if NET_FRAMEWORK
-                && ConditionalHashEquals(_ripemd160, other._ripemd160)
-#endif
-                && ConditionalHashEquals(_sha1, other._sha1)
-                && ConditionalHashEquals(_sha256, other._sha256)
-                && ConditionalHashEquals(_sha384, other._sha384)
-                && ConditionalHashEquals(_sha512, other._sha512);
+                && ConditionalHashEquals(_sha1, other._sha1);
         }
 
         #endregion
@@ -481,36 +362,10 @@ namespace SabreTools.Library.DatItems
             if (filter.DatItem_MD5.MatchesNegativeSet(MD5) == true)
                 return false;
 
-#if NET_FRAMEWORK
-            // Filter on RIPEMD160
-            if (filter.DatItem_RIPEMD160.MatchesPositiveSet(RIPEMD160) == false)
-                return false;
-            if (filter.DatItem_RIPEMD160.MatchesNegativeSet(RIPEMD160) == true)
-                return false;
-#endif
-
             // Filter on SHA-1
             if (filter.DatItem_SHA1.MatchesPositiveSet(SHA1) == false)
                 return false;
             if (filter.DatItem_SHA1.MatchesNegativeSet(SHA1) == true)
-                return false;
-
-            // Filter on SHA-256
-            if (filter.DatItem_SHA256.MatchesPositiveSet(SHA256) == false)
-                return false;
-            if (filter.DatItem_SHA256.MatchesNegativeSet(SHA256) == true)
-                return false;
-
-            // Filter on SHA-384
-            if (filter.DatItem_SHA384.MatchesPositiveSet(SHA384) == false)
-                return false;
-            if (filter.DatItem_SHA384.MatchesNegativeSet(SHA384) == true)
-                return false;
-
-            // Filter on SHA-512
-            if (filter.DatItem_SHA512.MatchesPositiveSet(SHA512) == false)
-                return false;
-            if (filter.DatItem_SHA512.MatchesNegativeSet(SHA512) == true)
                 return false;
 
             // Filter on merge tag
@@ -561,22 +416,8 @@ namespace SabreTools.Library.DatItems
             if (fields.Contains(Field.DatItem_MD5))
                 MD5 = null;
 
-#if NET_FRAMEWORK
-            if (fields.Contains(Field.DatItem_RIPEMD160))
-                RIPEMD160 = null;
-#endif
-
             if (fields.Contains(Field.DatItem_SHA1))
                 SHA1 = null;
-
-            if (fields.Contains(Field.DatItem_SHA256))
-                SHA256 = null;
-
-            if (fields.Contains(Field.DatItem_SHA384))
-                SHA384 = null;
-
-            if (fields.Contains(Field.DatItem_SHA512))
-                SHA512 = null;
 
             if (fields.Contains(Field.DatItem_Merge))
                 MergeTag = null;
@@ -620,26 +461,8 @@ namespace SabreTools.Library.DatItems
                     key = MD5;
                     break;
 
-#if NET_FRAMEWORK
-                case Field.DatItem_RIPEMD160:
-                    key = RIPEMD160;
-                    break;
-#endif
-
                 case Field.DatItem_SHA1:
                     key = SHA1;
-                    break;
-
-                case Field.DatItem_SHA256:
-                    key = SHA256;
-                    break;
-
-                case Field.DatItem_SHA384:
-                    key = SHA384;
-                    break;
-
-                case Field.DatItem_SHA512:
-                    key = SHA512;
                     break;
 
                 // Let the base handle generic stuff
@@ -678,36 +501,10 @@ namespace SabreTools.Library.DatItems
                     MD5 = newItem.MD5;
             }
 
-#if NET_FRAMEWORK
-            if (fields.Contains(Field.DatItem_RIPEMD160))
-            {
-                if (string.IsNullOrEmpty(RIPEMD160) && !string.IsNullOrEmpty(newItem.RIPEMD160))
-                    RIPEMD160 = newItem.RIPEMD160;
-            }
-#endif
-
             if (fields.Contains(Field.DatItem_SHA1))
             {
                 if (string.IsNullOrEmpty(SHA1) && !string.IsNullOrEmpty(newItem.SHA1))
                     SHA1 = newItem.SHA1;
-            }
-
-            if (fields.Contains(Field.DatItem_SHA256))
-            {
-                if (string.IsNullOrEmpty(SHA256) && !string.IsNullOrEmpty(newItem.SHA256))
-                    SHA256 = newItem.SHA256;
-            }
-
-            if (fields.Contains(Field.DatItem_SHA384))
-            {
-                if (string.IsNullOrEmpty(SHA384) && !string.IsNullOrEmpty(newItem.SHA384))
-                    SHA384 = newItem.SHA384;
-            }
-
-            if (fields.Contains(Field.DatItem_SHA512))
-            {
-                if (string.IsNullOrEmpty(SHA512) && !string.IsNullOrEmpty(newItem.SHA512))
-                    SHA512 = newItem.SHA512;
             }
 
             if (fields.Contains(Field.DatItem_Merge))

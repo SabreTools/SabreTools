@@ -408,13 +408,7 @@ namespace SabreTools.Library.DatFiles
                     if ((item as Disk).ItemStatus != ItemStatus.Nodump)
                     {
                         MD5Count += (string.IsNullOrWhiteSpace((item as Disk).MD5) ? 0 : 1);
-#if NET_FRAMEWORK
-                        RIPEMD160Count += (string.IsNullOrWhiteSpace((item as Disk).RIPEMD160) ? 0 : 1);
-#endif
                         SHA1Count += (string.IsNullOrWhiteSpace((item as Disk).SHA1) ? 0 : 1);
-                        SHA256Count += (string.IsNullOrWhiteSpace((item as Disk).SHA256) ? 0 : 1);
-                        SHA384Count += (string.IsNullOrWhiteSpace((item as Disk).SHA384) ? 0 : 1);
-                        SHA512Count += (string.IsNullOrWhiteSpace((item as Disk).SHA512) ? 0 : 1);
                     }
 
                     BaddumpCount += ((item as Disk).ItemStatus == ItemStatus.BadDump ? 1 : 0);
@@ -424,15 +418,9 @@ namespace SabreTools.Library.DatFiles
                     break;
                 case ItemType.Media:
                     MediaCount += 1;
-                    CRCCount += (string.IsNullOrWhiteSpace((item as Media).CRC) ? 0 : 1);
                     MD5Count += (string.IsNullOrWhiteSpace((item as Media).MD5) ? 0 : 1);
-#if NET_FRAMEWORK
-                    RIPEMD160Count += (string.IsNullOrWhiteSpace((item as Media).RIPEMD160) ? 0 : 1);
-#endif
                     SHA1Count += (string.IsNullOrWhiteSpace((item as Media).SHA1) ? 0 : 1);
                     SHA256Count += (string.IsNullOrWhiteSpace((item as Media).SHA256) ? 0 : 1);
-                    SHA384Count += (string.IsNullOrWhiteSpace((item as Media).SHA384) ? 0 : 1);
-                    SHA512Count += (string.IsNullOrWhiteSpace((item as Media).SHA512) ? 0 : 1);
                     break;
                 case ItemType.Release:
                     ReleaseCount += 1;
@@ -545,13 +533,7 @@ namespace SabreTools.Library.DatFiles
                     if ((item as Disk).ItemStatus != ItemStatus.Nodump)
                     {
                         MD5Count -= (string.IsNullOrWhiteSpace((item as Disk).MD5) ? 0 : 1);
-#if NET_FRAMEWORK
-                        RIPEMD160Count -= (string.IsNullOrWhiteSpace((item as Disk).RIPEMD160) ? 0 : 1);
-#endif
                         SHA1Count -= (string.IsNullOrWhiteSpace((item as Disk).SHA1) ? 0 : 1);
-                        SHA256Count -= (string.IsNullOrWhiteSpace((item as Disk).SHA256) ? 0 : 1);
-                        SHA384Count -= (string.IsNullOrWhiteSpace((item as Disk).SHA384) ? 0 : 1);
-                        SHA512Count -= (string.IsNullOrWhiteSpace((item as Disk).SHA512) ? 0 : 1);
                     }
 
                     BaddumpCount -= ((item as Disk).ItemStatus == ItemStatus.BadDump ? 1 : 0);
@@ -561,15 +543,9 @@ namespace SabreTools.Library.DatFiles
                     break;
                 case ItemType.Media:
                     MediaCount -= 1;
-                    CRCCount -= (string.IsNullOrWhiteSpace((item as Media).CRC) ? 0 : 1);
                     MD5Count -= (string.IsNullOrWhiteSpace((item as Media).MD5) ? 0 : 1);
-#if NET_FRAMEWORK
-                    RIPEMD160Count -= (string.IsNullOrWhiteSpace((item as Media).RIPEMD160) ? 0 : 1);
-#endif
                     SHA1Count -= (string.IsNullOrWhiteSpace((item as Media).SHA1) ? 0 : 1);
                     SHA256Count -= (string.IsNullOrWhiteSpace((item as Media).SHA256) ? 0 : 1);
-                    SHA384Count -= (string.IsNullOrWhiteSpace((item as Media).SHA384) ? 0 : 1);
-                    SHA512Count -= (string.IsNullOrWhiteSpace((item as Media).SHA512) ? 0 : 1);
                     break;
                 case ItemType.Release:
                     ReleaseCount -= 1;

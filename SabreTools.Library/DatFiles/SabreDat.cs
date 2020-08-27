@@ -404,13 +404,7 @@ namespace SabreTools.Library.DatFiles
                                 {
                                     Name = reader.GetAttribute("name"),
                                     MD5 = reader.GetAttribute("md5"),
-#if NET_FRAMEWORK
-                                    RIPEMD160 = reader.GetAttribute("ripemd160"),
-#endif
                                     SHA1 = reader.GetAttribute("sha1"),
-                                    SHA256 = reader.GetAttribute("sha256"),
-                                    SHA384 =reader.GetAttribute("sha384"),
-                                    SHA512 = reader.GetAttribute("sha512"),
                                     ItemStatus = its,
 
                                     Source = new Source
@@ -425,15 +419,9 @@ namespace SabreTools.Library.DatFiles
                                 datItem = new Media
                                 {
                                     Name = reader.GetAttribute("name"),
-                                    CRC = reader.GetAttribute("crc"),
                                     MD5 = reader.GetAttribute("md5"),
-#if NET_FRAMEWORK
-                                    RIPEMD160 = reader.GetAttribute("ripemd160"),
-#endif
                                     SHA1 = reader.GetAttribute("sha1"),
                                     SHA256 = reader.GetAttribute("sha256"),
-                                    SHA384 = reader.GetAttribute("sha384"),
-                                    SHA512 = reader.GetAttribute("sha512"),
 
                                     Source = new Source
                                     {
@@ -910,13 +898,7 @@ namespace SabreTools.Library.DatFiles
                         xtw.WriteAttributeString("type", "disk");
                         xtw.WriteRequiredAttributeString("name", disk.Name);
                         xtw.WriteOptionalAttributeString("md5", disk.MD5?.ToLowerInvariant());
-#if NET_FRAMEWORK
-                        xtw.WriteOptionalAttributeString("ripemd160", disk.RIPEMD160?.ToLowerInvariant());
-#endif
                         xtw.WriteOptionalAttributeString("sha1", disk.SHA1?.ToLowerInvariant());
-                        xtw.WriteOptionalAttributeString("sha256", disk.SHA256?.ToLowerInvariant());
-                        xtw.WriteOptionalAttributeString("sha384", disk.SHA384?.ToLowerInvariant());
-                        xtw.WriteOptionalAttributeString("sha512", disk.SHA512?.ToLowerInvariant());
                         if (disk.ItemStatus != ItemStatus.None)
                         {
                             xtw.WriteStartElement("flags");
@@ -937,15 +919,9 @@ namespace SabreTools.Library.DatFiles
                         xtw.WriteStartElement("file");
                         xtw.WriteAttributeString("type", "media");
                         xtw.WriteRequiredAttributeString("name", media.Name);
-                        xtw.WriteOptionalAttributeString("crc", media.CRC?.ToLowerInvariant());
                         xtw.WriteOptionalAttributeString("md5", media.MD5?.ToLowerInvariant());
-#if NET_FRAMEWORK
-                        xtw.WriteOptionalAttributeString("ripemd160", media.RIPEMD160?.ToLowerInvariant());
-#endif
                         xtw.WriteOptionalAttributeString("sha1", media.SHA1?.ToLowerInvariant());
                         xtw.WriteOptionalAttributeString("sha256", media.SHA256?.ToLowerInvariant());
-                        xtw.WriteOptionalAttributeString("sha384", media.SHA384?.ToLowerInvariant());
-                        xtw.WriteOptionalAttributeString("sha512", media.SHA512?.ToLowerInvariant());
                         xtw.WriteEndElement();
                         break;
 

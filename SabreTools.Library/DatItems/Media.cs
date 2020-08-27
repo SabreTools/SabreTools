@@ -18,29 +18,14 @@ namespace SabreTools.Library.DatItems
     {
         #region Private instance variables
 
-        private byte[] _crc; // 8 bytes
         private byte[] _md5; // 16 bytes
-#if NET_FRAMEWORK
-        private byte[] _ripemd160; // 20 bytes
-#endif
         private byte[] _sha1; // 20 bytes
         private byte[] _sha256; // 32 bytes
-        private byte[] _sha384; // 48 bytes
-        private byte[] _sha512; // 64 bytes
+        // TODO: Implement SpamSum
 
         #endregion
 
         #region Fields
-
-        /// <summary>
-        /// Data CRC32 hash
-        /// </summary>
-        [JsonProperty("crc", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string CRC
-        {
-            get { return _crc.IsNullOrEmpty() ? null : Utilities.ByteArrayToString(_crc); }
-            set { _crc = (value == "null" ? Constants.CRCZeroBytes : Utilities.StringToByteArray(Sanitizer.CleanCRC32(value))); }
-        }
 
         /// <summary>
         /// Data MD5 hash
@@ -51,18 +36,6 @@ namespace SabreTools.Library.DatItems
             get { return _md5.IsNullOrEmpty() ? null : Utilities.ByteArrayToString(_md5); }
             set { _md5 = Utilities.StringToByteArray(Sanitizer.CleanMD5(value)); }
         }
-
-#if NET_FRAMEWORK
-        /// <summary>
-        /// Data RIPEMD160 hash
-        /// </summary>
-        [JsonProperty("ripemd160", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string RIPEMD160
-        {
-            get { return _ripemd160.IsNullOrEmpty() ? null : Utilities.ByteArrayToString(_ripemd160); }
-            set { _ripemd160 = Utilities.StringToByteArray(Sanitizer.CleanRIPEMD160(value)); }
-        }
-#endif
 
         /// <summary>
         /// Data SHA-1 hash
@@ -84,26 +57,6 @@ namespace SabreTools.Library.DatItems
             set { _sha256 = Utilities.StringToByteArray(Sanitizer.CleanSHA256(value)); }
         }
 
-        /// <summary>
-        /// Data SHA-384 hash
-        /// </summary>
-        [JsonProperty("sha384", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string SHA384
-        {
-            get { return _sha384.IsNullOrEmpty() ? null : Utilities.ByteArrayToString(_sha384); }
-            set { _sha384 = Utilities.StringToByteArray(Sanitizer.CleanSHA384(value)); }
-        }
-
-        /// <summary>
-        /// Data SHA-512 hash
-        /// </summary>
-        [JsonProperty("sha512", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string SHA512
-        {
-            get { return _sha512.IsNullOrEmpty() ? null : Utilities.ByteArrayToString(_sha512); }
-            set { _sha512 = Utilities.StringToByteArray(Sanitizer.CleanSHA512(value)); }
-        }
-
         #endregion
 
         #region Accessors
@@ -118,28 +71,14 @@ namespace SabreTools.Library.DatItems
             base.SetFields(mappings);
 
             // Handle Media-specific fields
-            if (mappings.Keys.Contains(Field.DatItem_CRC))
-                CRC = mappings[Field.DatItem_CRC];
-
             if (mappings.Keys.Contains(Field.DatItem_MD5))
                 MD5 = mappings[Field.DatItem_MD5];
-
-#if NET_FRAMEWORK
-            if (mappings.Keys.Contains(Field.DatItem_RIPEMD160))
-                RIPEMD160 = mappings[Field.DatItem_RIPEMD160];
-#endif
 
             if (mappings.Keys.Contains(Field.DatItem_SHA1))
                 SHA1 = mappings[Field.DatItem_SHA1];
 
             if (mappings.Keys.Contains(Field.DatItem_SHA256))
                 SHA256 = mappings[Field.DatItem_SHA256];
-
-            if (mappings.Keys.Contains(Field.DatItem_SHA384))
-                SHA384 = mappings[Field.DatItem_SHA384];
-
-            if (mappings.Keys.Contains(Field.DatItem_SHA512))
-                SHA512 = mappings[Field.DatItem_SHA512];
         }
 
         #endregion
@@ -163,15 +102,9 @@ namespace SabreTools.Library.DatItems
         public Media(BaseFile baseFile)
         {
             Name = baseFile.Filename;
-            _crc = baseFile.CRC;
             _md5 = baseFile.MD5;
-#if NET_FRAMEWORK
-            _ripemd160 = baseFile.RIPEMD160;
-#endif
             _sha1 = baseFile.SHA1;
             _sha256 = baseFile.SHA256;
-            _sha384 = baseFile.SHA384;
-            _sha512 = baseFile.SHA512;
 
             ItemType = ItemType.Media;
             DupeType = 0x00;
@@ -211,15 +144,9 @@ namespace SabreTools.Library.DatItems
                 Source = this.Source.Clone() as Source,
                 Remove = this.Remove,
 
-                _crc = this._crc,
                 _md5 = this._md5,
-#if NET_FRAMEWORK
-                _ripemd160 = this._ripemd160,
-#endif
                 _sha1 = this._sha1,
                 _sha256 = this._sha256,
-                _sha384 = this._sha384,
-                _sha512 = this._sha512,
             };
         }
 
@@ -257,15 +184,9 @@ namespace SabreTools.Library.DatItems
                 Source = this.Source.Clone() as Source,
                 Remove = this.Remove,
 
-                CRC = this.CRC,
                 MD5 = this.MD5,
-#if NET_FRAMEWORK
-                RIPEMD160 = this.RIPEMD160,
-#endif
                 SHA1 = this.SHA1,
                 SHA256 = this.SHA256,
-                SHA384 = this.SHA384,
-                SHA512 = this.SHA512,
             };
 
             return rom;
@@ -299,28 +220,14 @@ namespace SabreTools.Library.DatItems
         /// <param name="other">Media to fill information from</param>
         public void FillMissingInformation(Media other)
         {
-            if (_crc.IsNullOrEmpty() && !other._crc.IsNullOrEmpty())
-                _crc = other._crc;
-
             if (_md5.IsNullOrEmpty() && !other._md5.IsNullOrEmpty())
                 _md5 = other._md5;
-
-#if NET_FRAMEWORK
-            if (_ripemd160.IsNullOrEmpty() && !other._ripemd160.IsNullOrEmpty())
-                _ripemd160 = other._ripemd160;
-#endif
 
             if (_sha1.IsNullOrEmpty() && !other._sha1.IsNullOrEmpty())
                 _sha1 = other._sha1;
 
             if (_sha256.IsNullOrEmpty() && !other._sha256.IsNullOrEmpty())
                 _sha256 = other._sha256;
-
-            if (_sha384.IsNullOrEmpty() && !other._sha384.IsNullOrEmpty())
-                _sha384 = other._sha384;
-
-            if (_sha512.IsNullOrEmpty() && !other._sha512.IsNullOrEmpty())
-                _sha512 = other._sha512;
         }
 
         /// <summary>
@@ -329,18 +236,12 @@ namespace SabreTools.Library.DatItems
         /// <returns>String representing the suffix</returns>
         public string GetDuplicateSuffix()
         {
-            if (!_crc.IsNullOrEmpty())
-                return $"_{CRC}";
-            else if (!_md5.IsNullOrEmpty())
+             if (!_md5.IsNullOrEmpty())
                 return $"_{MD5}";
             else if (!_sha1.IsNullOrEmpty())
                 return $"_{SHA1}";
             else if (!_sha256.IsNullOrEmpty())
                 return $"_{SHA256}";
-            else if (!_sha384.IsNullOrEmpty())
-                return $"_{SHA384}";
-            else if (!_sha512.IsNullOrEmpty())
-                return $"_{SHA512}";
             else
                 return "_1";
         }
@@ -352,15 +253,9 @@ namespace SabreTools.Library.DatItems
         /// <returns>True if at least one hash is not mutually exclusive, false otherwise</returns>
         private bool HasCommonHash(Media other)
         {
-            return !(_crc.IsNullOrEmpty() ^ other._crc.IsNullOrEmpty())
-                || !(_md5.IsNullOrEmpty() ^ other._md5.IsNullOrEmpty())
-#if NET_FRAMEWORK
-                || !(_ripemd160.IsNullOrEmpty() || other._ripemd160.IsNullOrEmpty())
-#endif
+            return !(_md5.IsNullOrEmpty() ^ other._md5.IsNullOrEmpty())
                 || !(_sha1.IsNullOrEmpty() ^ other._sha1.IsNullOrEmpty())
-                || !(_sha256.IsNullOrEmpty() ^ other._sha256.IsNullOrEmpty())
-                || !(_sha384.IsNullOrEmpty() ^ other._sha384.IsNullOrEmpty())
-                || !(_sha512.IsNullOrEmpty() ^ other._sha512.IsNullOrEmpty());
+                || !(_sha256.IsNullOrEmpty() ^ other._sha256.IsNullOrEmpty());
         }
 
         /// <summary>
@@ -369,15 +264,9 @@ namespace SabreTools.Library.DatItems
         /// <returns>True if any hash exists, false otherwise</returns>
         private bool HasHashes()
         {
-            return !_crc.IsNullOrEmpty()
-                || !_md5.IsNullOrEmpty()
-#if NET_FRAMEWORK
-                || !_ripemd160.IsNullOrEmpty()
-#endif
+            return !_md5.IsNullOrEmpty()
                 || !_sha1.IsNullOrEmpty()
-                || !_sha256.IsNullOrEmpty()
-                || !_sha384.IsNullOrEmpty()
-                || !_sha512.IsNullOrEmpty();
+                || !_sha256.IsNullOrEmpty();
         }
 
         /// <summary>
@@ -396,15 +285,9 @@ namespace SabreTools.Library.DatItems
                 return false;
 
             // Return if all hashes match according to merge rules
-            return ConditionalHashEquals(_crc, other._crc)
-                && ConditionalHashEquals(_md5, other._md5)
-#if NET_FRAMEWORK
-                && ConditionalHashEquals(_ripemd160, other._ripemd160)
-#endif
+            return ConditionalHashEquals(_md5, other._md5)
                 && ConditionalHashEquals(_sha1, other._sha1)
-                && ConditionalHashEquals(_sha256, other._sha256)
-                && ConditionalHashEquals(_sha384, other._sha384)
-                && ConditionalHashEquals(_sha512, other._sha512);
+                && ConditionalHashEquals(_sha256, other._sha256);
         }
 
         #endregion
@@ -422,25 +305,11 @@ namespace SabreTools.Library.DatItems
             if (!base.PassesFilter(filter))
                 return false;
 
-            // Filter on CRC
-            if (filter.DatItem_CRC.MatchesPositiveSet(CRC) == false)
-                return false;
-            if (filter.DatItem_CRC.MatchesNegativeSet(CRC) == true)
-                return false;
-
             // Filter on MD5
             if (filter.DatItem_MD5.MatchesPositiveSet(MD5) == false)
                 return false;
             if (filter.DatItem_MD5.MatchesNegativeSet(MD5) == true)
                 return false;
-
-#if NET_FRAMEWORK
-            // Filter on RIPEMD160
-            if (filter.DatItem_RIPEMD160.MatchesPositiveSet(RIPEMD160) == false)
-                return false;
-            if (filter.DatItem_RIPEMD160.MatchesNegativeSet(RIPEMD160) == true)
-                return false;
-#endif
 
             // Filter on SHA-1
             if (filter.DatItem_SHA1.MatchesPositiveSet(SHA1) == false)
@@ -452,18 +321,6 @@ namespace SabreTools.Library.DatItems
             if (filter.DatItem_SHA256.MatchesPositiveSet(SHA256) == false)
                 return false;
             if (filter.DatItem_SHA256.MatchesNegativeSet(SHA256) == true)
-                return false;
-
-            // Filter on SHA-384
-            if (filter.DatItem_SHA384.MatchesPositiveSet(SHA384) == false)
-                return false;
-            if (filter.DatItem_SHA384.MatchesNegativeSet(SHA384) == true)
-                return false;
-
-            // Filter on SHA-512
-            if (filter.DatItem_SHA512.MatchesPositiveSet(SHA512) == false)
-                return false;
-            if (filter.DatItem_SHA512.MatchesNegativeSet(SHA512) == true)
                 return false;
 
             return true;
@@ -479,28 +336,14 @@ namespace SabreTools.Library.DatItems
             base.RemoveFields(fields);
 
             // Remove the fields
-            if (fields.Contains(Field.DatItem_CRC))
-                CRC = null;
-
             if (fields.Contains(Field.DatItem_MD5))
                 MD5 = null;
-
-#if NET_FRAMEWORK
-            if (fields.Contains(Field.DatItem_RIPEMD160))
-                RIPEMD160 = null;
-#endif
 
             if (fields.Contains(Field.DatItem_SHA1))
                 SHA1 = null;
 
             if (fields.Contains(Field.DatItem_SHA256))
                 SHA256 = null;
-
-            if (fields.Contains(Field.DatItem_SHA384))
-                SHA384 = null;
-
-            if (fields.Contains(Field.DatItem_SHA512))
-                SHA512 = null;
         }
 
         #endregion
@@ -526,26 +369,12 @@ namespace SabreTools.Library.DatItems
                     key = MD5;
                     break;
 
-#if NET_FRAMEWORK
-                case Field.DatItem_RIPEMD160:
-                    key = RIPEMD160;
-                    break;
-#endif
-
                 case Field.DatItem_SHA1:
                     key = SHA1;
                     break;
 
                 case Field.DatItem_SHA256:
                     key = SHA256;
-                    break;
-
-                case Field.DatItem_SHA384:
-                    key = SHA384;
-                    break;
-
-                case Field.DatItem_SHA512:
-                    key = SHA512;
                     break;
 
                 // Let the base handle generic stuff
@@ -578,25 +407,11 @@ namespace SabreTools.Library.DatItems
             Media newItem = item as Media;
 
             // Replace the fields
-            if (fields.Contains(Field.DatItem_CRC))
-            {
-                if (string.IsNullOrEmpty(CRC) && !string.IsNullOrEmpty(newItem.CRC))
-                    CRC = newItem.CRC;
-            }
-
             if (fields.Contains(Field.DatItem_MD5))
             {
                 if (string.IsNullOrEmpty(MD5) && !string.IsNullOrEmpty(newItem.MD5))
                     MD5 = newItem.MD5;
             }
-
-#if NET_FRAMEWORK
-            if (fields.Contains(Field.DatItem_RIPEMD160))
-            {
-                if (string.IsNullOrEmpty(RIPEMD160) && !string.IsNullOrEmpty(newItem.RIPEMD160))
-                    RIPEMD160 = newItem.RIPEMD160;
-            }
-#endif
 
             if (fields.Contains(Field.DatItem_SHA1))
             {
@@ -608,18 +423,6 @@ namespace SabreTools.Library.DatItems
             {
                 if (string.IsNullOrEmpty(SHA256) && !string.IsNullOrEmpty(newItem.SHA256))
                     SHA256 = newItem.SHA256;
-            }
-
-            if (fields.Contains(Field.DatItem_SHA384))
-            {
-                if (string.IsNullOrEmpty(SHA384) && !string.IsNullOrEmpty(newItem.SHA384))
-                    SHA384 = newItem.SHA384;
-            }
-
-            if (fields.Contains(Field.DatItem_SHA512))
-            {
-                if (string.IsNullOrEmpty(SHA512) && !string.IsNullOrEmpty(newItem.SHA512))
-                    SHA512 = newItem.SHA512;
             }
         }
 

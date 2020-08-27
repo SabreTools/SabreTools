@@ -3,8 +3,8 @@ using System.IO;
 using System.Text;
 
 using SabreTools.Library.Data;
+using SabreTools.Library.FileTypes.Aaru;
 using SabreTools.Library.IO;
-using SabreTools.Library.Tools;
 
 namespace SabreTools.Library.FileTypes
 {
@@ -18,22 +18,33 @@ namespace SabreTools.Library.FileTypes
 
         #region Header
 
-        protected char[] identifier = new char[8];      // 'AARUFRMT' (0x544D524655524141)
-        protected char[] application = new char[32];    // Name of application that created image
-        protected byte imageMajorVersion;               // Image format major version
-        protected byte imageMinorVersion;               // Image format minor version
-        protected byte applicationMajorVersion;         // Major version of application that created image
-        protected byte applicationMinorVersion;         // Minor version of application that created image
-        protected AaruMediaType mediaType;              // Media type contained in image
-        protected ulong indexOffset;                    // Offset to index
-        protected long creationTime;                    // Windows filetime of creation time
-        protected long lastWrittenTime;                 // Windows filetime of last written time
+        protected char[] Identifier = new char[8];      // 'AARUFRMT' (0x544D524655524141)
+        protected char[] Application = new char[32];    // Name of application that created image
+        protected byte ImageMajorVersion;               // Image format major version
+        protected byte ImageMinorVersion;               // Image format minor version
+        protected byte ApplicationMajorVersion;         // Major version of application that created image
+        protected byte ApplicationMinorVersion;         // Minor version of application that created image
+        protected AaruMediaType MediaType;              // Media type contained in image
+        protected ulong IndexOffset;                    // Offset to index
+        protected long CreationTime;                    // Windows filetime of creation time
+        protected long LastWrittenTime;                 // Windows filetime of last written time
 
         #endregion
 
-        #region Index Header Values
+        #region Internal Values
 
         // TODO: Read https://github.com/aaru-dps/Aaru/blob/master/Aaru.Images/AaruFormat/Verify.cs
+        protected IndexHeader IndexHeader;
+        protected IndexEntry[] IndexEntries;
+
+        #endregion
+
+        #region Hashes
+
+        public byte[] md5 = new byte[16];
+        public byte[] sha1 = new byte[20];
+        public byte[] sha256 = new byte[32];
+        // TODO: Support SpamSum
 
         #endregion
 
@@ -87,7 +98,7 @@ namespace SabreTools.Library.FileTypes
         /// <summary>
         /// Validate we start with the right magic number
         /// </summary>
-        private static bool ValidateHeader(Stream aarustream)
+        public static bool ValidateHeader(Stream aarustream)
         {
             // Read the magic string
             byte[] magicBytes = new byte[8];
@@ -109,7 +120,7 @@ namespace SabreTools.Library.FileTypes
         /// </summary>
         /// <param name="stream">AaruFormat file as a stream</param>
         /// <returns>Populated AaruFormat file, null on failure</returns>
-        private static AaruFormat Deserialize(Stream stream)
+        public static AaruFormat Deserialize(Stream stream)
         {
             try
             {
@@ -117,16 +128,76 @@ namespace SabreTools.Library.FileTypes
 
                 using (BinaryReader br = new BinaryReader(stream, Encoding.Default, true))
                 {
-                    aif.identifier = br.ReadChars(8);
-                    aif.application = br.ReadChars(32);
-                    aif.imageMajorVersion = br.ReadByte();
-                    aif.imageMinorVersion = br.ReadByte();
-                    aif.applicationMajorVersion = br.ReadByte();
-                    aif.applicationMinorVersion = br.ReadByte();
-                    aif.mediaType = (AaruMediaType)br.ReadUInt32();
-                    aif.indexOffset = br.ReadUInt64();
-                    aif.creationTime = br.ReadInt64();
-                    aif.lastWrittenTime = br.ReadInt64();
+                    aif.Identifier = br.ReadChars(8);
+                    aif.Application = br.ReadChars(32);
+                    aif.ImageMajorVersion = br.ReadByte();
+                    aif.ImageMinorVersion = br.ReadByte();
+                    aif.ApplicationMajorVersion = br.ReadByte();
+                    aif.ApplicationMinorVersion = br.ReadByte();
+                    aif.MediaType = (AaruMediaType)br.ReadUInt32();
+                    aif.IndexOffset = br.ReadUInt64();
+                    aif.CreationTime = br.ReadInt64();
+                    aif.LastWrittenTime = br.ReadInt64();
+
+                    // If the offset is bigger than the stream, we can't read it
+                    if (aif.IndexOffset > (ulong)stream.Length)
+                        return null;
+
+                    // Otherwise, we read in the index header
+                    stream.Seek((long)aif.IndexOffset, SeekOrigin.Begin);
+                    aif.IndexHeader = IndexHeader.Deserialize(stream);
+                    if (aif.IndexHeader.entries == 0)
+                        return null;
+
+                    // Get the list of entries
+                    aif.IndexEntries = new IndexEntry[aif.IndexHeader.entries];
+                    for (ushort index = 0; index < aif.IndexHeader.entries; index++)
+                    {
+                        aif.IndexEntries[index] = IndexEntry.Deserialize(stream);
+
+                        // If we get a checksum block, read in the values
+                        if (aif.IndexEntries[index].blockType == AaruBlockType.ChecksumBlock)
+                        {
+                            // If the offset is bigger than the stream, we can't read it
+                            if (aif.IndexEntries[index].offset > (ulong)stream.Length)
+                                return null;
+
+                            // Otherwise, we read in the block
+                            stream.Seek((long)aif.IndexEntries[index].offset, SeekOrigin.Begin);
+                            ChecksumHeader checksumHeader = ChecksumHeader.Deserialize(stream);
+                            if (checksumHeader.entries == 0)
+                                return null;
+
+                            // Read through each and pick out the ones we care about
+                            for (byte entry = 0; entry < checksumHeader.entries; entry++)
+                            {
+                                ChecksumEntry checksumEntry = ChecksumEntry.Deserialize(stream);
+                                if (checksumEntry == null)
+                                    continue;
+
+                                switch (checksumEntry.type)
+                                {
+                                    case AaruChecksumAlgorithm.Invalid:
+                                        break;
+                                    case AaruChecksumAlgorithm.Md5:
+                                        aif.md5 = checksumEntry.checksum;
+                                        break;
+                                    case AaruChecksumAlgorithm.Sha1:
+                                        aif.sha1 = checksumEntry.checksum;
+                                        break;
+                                    case AaruChecksumAlgorithm.Sha256:
+                                        aif.sha256 = checksumEntry.checksum;
+                                        break;
+                                    case AaruChecksumAlgorithm.SpamSum:
+                                        // TODO: Support SpamSum
+                                        break;
+                                }
+                            }
+
+                            // Once we got hashes, we return early
+                            return aif;
+                        }
+                    }
                 }
 
                 return aif;

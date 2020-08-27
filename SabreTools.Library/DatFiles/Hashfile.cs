@@ -239,6 +239,12 @@ namespace SabreTools.Library.DatFiles
                                 fields[1] = name;
                                 break;
 
+                            case ItemType.Media:
+                                var media = datItem as Media;
+                                fields[0] = media.MD5;
+                                fields[1] = name;
+                                break;
+
                             case ItemType.Rom:
                                 var rom = datItem as Rom;
                                 fields[0] = rom.MD5;
@@ -252,12 +258,6 @@ namespace SabreTools.Library.DatFiles
                     case Hash.RIPEMD160:
                         switch (datItem.ItemType)
                         {
-                            case ItemType.Disk:
-                                var disk = datItem as Disk;
-                                fields[0] = disk.RIPEMD160;
-                                fields[1] = name;
-                                break;
-
                             case ItemType.Rom:
                                 var rom = datItem as Rom;
                                 fields[0] = rom.RIPEMD160;
@@ -276,6 +276,12 @@ namespace SabreTools.Library.DatFiles
                                 fields[1] = name;
                                 break;
 
+                            case ItemType.Media:
+                                var media = datItem as Media;
+                                fields[0] = media.SHA1;
+                                fields[1] = name;
+                                break;
+
                             case ItemType.Rom:
                                 var rom = datItem as Rom;
                                 fields[0] = rom.SHA1;
@@ -288,9 +294,9 @@ namespace SabreTools.Library.DatFiles
                     case Hash.SHA256:
                         switch (datItem.ItemType)
                         {
-                            case ItemType.Disk:
-                                var disk = datItem as Disk;
-                                fields[0] = disk.SHA256;
+                            case ItemType.Media:
+                                var media = datItem as Media;
+                                fields[0] = media.SHA256;
                                 fields[1] = name;
                                 break;
 
@@ -306,12 +312,6 @@ namespace SabreTools.Library.DatFiles
                     case Hash.SHA384:
                         switch (datItem.ItemType)
                         {
-                            case ItemType.Disk:
-                                var disk = datItem as Disk;
-                                fields[0] = disk.SHA384;
-                                fields[1] = name;
-                                break;
-
                             case ItemType.Rom:
                                 var rom = datItem as Rom;
                                 fields[0] = rom.SHA384;
@@ -324,12 +324,6 @@ namespace SabreTools.Library.DatFiles
                     case Hash.SHA512:
                         switch (datItem.ItemType)
                         {
-                            case ItemType.Disk:
-                                var disk = datItem as Disk;
-                                fields[0] = disk.SHA512;
-                                fields[1] = name;
-                                break;
-
                             case ItemType.Rom:
                                 var rom = datItem as Rom;
                                 fields[0] = rom.SHA512;

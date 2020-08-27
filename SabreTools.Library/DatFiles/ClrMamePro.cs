@@ -300,9 +300,7 @@ namespace SabreTools.Library.DatFiles
 
                                 break;
                             case "crc":
-                                if (item.ItemType == ItemType.Media)
-                                    (item as Media).CRC = attrVal;
-                                else if (item.ItemType == ItemType.Rom)
+                                if (item.ItemType == ItemType.Rom)
                                     (item as Rom).CRC = attrVal;
 
                                 break;
@@ -317,11 +315,7 @@ namespace SabreTools.Library.DatFiles
                                 break;
 #if NET_FRAMEWORK
                             case "ripemd160":
-                                if (item.ItemType == ItemType.Disk)
-                                    (item as Disk).RIPEMD160 = attrVal;
-                                else if (item.ItemType == ItemType.Media)
-                                    (item as Media).RIPEMD160 = attrVal;
-                                else if (item.ItemType == ItemType.Rom)
+                                if (item.ItemType == ItemType.Rom)
                                     (item as Rom).RIPEMD160 = attrVal;
 
                                 break;
@@ -336,29 +330,19 @@ namespace SabreTools.Library.DatFiles
 
                                 break;
                             case "sha256":
-                                if (item.ItemType == ItemType.Disk)
-                                    (item as Disk).SHA256 = attrVal;
-                                else if (item.ItemType == ItemType.Media)
+                                if (item.ItemType == ItemType.Media)
                                     (item as Media).SHA256 = attrVal;
                                 else if (item.ItemType == ItemType.Rom)
                                     (item as Rom).SHA256 = attrVal;
                                 
                                 break;
                             case "sha384":
-                                if (item.ItemType == ItemType.Disk)
-                                    (item as Disk).SHA384 = attrVal;
-                                else if (item.ItemType == ItemType.Media)
-                                    (item as Media).SHA384 = attrVal;
-                                else if (item.ItemType == ItemType.Rom)
+                                if (item.ItemType == ItemType.Rom)
                                     (item as Rom).SHA384 = attrVal;
 
                                 break;
                             case "sha512":
-                                if (item.ItemType == ItemType.Disk)
-                                    (item as Disk).SHA512 = attrVal;
-                                else if (item.ItemType == ItemType.Media)
-                                    (item as Media).SHA512 = attrVal;
-                                else if (item.ItemType == ItemType.Rom)
+                                if (item.ItemType == ItemType.Rom)
                                     (item as Rom).SHA512 = attrVal;
 
                                 break;
@@ -696,13 +680,7 @@ namespace SabreTools.Library.DatFiles
                         cmpw.WriteStartElement("disk");
                         cmpw.WriteRequiredAttributeString("name", disk.Name);
                         cmpw.WriteOptionalAttributeString("md5", disk.MD5?.ToLowerInvariant());
-#if NET_FRAMEWORK
-                        cmpw.WriteOptionalAttributeString("ripemd160", disk.RIPEMD160?.ToLowerInvariant());
-#endif
                         cmpw.WriteOptionalAttributeString("sha1", disk.SHA1?.ToLowerInvariant());
-                        cmpw.WriteOptionalAttributeString("sha256", disk.SHA256?.ToLowerInvariant());
-                        cmpw.WriteOptionalAttributeString("sha384", disk.SHA384?.ToLowerInvariant());
-                        cmpw.WriteOptionalAttributeString("sha512", disk.SHA512?.ToLowerInvariant());
                         cmpw.WriteOptionalAttributeString("flags", disk.ItemStatus.FromItemStatus(false));
                         cmpw.WriteEndElement();
                         break;
@@ -711,15 +689,9 @@ namespace SabreTools.Library.DatFiles
                         var media = datItem as Media;
                         cmpw.WriteStartElement("media");
                         cmpw.WriteRequiredAttributeString("name", media.Name);
-                        cmpw.WriteOptionalAttributeString("crc", media.CRC?.ToLowerInvariant());
                         cmpw.WriteOptionalAttributeString("md5", media.MD5?.ToLowerInvariant());
-#if NET_FRAMEWORK
-                        cmpw.WriteOptionalAttributeString("ripemd160", media.RIPEMD160?.ToLowerInvariant());
-#endif
                         cmpw.WriteOptionalAttributeString("sha1", media.SHA1?.ToLowerInvariant());
                         cmpw.WriteOptionalAttributeString("sha256", media.SHA256?.ToLowerInvariant());
-                        cmpw.WriteOptionalAttributeString("sha384", media.SHA384?.ToLowerInvariant());
-                        cmpw.WriteOptionalAttributeString("sha512", media.SHA512?.ToLowerInvariant());
                         cmpw.WriteEndElement();
                         break;
 

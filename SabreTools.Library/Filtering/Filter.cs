@@ -321,19 +321,16 @@ namespace SabreTools.Library.Filtering
 
         // Disk
         public FilterItem<string> DatItem_MD5 { get; private set; } = new FilterItem<string>();
-#if NET_FRAMEWORK
-        public FilterItem<string> DatItem_RIPEMD160 { get; private set; } = new FilterItem<string>();
-#endif
         public FilterItem<string> DatItem_SHA1 { get; private set; } = new FilterItem<string>();
-        public FilterItem<string> DatItem_SHA256 { get; private set; } = new FilterItem<string>();
-        public FilterItem<string> DatItem_SHA384 { get; private set; } = new FilterItem<string>();
-        public FilterItem<string> DatItem_SHA512 { get; private set; } = new FilterItem<string>();
         public FilterItem<string> DatItem_Merge { get; private set; } = new FilterItem<string>();
         public FilterItem<string> DatItem_Region { get; private set; } = new FilterItem<string>();
         public FilterItem<string> DatItem_Index { get; private set; } = new FilterItem<string>();
         public FilterItem<bool?> DatItem_Writable { get; private set; } = new FilterItem<bool?>() { Neutral = null };
         public FilterItem<bool?> DatItem_Optional { get; private set; } = new FilterItem<bool?>() { Neutral = null };
         public FilterItem<ItemStatus> DatItem_Status { get; private set; } = new FilterItem<ItemStatus>() { Positive = ItemStatus.NULL, Negative = ItemStatus.NULL };
+
+        // Media
+        public FilterItem<string> DatItem_SHA256 { get; private set; } = new FilterItem<string>();
 
         // Release
         public FilterItem<string> DatItem_Language { get; private set; } = new FilterItem<string>();
@@ -343,6 +340,11 @@ namespace SabreTools.Library.Filtering
         public FilterItem<string> DatItem_Bios { get; private set; } = new FilterItem<string>();
         public FilterItem<long> DatItem_Size { get; private set; } = new FilterItem<long>() { Positive = -1, Negative = -1, Neutral = -1 };
         public FilterItem<string> DatItem_CRC { get; private set; } = new FilterItem<string>();
+#if NET_FRAMEWORK
+        public FilterItem<string> DatItem_RIPEMD160 { get; private set; } = new FilterItem<string>();
+#endif
+        public FilterItem<string> DatItem_SHA384 { get; private set; } = new FilterItem<string>();
+        public FilterItem<string> DatItem_SHA512 { get; private set; } = new FilterItem<string>();
         public FilterItem<string> DatItem_Offset { get; private set; } = new FilterItem<string>();
         public FilterItem<bool?> DatItem_Inverted { get; private set; } = new FilterItem<bool?>();
 
@@ -1832,41 +1834,11 @@ namespace SabreTools.Library.Filtering
                         DatItem_MD5.PositiveSet.Add(value);
                     break;
 
-#if NET_FRAMEWORK
-                case Field.DatItem_RIPEMD160:
-                    if (negate)
-                        DatItem_RIPEMD160.NegativeSet.Add(value);
-                    else
-                        DatItem_RIPEMD160.PositiveSet.Add(value);
-                    break;
-#endif
-
                 case Field.DatItem_SHA1:
                     if (negate)
                         DatItem_SHA1.NegativeSet.Add(value);
                     else
                         DatItem_SHA1.PositiveSet.Add(value);
-                    break;
-
-                case Field.DatItem_SHA256:
-                    if (negate)
-                        DatItem_SHA256.NegativeSet.Add(value);
-                    else
-                        DatItem_SHA256.PositiveSet.Add(value);
-                    break;
-
-                case Field.DatItem_SHA384:
-                    if (negate)
-                        DatItem_SHA384.NegativeSet.Add(value);
-                    else
-                        DatItem_SHA384.PositiveSet.Add(value);
-                    break;
-
-                case Field.DatItem_SHA512:
-                    if (negate)
-                        DatItem_SHA512.NegativeSet.Add(value);
-                    else
-                        DatItem_SHA512.PositiveSet.Add(value);
                     break;
 
                 case Field.DatItem_Merge:
@@ -1909,6 +1881,14 @@ namespace SabreTools.Library.Filtering
                         DatItem_Status.Negative |= value.AsItemStatus();
                     else
                         DatItem_Status.Positive |= value.AsItemStatus();
+                    break;
+
+                // Media
+                case Field.DatItem_SHA256:
+                    if (negate)
+                        DatItem_SHA256.NegativeSet.Add(value);
+                    else
+                        DatItem_SHA256.PositiveSet.Add(value);
                     break;
 
                 // Release
@@ -1991,6 +1971,29 @@ namespace SabreTools.Library.Filtering
                         DatItem_CRC.NegativeSet.Add(value);
                     else
                         DatItem_CRC.PositiveSet.Add(value);
+                    break;
+
+#if NET_FRAMEWORK
+                case Field.DatItem_RIPEMD160:
+                    if (negate)
+                        DatItem_RIPEMD160.NegativeSet.Add(value);
+                    else
+                        DatItem_RIPEMD160.PositiveSet.Add(value);
+                    break;
+#endif
+
+                case Field.DatItem_SHA384:
+                    if (negate)
+                        DatItem_SHA384.NegativeSet.Add(value);
+                    else
+                        DatItem_SHA384.PositiveSet.Add(value);
+                    break;
+
+                case Field.DatItem_SHA512:
+                    if (negate)
+                        DatItem_SHA512.NegativeSet.Add(value);
+                    else
+                        DatItem_SHA512.PositiveSet.Add(value);
                     break;
 
                 case Field.DatItem_Offset:

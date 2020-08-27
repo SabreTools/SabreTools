@@ -257,12 +257,28 @@ namespace SabreTools.Library.DatFiles
                         fields[8] = string.Empty;
                         fields[9] = string.Empty;
                         fields[10] = disk.MD5.ToLowerInvariant();
-                        //fields[11] = disk.RIPEMD160?.ToLowerInvariant();
+                        //fields[11] = string.Empty;
                         fields[11] = disk.SHA1.ToLowerInvariant();
-                        fields[12] = disk.SHA256.ToLowerInvariant();
-                        //fields[13] = disk.SHA384?.ToLowerInvariant();
-                        //fields[14] = disk.SHA512?.ToLowerInvariant();
+                        fields[12] = string.Empty;
+                        //fields[13] = string.Empty;
+                        //fields[14] = string.Empty;
                         fields[13] = disk.ItemStatus.ToString();
+                        break;
+
+                    case ItemType.Media:
+                        var media = datItem as Media;
+                        fields[5] = "media";
+                        fields[6] = string.Empty;
+                        fields[7] = media.Name;
+                        fields[8] = string.Empty;
+                        fields[9] = string.Empty;
+                        fields[10] = media.MD5.ToLowerInvariant();
+                        //fields[11] = string.Empty;
+                        fields[11] = media.SHA1.ToLowerInvariant();
+                        fields[12] = media.SHA256?.ToLowerInvariant();
+                        //fields[13] = string.Empty;
+                        //fields[14] = string.Empty;
+                        fields[13] = string.Empty;
                         break;
 
                     case ItemType.Rom:

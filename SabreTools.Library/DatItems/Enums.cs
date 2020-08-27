@@ -398,19 +398,16 @@ namespace SabreTools.Library.DatItems
 
         // Disk
         DatItem_MD5,
-#if NET_FRAMEWORK
-        DatItem_RIPEMD160,
-#endif
         DatItem_SHA1,
-        DatItem_SHA256,
-        DatItem_SHA384,
-        DatItem_SHA512,
         DatItem_Merge,
         DatItem_Region,
         DatItem_Index,
         DatItem_Writable,
         DatItem_Status,
         DatItem_Optional,
+
+        // Media
+        DatItem_SHA256,
 
         // Release
         DatItem_Language,
@@ -420,6 +417,11 @@ namespace SabreTools.Library.DatItems
         DatItem_Bios,
         DatItem_Size,
         DatItem_CRC,
+#if NET_FRAMEWORK
+        DatItem_RIPEMD160,
+#endif
+        DatItem_SHA384,
+        DatItem_SHA512,
         DatItem_Offset,
         DatItem_Inverted,
 
