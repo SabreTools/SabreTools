@@ -6,7 +6,6 @@ using System.Text;
 using SabreTools.Library.Data;
 using SabreTools.Library.DatItems;
 using SabreTools.Library.IO;
-using SabreTools.Library.Tools;
 
 namespace SabreTools.Library.DatFiles
 {
