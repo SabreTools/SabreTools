@@ -99,7 +99,7 @@ namespace SabreTools.Reports
         /// <summary>
         /// Write the report to the output stream
         /// </summary>
-        public abstract void Write();
+        public abstract void WriteIndividual();
 
         /// <summary>
         /// Write out the header to the stream, if any exists

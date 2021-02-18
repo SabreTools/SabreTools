@@ -38,7 +38,7 @@ namespace SabreTools.Reports.Formats
         /// <summary>
         /// Write the report to file
         /// </summary>
-        public override void Write()
+        public override void WriteIndividual()
         {
             string line = string.Format("\"" + _stats.DisplayName + "\"{0}"
                     + "\"" + _stats.Statistics.TotalSize + "\"{0}"

@@ -178,7 +178,7 @@ namespace SabreTools.DatTools
                 {
                     reports.ForEach(report => report.WriteMidSeparator());
                     reports.ForEach(report => report.ReplaceStatistics(stat));
-                    reports.ForEach(report => report.Write());
+                    reports.ForEach(report => report.WriteIndividual());
                     reports.ForEach(report => report.WriteFooterSeparator());
                     reports.ForEach(report => report.WriteMidHeader());
                 }
@@ -186,7 +186,7 @@ namespace SabreTools.DatTools
                 // If we have a normal statistic
                 else
                 {
-                    reports.ForEach(report => report.Write());
+                    reports.ForEach(report => report.WriteIndividual());
                 }
             }
 

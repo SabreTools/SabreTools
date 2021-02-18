@@ -36,7 +36,7 @@ namespace SabreTools.Reports.Formats
         /// <summary>
         /// Write the report to file
         /// </summary>
-        public override void Write()
+        public override void WriteIndividual()
         {
             string line = "\t\t\t<tr" + (_stats.DisplayName.StartsWith("DIR: ")
                             ? $" class=\"dir\"><td>{WebUtility.HtmlEncode(_stats.DisplayName.Remove(0, 5))}"

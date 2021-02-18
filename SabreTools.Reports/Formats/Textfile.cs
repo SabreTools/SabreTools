@@ -32,7 +32,7 @@ namespace SabreTools.Reports.Formats
         /// <summary>
         /// Write the report to file
         /// </summary>
-        public override void Write()
+        public override void WriteIndividual()
         {
             string line = @"'" + _stats.DisplayName + @"':
 --------------------------------------------------
