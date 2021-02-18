@@ -33,7 +33,14 @@ namespace RombaSharp.Features
                 Inputs = new List<string> { Path.GetFullPath(_dats) };
 
             // Now output the stats for all inputs
-            Statistics.OutputStats(Inputs, "rombasharp-datstats", null /* outDir */, true /* single */, true /* baddumpCol */, true /* nodumpCol */, StatReportFormat.Textfile);
+            var statistics = Statistics.CalculateStatistics(Inputs, single: true);
+            Statistics.Write(
+                statistics,
+                "rombasharp-datstats",
+                outDir: null,
+                baddumpCol: true,
+                nodumpCol: true,
+                StatReportFormat.Textfile);
         }
     }
 }

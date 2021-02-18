@@ -58,11 +58,11 @@ The stats that are outputted are as follows:
                 filename = Path.GetFileName(filename);
             }
 
-            Statistics.OutputStats(
-                Inputs,
+            var statistics = Statistics.CalculateStatistics(Inputs, GetBoolean(features, IndividualValue));
+            Statistics.Write(
+                statistics,
                 filename,
                 OutputDir,
-                GetBoolean(features, IndividualValue),
                 GetBoolean(features, BaddumpColumnValue),
                 GetBoolean(features, NodumpColumnValue),
                 GetStatReportFormat(features));

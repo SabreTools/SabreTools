@@ -117,7 +117,7 @@ namespace SabreTools.DatTools
             datFile.Items.BucketBy(ItemKey.Machine, DedupeType.None, norename: true);
 
             var consoleOutput = BaseReport.Create(StatReportFormat.None, null, true, true);
-            consoleOutput.ReplaceStatistics(datFile.Header.FileName, datFile.Items.Keys.Count(), datFile.Items);
+            consoleOutput.ReplaceStatistics(datFile.Items, datFile.Header.FileName, datFile.Items.Keys.Count(), false);
         }
 
         /// <summary>
