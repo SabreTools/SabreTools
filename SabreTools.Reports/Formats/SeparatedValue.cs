@@ -62,11 +62,9 @@ namespace SabreTools.Reports.Formats
                     // If we have a directory statistic
                     if (stat.IsDirectory)
                     {
-                        WriteMidSeparator();
                         ReplaceStatistics(stat);
                         WriteIndividual();
                         WriteFooterSeparator();
-                        WriteMidHeader();
                     }
 
                     // If we have a normal statistic
@@ -77,7 +75,6 @@ namespace SabreTools.Reports.Formats
                     }
                 }
 
-                WriteFooter();
                 fs.Dispose();
             }
             catch (Exception ex) when (!throwOnError)

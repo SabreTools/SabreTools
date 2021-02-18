@@ -10,6 +10,8 @@ namespace SabreTools.Reports.Formats
     /// </summary>
     internal class Textfile : BaseReport
     {
+        private readonly bool _writeToConsole;
+
         /// <summary>
         /// Create a new report from the filename
         /// </summary>
@@ -47,20 +49,15 @@ namespace SabreTools.Reports.Formats
                     return false;
                 }
 
-                // Write out the header
-                WriteHeader();
-
                 // Now process each of the statistics
                 foreach (DatStatistics stat in _statsList)
                 {
                     // If we have a directory statistic
                     if (stat.IsDirectory)
                     {
-                        WriteMidSeparator();
                         ReplaceStatistics(stat);
                         WriteIndividual();
                         WriteFooterSeparator();
-                        WriteMidHeader();
                     }
 
                     // If we have a normal statistic
@@ -71,7 +68,6 @@ namespace SabreTools.Reports.Formats
                     }
                 }
 
-                WriteFooter();
                 fs.Dispose();
             }
             catch (Exception ex) when (!throwOnError)
