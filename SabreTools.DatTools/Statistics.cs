@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 
+using SabreTools.Core;
 using SabreTools.DatFiles;
 using SabreTools.DatItems;
 using SabreTools.IO;
@@ -32,7 +34,7 @@ namespace SabreTools.DatTools
         /// </summary>
         /// <param name="inputs">List of input files and folders</param>
         /// <param name="single">True if single DAT stats are output, false otherwise</param>
-        /// <param name="throwOnError"> Set the statistics output format to use</param>
+        /// <param name="throwOnError">True if the error that is thrown should be thrown back to the caller, false otherwise</param>
         public static List<DatStatistics> CalculateStatistics(List<string> inputs, bool single, bool throwOnError = false)
         {
             // Create the output list
@@ -136,17 +138,23 @@ namespace SabreTools.DatTools
         /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
         /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
         /// <param name="statDatFormat"> Set the statistics output format to use</param>
-        public static void Write(
+        /// <param name="throwOnError">True if the error that is thrown should be thrown back to the caller, false otherwise</param>
+        /// <returns>True if the report was written correctly, false otherwise</returns>
+        public static bool Write(
             List<DatStatistics> stats,
             string reportName,
             string outDir,
             bool baddumpCol,
             bool nodumpCol,
-            StatReportFormat statDatFormat)
+            StatReportFormat statDatFormat,
+            bool throwOnError = false)
         {
             // If there's no output format, set the default
             if (statDatFormat == StatReportFormat.None)
+            {
+                logger.Verbose("No report format defined, defaulting to textfile");
                 statDatFormat = StatReportFormat.Textfile;
+            }
 
             // Get the proper output file name
             if (string.IsNullOrWhiteSpace(reportName))
@@ -155,38 +163,39 @@ namespace SabreTools.DatTools
             // Get the proper output directory name
             outDir = outDir.Ensure();
 
+            InternalStopwatch watch = new InternalStopwatch($"Writing out report data to '{outDir}'");
+
             // Get the dictionary of desired output report names
-            Dictionary<StatReportFormat, string> outputs = CreateOutStatsNames(outDir, statDatFormat, reportName);
+            Dictionary<StatReportFormat, string> outfiles = CreateOutStatsNames(outDir, statDatFormat, reportName);
 
-            // Get all of the writers that we need
-            List<BaseReport> reports = outputs.Select(kvp => BaseReport.Create(kvp.Key, kvp.Value, baddumpCol, nodumpCol)).ToList();
-
-            // Write the header, if any
-            reports.ForEach(report => report.WriteHeader());
-
-            // Now process each of the statistics
-            foreach (DatStatistics stat in stats)
+            try
             {
-                // If we have a directory statistic
-                if (stat.IsDirectory)
+                // Write out all required formats
+                Parallel.ForEach(outfiles.Keys, Globals.ParallelOptions, reportFormat =>
                 {
-                    reports.ForEach(report => report.WriteMidSeparator());
-                    reports.ForEach(report => report.ReplaceStatistics(stat));
-                    reports.ForEach(report => report.WriteIndividual());
-                    reports.ForEach(report => report.WriteFooterSeparator());
-                    reports.ForEach(report => report.WriteMidHeader());
-                }
+                    string outfile = outfiles[reportFormat];
+                    try
+                    {
+                        BaseReport.Create(reportFormat, stats, outfile)?.WriteToFile(outfile, baddumpCol, nodumpCol, throwOnError);
+                    }
+                    catch (Exception ex) when (!throwOnError)
+                    {
+                        logger.Error(ex, $"Report '{outfile}' could not be written out");
+                    }
 
-                // If we have a normal statistic
-                else
-                {
-                    reports.ForEach(report => report.ReplaceStatistics(stat));
-                    reports.ForEach(report => report.WriteIndividual());
-                }
+                });
+            }
+            catch (Exception ex) when (!throwOnError)
+            {
+                logger.Error(ex);
+                return false;
+            }
+            finally
+            {
+                watch.Stop();
             }
 
-            reports.ForEach(report => report.WriteFooter());
-            logger.User($"{Environment.NewLine}Please check the log folder if the stats scrolled offscreen");
+            return true;
         }
 
         /// <summary>

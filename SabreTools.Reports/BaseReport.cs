@@ -23,89 +23,52 @@ namespace SabreTools.Reports
 
         #endregion
 
-        protected List<DatStatistics> _statsList;
-        protected DatStatistics _stats;
+        public List<DatStatistics> Statistics { get; set; }
 
         protected StreamWriter _writer;
-        protected bool _baddumpCol;
-        protected bool _nodumpCol;
 
         /// <summary>
         /// Create a new report from the filename
         /// </summary>
         /// <param name="filename">Name of the file to write out to</param>
-        /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
-        /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
-        public BaseReport(string filename, bool baddumpCol = false, bool nodumpCol = false)
+        public BaseReport(string filename)
         {
             var fs = File.Create(filename);
             if (fs != null)
                 _writer = new StreamWriter(fs) { AutoFlush = true };
-
-            _baddumpCol = baddumpCol;
-            _nodumpCol = nodumpCol;
         }
 
         /// <summary>
         /// Create a new report from the stream
         /// </summary>
         /// <param name="stream">Output stream to write to</param>
-        /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
-        /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
-        public BaseReport(Stream stream, bool baddumpCol = false, bool nodumpCol = false)
+        public BaseReport(Stream stream)
         {
             if (!stream.CanWrite)
                 throw new ArgumentException(nameof(stream));
 
             _writer = new StreamWriter(stream) { AutoFlush = true };
-            _baddumpCol = baddumpCol;
-            _nodumpCol = nodumpCol;
         }
 
         /// <summary>
         /// Create a specific type of BaseReport to be used based on a format and user inputs
         /// </summary>
         /// <param name="statReportFormat">Format of the Statistics Report to be created</param>
+        /// <param name="statsList">List of statistics objects to set</param>
         /// <param name="filename">Name of the file to write out to</param>
-        /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
-        /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
         /// <returns>BaseReport of the specific internal type that corresponds to the inputs</returns>
-        public static BaseReport Create(StatReportFormat statReportFormat, string filename, bool baddumpCol, bool nodumpCol)
+        public static BaseReport Create(StatReportFormat statReportFormat, List<DatStatistics> statsList, string filename)
         {
             return statReportFormat switch
             {
-                StatReportFormat.None => new Textfile(Console.OpenStandardOutput(), baddumpCol, nodumpCol),
-                StatReportFormat.Textfile => new Textfile(filename, baddumpCol, nodumpCol),
-                StatReportFormat.CSV => new SeparatedValue(filename, ',', baddumpCol, nodumpCol),
-                StatReportFormat.HTML => new Html(filename, baddumpCol, nodumpCol),
-                StatReportFormat.SSV => new SeparatedValue(filename, ';', baddumpCol, nodumpCol),
-                StatReportFormat.TSV => new SeparatedValue(filename, '\t', baddumpCol, nodumpCol),
+                StatReportFormat.None => new Textfile(Console.OpenStandardOutput()) { Statistics = statsList },
+                StatReportFormat.Textfile => new Textfile(filename) { Statistics = statsList },
+                StatReportFormat.CSV => new SeparatedValue(filename, ',') { Statistics = statsList },
+                StatReportFormat.HTML => new Html(filename) { Statistics = statsList },
+                StatReportFormat.SSV => new SeparatedValue(filename, ';') { Statistics = statsList },
+                StatReportFormat.TSV => new SeparatedValue(filename, '\t') { Statistics = statsList },
                 _ => null,
             };
-        }
-
-        /// <summary>
-        /// Replace the statistics that is being output
-        /// </summary>
-        /// <param name="stats">DatStatistics object to use</param>
-        public void ReplaceStatistics(DatStatistics stats)
-        {
-            _stats = stats;
-        }
-
-        /// <summary>
-        /// Replace the statistics that is being output
-        /// </summary>
-        /// <param name="stats">Format of the Statistics Report to be created</param>
-        /// <param name="displayName">Format of the Statistics Report to be created</param>
-        /// <param name="machineCount">Format of the Statistics Report to be created</param>
-        /// <param name="isDirectory">Format of the Statistics Report to be created</param>
-        public void ReplaceStatistics(ItemDictionary stats, string displayName, long machineCount, bool isDirectory)
-        {
-            _stats.Statistics = stats;
-            _stats.DisplayName = displayName;
-            _stats.MachineCount = machineCount;
-            _stats.IsDirectory = isDirectory;
         }
 
         /// <summary>
@@ -117,36 +80,6 @@ namespace SabreTools.Reports
         /// <param name="throwOnError">True if the error that is thrown should be thrown back to the caller, false otherwise</param>
         /// <returns>True if the report was written correctly, false otherwise</returns>
         public abstract bool WriteToFile(string outfile, bool baddumpCol, bool nodumpCol, bool throwOnError = false);
-
-        /// <summary>
-        /// Write the report to the output stream
-        /// </summary>
-        public abstract void WriteIndividual();
-        
-        /// <summary>
-        /// Write out the header to the stream, if any exists
-        /// </summary>
-        public abstract void WriteHeader();
-
-        /// <summary>
-        /// Write out the mid-header to the stream, if any exists
-        /// </summary>
-        public abstract void WriteMidHeader();
-
-        /// <summary>
-        /// Write out the separator to the stream, if any exists
-        /// </summary>
-        public abstract void WriteMidSeparator();
-
-        /// <summary>
-        /// Write out the footer-separator to the stream, if any exists
-        /// </summary>
-        public abstract void WriteFooterSeparator();
-
-        /// <summary>
-        /// Write out the footer to the stream, if any exists
-        /// </summary>
-        public abstract void WriteFooter();
     
         /// <summary>
         /// Returns the human-readable file size for an arbitrary, 64-bit file size 

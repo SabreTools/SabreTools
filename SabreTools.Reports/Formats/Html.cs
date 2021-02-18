@@ -16,22 +16,17 @@ namespace SabreTools.Reports.Formats
         /// Create a new report from the filename
         /// </summary>
         /// <param name="filename">Name of the file to write out to</param>
-        /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
-        /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
-        public Html(string filename, bool baddumpCol = false, bool nodumpCol = false)
-            : base(filename, baddumpCol, nodumpCol)
+        public Html(string filename)
+            : base(filename)
         {
         }
 
         /// <summary>
         /// Create a new report from the stream
         /// </summary>
-        /// <param name="datfile">DatFile to write out statistics for</param>
         /// <param name="stream">Output stream to write to</param>
-        /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
-        /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
-        public Html(Stream stream, bool baddumpCol = false, bool nodumpCol = false)
-            : base(stream, baddumpCol, nodumpCol)
+        public Html(Stream stream)
+            : base(stream)
         {
         }
 
@@ -51,26 +46,24 @@ namespace SabreTools.Reports.Formats
                 }
 
                 // Write out the header
-                WriteHeader();
+                WriteHeader(baddumpCol, nodumpCol);
 
                 // Now process each of the statistics
-                foreach (DatStatistics stat in _statsList)
+                foreach (DatStatistics stat in Statistics)
                 {
                     // If we have a directory statistic
                     if (stat.IsDirectory)
                     {
-                        WriteMidSeparator();
-                        ReplaceStatistics(stat);
-                        WriteIndividual();
-                        WriteFooterSeparator();
-                        WriteMidHeader();
+                        WriteMidSeparator(baddumpCol, nodumpCol);
+                        WriteIndividual(stat, baddumpCol, nodumpCol);
+                        WriteFooterSeparator(baddumpCol, nodumpCol);
+                        WriteMidHeader(baddumpCol, nodumpCol);
                     }
 
                     // If we have a normal statistic
                     else
                     {
-                        ReplaceStatistics(stat);
-                        WriteIndividual();
+                        WriteIndividual(stat, baddumpCol, nodumpCol);
                     }
                 }
 
@@ -91,32 +84,11 @@ namespace SabreTools.Reports.Formats
         }
 
         /// <summary>
-        /// Write the report to file
-        /// </summary>
-        public override void WriteIndividual()
-        {
-            string line = "\t\t\t<tr" + (_stats.DisplayName.StartsWith("DIR: ")
-                            ? $" class=\"dir\"><td>{WebUtility.HtmlEncode(_stats.DisplayName.Remove(0, 5))}"
-                            : $"><td>{WebUtility.HtmlEncode(_stats.DisplayName)}") + "</td>"
-                        + $"<td align=\"right\">{GetBytesReadable(_stats.Statistics.TotalSize)}</td>"
-                        + $"<td align=\"right\">{_stats.MachineCount}</td>"
-                        + $"<td align=\"right\">{_stats.Statistics.RomCount}</td>"
-                        + $"<td align=\"right\">{_stats.Statistics.DiskCount}</td>"
-                        + $"<td align=\"right\">{_stats.Statistics.CRCCount}</td>"
-                        + $"<td align=\"right\">{_stats.Statistics.MD5Count}</td>"
-                        + $"<td align=\"right\">{_stats.Statistics.SHA1Count}</td>"
-                        + $"<td align=\"right\">{_stats.Statistics.SHA256Count}</td>"
-                        + (_baddumpCol ? $"<td align=\"right\">{_stats.Statistics.BaddumpCount}</td>" : string.Empty)
-                        + (_nodumpCol ? $"<td align=\"right\">{_stats.Statistics.NodumpCount}</td>" : string.Empty)
-                        + "</tr>\n";
-            _writer.Write(line);
-            _writer.Flush();
-        }
-
-        /// <summary>
         /// Write out the header to the stream, if any exists
         /// </summary>
-        public override void WriteHeader()
+        /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
+        /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
+        private void WriteHeader(bool baddumpCol, bool nodumpCol)
         {
             _writer.Write(@"<!DOCTYPE html>
 <html>
@@ -141,29 +113,59 @@ namespace SabreTools.Reports.Formats
             _writer.Flush();
 
             // Now write the mid header for those who need it
-            WriteMidHeader();
+            WriteMidHeader(baddumpCol, nodumpCol);
         }
 
         /// <summary>
         /// Write out the mid-header to the stream, if any exists
         /// </summary>
-        public override void WriteMidHeader()
+        /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
+        /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
+        private void WriteMidHeader(bool baddumpCol, bool nodumpCol)
         {
             _writer.Write(@"			<tr bgcolor=string.Emptygraystring.Empty><th>File Name</th><th align=string.Emptyrightstring.Empty>Total Size</th><th align=string.Emptyrightstring.Empty>Games</th><th align=string.Emptyrightstring.Empty>Roms</th>"
 + @"<th align=string.Emptyrightstring.Empty>Disks</th><th align=string.Emptyrightstring.Empty>&#35; with CRC</th><th align=string.Emptyrightstring.Empty>&#35; with MD5</th><th align=string.Emptyrightstring.Empty>&#35; with SHA-1</th><th align=string.Emptyrightstring.Empty>&#35; with SHA-256</th>"
-+ (_baddumpCol ? "<th class=\".right\">Baddumps</th>" : string.Empty) + (_nodumpCol ? "<th class=\".right\">Nodumps</th>" : string.Empty) + "</tr>\n");
++ (baddumpCol ? "<th class=\".right\">Baddumps</th>" : string.Empty) + (nodumpCol ? "<th class=\".right\">Nodumps</th>" : string.Empty) + "</tr>\n");
+            _writer.Flush();
+        }
+
+        /// <summary>
+        /// Write a single set of statistics
+        /// </summary>
+        /// <param name="stat">DatStatistics object to write out</param>
+        /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
+        /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
+        private void WriteIndividual(DatStatistics stat, bool baddumpCol, bool nodumpCol)
+        {
+            string line = "\t\t\t<tr" + (stat.DisplayName.StartsWith("DIR: ")
+                            ? $" class=\"dir\"><td>{WebUtility.HtmlEncode(stat.DisplayName.Remove(0, 5))}"
+                            : $"><td>{WebUtility.HtmlEncode(stat.DisplayName)}") + "</td>"
+                        + $"<td align=\"right\">{GetBytesReadable(stat.Statistics.TotalSize)}</td>"
+                        + $"<td align=\"right\">{stat.MachineCount}</td>"
+                        + $"<td align=\"right\">{stat.Statistics.RomCount}</td>"
+                        + $"<td align=\"right\">{stat.Statistics.DiskCount}</td>"
+                        + $"<td align=\"right\">{stat.Statistics.CRCCount}</td>"
+                        + $"<td align=\"right\">{stat.Statistics.MD5Count}</td>"
+                        + $"<td align=\"right\">{stat.Statistics.SHA1Count}</td>"
+                        + $"<td align=\"right\">{stat.Statistics.SHA256Count}</td>"
+                        + (baddumpCol ? $"<td align=\"right\">{stat.Statistics.BaddumpCount}</td>" : string.Empty)
+                        + (nodumpCol ? $"<td align=\"right\">{stat.Statistics.NodumpCount}</td>" : string.Empty)
+                        + "</tr>\n";
+            _writer.Write(line);
             _writer.Flush();
         }
 
         /// <summary>
         /// Write out the separator to the stream, if any exists
         /// </summary>
-        public override void WriteMidSeparator()
+        /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
+        /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
+        private void WriteMidSeparator(bool baddumpCol, bool nodumpCol)
         {
             _writer.Write("<tr><td colspan=\""
-                        + (_baddumpCol && _nodumpCol
+                        + (baddumpCol && nodumpCol
                             ? "12"
-                            : (_baddumpCol ^ _nodumpCol
+                            : (baddumpCol ^ nodumpCol
                                 ? "11"
                                 : "10")
                             )
@@ -174,12 +176,14 @@ namespace SabreTools.Reports.Formats
         /// <summary>
         /// Write out the footer-separator to the stream, if any exists
         /// </summary>
-        public override void WriteFooterSeparator()
+        /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
+        /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
+        private void WriteFooterSeparator(bool baddumpCol, bool nodumpCol)
         {
             _writer.Write("<tr border=\"0\"><td colspan=\""
-                        + (_baddumpCol && _nodumpCol
+                        + (baddumpCol && nodumpCol
                             ? "12"
-                            : (_baddumpCol ^ _nodumpCol
+                            : (baddumpCol ^ nodumpCol
                                 ? "11"
                                 : "10")
                             )
@@ -190,7 +194,7 @@ namespace SabreTools.Reports.Formats
         /// <summary>
         /// Write out the footer to the stream, if any exists
         /// </summary>
-        public override void WriteFooter()
+        private void WriteFooter()
         {
             _writer.Write(@"		</table>
     </body>
