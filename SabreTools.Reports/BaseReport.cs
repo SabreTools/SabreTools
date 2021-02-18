@@ -75,11 +75,16 @@ namespace SabreTools.Reports
         /// <summary>
         /// Replace the statistics that is being output
         /// </summary>
-        public void ReplaceStatistics(string datName, long machineCount, ItemDictionary datStats)
+        /// <param name="stats">Format of the Statistics Report to be created</param>
+        /// <param name="displayName">Format of the Statistics Report to be created</param>
+        /// <param name="machineCount">Format of the Statistics Report to be created</param>
+        /// <param name="isDirectory">Format of the Statistics Report to be created</param>
+        public void ReplaceStatistics(ItemDictionary stats, string displayName, long machineCount, bool isDirectory)
         {
-            _stats.DisplayName = datName;
+            _stats.Statistics = stats;
+            _stats.DisplayName = displayName;
             _stats.MachineCount = machineCount;
-            _stats.Statistics = datStats;
+            _stats.IsDirectory = isDirectory;
         }
 
         /// <summary>

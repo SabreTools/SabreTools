@@ -95,7 +95,7 @@ namespace SabreTools.DatTools
 
                     DatFile lastdirdat = DatFile.Create();
 
-                    reports.ForEach(report => report.ReplaceStatistics($"DIR: {WebUtility.HtmlEncode(lastdir)}", dirStats.GameCount, dirStats));
+                    reports.ForEach(report => report.ReplaceStatistics(dirStats, $"DIR: {WebUtility.HtmlEncode(lastdir)}", dirStats.GameCount, true));
                     reports.ForEach(report => report.Write());
 
                     // Write the mid-footer, if any
@@ -117,7 +117,7 @@ namespace SabreTools.DatTools
                 logger.User($"Adding stats for file '{file.CurrentPath}'\n");
                 if (single)
                 {
-                    reports.ForEach(report => report.ReplaceStatistics(datdata.Header.FileName, datdata.Items.Keys.Count, datdata.Items));
+                    reports.ForEach(report => report.ReplaceStatistics(datdata.Items, datdata.Header.FileName, datdata.Items.Keys.Count, false));
                     reports.ForEach(report => report.Write());
                 }
 
@@ -138,7 +138,7 @@ namespace SabreTools.DatTools
 
             if (single)
             {
-                reports.ForEach(report => report.ReplaceStatistics($"DIR: {WebUtility.HtmlEncode(lastdir)}", dirStats.GameCount, dirStats));
+                reports.ForEach(report => report.ReplaceStatistics(dirStats, $"DIR: {WebUtility.HtmlEncode(lastdir)}", dirStats.GameCount, true));
                 reports.ForEach(report => report.Write());
             }
 
@@ -152,7 +152,7 @@ namespace SabreTools.DatTools
             dirStats.ResetStatistics();
 
             // Output total DAT stats
-            reports.ForEach(report => report.ReplaceStatistics("DIR: All DATs", totalStats.GameCount, totalStats));
+            reports.ForEach(report => report.ReplaceStatistics(totalStats, "DIR: All DATs", totalStats.GameCount, true));
             reports.ForEach(report => report.Write());
 
             // Output footer if needed
