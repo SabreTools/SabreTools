@@ -21,15 +21,6 @@ namespace SabreTools.Reports.Formats
         {
         }
 
-        /// <summary>
-        /// Create a new report from the stream
-        /// </summary>
-        /// <param name="stream">Output stream to write to</param>
-        public Html(Stream stream)
-            : base(stream)
-        {
-        }
-
         /// <inheritdoc/>
         public override bool WriteToFile(string outfile, bool baddumpCol, bool nodumpCol, bool throwOnError = false)
         {

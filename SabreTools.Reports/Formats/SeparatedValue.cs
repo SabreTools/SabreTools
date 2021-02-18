@@ -23,17 +23,6 @@ namespace SabreTools.Reports.Formats
             _separator = separator;
         }
 
-        /// <summary>
-        /// Create a new report from the input DatFile and the stream
-        /// </summary>
-        /// <param name="stream">Output stream to write to</param>
-        /// <param name="separator">Separator character to use in output</param>
-        public SeparatedValue(Stream stream, char separator)
-            : base(stream)
-        {
-            _separator = separator;
-        }
-
         /// <inheritdoc/>
         public override bool WriteToFile(string outfile, bool baddumpCol, bool nodumpCol, bool throwOnError = false)
         {
