@@ -28,6 +28,109 @@ namespace SabreTools.DatTools
         #endregion
 
         /// <summary>
+        /// Calculate statistics from a list of inputs
+        /// </summary>
+        /// <param name="inputs">List of input files and folders</param>
+        /// <param name="single">True if single DAT stats are output, false otherwise</param>
+        /// <param name="throwOnError" > Set the statistics output format to use</param>
+        public static List<DatStatistics> CalculateStatistics(List<string> inputs, bool single, bool throwOnError = false)
+        {
+            // Create the output list
+            List<DatStatistics> stats = new List<DatStatistics>();
+
+            // Make sure we have all files and then order them
+            List<ParentablePath> files = PathTool.GetFilesOnly(inputs);
+            files = files
+                .OrderBy(i => Path.GetDirectoryName(i.CurrentPath))
+                .ThenBy(i => Path.GetFileName(i.CurrentPath))
+                .ToList();
+
+            // Init total
+            DatStatistics totalStats = new DatStatistics
+            {
+                Statistics = new ItemDictionary(),
+                DisplayName = "DIR: All DATs",
+                MachineCount = 0,
+                IsDirectory = true,
+            };
+
+            // Init directory-level variables
+            string lastdir = null;
+            string basepath = null;
+            DatStatistics dirStats = new DatStatistics
+            {
+                Statistics = new ItemDictionary(),
+                MachineCount = 0,
+                IsDirectory = true,
+            };
+
+            // Now process each of the input files
+            foreach (ParentablePath file in files)
+            {
+                // Get the directory for the current file
+                string thisdir = Path.GetDirectoryName(file.CurrentPath);
+                basepath = Path.GetDirectoryName(Path.GetDirectoryName(file.CurrentPath));
+
+                // If we don't have the first file and the directory has changed, show the previous directory stats and reset
+                if (lastdir != null && thisdir != lastdir && single)
+                {
+                    dirStats.DisplayName = $"DIR: {WebUtility.HtmlEncode(lastdir)}";
+                    dirStats.MachineCount = dirStats.Statistics.GameCount;
+                    stats.Add(dirStats);
+                    dirStats = new DatStatistics
+                    {
+                        Statistics = new ItemDictionary(),
+                        MachineCount = 0,
+                        IsDirectory = true,
+                    };
+                }
+
+                InternalStopwatch watch = new InternalStopwatch($"Collecting statistics for '{file.CurrentPath}'");
+
+                List<string> machines = new List<string>();
+                DatFile datdata = Parser.CreateAndParse(file.CurrentPath, statsOnly: true, throwOnError: throwOnError);
+                datdata.Items.BucketBy(ItemKey.Machine, DedupeType.None, norename: true);
+
+                // Add single DAT stats (if asked)
+                if (single)
+                {
+                    DatStatistics individualStats = new DatStatistics
+                    {
+                        Statistics = datdata.Items,
+                        DisplayName = datdata.Header.FileName,
+                        MachineCount = datdata.Items.Keys.Count,
+                        IsDirectory = false,
+                    };
+                    stats.Add(individualStats);
+                }
+
+                // Add single DAT stats to dir
+                dirStats.Statistics.AddStatistics(datdata.Items);
+                dirStats.Statistics.GameCount += datdata.Items.Keys.Count();
+
+                // Add single DAT stats to totals
+                totalStats.Statistics.AddStatistics(datdata.Items);
+                totalStats.Statistics.GameCount += datdata.Items.Keys.Count();
+
+                // Make sure to assign the new directory
+                lastdir = thisdir;
+
+                watch.Stop();
+            }
+
+            // Add last directory stats
+            dirStats.DisplayName = $"DIR: {WebUtility.HtmlEncode(lastdir)}";
+            dirStats.MachineCount = dirStats.Statistics.GameCount;
+            stats.Add(dirStats);
+
+            // Add total DAT stats
+            totalStats.MachineCount = totalStats.Statistics.GameCount;
+            stats.Add(totalStats);
+
+            return stats;
+        }
+
+        /// <summary>
         /// Output the stats for a list of input dats as files in a human-readable format
         /// </summary>
         /// <param name="inputs">List of input files and folders</param>
