@@ -75,6 +75,15 @@ namespace SabreTools.Reports
         /// <summary>
         /// Replace the statistics that is being output
         /// </summary>
+        /// <param name="stats">DatStatistics object to use</param>
+        public void ReplaceStatistics(DatStatistics stats)
+        {
+            _stats = stats;
+        }
+
+        /// <summary>
+        /// Replace the statistics that is being output
+        /// </summary>
         /// <param name="stats">Format of the Statistics Report to be created</param>
         /// <param name="displayName">Format of the Statistics Report to be created</param>
         /// <param name="machineCount">Format of the Statistics Report to be created</param>

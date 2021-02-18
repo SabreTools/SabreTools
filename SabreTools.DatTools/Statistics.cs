@@ -32,7 +32,7 @@ namespace SabreTools.DatTools
         /// </summary>
         /// <param name="inputs">List of input files and folders</param>
         /// <param name="single">True if single DAT stats are output, false otherwise</param>
-        /// <param name="throwOnError" > Set the statistics output format to use</param>
+        /// <param name="throwOnError"> Set the statistics output format to use</param>
         public static List<DatStatistics> CalculateStatistics(List<string> inputs, bool single, bool throwOnError = false)
         {
             // Create the output list
@@ -56,7 +56,6 @@ namespace SabreTools.DatTools
 
             // Init directory-level variables
             string lastdir = null;
-            string basepath = null;
             DatStatistics dirStats = new DatStatistics
             {
                 Statistics = new ItemDictionary(),
@@ -69,7 +68,6 @@ namespace SabreTools.DatTools
             {
                 // Get the directory for the current file
                 string thisdir = Path.GetDirectoryName(file.CurrentPath);
-                basepath = Path.GetDirectoryName(Path.GetDirectoryName(file.CurrentPath));
 
                 // If we don't have the first file and the directory has changed, show the previous directory stats and reset
                 if (lastdir != null && thisdir != lastdir && single)
@@ -133,6 +131,72 @@ namespace SabreTools.DatTools
         /// <summary>
         /// Output the stats for a list of input dats as files in a human-readable format
         /// </summary>
+        /// <param name="stats">List of pre-calculated statistics objects</param>
+        /// <param name="reportName">Name of the output file</param>
+        /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
+        /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
+        /// <param name="statDatFormat"> Set the statistics output format to use</param>
+        public static void Write(
+            List<DatStatistics> stats,
+            string reportName,
+            string outDir,
+            bool baddumpCol,
+            bool nodumpCol,
+            StatReportFormat statDatFormat)
+        {
+            // If there's no output format, set the default
+            if (statDatFormat == StatReportFormat.None)
+                statDatFormat = StatReportFormat.Textfile;
+
+            // Get the proper output file name
+            if (string.IsNullOrWhiteSpace(reportName))
+                reportName = "report";
+
+            // Get the proper output directory name
+            outDir = outDir.Ensure();
+
+            // Get the dictionary of desired output report names
+            Dictionary<StatReportFormat, string> outputs = CreateOutStatsNames(outDir, statDatFormat, reportName);
+
+            // Get all of the writers that we need
+            List<BaseReport> reports = outputs.Select(kvp => BaseReport.Create(kvp.Key, kvp.Value, baddumpCol, nodumpCol)).ToList();
+
+            // Write the header, if any
+            reports.ForEach(report => report.WriteHeader());
+
+            // Init all total variables
+            ItemDictionary totalStats = new ItemDictionary();
+
+            // Init directory-level variables
+            ItemDictionary dirStats = new ItemDictionary();
+
+            // Now process each of the statistics
+            foreach (DatStatistics stat in stats)
+            {
+                // If we have a directory statistic
+                if (stat.IsDirectory)
+                {
+                    reports.ForEach(report => report.WriteMidSeparator());
+                    reports.ForEach(report => report.ReplaceStatistics(stat));
+                    reports.ForEach(report => report.Write());
+                    reports.ForEach(report => report.WriteFooterSeparator());
+                    reports.ForEach(report => report.WriteMidHeader());
+                }
+
+                // If we have a normal statistic
+                else
+                {
+                    reports.ForEach(report => report.Write());
+                }
+            }
+
+            reports.ForEach(report => report.WriteFooter());
+            logger.User($"{Environment.NewLine}Please check the log folder if the stats scrolled offscreen");
+        }
+
+        /// <summary>
+        /// Output the stats for a list of input dats as files in a human-readable format
+        /// </summary>
         /// <param name="inputs">List of input files and folders</param>
         /// <param name="reportName">Name of the output file</param>
         /// <param name="single">True if single DAT stats are output, false otherwise</param>
@@ -180,7 +244,6 @@ namespace SabreTools.DatTools
 
             // Init directory-level variables
             string lastdir = null;
-            string basepath = null;
             ItemDictionary dirStats = new ItemDictionary();
 
             // Now process each of the input files
@@ -188,15 +251,12 @@ namespace SabreTools.DatTools
             {
                 // Get the directory for the current file
                 string thisdir = Path.GetDirectoryName(file.CurrentPath);
-                basepath = Path.GetDirectoryName(Path.GetDirectoryName(file.CurrentPath));
 
                 // If we don't have the first file and the directory has changed, show the previous directory stats and reset
                 if (lastdir != null && thisdir != lastdir)
                 {
                     // Output separator if needed
                     reports.ForEach(report => report.WriteMidSeparator());
-
-                    DatFile lastdirdat = DatFile.Create();
 
                     reports.ForEach(report => report.ReplaceStatistics(dirStats, $"DIR: {WebUtility.HtmlEncode(lastdir)}", dirStats.GameCount, true));
                     reports.ForEach(report => report.Write());
