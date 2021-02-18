@@ -10,24 +10,29 @@ namespace SabreTools.Reports.Formats
     /// </summary>
     internal class Textfile : BaseReport
     {
+        // TODO: Remove explicit constructors for filename and stream
         private readonly bool _writeToConsole;
 
         /// <summary>
         /// Create a new report from the filename
         /// </summary>
         /// <param name="filename">Name of the file to write out to</param>
-        public Textfile(string filename)
+        /// <param name="writeToConsole">True to write to consoke output, false otherwise</param>
+        public Textfile(string filename, bool writeToConsole)
             : base(filename)
         {
+            _writeToConsole = writeToConsole;
         }
 
         /// <summary>
         /// Create a new report from the stream
         /// </summary>
         /// <param name="stream">Output stream to write to</param>
-        public Textfile(Stream stream)
+        /// <param name="writeToConsole">True to write to consoke output, false otherwise</param>
+        public Textfile(Stream stream, bool writeToConsole)
             : base(stream)
         {
+            _writeToConsole = writeToConsole;
         }
 
         /// <inheritdoc/>

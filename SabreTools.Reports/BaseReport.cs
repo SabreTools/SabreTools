@@ -61,8 +61,8 @@ namespace SabreTools.Reports
         {
             return statReportFormat switch
             {
-                StatReportFormat.None => new Textfile(Console.OpenStandardOutput()) { Statistics = statsList },
-                StatReportFormat.Textfile => new Textfile(filename) { Statistics = statsList },
+                StatReportFormat.None => new Textfile(Console.OpenStandardOutput(), true) { Statistics = statsList },
+                StatReportFormat.Textfile => new Textfile(filename, false) { Statistics = statsList },
                 StatReportFormat.CSV => new SeparatedValue(filename, ',') { Statistics = statsList },
                 StatReportFormat.HTML => new Html(filename) { Statistics = statsList },
                 StatReportFormat.SSV => new SeparatedValue(filename, ';') { Statistics = statsList },
