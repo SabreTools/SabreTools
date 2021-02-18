@@ -119,9 +119,12 @@ namespace SabreTools.DatTools
             }
 
             // Add last directory stats
-            dirStats.DisplayName = $"DIR: {WebUtility.HtmlEncode(lastdir)}";
-            dirStats.MachineCount = dirStats.Statistics.GameCount;
-            stats.Add(dirStats);
+            if (single)
+            {
+                dirStats.DisplayName = $"DIR: {WebUtility.HtmlEncode(lastdir)}";
+                dirStats.MachineCount = dirStats.Statistics.GameCount;
+                stats.Add(dirStats);
+            }
 
             // Add total DAT stats
             totalStats.MachineCount = totalStats.Statistics.GameCount;
