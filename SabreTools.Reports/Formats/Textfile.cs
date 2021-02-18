@@ -43,12 +43,14 @@ namespace SabreTools.Reports.Formats
             try
             {
                 // Try to create the output file
-                FileStream fs = File.Create(outfile);
+                Stream fs = _writeToConsole ? Console.OpenStandardOutput() : File.Create(outfile);
                 if (fs == null)
                 {
                     logger.Warning($"File '{outfile}' could not be created for writing! Please check to see if the file is writable");
                     return false;
                 }
+
+                StreamWriter sw = new StreamWriter(fs);
 
                 // Now process each of the statistics
                 foreach (DatStatistics stat in Statistics)
@@ -56,17 +58,18 @@ namespace SabreTools.Reports.Formats
                     // If we have a directory statistic
                     if (stat.IsDirectory)
                     {
-                        WriteIndividual(stat, baddumpCol, nodumpCol);
-                        WriteFooterSeparator();
+                        WriteIndividual(sw, stat, baddumpCol, nodumpCol);
+                        WriteFooterSeparator(sw);
                     }
 
                     // If we have a normal statistic
                     else
                     {
-                        WriteIndividual(stat, baddumpCol, nodumpCol);
+                        WriteIndividual(sw, stat, baddumpCol, nodumpCol);
                     }
                 }
 
+                sw.Dispose();
                 fs.Dispose();
             }
             catch (Exception ex) when (!throwOnError)
@@ -85,10 +88,11 @@ namespace SabreTools.Reports.Formats
         /// <summary>
         /// Write a single set of statistics
         /// </summary>
+        /// <param name="sw">StreamWriter to write to</param>
         /// <param name="stat">DatStatistics object to write out</param>
         /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
         /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
-        private void WriteIndividual(DatStatistics stat, bool baddumpCol, bool nodumpCol)
+        private void WriteIndividual(StreamWriter sw, DatStatistics stat, bool baddumpCol, bool nodumpCol)
         {
             string line = @"'" + stat.DisplayName + @"':
 --------------------------------------------------
@@ -112,17 +116,18 @@ namespace SabreTools.Reports.Formats
             // For spacing between DATs
             line += "\n\n";
 
-            _writer.Write(line);
-            _writer.Flush();
+            sw.Write(line);
+            sw.Flush();
         }
 
         /// <summary>
         /// Write out the footer-separator to the stream, if any exists
         /// </summary>
-        private void WriteFooterSeparator()
+        /// <param name="sw">StreamWriter to write to</param>
+        private void WriteFooterSeparator(StreamWriter sw)
         {
-            _writer.Write("\n");
-            _writer.Flush();
+            sw.Write("\n");
+            sw.Flush();
         }
     }
 }

@@ -36,8 +36,11 @@ namespace SabreTools.Reports.Formats
                     return false;
                 }
 
+                // TODO: Use XTW instead
+                StreamWriter sw = new StreamWriter(fs);
+
                 // Write out the header
-                WriteHeader(baddumpCol, nodumpCol);
+                WriteHeader(sw, baddumpCol, nodumpCol);
 
                 // Now process each of the statistics
                 foreach (DatStatistics stat in Statistics)
@@ -45,20 +48,21 @@ namespace SabreTools.Reports.Formats
                     // If we have a directory statistic
                     if (stat.IsDirectory)
                     {
-                        WriteMidSeparator(baddumpCol, nodumpCol);
-                        WriteIndividual(stat, baddumpCol, nodumpCol);
-                        WriteFooterSeparator(baddumpCol, nodumpCol);
-                        WriteMidHeader(baddumpCol, nodumpCol);
+                        WriteMidSeparator(sw, baddumpCol, nodumpCol);
+                        WriteIndividual(sw, stat, baddumpCol, nodumpCol);
+                        WriteFooterSeparator(sw, baddumpCol, nodumpCol);
+                        WriteMidHeader(sw, baddumpCol, nodumpCol);
                     }
 
                     // If we have a normal statistic
                     else
                     {
-                        WriteIndividual(stat, baddumpCol, nodumpCol);
+                        WriteIndividual(sw, stat, baddumpCol, nodumpCol);
                     }
                 }
 
-                WriteFooter();
+                WriteFooter(sw);
+                sw.Dispose();
                 fs.Dispose();
             }
             catch (Exception ex) when (!throwOnError)
@@ -77,11 +81,12 @@ namespace SabreTools.Reports.Formats
         /// <summary>
         /// Write out the header to the stream, if any exists
         /// </summary>
+        /// <param name="sw">StreamWriter to write to</param>
         /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
         /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
-        private void WriteHeader(bool baddumpCol, bool nodumpCol)
+        private void WriteHeader(StreamWriter sw, bool baddumpCol, bool nodumpCol)
         {
-            _writer.Write(@"<!DOCTYPE html>
+            sw.Write(@"<!DOCTYPE html>
 <html>
     <header>
         <title>DAT Statistics Report</title>
@@ -101,32 +106,34 @@ namespace SabreTools.Reports.Formats
         <h2>DAT Statistics Report (" + DateTime.Now.ToShortDateString() + @")</h2>
         <table border=string.Empty1string.Empty cellpadding=string.Empty5string.Empty cellspacing=string.Empty0string.Empty>
 ");
-            _writer.Flush();
+            sw.Flush();
 
             // Now write the mid header for those who need it
-            WriteMidHeader(baddumpCol, nodumpCol);
+            WriteMidHeader(sw, baddumpCol, nodumpCol);
         }
 
         /// <summary>
         /// Write out the mid-header to the stream, if any exists
         /// </summary>
+        /// <param name="sw">StreamWriter to write to</param>
         /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
         /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
-        private void WriteMidHeader(bool baddumpCol, bool nodumpCol)
+        private void WriteMidHeader(StreamWriter sw, bool baddumpCol, bool nodumpCol)
         {
-            _writer.Write(@"			<tr bgcolor=string.Emptygraystring.Empty><th>File Name</th><th align=string.Emptyrightstring.Empty>Total Size</th><th align=string.Emptyrightstring.Empty>Games</th><th align=string.Emptyrightstring.Empty>Roms</th>"
+            sw.Write(@"			<tr bgcolor=string.Emptygraystring.Empty><th>File Name</th><th align=string.Emptyrightstring.Empty>Total Size</th><th align=string.Emptyrightstring.Empty>Games</th><th align=string.Emptyrightstring.Empty>Roms</th>"
 + @"<th align=string.Emptyrightstring.Empty>Disks</th><th align=string.Emptyrightstring.Empty>&#35; with CRC</th><th align=string.Emptyrightstring.Empty>&#35; with MD5</th><th align=string.Emptyrightstring.Empty>&#35; with SHA-1</th><th align=string.Emptyrightstring.Empty>&#35; with SHA-256</th>"
 + (baddumpCol ? "<th class=\".right\">Baddumps</th>" : string.Empty) + (nodumpCol ? "<th class=\".right\">Nodumps</th>" : string.Empty) + "</tr>\n");
-            _writer.Flush();
+            sw.Flush();
         }
 
         /// <summary>
         /// Write a single set of statistics
         /// </summary>
+        /// <param name="sw">StreamWriter to write to</param>
         /// <param name="stat">DatStatistics object to write out</param>
         /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
         /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
-        private void WriteIndividual(DatStatistics stat, bool baddumpCol, bool nodumpCol)
+        private void WriteIndividual(StreamWriter sw, DatStatistics stat, bool baddumpCol, bool nodumpCol)
         {
             string line = "\t\t\t<tr" + (stat.DisplayName.StartsWith("DIR: ")
                             ? $" class=\"dir\"><td>{WebUtility.HtmlEncode(stat.DisplayName.Remove(0, 5))}"
@@ -142,18 +149,19 @@ namespace SabreTools.Reports.Formats
                         + (baddumpCol ? $"<td align=\"right\">{stat.Statistics.BaddumpCount}</td>" : string.Empty)
                         + (nodumpCol ? $"<td align=\"right\">{stat.Statistics.NodumpCount}</td>" : string.Empty)
                         + "</tr>\n";
-            _writer.Write(line);
-            _writer.Flush();
+            sw.Write(line);
+            sw.Flush();
         }
 
         /// <summary>
         /// Write out the separator to the stream, if any exists
         /// </summary>
+        /// <param name="sw">StreamWriter to write to</param>
         /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
         /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
-        private void WriteMidSeparator(bool baddumpCol, bool nodumpCol)
+        private void WriteMidSeparator(StreamWriter sw, bool baddumpCol, bool nodumpCol)
         {
-            _writer.Write("<tr><td colspan=\""
+            sw.Write("<tr><td colspan=\""
                         + (baddumpCol && nodumpCol
                             ? "12"
                             : (baddumpCol ^ nodumpCol
@@ -161,17 +169,18 @@ namespace SabreTools.Reports.Formats
                                 : "10")
                             )
                         + "\"></td></tr>\n");
-            _writer.Flush();
+            sw.Flush();
         }
 
         /// <summary>
         /// Write out the footer-separator to the stream, if any exists
         /// </summary>
+        /// <param name="sw">StreamWriter to write to</param>
         /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
         /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
-        private void WriteFooterSeparator(bool baddumpCol, bool nodumpCol)
+        private void WriteFooterSeparator(StreamWriter sw, bool baddumpCol, bool nodumpCol)
         {
-            _writer.Write("<tr border=\"0\"><td colspan=\""
+            sw.Write("<tr border=\"0\"><td colspan=\""
                         + (baddumpCol && nodumpCol
                             ? "12"
                             : (baddumpCol ^ nodumpCol
@@ -179,19 +188,20 @@ namespace SabreTools.Reports.Formats
                                 : "10")
                             )
                         + "\"></td></tr>\n");
-            _writer.Flush();
+            sw.Flush();
         }
 
         /// <summary>
         /// Write out the footer to the stream, if any exists
         /// </summary>
-        private void WriteFooter()
+        /// <param name="sw">StreamWriter to write to</param>
+        private void WriteFooter(StreamWriter sw)
         {
-            _writer.Write(@"		</table>
+            sw.Write(@"		</table>
     </body>
 </html>
 ");
-            _writer.Flush();
+            sw.Flush();
         }
     }
 }

@@ -38,8 +38,11 @@ namespace SabreTools.Reports.Formats
                     return false;
                 }
 
+                // TODO: Use SVW instead
+                StreamWriter sw = new StreamWriter(fs);
+
                 // Write out the header
-                WriteHeader(baddumpCol, nodumpCol);
+                WriteHeader(sw, baddumpCol, nodumpCol);
 
                 // Now process each of the statistics
                 foreach (DatStatistics stat in Statistics)
@@ -47,17 +50,18 @@ namespace SabreTools.Reports.Formats
                     // If we have a directory statistic
                     if (stat.IsDirectory)
                     {
-                        WriteIndividual(stat, baddumpCol, nodumpCol);
-                        WriteFooterSeparator();
+                        WriteIndividual(sw, stat, baddumpCol, nodumpCol);
+                        WriteFooterSeparator(sw);
                     }
 
                     // If we have a normal statistic
                     else
                     {
-                        WriteIndividual(stat, baddumpCol, nodumpCol);
+                        WriteIndividual(sw, stat, baddumpCol, nodumpCol);
                     }
                 }
 
+                sw.Dispose();
                 fs.Dispose();
             }
             catch (Exception ex) when (!throwOnError)
@@ -76,22 +80,24 @@ namespace SabreTools.Reports.Formats
         /// <summary>
         /// Write out the header to the stream, if any exists
         /// </summary>
+        /// <param name="sw">StreamWriter to write to</param>
         /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
         /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
-        private void WriteHeader(bool baddumpCol, bool nodumpCol)
+        private void WriteHeader(StreamWriter sw, bool baddumpCol, bool nodumpCol)
         {
-            _writer.Write(string.Format("\"File Name\"{0}\"Total Size\"{0}\"Games\"{0}\"Roms\"{0}\"Disks\"{0}\"# with CRC\"{0}\"# with MD5\"{0}\"# with SHA-1\"{0}\"# with SHA-256\""
+            sw.Write(string.Format("\"File Name\"{0}\"Total Size\"{0}\"Games\"{0}\"Roms\"{0}\"Disks\"{0}\"# with CRC\"{0}\"# with MD5\"{0}\"# with SHA-1\"{0}\"# with SHA-256\""
                 + (baddumpCol ? "{0}\"BadDumps\"" : string.Empty) + (nodumpCol ? "{0}\"Nodumps\"" : string.Empty) + "\n", _separator));
-            _writer.Flush();
+            sw.Flush();
         }
 
         /// <summary>
         /// Write a single set of statistics
         /// </summary>
+        /// <param name="sw">StreamWriter to write to</param>
         /// <param name="stat">DatStatistics object to write out</param>
         /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
         /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
-        private void WriteIndividual(DatStatistics stat, bool baddumpCol, bool nodumpCol)
+        private void WriteIndividual(StreamWriter sw, DatStatistics stat, bool baddumpCol, bool nodumpCol)
         {
             string line = string.Format("\"" + stat.DisplayName + "\"{0}"
                     + "\"" + stat.Statistics.TotalSize + "\"{0}"
@@ -108,17 +114,18 @@ namespace SabreTools.Reports.Formats
                     + (nodumpCol ? "{0}\"" + stat.Statistics.NodumpCount + "\"" : string.Empty)
                     + "\n", _separator);
 
-            _writer.Write(line);
-            _writer.Flush();
+            sw.Write(line);
+            sw.Flush();
         }
 
         /// <summary>
         /// Write out the footer-separator to the stream, if any exists
         /// </summary>
-        private void WriteFooterSeparator()
+        /// <param name="sw">StreamWriter to write to</param>
+        private void WriteFooterSeparator(StreamWriter sw)
         {
-            _writer.Write("\n");
-            _writer.Flush();
+            sw.Write("\n");
+            sw.Flush();
         }
     }
 }

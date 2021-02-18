@@ -25,17 +25,13 @@ namespace SabreTools.Reports
 
         public List<DatStatistics> Statistics { get; set; }
 
-        protected StreamWriter _writer;
-
         /// <summary>
         /// Create a new report from the filename
         /// </summary>
         /// <param name="filename">Name of the file to write out to</param>
         public BaseReport(string filename)
         {
-            var fs = File.Create(filename);
-            if (fs != null)
-                _writer = new StreamWriter(fs) { AutoFlush = true };
+            //TODO: replace woth stats param
         }
 
         /// <summary>
@@ -46,8 +42,6 @@ namespace SabreTools.Reports
         {
             if (!stream.CanWrite)
                 throw new ArgumentException(nameof(stream));
-
-            _writer = new StreamWriter(stream) { AutoFlush = true };
         }
 
         /// <summary>
