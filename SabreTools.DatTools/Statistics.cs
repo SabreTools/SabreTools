@@ -176,7 +176,7 @@ namespace SabreTools.DatTools
                     string outfile = outfiles[reportFormat];
                     try
                     {
-                        BaseReport.Create(reportFormat, stats, outfile)?.WriteToFile(outfile, baddumpCol, nodumpCol, throwOnError);
+                        BaseReport.Create(reportFormat, stats)?.WriteToFile(outfile, baddumpCol, nodumpCol, throwOnError);
                     }
                     catch (Exception ex) when (!throwOnError)
                     {
