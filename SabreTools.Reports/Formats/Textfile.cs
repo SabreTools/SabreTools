@@ -11,7 +11,6 @@ namespace SabreTools.Reports.Formats
     /// </summary>
     internal class Textfile : BaseReport
     {
-        // TODO: Remove explicit constructors for filename and stream
         private readonly bool _writeToConsole;
 
         /// <summary>
