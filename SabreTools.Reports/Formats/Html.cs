@@ -5,7 +5,6 @@ using System.Net;
 using System.Text;
 using System.Xml;
 
-using SabreTools.IO;
 using SabreTools.Logging;
 
 namespace SabreTools.Reports.Formats
