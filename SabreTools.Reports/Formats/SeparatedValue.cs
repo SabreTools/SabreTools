@@ -51,13 +51,19 @@ namespace SabreTools.Reports.Formats
                 WriteHeader(svw, baddumpCol, nodumpCol);
 
                 // Now process each of the statistics
-                foreach (DatStatistics stat in Statistics)
+                for (int i = 0; i < Statistics.Count; i++)
                 {
+                    // Get the current statistic
+                    DatStatistics stat = Statistics[i];
+
                     // If we have a directory statistic
                     if (stat.IsDirectory)
                     {
                         WriteIndividual(svw, stat, baddumpCol, nodumpCol);
-                        WriteFooterSeparator(svw);
+
+                        // If we have anything but the last value, write the separator
+                        if (i < Statistics.Count - 1)
+                            WriteFooterSeparator(svw);
                     }
 
                     // If we have a normal statistic
