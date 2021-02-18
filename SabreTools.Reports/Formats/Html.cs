@@ -38,19 +38,19 @@ namespace SabreTools.Reports.Formats
         /// </summary>
         public override void Write()
         {
-            string line = "\t\t\t<tr" + (_name.StartsWith("DIR: ")
-                            ? $" class=\"dir\"><td>{WebUtility.HtmlEncode(_name.Remove(0, 5))}"
-                            : $"><td>{WebUtility.HtmlEncode(_name)}") + "</td>"
-                        + $"<td align=\"right\">{GetBytesReadable(_stats.TotalSize)}</td>"
-                        + $"<td align=\"right\">{_machineCount}</td>"
-                        + $"<td align=\"right\">{_stats.RomCount}</td>"
-                        + $"<td align=\"right\">{_stats.DiskCount}</td>"
-                        + $"<td align=\"right\">{_stats.CRCCount}</td>"
-                        + $"<td align=\"right\">{_stats.MD5Count}</td>"
-                        + $"<td align=\"right\">{_stats.SHA1Count}</td>"
-                        + $"<td align=\"right\">{_stats.SHA256Count}</td>"
-                        + (_baddumpCol ? $"<td align=\"right\">{_stats.BaddumpCount}</td>" : string.Empty)
-                        + (_nodumpCol ? $"<td align=\"right\">{_stats.NodumpCount}</td>" : string.Empty)
+            string line = "\t\t\t<tr" + (_stats.DisplayName.StartsWith("DIR: ")
+                            ? $" class=\"dir\"><td>{WebUtility.HtmlEncode(_stats.DisplayName.Remove(0, 5))}"
+                            : $"><td>{WebUtility.HtmlEncode(_stats.DisplayName)}") + "</td>"
+                        + $"<td align=\"right\">{GetBytesReadable(_stats.Statistics.TotalSize)}</td>"
+                        + $"<td align=\"right\">{_stats.MachineCount}</td>"
+                        + $"<td align=\"right\">{_stats.Statistics.RomCount}</td>"
+                        + $"<td align=\"right\">{_stats.Statistics.DiskCount}</td>"
+                        + $"<td align=\"right\">{_stats.Statistics.CRCCount}</td>"
+                        + $"<td align=\"right\">{_stats.Statistics.MD5Count}</td>"
+                        + $"<td align=\"right\">{_stats.Statistics.SHA1Count}</td>"
+                        + $"<td align=\"right\">{_stats.Statistics.SHA256Count}</td>"
+                        + (_baddumpCol ? $"<td align=\"right\">{_stats.Statistics.BaddumpCount}</td>" : string.Empty)
+                        + (_nodumpCol ? $"<td align=\"right\">{_stats.Statistics.NodumpCount}</td>" : string.Empty)
                         + "</tr>\n";
             _writer.Write(line);
             _writer.Flush();

@@ -40,19 +40,19 @@ namespace SabreTools.Reports.Formats
         /// </summary>
         public override void Write()
         {
-            string line = string.Format("\"" + _name + "\"{0}"
-                    + "\"" + _stats.TotalSize + "\"{0}"
-                    + "\"" + _machineCount + "\"{0}"
-                    + "\"" + _stats.RomCount + "\"{0}"
-                    + "\"" + _stats.DiskCount + "\"{0}"
-                    + "\"" + _stats.CRCCount + "\"{0}"
-                    + "\"" + _stats.MD5Count + "\"{0}"
-                    + "\"" + _stats.SHA1Count + "\"{0}"
-                    + "\"" + _stats.SHA256Count + "\"{0}"
-                    + "\"" + _stats.SHA384Count + "\"{0}"
-                    + "\"" + _stats.SHA512Count + "\""
-                    + (_baddumpCol ? "{0}\"" + _stats.BaddumpCount + "\"" : string.Empty)
-                    + (_nodumpCol ? "{0}\"" + _stats.NodumpCount + "\"" : string.Empty)
+            string line = string.Format("\"" + _stats.DisplayName + "\"{0}"
+                    + "\"" + _stats.Statistics.TotalSize + "\"{0}"
+                    + "\"" + _stats.MachineCount + "\"{0}"
+                    + "\"" + _stats.Statistics.RomCount + "\"{0}"
+                    + "\"" + _stats.Statistics.DiskCount + "\"{0}"
+                    + "\"" + _stats.Statistics.CRCCount + "\"{0}"
+                    + "\"" + _stats.Statistics.MD5Count + "\"{0}"
+                    + "\"" + _stats.Statistics.SHA1Count + "\"{0}"
+                    + "\"" + _stats.Statistics.SHA256Count + "\"{0}"
+                    + "\"" + _stats.Statistics.SHA384Count + "\"{0}"
+                    + "\"" + _stats.Statistics.SHA512Count + "\""
+                    + (_baddumpCol ? "{0}\"" + _stats.Statistics.BaddumpCount + "\"" : string.Empty)
+                    + (_nodumpCol ? "{0}\"" + _stats.Statistics.NodumpCount + "\"" : string.Empty)
                     + "\n", _separator);
 
             _writer.Write(line);

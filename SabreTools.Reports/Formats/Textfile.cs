@@ -34,24 +34,24 @@ namespace SabreTools.Reports.Formats
         /// </summary>
         public override void Write()
         {
-            string line = @"'" + _name + @"':
+            string line = @"'" + _stats.DisplayName + @"':
 --------------------------------------------------
-    Uncompressed size:       " + GetBytesReadable(_stats.TotalSize) + @"
-    Games found:             " + _machineCount + @"
-    Roms found:              " + _stats.RomCount + @"
-    Disks found:             " + _stats.DiskCount + @"
-    Roms with CRC:           " + _stats.CRCCount + @"
-    Roms with MD5:           " + _stats.MD5Count + @"
-    Roms with SHA-1:         " + _stats.SHA1Count + @"
-    Roms with SHA-256:       " + _stats.SHA256Count + @"
-    Roms with SHA-384:       " + _stats.SHA384Count + @"
-    Roms with SHA-512:       " + _stats.SHA512Count + "\n";
+    Uncompressed size:       " + GetBytesReadable(_stats.Statistics.TotalSize) + @"
+    Games found:             " + _stats.MachineCount + @"
+    Roms found:              " + _stats.Statistics.RomCount + @"
+    Disks found:             " + _stats.Statistics.DiskCount + @"
+    Roms with CRC:           " + _stats.Statistics.CRCCount + @"
+    Roms with MD5:           " + _stats.Statistics.MD5Count + @"
+    Roms with SHA-1:         " + _stats.Statistics.SHA1Count + @"
+    Roms with SHA-256:       " + _stats.Statistics.SHA256Count + @"
+    Roms with SHA-384:       " + _stats.Statistics.SHA384Count + @"
+    Roms with SHA-512:       " + _stats.Statistics.SHA512Count + "\n";
 
             if (_baddumpCol)
-                line += "	Roms with BadDump status: " + _stats.BaddumpCount + "\n";
+                line += "	Roms with BadDump status: " + _stats.Statistics.BaddumpCount + "\n";
 
             if (_nodumpCol)
-                line += "	Roms with Nodump status: " + _stats.NodumpCount + "\n";
+                line += "	Roms with Nodump status: " + _stats.Statistics.NodumpCount + "\n";
 
             // For spacing between DATs
             line += "\n\n";

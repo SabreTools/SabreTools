@@ -12,9 +12,7 @@ namespace SabreTools.Reports
     /// TODO: Can this be overhauled to have all types write like DatFiles?
     public abstract class BaseReport
     {
-        protected string _name;
-        protected long _machineCount;
-        protected ItemDictionary _stats;
+        protected DatStatistics _stats;
 
         protected StreamWriter _writer;
         protected bool _baddumpCol;
@@ -79,9 +77,9 @@ namespace SabreTools.Reports
         /// </summary>
         public void ReplaceStatistics(string datName, long machineCount, ItemDictionary datStats)
         {
-            _name = datName;
-            _machineCount = machineCount;
-            _stats = datStats;
+            _stats.DisplayName = datName;
+            _stats.MachineCount = machineCount;
+            _stats.Statistics = datStats;
         }
 
         /// <summary>
