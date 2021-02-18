@@ -164,12 +164,6 @@ namespace SabreTools.DatTools
             // Write the header, if any
             reports.ForEach(report => report.WriteHeader());
 
-            // Init all total variables
-            ItemDictionary totalStats = new ItemDictionary();
-
-            // Init directory-level variables
-            ItemDictionary dirStats = new ItemDictionary();
-
             // Now process each of the statistics
             foreach (DatStatistics stat in stats)
             {
@@ -186,6 +180,7 @@ namespace SabreTools.DatTools
                 // If we have a normal statistic
                 else
                 {
+                    reports.ForEach(report => report.ReplaceStatistics(stat));
                     reports.ForEach(report => report.WriteIndividual());
                 }
             }

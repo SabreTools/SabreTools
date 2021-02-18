@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 using SabreTools.DatFiles;
+using SabreTools.Logging;
 using SabreTools.Reports.Formats;
 
 namespace SabreTools.Reports
@@ -12,6 +14,16 @@ namespace SabreTools.Reports
     /// TODO: Can this be overhauled to have all types write like DatFiles?
     public abstract class BaseReport
     {
+        #region Logging
+
+        /// <summary>
+        /// Logging object
+        /// </summary>
+        protected readonly Logger logger = new Logger();
+
+        #endregion
+
+        protected List<DatStatistics> _statsList;
         protected DatStatistics _stats;
 
         protected StreamWriter _writer;
@@ -97,10 +109,20 @@ namespace SabreTools.Reports
         }
 
         /// <summary>
+        /// Create and open an output file for writing direct from a set of statistics
+        /// </summary>
+        /// <param name="outfile">Name of the file to write to</param>
+        /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
+        /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
+        /// <param name="throwOnError">True if the error that is thrown should be thrown back to the caller, false otherwise</param>
+        /// <returns>True if the report was written correctly, false otherwise</returns>
+        public abstract bool WriteToFile(string outfile, bool baddumpCol, bool nodumpCol, bool throwOnError = false);
+
+        /// <summary>
         /// Write the report to the output stream
         /// </summary>
         public abstract void WriteIndividual();
-
+        
         /// <summary>
         /// Write out the header to the stream, if any exists
         /// </summary>

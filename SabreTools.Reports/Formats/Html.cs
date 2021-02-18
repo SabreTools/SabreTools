@@ -2,6 +2,8 @@
 using System.IO;
 using System.Net;
 
+using SabreTools.Logging;
+
 namespace SabreTools.Reports.Formats
 {
     /// <summary>
@@ -31,6 +33,61 @@ namespace SabreTools.Reports.Formats
         public Html(Stream stream, bool baddumpCol = false, bool nodumpCol = false)
             : base(stream, baddumpCol, nodumpCol)
         {
+        }
+
+        /// <inheritdoc/>
+        public override bool WriteToFile(string outfile, bool baddumpCol, bool nodumpCol, bool throwOnError = false)
+        {
+            InternalStopwatch watch = new InternalStopwatch($"Writing statistics to '{outfile}");
+
+            try
+            {
+                // Try to create the output file
+                FileStream fs = File.Create(outfile);
+                if (fs == null)
+                {
+                    logger.Warning($"File '{outfile}' could not be created for writing! Please check to see if the file is writable");
+                    return false;
+                }
+
+                // Write out the header
+                WriteHeader();
+
+                // Now process each of the statistics
+                foreach (DatStatistics stat in _statsList)
+                {
+                    // If we have a directory statistic
+                    if (stat.IsDirectory)
+                    {
+                        WriteMidSeparator();
+                        ReplaceStatistics(stat);
+                        WriteIndividual();
+                        WriteFooterSeparator();
+                        WriteMidHeader();
+                    }
+
+                    // If we have a normal statistic
+                    else
+                    {
+                        ReplaceStatistics(stat);
+                        WriteIndividual();
+                    }
+                }
+
+                WriteFooter();
+                fs.Dispose();
+            }
+            catch (Exception ex) when (!throwOnError)
+            {
+                logger.Error(ex);
+                return false;
+            }
+            finally
+            {
+                watch.Stop();
+            }
+
+            return true;
         }
 
         /// <summary>
