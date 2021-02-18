@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 using SabreTools.Logging;
@@ -15,10 +16,10 @@ namespace SabreTools.Reports.Formats
         /// <summary>
         /// Create a new report from the filename
         /// </summary>
-        /// <param name="filename">Name of the file to write out to</param>
+        /// <param name="statsList">List of statistics objects to set</param>
         /// <param name="separator">Separator character to use in output</param>
-        public SeparatedValue(string filename, char separator)
-            : base(filename)
+        public SeparatedValue(List<DatStatistics> statsList, char separator)
+            : base(statsList)
         {
             _separator = separator;
         }

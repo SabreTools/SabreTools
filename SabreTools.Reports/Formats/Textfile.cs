@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 using SabreTools.Logging;
@@ -16,21 +17,10 @@ namespace SabreTools.Reports.Formats
         /// <summary>
         /// Create a new report from the filename
         /// </summary>
-        /// <param name="filename">Name of the file to write out to</param>
+        /// <param name="statsList">List of statistics objects to set</param>
         /// <param name="writeToConsole">True to write to consoke output, false otherwise</param>
-        public Textfile(string filename, bool writeToConsole)
-            : base(filename)
-        {
-            _writeToConsole = writeToConsole;
-        }
-
-        /// <summary>
-        /// Create a new report from the stream
-        /// </summary>
-        /// <param name="stream">Output stream to write to</param>
-        /// <param name="writeToConsole">True to write to consoke output, false otherwise</param>
-        public Textfile(Stream stream, bool writeToConsole)
-            : base(stream)
+        public Textfile(List<DatStatistics> statsList, bool writeToConsole)
+            : base(statsList)
         {
             _writeToConsole = writeToConsole;
         }

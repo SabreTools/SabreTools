@@ -126,7 +126,7 @@ namespace SabreTools.DatTools
                     IsDirectory = false,
                 },
             };
-            var consoleOutput = BaseReport.Create(StatReportFormat.None, statsList, null, true, true);
+            var consoleOutput = BaseReport.Create(StatReportFormat.None, statsList);
             consoleOutput.WriteToFile(null, true, true);
         }
 

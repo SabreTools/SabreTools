@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 
-using SabreTools.DatFiles;
 using SabreTools.Logging;
 using SabreTools.Reports.Formats;
 
@@ -28,20 +25,10 @@ namespace SabreTools.Reports
         /// <summary>
         /// Create a new report from the filename
         /// </summary>
-        /// <param name="filename">Name of the file to write out to</param>
-        public BaseReport(string filename)
+        /// <param name="statsList">List of statistics objects to set</param>
+        public BaseReport(List<DatStatistics> statsList)
         {
-            //TODO: replace woth stats param
-        }
-
-        /// <summary>
-        /// Create a new report from the stream
-        /// </summary>
-        /// <param name="stream">Output stream to write to</param>
-        public BaseReport(Stream stream)
-        {
-            if (!stream.CanWrite)
-                throw new ArgumentException(nameof(stream));
+            Statistics = statsList;
         }
 
         /// <summary>
@@ -49,18 +36,17 @@ namespace SabreTools.Reports
         /// </summary>
         /// <param name="statReportFormat">Format of the Statistics Report to be created</param>
         /// <param name="statsList">List of statistics objects to set</param>
-        /// <param name="filename">Name of the file to write out to</param>
         /// <returns>BaseReport of the specific internal type that corresponds to the inputs</returns>
-        public static BaseReport Create(StatReportFormat statReportFormat, List<DatStatistics> statsList, string filename)
+        public static BaseReport Create(StatReportFormat statReportFormat, List<DatStatistics> statsList)
         {
             return statReportFormat switch
             {
-                StatReportFormat.None => new Textfile(Console.OpenStandardOutput(), true) { Statistics = statsList },
-                StatReportFormat.Textfile => new Textfile(filename, false) { Statistics = statsList },
-                StatReportFormat.CSV => new SeparatedValue(filename, ',') { Statistics = statsList },
-                StatReportFormat.HTML => new Html(filename) { Statistics = statsList },
-                StatReportFormat.SSV => new SeparatedValue(filename, ';') { Statistics = statsList },
-                StatReportFormat.TSV => new SeparatedValue(filename, '\t') { Statistics = statsList },
+                StatReportFormat.None => new Textfile(statsList, true),
+                StatReportFormat.Textfile => new Textfile(statsList, false),
+                StatReportFormat.CSV => new SeparatedValue(statsList, ','),
+                StatReportFormat.HTML => new Html(statsList),
+                StatReportFormat.SSV => new SeparatedValue(statsList, ';'),
+                StatReportFormat.TSV => new SeparatedValue(statsList, '\t'),
                 _ => null,
             };
         }

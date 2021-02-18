@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 
@@ -15,9 +16,9 @@ namespace SabreTools.Reports.Formats
         /// <summary>
         /// Create a new report from the filename
         /// </summary>
-        /// <param name="filename">Name of the file to write out to</param>
-        public Html(string filename)
-            : base(filename)
+        /// <param name="statsList">List of statistics objects to set</param>
+        public Html(List<DatStatistics> statsList)
+            : base(statsList)
         {
         }
 
