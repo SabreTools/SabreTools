@@ -27,6 +27,10 @@ namespace SabreTools.DatItems.Formats
         [XmlElement("features")]
         public List<PartFeature> Features { get; set; }
 
+        [JsonProperty("dataAreas", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [XmlElement("dataAreas")]
+        public List<DataArea> DataAreas { get; set; }
+        
         [JsonIgnore]
         public bool DataAreasSpecified { get { return DataAreas != null && DataAreas.Count > 0; } }
         
