@@ -28,6 +28,9 @@ namespace SabreTools.DatItems.Formats
         public List<PartFeature> Features { get; set; }
 
         [JsonIgnore]
+        public bool DataAreasSpecified { get { return DataAreas != null && DataAreas.Count > 0; } }
+        
+        [JsonIgnore]
         public bool FeaturesSpecified { get { return Features != null && Features.Count > 0; } }
 
         #endregion
@@ -71,6 +74,7 @@ namespace SabreTools.DatItems.Formats
                 Name = this.Name,
                 Interface = this.Interface,
                 Features = this.Features,
+                DataAreas = this.DataAreas,                
             };
         }
 
@@ -99,6 +103,15 @@ namespace SabreTools.DatItems.Formats
                 foreach (PartFeature partFeature in Features)
                 {
                     match &= newOther.Features.Contains(partFeature);
+                }
+            }
+
+            // If the dataareas match
+            if (DataAreasSpecified)
+            {
+                foreach (DataArea dataArea in DataAreas)
+                {
+                    match &= newOther.DataAreas.Contains(dataArea);
                 }
             }
 
