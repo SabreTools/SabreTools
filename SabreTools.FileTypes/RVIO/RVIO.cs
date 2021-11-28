@@ -374,7 +374,9 @@ namespace RVIO
 
         internal static string AddLongPathPrefix(string path)
         {
-            if (unix.IsUnix)
+            // since .NET 4.6.1, long path names are supported
+            Version dotnetversion = new Version("4.6.1");
+            if (unix.IsUnix || Environment.Version > dotnetversion)
                 return path;
 
             if (string.IsNullOrEmpty(path) || path.StartsWith(@"\\?\"))
