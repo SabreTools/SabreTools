@@ -217,7 +217,7 @@ namespace SabreTools.DatFiles.Formats
                                 Index = indexId,
                                 Name = filename,
                             },
-                        }, statsOnly);
+                        };
                         item.CopyMachineInformation(machine);
                         ParseAddHelper(item, statsOnly);
                         
@@ -235,7 +235,7 @@ namespace SabreTools.DatFiles.Formats
                                 Index = indexId,
                                 Name = filename,
                             },
-                        }, statsOnly);
+                        };
                         item.CopyMachineInformation(machine);
                         ParseAddHelper(item, statsOnly);
                         
