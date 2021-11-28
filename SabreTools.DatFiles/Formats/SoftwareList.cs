@@ -207,8 +207,8 @@ namespace SabreTools.DatFiles.Formats
                         break;
 
                     case "info":
-                        ParseAddHelper(new Info
-                        {
+                       DatItem item = new Info
+                       {
                             Name = reader.GetAttribute("name"),
                             Value = reader.GetAttribute("value"),
 
@@ -218,12 +218,14 @@ namespace SabreTools.DatFiles.Formats
                                 Name = filename,
                             },
                         }, statsOnly);
-
+                        item.CopyMachineInformation(machine);
+                        ParseAddHelper(item, statsOnly);
+                        
                         reader.Read();
                         break;
 
                     case "sharedfeat":
-                        ParseAddHelper(new SharedFeature
+                        DatItem item = new SharedFeature
                         {
                             Name = reader.GetAttribute("name"),
                             Value = reader.GetAttribute("value"),
@@ -234,7 +236,9 @@ namespace SabreTools.DatFiles.Formats
                                 Name = filename,
                             },
                         }, statsOnly);
-
+                        item.CopyMachineInformation(machine);
+                        ParseAddHelper(item, statsOnly);
+                        
                         reader.Read();
                         break;
 
@@ -294,6 +298,7 @@ namespace SabreTools.DatFiles.Formats
 
             // Get lists ready
             part.Features = new List<PartFeature>();
+            part.DataAreas = new List<DataArea>();
             List<DatItem> items = new List<DatItem>();
 
             while (!reader.EOF)
@@ -332,8 +337,10 @@ namespace SabreTools.DatFiles.Formats
                         List<DatItem> roms = ReadDataArea(reader.ReadSubtree(), dataArea);
 
                         // If we got valid roms, add them to the list
-                        if (roms != null)
-                            items.AddRange(roms);
+                        if (!String.IsNullOrEmpty(string.Join(", ", roms)))
+                                items.AddRange(roms);
+                        else
+                                part.DataAreas.Add(dataArea);
 
                         // Skip the dataarea now that we've processed it
                         reader.Skip();
@@ -577,6 +584,7 @@ namespace SabreTools.DatFiles.Formats
                 ItemType.DipSwitch,
                 ItemType.Disk,
                 ItemType.Info,
+                ItemType.DataArea,
                 ItemType.Rom,
                 ItemType.SharedFeature,
             };
@@ -838,6 +846,20 @@ namespace SabreTools.DatFiles.Formats
 
                     // End dataarea
                     xtw.WriteEndElement();
+                    
+                    // additional dataareas
+                    if (rom.Part?.DataAreasSpecified == true)
+                    {
+                        foreach (DataArea kvp in rom.Part.DataAreas)
+                        {
+                            xtw.WriteStartElement("dataarea");
+                            xtw.WriteRequiredAttributeString("name", kvp.Name);
+                            xtw.WriteOptionalAttributeString("size", kvp.Size.ToString());
+                            xtw.WriteOptionalAttributeString("width", kvp.Width?.ToString());
+                            xtw.WriteOptionalAttributeString("endianness", kvp.Endianness.FromEndianness());
+                            xtw.WriteEndElement();
+                        }
+                    }
 
                     // End part
                     xtw.WriteEndElement();
