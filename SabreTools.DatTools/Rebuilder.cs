@@ -239,8 +239,10 @@ namespace SabreTools.DatTools
                         bool rebuilt = RebuildGenericHelper(datFile, file, outDir, quickScan, date, inverse, outputFormat, asFiles);
 
                         // If we are supposed to delete the file, do so
-                        if (delete && rebuilt)
-                            File.Delete(input);
+                        if (delete && rebuilt) {
+                            File.SetAttributes(file, FileAttributes.Normal);
+                            File.Delete(file);
+                        }
                     }
                 }
             }
