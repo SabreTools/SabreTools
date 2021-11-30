@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -226,7 +227,14 @@ namespace SabreTools.DatTools
 
                     // If we are supposed to delete the file, do so
                     if (delete && rebuilt)
-                        File.Delete(input);
+                            try {
+                                File.SetAttributes(input, FileAttributes.Normal);
+                                File.Delete(input);
+                            }
+                            catch (Exception e)
+                            {
+                                logger.Warning("The process failed: " + e.Message);
+                            }   
                 }
 
                 // If the input is a directory
@@ -240,8 +248,13 @@ namespace SabreTools.DatTools
 
                         // If we are supposed to delete the file, do so
                         if (delete && rebuilt) {
-                            File.SetAttributes(file, FileAttributes.Normal);
-                            File.Delete(file);
+                            try {
+                                Directory.Delete(input);
+                            }
+                            catch (Exception e)
+                            {
+                                logger.Warning("The process failed: " + e.Message);
+                            }
                         }
                     }
                 }
