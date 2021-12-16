@@ -75,7 +75,8 @@ namespace SabreTools.Skippers
                 Skippers = new List<SkipperFile>();
 
             // Get skippers for each known header type
-            foreach (string skipperFile in Directory.EnumerateFiles(LocalPath, "*", SearchOption.AllDirectories))
+            var searchfiles = Directory.EnumerateFiles(LocalPath, "*", SearchOption.AllDirectories);
+            foreach (string skipperFile in searchfiles)
             {
                 Skippers.Add(new SkipperFile(Path.GetFullPath(skipperFile)));
             }
