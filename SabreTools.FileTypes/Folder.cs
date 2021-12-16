@@ -273,13 +273,14 @@ namespace SabreTools.FileTypes
             if (_children == null || _children.Count == 0)
             {
                 _children = new List<BaseFile>();
-                foreach (string file in Directory.EnumerateFiles(this.Filename, "*", SearchOption.TopDirectoryOnly))
+                var searchfiles = Directory.EnumerateFiles(this.Filename, "*", SearchOption.TopDirectoryOnly);
+                foreach (string file in searchfiles)
                 {
                     BaseFile nf = GetInfo(file, hashes: this.AvailableHashes);
                     _children.Add(nf);
                 }
-
-                foreach (string dir in Directory.EnumerateDirectories(this.Filename, "*", SearchOption.TopDirectoryOnly))
+                var searchdirs = Directory.EnumerateDirectories(this.Filename, "*", SearchOption.TopDirectoryOnly);
+                foreach (string dir in searchdirs)
                 {
                     Folder fl = new Folder(dir);
                     _children.Add(fl);
