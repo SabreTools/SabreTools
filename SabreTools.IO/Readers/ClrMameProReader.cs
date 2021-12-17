@@ -228,7 +228,14 @@ namespace SabreTools.IO.Readers
                         // Default case
                         else
                         {
-                            value = linegc[++i].Replace("\"", string.Empty);
+                            try
+                            {
+                                value = linegc[++i].Replace("\"", string.Empty);
+                            }
+                            catch (Exception ex)
+                            {
+                                // no useful line found
+                            }
                         }
                     }
 
