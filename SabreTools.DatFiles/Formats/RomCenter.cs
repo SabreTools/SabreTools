@@ -76,6 +76,9 @@ namespace SabreTools.DatFiles.Formats
                                 break;
                         }
                     }
+                    
+                    // nothing found
+                    ir.ReadNextLine();
                 }
             }
             catch (Exception ex) when (!throwOnError)
