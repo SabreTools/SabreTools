@@ -29,7 +29,7 @@ namespace SabreTools.DatFiles.Formats
         /// <inheritdoc/>
         public override void ParseFile(string filename, int indexId, bool keep, bool statsOnly = false, bool throwOnError = false)
         {
-            // Prepare all intenral variables
+            // Prepare all internal variables
             IniReader ir = new IniReader(filename) { ValidateRows = false };
 
             // If we got a null reader, just return
