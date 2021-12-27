@@ -1705,6 +1705,20 @@ Some special strings that can be used:
             }
         }
 
+        internal const string SymlinkDirStringValue = "symlink-dir";
+        internal static Feature SymlinkStringInput
+        {
+            get
+            {
+                return new Feature(
+                    SymlinkDirStringValue,
+                    new List<string>() { "-sd", "--symlink-dir" },
+                    "Set the root directory for calc",
+                    ParameterType.String,
+                    longDescription: "In the case that the files will not be stored from the root directory, a new root can be set for path length calculations.");
+            }
+        }
+        
         internal const string UrlStringValue = "url";
         internal static Feature UrlStringInput
         {
