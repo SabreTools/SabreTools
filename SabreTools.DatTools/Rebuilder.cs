@@ -1,4 +1,7 @@
+using System.ComponentModel;
+using System.Security.Principal;
 using System.Collections.Generic;
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -27,6 +30,7 @@ namespace SabreTools.DatTools
         /// Logging object
         /// </summary>
         private static readonly Logger logger = new Logger();
+        private static string symlinkDirReport = "";
 
         #endregion
 
@@ -48,6 +52,9 @@ namespace SabreTools.DatTools
             bool date = false,
             bool delete = false,
             bool inverse = false,
+            bool baseReplace = false,
+            bool archivesAsFiles = false,
+            string symlinkDir = "",
             OutputFormat outputFormat = OutputFormat.Folder)
         {
             #region Perform setup
