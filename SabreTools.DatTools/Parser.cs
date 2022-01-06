@@ -100,7 +100,7 @@ namespace SabreTools.DatTools
             // If the output type isn't set already, get the internal output type
             DatFormat currentPathFormat = GetDatFormat(currentPath);
             datFile.Header.DatFormat = datFile.Header.DatFormat == 0 ? currentPathFormat : datFile.Header.DatFormat;
-            datFile.Items.SetBucketedBy(ItemKey.CRC); // Setting this because it can reduce issues later
+            datFile.Items.SetBucketedBy(ItemKey.NULL); // Setting this because it can reduce issues later, must be NULL to ensure first sorting
             
             InternalStopwatch watch = new InternalStopwatch($"Parsing '{currentPath}' into internal DAT");
 
