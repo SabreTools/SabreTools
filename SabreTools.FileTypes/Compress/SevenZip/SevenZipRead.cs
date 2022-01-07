@@ -73,6 +73,7 @@ namespace Compress.SevenZip
         {
             try
             {
+
                 SignatureHeader signatureHeader = new SignatureHeader();
                 if (!signatureHeader.Read(_zipFs))
                 {
@@ -87,7 +88,13 @@ namespace Compress.SevenZip
                 if (!CRC.VerifyDigest(signatureHeader.NextHeaderCRC, mainHeader, 0, (uint)signatureHeader.NextHeaderSize))
                     return ZipReturn.Zip64EndOfCentralDirError;
 
-                if (signatureHeader.NextHeaderSize != 0)
+                ZipStatus = ZipStatus.None;
+                ZipStatus |= IsRomVault7Z(_baseOffset, signatureHeader.NextHeaderOffset, signatureHeader.NextHeaderSize, signatureHeader.NextHeaderCRC) ? ZipStatus.TrrntZip : ZipStatus.None;
+
+                _zipFs.Seek(_baseOffset + (long)(signatureHeader.NextHeaderOffset + signatureHeader.NextHeaderSize), SeekOrigin.Begin);
+                ZipStatus |= Istorrent7Z() ? ZipStatus.Trrnt7Zip : ZipStatus.None;
+
+               if (signatureHeader.NextHeaderSize != 0)
                 {
                     _zipFs.Seek(_baseOffset + (long)signatureHeader.NextHeaderOffset, SeekOrigin.Begin);
                     ZipReturn zr = Header.ReadHeaderOrPackedHeader(_zipFs, _baseOffset, out _header);
@@ -97,12 +104,6 @@ namespace Compress.SevenZip
                     }
                 }
 
-
-                ZipStatus = ZipStatus.None;
-                ZipStatus |= IsRomVault7Z(_baseOffset, signatureHeader.NextHeaderOffset, signatureHeader.NextHeaderSize, signatureHeader.NextHeaderCRC) ? ZipStatus.TrrntZip : ZipStatus.None;
-
-                _zipFs.Seek(_baseOffset + (long)(signatureHeader.NextHeaderOffset + signatureHeader.NextHeaderSize), SeekOrigin.Begin);
-                ZipStatus |= Istorrent7Z() ? ZipStatus.Trrnt7Zip : ZipStatus.None;
                 PopulateLocalFiles(out _localFiles);
 
                 return ZipReturn.ZipGood;
@@ -163,9 +164,11 @@ namespace Compress.SevenZip
                 }
 
                 if (_header.FileInfo.TimeLastWrite != null)
-                {
                     lf.LastModified = DateTime.FromFileTimeUtc((long)_header.FileInfo.TimeLastWrite[i]).Ticks;
-                }
+                if (_header.FileInfo.TimeCreation != null)
+                    lf.Created = DateTime.FromFileTimeUtc((long)_header.FileInfo.TimeCreation[i]).Ticks;
+                if (_header.FileInfo.TimeLastAccess != null)
+                    lf.Accessed = DateTime.FromFileTimeUtc((long)_header.FileInfo.TimeLastAccess[i]).Ticks;
 
                 localFiles.Add(lf);
             }
