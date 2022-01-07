@@ -51,6 +51,8 @@ namespace RVIO
         public string Name;
         public string FullName;
         public long LastWriteTime;
+        public long LastAccessTime;
+        public long CreationTime;
         public long Length;
 
         public FileInfo()
@@ -66,7 +68,9 @@ namespace RVIO
             if (!fi.Exists) return;
 
             Length = fi.Length;
-            LastWriteTime = fi.LastWriteTimeUtc.Ticks;
+            try { LastWriteTime = fi.LastWriteTimeUtc.Ticks; } catch { LastWriteTime = 0; }
+            try { LastAccessTime = fi.LastAccessTimeUtc.Ticks; } catch { LastAccessTime = 0; }
+            try { CreationTime = fi.CreationTimeUtc.Ticks; } catch { CreationTime = 0; }
         }
     }
 
@@ -75,6 +79,8 @@ namespace RVIO
         public string Name;
         public string FullName;
         public long LastWriteTime;
+        public long LastAccessTime;
+        public long CreationTime;
 
         public DirectoryInfo()
         { }
@@ -87,7 +93,9 @@ namespace RVIO
 
             if (!fi.Exists) return;
 
-            LastWriteTime = fi.LastWriteTimeUtc.Ticks;
+            try { LastWriteTime = fi.LastWriteTimeUtc.Ticks; } catch { LastWriteTime = 0; }
+            try { LastAccessTime = fi.LastAccessTimeUtc.Ticks; } catch { LastAccessTime = 0; }
+            try { CreationTime = fi.CreationTimeUtc.Ticks; } catch { CreationTime = 0; }
         }
 
         public DirectoryInfo[] GetDirectories()
@@ -103,18 +111,24 @@ namespace RVIO
                 System.IO.DirectoryInfo[] arrDi = di.GetDirectories();
                 foreach (System.IO.DirectoryInfo tDi in arrDi)
                 {
-                    DirectoryInfo lDi = new DirectoryInfo
+                    try
                     {
-                        Name = tDi.Name,
-                        FullName = Path.Combine(FullName, tDi.Name),
-                        LastWriteTime = tDi.LastWriteTimeUtc.Ticks
-                    };
-                    dirs.Add(lDi);
+                        DirectoryInfo lDi = new DirectoryInfo
+                        {
+                            Name = tDi.Name,
+                            FullName = Path.Combine(FullName, tDi.Name)
+                        };
+                        try { lDi.LastWriteTime = tDi.LastWriteTimeUtc.Ticks; } catch { lDi.LastWriteTime = 0; }
+                        try { lDi.LastAccessTime = tDi.LastAccessTimeUtc.Ticks; } catch { lDi.LastWriteTime = 0; }
+                        try { lDi.CreationTime = tDi.CreationTimeUtc.Ticks; } catch { lDi.LastWriteTime = 0; }
+
+                        dirs.Add(lDi);
+                    }
+                    catch { }
                 }
             }
-            catch (Exception e)
+            catch
             {
-
             }
             return dirs.ToArray();
         }
@@ -132,17 +146,24 @@ namespace RVIO
                 System.IO.FileInfo[] arrDi = di.GetFiles(SearchPattern);
                 foreach (System.IO.FileInfo tDi in arrDi)
                 {
-                    FileInfo lDi = new FileInfo
+                    try
                     {
-                        Name = tDi.Name,
-                        FullName = Path.Combine(FullName, tDi.Name),
-                        Length = tDi.Length,
-                        LastWriteTime = tDi.LastWriteTimeUtc.Ticks
-                    };
-                    files.Add(lDi);
+                        FileInfo lDi = new FileInfo
+                        {
+                            Name = tDi.Name,
+                            FullName = Path.Combine(FullName, tDi.Name),
+                            Length = tDi.Length
+                        };
+                        try { lDi.LastWriteTime = tDi.LastWriteTimeUtc.Ticks; } catch { lDi.LastWriteTime = 0; }
+                        try { lDi.LastAccessTime = tDi.LastAccessTimeUtc.Ticks; } catch { lDi.LastWriteTime = 0; }
+                        try { lDi.CreationTime = tDi.CreationTimeUtc.Ticks; } catch { lDi.LastWriteTime = 0; }
+
+                        files.Add(lDi);
+                    }
+                    catch { }
                 }
             }
-            catch (Exception e)
+            catch
             {
             }
 
@@ -223,6 +244,11 @@ namespace RVIO
         {
             int errorCode = FileStream.OpenFileRead(filename, out Stream fStream);
             return errorCode != 0 ? null : new StreamReader(fStream, Enc);
+        }
+
+        public static string ReadAllText(string filename)
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -374,7 +400,9 @@ namespace RVIO
 
         internal static string AddLongPathPrefix(string path)
         {
-            if (unix.IsUnix)
+            // since .NET 4.6.1, long path names are supported
+            Version dotnetversion = new Version("4.6.1");
+            if (unix.IsUnix || Environment.Version > dotnetversion)
                 return path;
 
             if (string.IsNullOrEmpty(path) || path.StartsWith(@"\\?\"))
