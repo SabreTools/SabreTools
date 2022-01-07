@@ -112,6 +112,21 @@ namespace Compress.SevenZip
         {
             return _localFiles[i].LastModified;
         }
+        
+        public long? Created(int i)
+        {
+            return _localFiles[i].Created;
+        }
+
+        public long? Accessed(int i)
+        {
+            return _localFiles[i].Accessed;
+        }
+
+        public bool IsDirectory(int i)
+        {
+            return _localFiles[i].IsDirectory;
+        }
 
         public void ZipFileCloseFailed()
         {
@@ -140,21 +155,6 @@ namespace Compress.SevenZip
             ZipOpen = ZipOpenType.Closed;
         }
 
-        public bool IsDirectory(int i)
-        {
-            return _localFiles[i].IsDirectory;
-        }
-
-
-
-
-
-
-
-
-
-
-
         public void ZipFileClose()
         {
             switch (ZipOpen)
@@ -179,7 +179,6 @@ namespace Compress.SevenZip
 
             ZipOpen = ZipOpenType.Closed;
         }
-
 
         private Header _header;
 
