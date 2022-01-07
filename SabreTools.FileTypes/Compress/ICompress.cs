@@ -14,6 +14,8 @@ namespace Compress
         byte[] CRC32(int i);
 
         long LastModified(int i);
+        long? Accessed(int i);
+        long? Created(int i);
 
         bool IsDirectory(int i);
 
