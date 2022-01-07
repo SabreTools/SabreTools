@@ -46,6 +46,8 @@ namespace Compress.SevenZip
             public int StreamIndex;
             public ulong StreamOffset;
             public long LastModified;
+            public long Created;
+            public long Accessed;
             public ZipReturn FileStatus = ZipReturn.ZipUntested;
         }
 
