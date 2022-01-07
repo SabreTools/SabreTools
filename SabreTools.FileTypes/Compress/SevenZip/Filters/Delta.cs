@@ -67,34 +67,14 @@ namespace Compress.SevenZip.Filters
             throw new NotImplementedException();
         }
 
-        public override bool CanRead
-        {
-            get { return true; }
-        }
+        public override bool CanRead => true;
 
-        public override bool CanSeek
-        {
-            get { return false; }
-        }
+        public override bool CanSeek => false;
 
-        public override bool CanWrite
-        {
-            get { return false; }
-        }
-        public override long Length
-        {
-            get { return _baseStream.Length; }
-        }
-        public override long Position
-        {
-            get
-            {
-                return _position;
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public override bool CanWrite => false;
+        
+        public override long Length =>_baseStream.Length;
+        
+        public override long Position { get => _position; set => throw new NotImplementedException(); }
     }
 }
