@@ -8,12 +8,13 @@ namespace Compress.SevenZip.Filters
         protected bool isEncoder;
         protected Stream baseStream;
 
-        private byte[] tail;
-        private byte[] window;
+        private readonly byte[] tail;
+        private readonly byte[] window;
         private int transformed = 0;
         private int read = 0;
         private bool endReached = false;
         private long position = 0;
+        private bool _isDisposed;
 
         protected Filter(bool isEncoder, Stream baseStream, int lookahead)
         {
@@ -23,45 +24,33 @@ namespace Compress.SevenZip.Filters
             window = new byte[tail.Length * 2];
         }
 
-        public Stream BaseStream
-        { get { return baseStream; } }
+        public Stream BaseStream { get => baseStream; }
 
-        public override bool CanRead
+        protected override void Dispose(bool disposing)
         {
-            get { return !isEncoder; }
+            if (_isDisposed)
+            {
+                return;
+            }
+            _isDisposed = true;
+            base.Dispose(disposing);
+            baseStream.Dispose();
         }
 
-        public override bool CanSeek
-        {
-            get { return false; }
-        }
+        public override bool CanRead => !isEncoder;
 
-        public override bool CanWrite
-        {
-            get { return isEncoder; }
-        }
+        public override bool CanSeek => false;
+
+        public override bool CanWrite => isEncoder;
 
         public override void Flush()
         {
             throw new NotImplementedException();
         }
 
-        public override long Length
-        {
-            get { return baseStream.Length; }
-        }
+        public override long Length => baseStream.Length;
 
-        public override long Position
-        {
-            get
-            {
-                return position;
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public override long Position { get => baseStream.Position; set => throw new NotImplementedException(); }
 
         public override int Read(byte[] buffer, int offset, int count)
         {
