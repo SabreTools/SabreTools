@@ -1,13 +1,19 @@
 using System;
+using System.IO;
 
+// sharpcompress\src\SharpCompress\Compressors\LZMA\ICoder.cs
+// RVWorld-master\Compress\Support\Compression\LZMA\ICoder.cs
 namespace Compress.SevenZip.Common
 {
     /// <summary>
     /// The exception that is thrown when an error in input stream occurs during decoding.
     /// </summary>
-    public class DataErrorException : Exception
+    internal class DataErrorException : Exception
     {
-        public DataErrorException() : base("Data Error") { }
+        public DataErrorException()
+            : base("Data Error")
+        {
+        }
     }
 
     /// <summary>
@@ -15,10 +21,13 @@ namespace Compress.SevenZip.Common
     /// </summary>
     internal class InvalidParamException : Exception
     {
-        public InvalidParamException() : base("Invalid Parameter") { }
+        public InvalidParamException()
+            : base("Invalid Parameter")
+        {
+        }
     }
 
-    public interface ICodeProgress
+    internal interface ICodeProgress
     {
         /// <summary>
         /// Callback progress.
@@ -30,7 +39,7 @@ namespace Compress.SevenZip.Common
         /// output size. -1 if unknown.
         /// </param>
         void SetProgress(Int64 inSize, Int64 outSize);
-    };
+    }
 
     internal interface ICoder
     {
@@ -52,9 +61,9 @@ namespace Compress.SevenZip.Common
         /// <param name="progress">
         /// callback progress reference.
         /// </param>
-        void Code(System.IO.Stream inStream, System.IO.Stream outStream,
-            Int64 inSize, Int64 outSize, ICodeProgress progress);
-    };
+        void Code(Stream inStream, Stream outStream,
+                  Int64 inSize, Int64 outSize, ICodeProgress progress);
+    }
 
     /*
     public interface ICoder2
@@ -76,73 +85,86 @@ namespace Compress.SevenZip.Common
         /// Specifies default property.
         /// </summary>
         DefaultProp = 0,
+
         /// <summary>
         /// Specifies size of dictionary.
         /// </summary>
         DictionarySize,
+
         /// <summary>
         /// Specifies size of memory for PPM*.
         /// </summary>
         UsedMemorySize,
+
         /// <summary>
         /// Specifies order for PPM methods.
         /// </summary>
         Order,
+
         /// <summary>
         /// Specifies Block Size.
         /// </summary>
         BlockSize,
+
         /// <summary>
         /// Specifies number of postion state bits for LZMA (0 - x - 4).
         /// </summary>
         PosStateBits,
+
         /// <summary>
         /// Specifies number of literal context bits for LZMA (0 - x - 8).
         /// </summary>
         LitContextBits,
+
         /// <summary>
         /// Specifies number of literal position bits for LZMA (0 - x - 4).
         /// </summary>
         LitPosBits,
+
         /// <summary>
         /// Specifies number of fast bytes for LZ*.
         /// </summary>
         NumFastBytes,
+
         /// <summary>
         /// Specifies match finder. LZMA: "BT2", "BT4" or "BT4B".
         /// </summary>
         MatchFinder,
+
         /// <summary>
         /// Specifies the number of match finder cyckes.
         /// </summary>
         MatchFinderCycles,
+
         /// <summary>
         /// Specifies number of passes.
         /// </summary>
         NumPasses,
+
         /// <summary>
         /// Specifies number of algorithm.
         /// </summary>
         Algorithm,
+
         /// <summary>
         /// Specifies the number of threads.
         /// </summary>
         NumThreads,
+
         /// <summary>
         /// Specifies mode with end marker.
         /// </summary>
         EndMarker
-    };
-
+    }
 
     internal interface ISetCoderProperties
     {
         void SetCoderProperties(CoderPropID[] propIDs, object[] properties);
-    };
+    }
 
     internal interface IWriteCoderProperties
     {
-        void WriteCoderProperties(System.IO.Stream outStream);
+        void WriteCoderProperties(Stream outStream);
     }
 
     internal interface ISetDecoderProperties
