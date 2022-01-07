@@ -19,7 +19,6 @@ namespace Compress.File
 
         public ZipOpenType ZipOpen { get; private set; }
 
-
         public ZipStatus ZipStatus { get; private set; }
 
         public int LocalFilesCount()
@@ -61,7 +60,17 @@ namespace Compress.File
         {
             return _fileInfo.LastWriteTime;
         }
-     
+
+        public long? Accessed(int i)
+        {
+            return _fileInfo.LastAccessTime;
+        }
+
+        public long? Created(int i)
+        {
+            return _fileInfo.CreationTime;
+        }
+        
         public ZipReturn ZipFileCreate(string newFilename)
         {
             if (ZipOpen != ZipOpenType.Closed)
@@ -81,7 +90,6 @@ namespace Compress.File
             ZipOpen = ZipOpenType.OpenWrite;
             return ZipReturn.ZipGood;
         }
-
 
         public void ZipFileClose()
         {
@@ -114,7 +122,6 @@ namespace Compress.File
                 ZipOpen = ZipOpenType.Closed;
             }
         }
-
 
         public ZipReturn ZipFileOpen(string newFilename, long timestamp, bool readHeaders)
         {
@@ -179,8 +186,6 @@ namespace Compress.File
             //return ZipFileReadHeaders();
             return ZipReturn.ZipGood;
         }
-
-
 
         public void ZipFileAddZeroLengthFile()
         {
