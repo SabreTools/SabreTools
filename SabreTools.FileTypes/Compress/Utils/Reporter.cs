@@ -16,6 +16,7 @@ namespace Compress.Utils
 
             return ret;
         }
+        
         public static string ToArrayString(this byte[] arr)
         {
             if (arr == null)
@@ -30,6 +31,19 @@ namespace Compress.Utils
             return ret;
         }
 
+        public static string ToHex(this byte[] arr)
+        {
+            if (arr == null)
+                return "NULL";
+
+            string ret = "";
+            for (int i = 0; i < arr.Length; i++)
+            {
+                ret += arr[i].ToString("X2");
+            }
+
+            return ret;
+        }
 
         public static string ToHex(this uint? v)
         {
