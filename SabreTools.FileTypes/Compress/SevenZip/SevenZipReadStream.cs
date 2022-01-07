@@ -1,14 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using Compress.SevenZip.Structure;
 using Compress.SevenZip.Compress.BZip2;
 using Compress.SevenZip.Compress.LZMA;
 using Compress.SevenZip.Compress.PPmd;
 using Compress.SevenZip.Compress.ZSTD;
 using Compress.SevenZip.Filters;
-using Compress.SevenZip.Structure;
 using FileStream = RVIO.FileStream;
 
 namespace Compress.SevenZip
