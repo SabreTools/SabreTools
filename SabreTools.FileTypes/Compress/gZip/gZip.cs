@@ -7,7 +7,6 @@ using FileInfo = RVIO.FileInfo;
 using FileStream = RVIO.FileStream;
 using Path = RVIO.Path;
 
-
 namespace Compress.gZip
 {
     public class gZip : ICompress
@@ -431,7 +430,6 @@ namespace Compress.gZip
             return ZipReturn.ZipGood;
         }
 
-
         public ZipReturn ZipFileCloseWriteStream(byte[] crc32)
         {
             if (_compressionStream is ZlibBaseStream dfStream)
@@ -508,6 +506,7 @@ namespace Compress.gZip
             _zipFileInfo = null;
             ZipOpen = ZipOpenType.Closed;
         }
+        
         public ZipReturn GetRawStream(out Stream st)
         {
             st = null;
