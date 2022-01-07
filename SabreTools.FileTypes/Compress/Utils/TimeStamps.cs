@@ -1,6 +1,6 @@
 ﻿namespace Compress.Utils
 {
-  public  class TimeStamps
+  public class TimeStamps
   {
       public long? ModTime;
       public long? CreateTime;
