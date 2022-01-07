@@ -37,8 +37,6 @@ namespace Compress.SevenZip
             }
         }
 
-
-
         private class LocalFile
         {
             public string FileName;
@@ -50,7 +48,6 @@ namespace Compress.SevenZip
             public long LastModified;
             public ZipReturn FileStatus = ZipReturn.ZipUntested;
         }
-
 
         private List<LocalFile> _localFiles = new List<LocalFile>();
 
