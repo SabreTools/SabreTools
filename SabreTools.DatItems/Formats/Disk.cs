@@ -255,10 +255,14 @@ namespace SabreTools.DatItems.Formats
                 MD5 = this.MD5,
                 SHA1 = this.SHA1,
 
-                DataArea = new DataArea { Name = this.DiskArea.Name },
                 Part = this.Part,
             };
 
+            // for chd: ItemType Disk without DiskArea
+            if (this.DiskArea == null) 
+                rom.DataArea = new DataArea();
+            else
+                rom.DataArea = new DataArea { Name = this.DiskArea.Name };
             return rom;
         }
 
