@@ -44,6 +44,7 @@ namespace SabreTools.Features
             AddFeature(TorrentGzipFlag);
             this[TorrentGzipFlag].AddFeature(RombaFlag);
             this[TorrentGzipFlag][RombaFlag].AddFeature(RombaDepthInt32Input);
+            AddFeature(ChdFlag);
             //AddFeature(SharedInputs.TorrentLrzipFlag);
             //AddFeature(SharedInputs.TorrentLz4Flag);
             //AddFeature(SharedInputs.TorrentRarFlag);
