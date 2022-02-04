@@ -75,10 +75,10 @@ namespace SabreTools.DatFiles.Formats
                                 ir.ReadNextLine();
                                 break;
                         }
-                    }
                     
-                    // nothing found
-                    ir.ReadNextLine();
+                        // nothing found
+                        ir.ReadNextLine();
+                    }
                 }
             }
             catch (Exception ex) when (!throwOnError)
