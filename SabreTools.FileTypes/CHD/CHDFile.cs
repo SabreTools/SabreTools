@@ -340,11 +340,7 @@ namespace SabreTools.FileTypes.CHD
             // Get the output folder name from the first rebuild rom
             string archiveFileName = Path.Combine(outDir, Utilities.RemovePathUnsafeCharacters(baseFile.Parent) + (baseFile.Parent.EndsWith(".chd") ? string.Empty : ".chd"));
 
-            // currently not working
-            //DiscUtils.FileSystemInfo[] fsia = FileSystemManager.DetectFileSystems(File.OpenRead(file));
-
             FileType fileType = (FileType)BaseFile.GetFileType(file);
-            logger.User($"test1 {fileType} {file}");
             if (fileType == FileType.ISOArchive)
             {
                 // create to chd v5
