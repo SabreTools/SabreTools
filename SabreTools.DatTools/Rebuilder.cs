@@ -188,10 +188,10 @@ namespace SabreTools.DatTools
             bool quickScan = false,
             bool date = false,
             bool delete = false,
+            bool inverse = false,
             bool baseReplace = false,
             bool archivesAsFiles = false,
             string symlinkDir = "",           
-            bool inverse = false,
             OutputFormat outputFormat = OutputFormat.Folder,
             TreatAsFile asFiles = 0x00)
         {
