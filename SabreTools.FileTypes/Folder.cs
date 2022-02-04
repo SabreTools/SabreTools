@@ -5,6 +5,7 @@ using System.Linq;
 
 using SabreTools.Core.Tools;
 using SabreTools.FileTypes.Archives;
+using SabreTools.FileTypes.CHD;
 using SabreTools.IO;
 using SabreTools.Logging;
 
