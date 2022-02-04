@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ using SabreTools.FileTypes.Archives;
 using SabreTools.IO;
 using SabreTools.Logging;
 using SabreTools.Skippers;
+using SabreTools.FileTypes.CHD;
 
 namespace SabreTools.DatTools
 {
