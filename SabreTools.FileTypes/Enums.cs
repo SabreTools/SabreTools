@@ -1282,6 +1282,7 @@ namespace SabreTools.FileTypes
         ZipArchive,
         ZPAQArchive,
         ZstdArchive,
+        ISOArchive,        
     }
 
     /// <summary>
