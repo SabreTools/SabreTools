@@ -2,6 +2,7 @@
 using System.IO;
 
 using SabreTools.FileTypes.Archives;
+using SabreTools.FileTypes.CHD;
 
 namespace SabreTools.FileTypes
 {
