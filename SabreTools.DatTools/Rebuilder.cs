@@ -442,7 +442,6 @@ namespace SabreTools.DatTools
                     else                    
                         itemRom = (item as Rom).ConvertToBaseFile();
                     
-                    } else {
                         // Now rebuild to the output file
                         if (outputFormat == OutputFormat.CHD) 
                             outputArchive.Write(file, outDir, itemRom);
