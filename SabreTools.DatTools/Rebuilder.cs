@@ -447,7 +447,6 @@ namespace SabreTools.DatTools
                             outputArchive.Write(file, outDir, itemRom);
                         else
                             outputArchive.Write(fileStream, outDir, itemRom);
-                    }
                     
                     // Now rebuild to the output file
                     outputArchive.Write(fileStream, outDir, (item as Rom).ConvertToBaseFile());
