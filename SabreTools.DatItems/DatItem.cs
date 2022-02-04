@@ -207,6 +207,7 @@ namespace SabreTools.DatItems
                     return new Media(baseFile);
 
                 case FileType.CHD:
+                case FileType.ISOArchive:
                     return new Disk(baseFile);
 
                 case FileType.GZipArchive:
@@ -610,6 +611,15 @@ namespace SabreTools.DatItems
                             saveditem.CopyMachineInformation(file);
                             saveditem.SetName(file.GetName());
                         }
+                        
+                        // add cloneof to parent
+                        // only saveditem add to list (cause dupetype != 0x00)
+                        // used to create parent/child/grand-child chd
+                        // name = parent, cloneof = child, grand-child, more grand-childs (using parent/child)
+                        if (saveditem.Machine.CloneOf == null || !saveditem.Machine.CloneOf.Contains(file.Machine.Name)
+                            || saveditem.Machine.Name != file.Machine.Name)
+                            saveditem.Machine.CloneOf += file.Machine.Name + ",";
+
 
                         break;
                     }
