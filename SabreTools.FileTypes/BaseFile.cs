@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using SabreTools.Core;
 using SabreTools.Core.Tools;
 using SabreTools.FileTypes.Aaru;
-using SabreTools.FileTypes.CHD;
+//using SabreTools.FileTypes.CHD;
 using SabreTools.IO;
 using SabreTools.Logging;
 using SabreTools.Skippers;
@@ -304,8 +304,8 @@ namespace SabreTools.FileTypes
             BaseFile baseFile;
             if (fileType == FileType.AaruFormat && !asFiles.HasFlag(TreatAsFile.AaruFormat))
                 baseFile = AaruFormat.Create(inputStream);
-            else if (fileType == FileType.CHD && !asFiles.HasFlag(TreatAsFile.CHD))
-                baseFile = CHDFile.Create(inputStream);
+//            else if (fileType == FileType.CHD && !asFiles.HasFlag(TreatAsFile.CHD))
+//                baseFile = CHDFile.Create(inputStream);
             else
                 baseFile = GetInfo(inputStream, hashes: hashes, keepReadOpen: false);
 
