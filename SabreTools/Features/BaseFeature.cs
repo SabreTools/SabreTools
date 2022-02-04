@@ -1017,7 +1017,21 @@ namespace SabreTools.Features
                     longDescription: "Instead of outputting the files to folder, files will be rebuilt to Torrent7Zip (T7Z) files. This format is based on the LZMA container format 7Zip, but with custom header information. This is currently unused by any major application. Currently does not produce proper Torrent-compatible outputs.");
             }
         }
-
+        
+        internal const string ChdValue = "chd";
+        internal static Feature ChdFlag
+        {
+            get
+            {
+                return new Feature(
+                    ChdValue,
+                    new List<string>() { "-chd", "--chd" },
+                    "Enable CHD output",
+                    ParameterType.Flag,
+                    longDescription: "Instead of outputting the files to folder, files will be rebuilt to CHD files. This format has 5 compression types to read, but will write or re-write only chd v5 format. It is used by mame.");
+            }
+        }
+        
         internal const string TorrentGzipValue = "torrent-gzip";
         internal static Feature TorrentGzipFlag
         {
@@ -1934,6 +1948,8 @@ Some special strings that can be used:
             //    return OutputFormat.TorrentZPAQ;
             //else if (GetBoolean(features, SharedTorrentZstdValue))
             //    return OutputFormat.TorrentZstd;
+            else if (GetBoolean(features, ChdValue))
+                return OutputFormat.CHD;
             else
                 return OutputFormat.Folder;
         }
