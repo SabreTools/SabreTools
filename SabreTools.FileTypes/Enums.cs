@@ -1282,6 +1282,8 @@ namespace SabreTools.FileTypes
         ZipArchive,
         ZPAQArchive,
         ZstdArchive,
+        ISOArchive,
+        HDDArchive,
     }
 
     /// <summary>
@@ -1298,6 +1300,10 @@ namespace SabreTools.FileTypes
         TorrentXZ,
         TorrentXZRomba,
         TapeArchive,
+        
+        CHD,
+        ISO,
+        HDD,
 
         // Currently unimplemented fully
         Torrent7Zip,
