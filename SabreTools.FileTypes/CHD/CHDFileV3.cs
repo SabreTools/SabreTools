@@ -91,9 +91,11 @@ namespace SabreTools.FileTypes.CHD
         /// <summary>
         /// Return internal SHA1 hash
         /// </summary>
+/*        
         public override byte[] GetHash()
         {
             return sha1;
         }
+*/
     }
 }
