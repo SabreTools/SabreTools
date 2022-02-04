@@ -12,6 +12,8 @@ using SabreTools.Logging;
 using SabreTools.Skippers;
 using Compress.ThreadReaders;
 
+using DiscUtils;
+
 namespace SabreTools.FileTypes
 {
     public class BaseFile
@@ -260,7 +262,21 @@ namespace SabreTools.FileTypes
             {
                 outFileType = FileType.ZstdArchive;
             }
-
+            else
+            {
+                DiscUtils.FileSystemInfo[] fsia = FileSystemManager.DetectFileSystems(File.OpenRead(input));
+                if (fsia.Length > 0)
+                {
+                    // detect FileSystemType: 
+                    // ISO9660 or UDF - leading to chdman ISO type
+                    // MyFs, xfs, Swap, SquashFS, NTFS, HFS+, FAT, ext, btrfs - leading to chdman HDD type
+                    if (fsia[0].ToString() == "ISO9660" || fsia[0].ToString() == "UDF")
+                        outFileType = FileType.ISOArchive;
+                    else 
+                        outFileType = FileType.HDDArchive;
+                }
+            }
+            
             return outFileType;
         }
 
