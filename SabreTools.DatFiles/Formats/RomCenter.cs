@@ -55,19 +55,25 @@ namespace SabreTools.DatFiles.Formats
                         switch (ir.Section.ToLowerInvariant())
                         {
                             case "credits":
+	                        case "[credits]":
                                 ReadCreditsSection(ir);
                                 break;
 
                             case "dat":
+	                        case "[dat]":
                                 ReadDatSection(ir);
                                 break;
 
                             case "emulator":
+	                        case "[emulator]":
                                 ReadEmulatorSection(ir);
                                 break;
 
                             case "games":
-                                ReadGamesSection(ir, statsOnly, filename, indexId);
+ 	                        case "[games]":
+	                        case "[resources]":
+	                        case "[disks]":
+                               ReadGamesSection(ir, statsOnly, filename, indexId);
                                 break;
 
                             // Unknown section so we ignore it
