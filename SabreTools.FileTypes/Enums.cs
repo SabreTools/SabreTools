@@ -1298,6 +1298,7 @@ namespace SabreTools.FileTypes
         TorrentXZ,
         TorrentXZRomba,
         TapeArchive,
+        CHD,
 
         // Currently unimplemented fully
         Torrent7Zip,
