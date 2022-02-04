@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System;
 
 using SabreTools.Core;
 using SabreTools.Core.Tools;
@@ -201,7 +202,10 @@ namespace SabreTools.FileTypes
             // First line of defense is going to be the extension, for better or worse
             if (!HasValidArchiveExtension(input))
                 return outFileType;
-
+            
+            // initialize DiscUtils
+            DiscUtils.Complete.SetupHelper.SetupComplete(); 
+            
             // Read the first bytes of the file and get the magic number
             BinaryReader br = new BinaryReader(File.OpenRead(input));
             byte[] magic = br.ReadBytes(8);
@@ -483,7 +487,8 @@ namespace SabreTools.FileTypes
                 case "tlz":
                 case "zip":
                 case "zipx":
-
+                case "iso":
+                    
                 // CHD
                 case "chd":
                     return true;
