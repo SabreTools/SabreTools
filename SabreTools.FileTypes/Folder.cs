@@ -78,6 +78,9 @@ namespace SabreTools.FileTypes
                 case OutputFormat.ParentFolder:
                     return new Folder(true);
 
+                case OutputFormat.CHD:
+                    return new CHDFile();
+
                 case OutputFormat.TapeArchive:
                     return new TapeArchive();
 
