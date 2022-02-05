@@ -37,17 +37,6 @@ namespace SabreTools.FileTypes.Archives
         #endregion
 
         #region Abstract functionality
-/*
-                //compare ISO with DiscUtils 
-                //FileSystemManager.DetectDefaultFileSystems um zu schauen welches System auf der ISO ist
-                // dann CDReader oder UDFReader nehmen
-                using (FileStream isoStream = File.Open(@"C:\temp\sample.iso"))
-                {
-                CDReader cd = new CDReader(isoStream, true);
-                Stream fileStream = cd.OpenFile(@"Folder\Hello.txt", FileMode.Open);
-                // Use fileStream...
-                }
-*/
 
         public void WriteIsoFolder(DiscFileSystem cdReader, string sIsoPath, string sDestinationRootPath)
         {
