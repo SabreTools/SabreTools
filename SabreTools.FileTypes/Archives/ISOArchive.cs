@@ -236,8 +236,6 @@ namespace SabreTools.FileTypes.Archives
         /// <inheritdoc/>
         public override string CopyToFile(string entryName, string outDir)
         {
-            throw new NotImplementedException();
-/*
             // Try to extract a stream using the given information
             (MemoryStream ms, string realEntry) = CopyToStream(entryName);
 
@@ -274,7 +272,6 @@ namespace SabreTools.FileTypes.Archives
             }
 
             return realEntry;
-*/
         }
 
         /// <inheritdoc/>
