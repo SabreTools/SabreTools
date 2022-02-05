@@ -195,42 +195,14 @@ namespace SabreTools.FileTypes.Archives
         /// <inheritdoc/>
         public override bool CopyAll(string outDir)
         {
-            throw new NotImplementedException();
-/*
             bool encounteredErrors = true;
+            
+            string realEntry = CopyToFile(this.Filename, outDir);
 
-            try
-            {
-                // Create the temp directory
-                Directory.CreateDirectory(outDir);
-
-                // Extract all files to the temp directory
-                SharpCompress.Archives.Rar.RarArchive ra = SharpCompress.Archives.Rar.RarArchive.Open(this.Filename);
-                foreach (RarArchiveEntry entry in ra.Entries)
-                {
-                    entry.WriteToDirectory(outDir, new SharpCompress.Common.ExtractionOptions { PreserveFileTime = true, ExtractFullPath = true, Overwrite = true });
-                }
+            if (realEntry == null)
                 encounteredErrors = false;
-                ra.Dispose();
-            }
-            catch (EndOfStreamException ex)
-            {
-                // Catch this but don't count it as an error because SharpCompress is unsafe
-                logger.Verbose(ex);
-            }
-            catch (InvalidOperationException ex)
-            {
-                logger.Warning(ex);
-                encounteredErrors = true;
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-                encounteredErrors = true;
-            }
-
+            
             return encounteredErrors;
-*/
         }
 
         /// <inheritdoc/>
