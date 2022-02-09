@@ -343,12 +343,44 @@ namespace SabreTools.FileTypes.CHD
             FileType fileType = (FileType)BaseFile.GetFileType(file);
             if (fileType == FileType.ISOArchive)
             {
-                // create to chd v5
+                // create chd v5 of first archiveFile
                 CHDManCheck cmc = new CHDManCheck();
                 CHDManCheck.hdErr res = CHDManCheck.hdErr.HDERR_NONE;
                 string error = "";
                 res = cmc.ChdCreate(file, archiveFileName, out error);
                 logger.User($"Create CHD - {error}");
+
+                // create childs
+                if (baseFile.Child != null)
+                {
+                    string[] subs = baseFile.Child.Split(',');
+
+                    string preSubFileName = null;
+                    string filepath = Path.GetDirectoryName(file);
+
+                    foreach (var sub in subs)
+                    {
+                        if (!string.IsNullOrEmpty(sub))
+                        {
+                            string subFileName = Path.Combine(outDir, Utilities.RemovePathUnsafeCharacters(sub) + ".chd");
+                            // must be inputdir
+                            file = Path.Combine(filepath, Utilities.RemovePathUnsafeCharacters(sub) + ".iso");
+
+                            cmc = new CHDManCheck();
+                            res = CHDManCheck.hdErr.HDERR_NONE;
+                            error = "";
+
+                            // create to chd v5 parent/child or child/grand-child
+                            if (preSubFileName == null)
+                                res = cmc.ChdCreate(file, subFileName, out error, archiveFileName);
+                            else 
+                                res = cmc.ChdCreate(file, subFileName, out error, preSubFileName);
+
+                            preSubFileName = subFileName;
+                            logger.User($"Create CHD child: {file} - {error}"); 
+                        }               
+                    }
+                }
             }
             else
             {
@@ -372,7 +404,6 @@ namespace SabreTools.FileTypes.CHD
                 }
                 else
                 {
-logger.User($"test6 {inputStream} {outDir} {baseFile}");
                     // Set internal variables
                     FileStream outputStream = null;
 
