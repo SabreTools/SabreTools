@@ -63,6 +63,11 @@ namespace SabreTools.FileTypes
         public string Parent { get; set; }
 
         /// <summary>
+        /// Childs of the file
+        /// </summary>
+        public string Child { get; set; }
+
+        /// <summary>
         /// Date stamp of the file
         /// </summary>
         public string Date { get; set; }
