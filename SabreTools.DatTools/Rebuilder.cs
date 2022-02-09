@@ -446,7 +446,10 @@ namespace SabreTools.DatTools
                     
                         // Now rebuild to the output file
                         if (outputFormat == OutputFormat.CHD) 
+                        {
+                            itemRom.Child = item.Machine.CloneOf;
                             outputArchive.Write(file, outDir, itemRom);
+                        }
                         else
                             outputArchive.Write(fileStream, outDir, itemRom);
                     
