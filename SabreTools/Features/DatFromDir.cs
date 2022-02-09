@@ -38,6 +38,7 @@ namespace SabreTools.Features
             AddFeature(AaruFormatsAsFilesFlag);
             AddFeature(ArchivesAsFilesFlag);
             AddFeature(ChdsAsFilesFlag);
+            AddFeature(AddAsFilesFlag);
             AddFeature(OutputTypeListInput);
             this[OutputTypeListInput].AddFeature(DeprecatedFlag);
             AddFeature(RombaFlag);
@@ -64,6 +65,7 @@ namespace SabreTools.Features
             bool addFileDates = GetBoolean(features, AddDateValue);
             TreatAsFile asFiles = GetTreatAsFiles(features);
             bool noAutomaticDate = GetBoolean(features, NoAutomaticDateValue);
+            bool addAsFiles = GetBoolean(features, AddAsFilesValue);
             var includeInScan = GetIncludeInScan(features);
             var skipFileType = GetSkipFileType(features);
 
@@ -92,6 +94,7 @@ namespace SabreTools.Features
                         datdata,
                         basePath,
                         asFiles,
+                        addAsFiles,
                         skipFileType,
                         addBlankFiles,
                         hashes: includeInScan);
