@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
@@ -181,7 +181,7 @@ namespace SabreTools.FileTypes.CHD
             return _resultType;
         }
 
-        internal hdErr ChdCreate(string filename, string archiveFileName, out string result)
+        internal hdErr ChdCreate(string filename, string archiveFileName, out string result, string subFileName = null)
         {
             _result = "";
             _resultType = hdErr.HDERR_NONE;
@@ -209,7 +209,10 @@ namespace SabreTools.FileTypes.CHD
             {
                 exeProcess.StartInfo.FileName = chdPath;
 
-                exeProcess.StartInfo.Arguments = "createcd -i \"" + Path.GetFileName(filename) + "\" -o \"" + archiveFileName +"\"";
+                if (subFileName != null)
+                    exeProcess.StartInfo.Arguments = "createcd -i \"" + Path.GetFileName(filename) + "\" -op \"" + subFileName + "\" -o \"" + archiveFileName + "\"";
+                else
+                    exeProcess.StartInfo.Arguments = "createcd -i \"" + Path.GetFileName(filename) + "\" -o \"" + archiveFileName + "\"";
 
                 exeProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(filename);
 
@@ -281,7 +284,7 @@ namespace SabreTools.FileTypes.CHD
                     // chdman copy non-error
                     if (!Regex.IsMatch(sOut, @"^Logical size: ([0-9\.]+) \(.*\)"))
                     {
-                        _result = sOut;
+                        _result = "Success";
                         _resultType = hdErr.HDERR_NONE;
                     }
                     else 
@@ -357,6 +360,10 @@ namespace SabreTools.FileTypes.CHD
                 }
                // copy success messages are a non-error
                 else if (Regex.IsMatch(sLine, @"Compression complete \.\.\."))
+                {
+                }
+               // read parent messages are a non-error
+                else if (Regex.IsMatch(sLine, @"Examining parent, \d+\.\d+\% complete\.\.\."))
                 {
                 }
                 else if (Regex.IsMatch(sLine, @"^Error: file already exists"))
