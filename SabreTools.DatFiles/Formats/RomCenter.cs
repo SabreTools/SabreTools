@@ -29,7 +29,7 @@ namespace SabreTools.DatFiles.Formats
         /// <inheritdoc/>
         public override void ParseFile(string filename, int indexId, bool keep, bool statsOnly = false, bool throwOnError = false)
         {
-            // Prepare all intenral variables
+            // Prepare all internal variables
             IniReader ir = new IniReader(filename) { ValidateRows = false };
 
             // If we got a null reader, just return
@@ -55,18 +55,24 @@ namespace SabreTools.DatFiles.Formats
                         switch (ir.Section.ToLowerInvariant())
                         {
                             case "credits":
+	                    case "[credits]":
                                 ReadCreditsSection(ir);
                                 break;
 
                             case "dat":
+	                    case "[dat]":
                                 ReadDatSection(ir);
                                 break;
 
                             case "emulator":
+	                    case "[emulator]":
                                 ReadEmulatorSection(ir);
                                 break;
 
                             case "games":
+ 	                    case "[games]":
+	                    case "[resources]":
+	                    case "[disks]":
                                 ReadGamesSection(ir, statsOnly, filename, indexId);
                                 break;
 
@@ -75,6 +81,10 @@ namespace SabreTools.DatFiles.Formats
                                 ir.ReadNextLine();
                                 break;
                         }
+                    
+                        // nothing found
+                        ir.ReadNextLine();
+			continue;
                     }
                 }
             }
