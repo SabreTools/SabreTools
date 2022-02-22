@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System;
 
 using SabreTools.Core;
 using SabreTools.Core.Tools;
@@ -11,6 +12,8 @@ using SabreTools.IO;
 using SabreTools.Logging;
 using SabreTools.Skippers;
 using Compress.ThreadReaders;
+
+using DiscUtils;
 
 namespace SabreTools.FileTypes
 {
@@ -199,7 +202,10 @@ namespace SabreTools.FileTypes
             // First line of defense is going to be the extension, for better or worse
             if (!HasValidArchiveExtension(input))
                 return outFileType;
-
+            
+            // initialize DiscUtils
+            DiscUtils.Complete.SetupHelper.SetupComplete(); 
+            
             // Read the first bytes of the file and get the magic number
             BinaryReader br = new BinaryReader(File.OpenRead(input));
             byte[] magic = br.ReadBytes(8);
@@ -260,7 +266,21 @@ namespace SabreTools.FileTypes
             {
                 outFileType = FileType.ZstdArchive;
             }
-
+            else
+            {
+                DiscUtils.FileSystemInfo[] fsia = FileSystemManager.DetectFileSystems(File.OpenRead(input));
+                if (fsia.Length > 0)
+                {
+                    // detect FileSystemType: 
+                    // ISO9660 or UDF - leading to chdman ISO type
+                    // MyFs, xfs, Swap, SquashFS, NTFS, HFS+, FAT, ext, btrfs - leading to chdman HDD type
+                    if (fsia[0].ToString() == "ISO9660" || fsia[0].ToString() == "UDF")
+                        outFileType = FileType.ISOArchive;
+                    else 
+                        outFileType = FileType.HDDArchive;
+                }
+            }
+            
             return outFileType;
         }
 
@@ -467,7 +487,8 @@ namespace SabreTools.FileTypes
                 case "tlz":
                 case "zip":
                 case "zipx":
-
+                case "iso":
+                    
                 // CHD
                 case "chd":
                     return true;

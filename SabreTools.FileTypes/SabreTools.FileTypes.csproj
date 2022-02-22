@@ -15,7 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SharpCompress" Version="0.29.0" />
+    <PackageReference Include="DiscUtils" Version="0.16.13" />
+    <PackageReference Include="SharpCompress" Version="0.30.1" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
   </ItemGroup>
 

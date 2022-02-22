@@ -84,6 +84,10 @@ namespace SabreTools.FileTypes
                     archive = new ZipArchive(input);
                     break;
 
+                case FileType.ISOArchive:
+                    archive = new ISOArchive(input);
+                    break;
+
                 default:
                     // We ignore all other types for now
                     break;
