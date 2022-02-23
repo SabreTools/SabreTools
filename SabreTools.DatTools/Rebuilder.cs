@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -227,14 +227,17 @@ namespace SabreTools.DatTools
 
                     // If we are supposed to delete the file, do so
                     if (delete && rebuilt)
-                            try {
+                    {
+                            try 
+                            {
                                 File.SetAttributes(input, FileAttributes.Normal);
                                 File.Delete(input);
                             }
                             catch (Exception e)
                             {
                                 logger.Warning("The process failed: " + e.Message);
-                            }   
+                            }
+                    }
                 }
 
                 // If the input is a directory
@@ -247,8 +250,10 @@ namespace SabreTools.DatTools
                         bool rebuilt = RebuildGenericHelper(datFile, file, outDir, quickScan, date, inverse, outputFormat, asFiles);
 
                         // If we are supposed to delete the file, do so
-                        if (delete && rebuilt) {
-                            try {
+                        if (delete && rebuilt) 
+                        {
+                            try 
+                            {
                                 File.SetAttributes(file, FileAttributes.Normal);
                                 File.Delete(file);
                                 // sometimes the file is in a directory (TOSEC), delete directory
@@ -264,7 +269,8 @@ namespace SabreTools.DatTools
                     // lopping through directories, delete them also 
                     // directory is not deleted, if files remain in it
                     if (delete) {
-                        try {
+                        try 
+                        {
                             Directory.Delete(input);
                         }
                         catch (Exception e)
