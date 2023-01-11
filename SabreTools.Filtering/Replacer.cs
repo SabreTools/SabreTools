@@ -919,6 +919,9 @@ namespace SabreTools.Filtering
 
             if (datItemFields.Contains(DatItemField.Inverted))
                 rom.Inverted = newItem.Inverted;
+            
+            if (datItemFields.Contains(DatItemField.MIA))
+                rom.MIA = newItem.MIA;
 
             #endregion
 

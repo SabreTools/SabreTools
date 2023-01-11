@@ -930,6 +930,9 @@ namespace SabreTools.Filtering
 
             if (DatItemFields.Contains(DatItemField.Inverted))
                 rom.Inverted = null;
+            
+            if (DatItemFields.Contains(DatItemField.MIA))
+                rom.MIA = null;
 
             #endregion
 

@@ -154,6 +154,7 @@ namespace SabreTools.DatItems.Formats
         [JsonConverter(typeof(StringEnumConverter))]
         public ItemStatus ItemStatus { get; set; }
 
+       
         [JsonIgnore]
         public bool ItemStatusSpecified { get { return ItemStatus != ItemStatus.NULL && ItemStatus != ItemStatus.None; } }
 
@@ -171,6 +172,12 @@ namespace SabreTools.DatItems.Formats
         /// </summary>
         [JsonProperty("inverted", DefaultValueHandling = DefaultValueHandling.Ignore), XmlElement("inverted")]
         public bool? Inverted { get; set; } = null;
+
+        /// <summary>
+        /// Rom MIA status
+        /// </summary>
+        [JsonProperty("mia", DefaultValueHandling = DefaultValueHandling.Ignore), XmlElement("mia")]
+        public bool? MIA { get; set; } = null;
 
         [JsonIgnore]
         public bool InvertedSpecified { get { return Inverted != null; } }
@@ -428,6 +435,7 @@ namespace SabreTools.DatItems.Formats
                 ItemStatus = this.ItemStatus,
                 Optional = this.Optional,
                 Inverted = this.Inverted,
+                MIA = this.MIA,
 
                 AltName = this.AltName,
                 AltTitle = this.AltTitle,

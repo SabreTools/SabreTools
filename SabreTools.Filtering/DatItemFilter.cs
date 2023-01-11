@@ -43,6 +43,8 @@ namespace SabreTools.Filtering
         public FilterItem<ItemStatus> Status { get; private set; } = new FilterItem<ItemStatus>() { Positive = ItemStatus.NULL, Negative = ItemStatus.NULL };
         public FilterItem<bool?> Optional { get; private set; } = new FilterItem<bool?>() { Neutral = null };
         public FilterItem<bool?> Inverted { get; private set; } = new FilterItem<bool?>();
+        
+        public FilterItem<bool?> MIA { get; private set; } = new FilterItem<bool?>();
 
         // Rom (Archive.org)
         public FilterItem<string> ArchiveDotOrgSource { get; private set; } = new FilterItem<string>();
@@ -1815,6 +1817,10 @@ namespace SabreTools.Filtering
 
             // Filter on inverted
             if (!PassBoolFilter(Inverted, rom.Inverted))
+                return false;
+            
+            // Filter on MIA
+            if (!PassBoolFilter(MIA, rom.MIA))
                 return false;
 
             #endregion
