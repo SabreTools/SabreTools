@@ -412,6 +412,9 @@ namespace SabreTools.Core.Tools
 
                 case "inverted":
                     return DatItemField.Inverted;
+                
+                case "mia":
+                    return DatItemField.MIA;
 
                 // Rom (Archive.org)
                 case "ado-source":
