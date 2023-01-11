@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -226,7 +227,17 @@ namespace SabreTools.DatTools
 
                     // If we are supposed to delete the file, do so
                     if (delete && rebuilt)
-                        File.Delete(input);
+                    {
+                            try 
+                            {
+                                File.SetAttributes(input, FileAttributes.Normal);
+                                File.Delete(input);
+                            }
+                            catch (Exception e)
+                            {
+                                logger.Warning("The process failed: " + e.Message);
+                            }
+                    }
                 }
 
                 // If the input is a directory
@@ -239,8 +250,33 @@ namespace SabreTools.DatTools
                         bool rebuilt = RebuildGenericHelper(datFile, file, outDir, quickScan, date, inverse, outputFormat, asFiles);
 
                         // If we are supposed to delete the file, do so
-                        if (delete && rebuilt)
-                            File.Delete(input);
+                        if (delete && rebuilt) 
+                        {
+                            try 
+                            {
+                                File.SetAttributes(file, FileAttributes.Normal);
+                                File.Delete(file);
+                                // sometimes the file is in a directory (TOSEC), delete directory
+                                Directory.Delete(Path.GetDirectoryName(file));
+                            }
+                            catch (Exception e)
+                            {
+                                logger.Warning("The process failed: " + e.Message);
+                            }
+                        }
+                    }
+                    
+                    // lopping through directories, delete them also 
+                    // directory is not deleted, if files remain in it
+                    if (delete) {
+                        try 
+                        {
+                            Directory.Delete(input);
+                        }
+                        catch (Exception e)
+                        {
+                            logger.Warning("Directory was not deleted, if there are still files left: " + e.Message);
+                        }
                     }
                 }
             }
