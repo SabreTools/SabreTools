@@ -165,5 +165,41 @@ namespace SabreTools.Test.Filtering
             Assert.Contains("foo", filter.DatItemFilter.Name.PositiveSet);
             Assert.Contains("bar", filter.DatItemFilter.Name.NegativeSet);
         }
+        
+        [Fact]
+        public void PopulateFilterMiaDatItemFieldTest()
+        {
+            // Setup the list
+            List<string> filters = new List<string>
+            {
+                "item.mia:true"
+            };
+
+            // Setup the filter
+            var filter = new Filter();
+            filter.PopulateFiltersFromList(filters);
+
+            // Check the filters
+            Assert.NotNull(filter.DatItemFilter);
+            Assert.Equal(true, filter.DatItemFilter.MIA.Neutral);
+        }
+        
+        [Fact]
+        public void PopulateFilterNegateMiaDatItemFieldTest()
+        {
+            // Setup the list
+            List<string> filters = new List<string>
+            {
+                "item.mia:false"
+            };
+
+            // Setup the filter
+            var filter = new Filter();
+            filter.PopulateFiltersFromList(filters);
+
+            // Check the filters
+            Assert.NotNull(filter.DatItemFilter);
+            Assert.Equal(false, filter.DatItemFilter.MIA.Neutral);
+        }
     }
 }
