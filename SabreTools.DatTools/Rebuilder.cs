@@ -1,4 +1,7 @@
+using System.ComponentModel;
+using System.Security.Principal;
 using System.Collections.Generic;
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -27,6 +30,7 @@ namespace SabreTools.DatTools
         /// Logging object
         /// </summary>
         private static readonly Logger logger = new Logger();
+        private static string symlinkDirReport = "";
 
         #endregion
 
@@ -48,6 +52,9 @@ namespace SabreTools.DatTools
             bool date = false,
             bool delete = false,
             bool inverse = false,
+            bool baseReplace = false,
+            bool archivesAsFiles = false,
+            string symlinkDir = "",
             OutputFormat outputFormat = OutputFormat.Folder)
         {
             #region Perform setup
@@ -143,11 +150,11 @@ namespace SabreTools.DatTools
                 // Otherwise, we rebuild that file to all locations that we need to
                 bool usedInternally;
                 if (datFile.Items[hash][0].ItemType == ItemType.Disk)
-                    usedInternally = RebuildIndividualFile(datFile, new Disk(fileinfo), foundpath, outDir, date, inverse, outputFormat, false /* isZip */);
+                    usedInternally = RebuildIndividualFile(datFile, new Disk(fileinfo), foundpath, outDir, date, inverse, baseReplace, archivesAsFiles, symlinkDir, outputFormat, false /* isZip */);
                 else if (datFile.Items[hash][0].ItemType == ItemType.Media)
-                    usedInternally = RebuildIndividualFile(datFile, new Media(fileinfo), foundpath, outDir, date, inverse, outputFormat, false /* isZip */);
+                    usedInternally = RebuildIndividualFile(datFile, new Media(fileinfo), foundpath, outDir, date, inverse, baseReplace, archivesAsFiles, symlinkDir, outputFormat, false /* isZip */);
                 else
-                    usedInternally = RebuildIndividualFile(datFile, new Rom(fileinfo), foundpath, outDir, date, inverse, outputFormat, false /* isZip */);
+                    usedInternally = RebuildIndividualFile(datFile, new Rom(fileinfo), foundpath, outDir, date, inverse, baseReplace, archivesAsFiles, symlinkDir, outputFormat, false /* isZip */);
 
                 // If we are supposed to delete the depot file, do so
                 if (delete && usedInternally)
@@ -182,6 +189,9 @@ namespace SabreTools.DatTools
             bool date = false,
             bool delete = false,
             bool inverse = false,
+            bool baseReplace = false,
+            bool archivesAsFiles = false,
+            string symlinkDir = "",           
             OutputFormat outputFormat = OutputFormat.Folder,
             TreatAsFile asFiles = 0x00)
         {
@@ -222,7 +232,7 @@ namespace SabreTools.DatTools
                 if (File.Exists(input))
                 {
                     logger.User($"Checking file: {input}");
-                    bool rebuilt = RebuildGenericHelper(datFile, input, outDir, quickScan, date, inverse, outputFormat, asFiles);
+                    bool rebuilt = RebuildGenericHelper(datFile, input, outDir, quickScan, date, inverse, baseReplace, archivesAsFiles, symlinkDir, outputFormat, asFiles);
 
                     // If we are supposed to delete the file, do so
                     if (delete && rebuilt)
@@ -236,7 +246,12 @@ namespace SabreTools.DatTools
                     foreach (string file in Directory.EnumerateFiles(input, "*", SearchOption.AllDirectories))
                     {
                         logger.User($"Checking file: {file}");
-                        bool rebuilt = RebuildGenericHelper(datFile, file, outDir, quickScan, date, inverse, outputFormat, asFiles);
+                        string tempDir = Path.GetDirectoryName(file.Replace(input,string.Empty));
+                        if (!String.IsNullOrEmpty(tempDir))
+                            tempDir += "/";
+                        string symlinkDirExt = symlinkDir + tempDir;
+
+                        bool rebuilt = RebuildGenericHelper(datFile, file, outDir, quickScan, date, inverse, baseReplace, archivesAsFiles, symlinkDirExt, outputFormat, asFiles);
 
                         // If we are supposed to delete the file, do so
                         if (delete && rebuilt)
@@ -271,6 +286,9 @@ namespace SabreTools.DatTools
             bool quickScan,
             bool date,
             bool inverse,
+            bool baseReplace,
+            bool archivesAsFiles, 
+            string symlinkDirExt,
             OutputFormat outputFormat,
             TreatAsFile asFiles)
         {
@@ -313,7 +331,7 @@ namespace SabreTools.DatTools
                 else
                     internalDatItem = new Rom(internalFileInfo);
 
-                usedExternally = RebuildIndividualFile(datFile, internalDatItem, file, outDir, date, inverse, outputFormat);
+                usedExternally = RebuildIndividualFile(datFile, internalDatItem, file, outDir, date, inverse, baseReplace, archivesAsFiles, symlinkDirExt, outputFormat);
             }
             // Otherwise, loop through the entries and try to match
             else
@@ -321,7 +339,7 @@ namespace SabreTools.DatTools
                 foreach (BaseFile entry in entries)
                 {
                     DatItem internalDatItem = DatItem.Create(entry);
-                    usedInternally |= RebuildIndividualFile(datFile, internalDatItem, file, outDir, date, inverse, outputFormat, !isSingleTorrent /* isZip */);
+                    usedInternally |= RebuildIndividualFile(datFile, internalDatItem, file, outDir, date, inverse, baseReplace, archivesAsFiles, symlinkDirExt, outputFormat, !isSingleTorrent /* isZip */);
                 }
             }
 
@@ -347,6 +365,9 @@ namespace SabreTools.DatTools
             string outDir,
             bool date,
             bool inverse,
+            bool baseReplace,
+            bool archivesAsFiles,
+            string symlinkDirExt,
             OutputFormat outputFormat,
             bool? isZip = null)
         {
@@ -408,8 +429,32 @@ namespace SabreTools.DatTools
                     // Get the output archive, if possible
                     Folder outputArchive = GetPreconfiguredFolder(datFile, date, outputFormat);
 
-                    // Now rebuild to the output file
-                    outputArchive.Write(fileStream, outDir, (item as Rom).ConvertToBaseFile());
+                    
+                    BaseFile itemRom = (item as Rom).ConvertToBaseFile();
+
+                    // change filename inside folder or zip to orignal name
+                    //
+                    // e.g. taking TOSEC files as input and replace them with 
+                    // No-Intro Names from DAT (which are more correct and shorter),
+                    // but leave names inside as original TOSEC Name to find them quicker
+                    if (baseReplace)
+                        itemRom.Filename = datItem.GetName();
+
+                    if (archivesAsFiles) {
+                        // input is a folder: 
+                        string symlinkName = "";
+                        if (file.Contains(".") && !file.Contains(".bin"))
+                            symlinkName = Path.GetFileName(file);
+                        else
+                            symlinkName = Path.GetFileName( Path.GetDirectoryName(file) ) + ".7z";
+                        
+                        // TODO: add path, if it is relative to -dat 
+                        symlinkDirReport += ($"ln -s \"{symlinkDirExt}{symlinkName}\" {itemRom.Parent}.7z\n");
+                        logger.User("Symbolic Link added");
+                    } else {
+                        // Now rebuild to the output file
+                        outputArchive.Write(fileStream, outDir, itemRom);
+                    }
                 }
 
                 // Close the input stream
