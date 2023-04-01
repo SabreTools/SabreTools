@@ -36,8 +36,6 @@ namespace Compress.SevenZip
             }
         }
 
-
-
         private class LocalFile
         {
             public string FileName;
@@ -47,9 +45,10 @@ namespace Compress.SevenZip
             public int StreamIndex;
             public ulong StreamOffset;
             public long LastModified;
+            public long Created;
+            public long Accessed;
             public ZipReturn FileStatus = ZipReturn.ZipUntested;
         }
-
 
         private List<LocalFile> _localFiles = new List<LocalFile>();
 
@@ -111,6 +110,21 @@ namespace Compress.SevenZip
         {
             return _localFiles[i].LastModified;
         }
+        
+        public long? Created(int i)
+        {
+            return _localFiles[i].Created;
+        }
+
+        public long? Accessed(int i)
+        {
+            return _localFiles[i].Accessed;
+        }
+
+        public bool IsDirectory(int i)
+        {
+            return _localFiles[i].IsDirectory;
+        }
 
         public void ZipFileCloseFailed()
         {
@@ -139,21 +153,6 @@ namespace Compress.SevenZip
             ZipOpen = ZipOpenType.Closed;
         }
 
-        public bool IsDirectory(int i)
-        {
-            return _localFiles[i].IsDirectory;
-        }
-
-
-
-
-
-
-
-
-
-
-
         public void ZipFileClose()
         {
             switch (ZipOpen)
@@ -178,7 +177,6 @@ namespace Compress.SevenZip
 
             ZipOpen = ZipOpenType.Closed;
         }
-
 
         private Header _header;
 

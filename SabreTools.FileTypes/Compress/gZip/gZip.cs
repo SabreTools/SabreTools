@@ -7,7 +7,6 @@ using FileInfo = RVIO.FileInfo;
 using FileStream = RVIO.FileStream;
 using Path = RVIO.Path;
 
-
 namespace Compress.gZip
 {
     public class gZip : ICompress
@@ -65,7 +64,6 @@ namespace Compress.gZip
             return null;
         }
 
-
         public ZipOpenType ZipOpen { get; private set; }
 
         public ZipReturn ZipFileOpen(string newFilename, long timestamp = -1, bool readHeaders = true)
@@ -96,6 +94,12 @@ namespace Compress.gZip
                     }
                     return ZipReturn.ZipErrorOpeningFile;
                 }
+                ZipOpen = ZipOpenType.OpenRead;
+                if (!readHeaders)
+                {
+                    return ZipReturn.ZipGood;
+                }
+                return ZipFileReadHeaders();
             }
             catch (PathTooLongException)
             {
@@ -107,13 +111,11 @@ namespace Compress.gZip
                 ZipFileClose();
                 return ZipReturn.ZipErrorOpeningFile;
             }
-            ZipOpen = ZipOpenType.OpenRead;
-
-            if (!readHeaders)
+            catch(Exception)
             {
-                return ZipReturn.ZipGood;
+                ZipFileClose();
+                return ZipReturn.ZipErrorReadingFile;
             }
-            return ZipFileReadHeaders();
         }
 
         public ZipReturn ZipFileOpen(Stream inStream)
@@ -428,7 +430,6 @@ namespace Compress.gZip
             return ZipReturn.ZipGood;
         }
 
-
         public ZipReturn ZipFileCloseWriteStream(byte[] crc32)
         {
             if (_compressionStream is ZlibBaseStream dfStream)
@@ -505,6 +506,7 @@ namespace Compress.gZip
             _zipFileInfo = null;
             ZipOpen = ZipOpenType.Closed;
         }
+        
         public ZipReturn GetRawStream(out Stream st)
         {
             st = null;
