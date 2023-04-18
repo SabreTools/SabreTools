@@ -557,6 +557,7 @@ namespace SabreTools.Core
         Status,
         Optional,
         Inverted,
+        MIA,
 
         // Rom (Archive.org)
         ArchiveDotOrgSource,

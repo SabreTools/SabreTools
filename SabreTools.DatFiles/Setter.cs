@@ -1125,7 +1125,7 @@ namespace SabreTools.DatFiles
 
             if (DatItemMappings.Keys.Contains(DatItemField.Date))
                 rom.Date = DatItemMappings[DatItemField.Date];
-
+            
             if (DatItemMappings.Keys.Contains(DatItemField.Status))
                 rom.ItemStatus = DatItemMappings[DatItemField.Status].AsItemStatus();
 
@@ -1134,6 +1134,9 @@ namespace SabreTools.DatFiles
 
             if (DatItemMappings.Keys.Contains(DatItemField.Inverted))
                 rom.Inverted = DatItemMappings[DatItemField.Optional].AsYesNo();
+            
+            if (DatItemMappings.Keys.Contains(DatItemField.MIA))
+                rom.MIA = DatItemMappings[DatItemField.MIA].AsYesNo();
 
             #endregion
 

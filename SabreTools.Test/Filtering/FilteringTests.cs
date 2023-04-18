@@ -68,6 +68,36 @@ namespace SabreTools.Test.Filtering
             bool actual = filter.PassesAllFilters(datItem);
             Assert.False(actual);
         }
+        
+        [Fact]
+        public void PassesFiltersMiaFilterPass()
+        {
+            // Setup filter
+            var filter = new Filter();
+            filter.PopulateFiltersFromList(new List<string> { "item.mia:true" });
+
+            // Setup DatItem
+            var datItem = CreateMiaDatItem();
+
+            // Run filters
+            bool actual = filter.PassesAllFilters(datItem);
+            Assert.True(actual);
+        }
+
+        [Fact]
+        public void PassesFiltersMiaFilterFail()
+        {
+            // Setup filter
+            var filter = new Filter();
+            filter.PopulateFiltersFromList(new List<string> { "item.mia:false" });
+
+            // Setup DatItem
+            var datItem = CreateMiaDatItem();
+
+            // Run filters
+            bool actual = filter.PassesAllFilters(datItem);
+            Assert.False(actual);
+        }
 
         /// <summary>
         /// Generate a consistent DatItem for testing
@@ -81,6 +111,20 @@ namespace SabreTools.Test.Filtering
                 {
                     Name = "bar",
                     Description = "bar",
+                }
+            };
+        }
+
+        private DatItem CreateMiaDatItem()
+        {
+            return new Rom
+            {
+                Name = "foo",
+                MIA = true,
+                Machine = new Machine
+                {
+                    Name = "bar",
+                    Description = "bar"
                 }
             };
         }
