@@ -68,7 +68,7 @@ namespace SabreTools.DatItems
         public string Category { get; set; } = null;
 
         /// <summary>
-        /// fomof parent
+        /// romof parent
         /// </summary>
         [JsonProperty("romof", DefaultValueHandling = DefaultValueHandling.Ignore)]
         [XmlElement("romof")]

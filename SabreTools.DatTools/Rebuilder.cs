@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ using SabreTools.FileTypes.Archives;
 using SabreTools.IO;
 using SabreTools.Logging;
 using SabreTools.Skippers;
+using SabreTools.FileTypes.CHD;
 
 namespace SabreTools.DatTools
 {
@@ -355,10 +357,11 @@ namespace SabreTools.DatTools
             // Set the initial output value
             bool rebuilt = false;
 
-            // If the DatItem is a Disk or Media, force rebuilding to a folder except if TGZ or TXZ
+            // If the DatItem is a Disk or Media, force rebuilding to a folder except if TGZ or TXZ or CHD
             if ((datItem.ItemType == ItemType.Disk || datItem.ItemType == ItemType.Media)
                 && !(outputFormat == OutputFormat.TorrentGzip || outputFormat == OutputFormat.TorrentGzipRomba)
-                && !(outputFormat == OutputFormat.TorrentXZ || outputFormat == OutputFormat.TorrentXZRomba))
+                && !(outputFormat == OutputFormat.TorrentXZ || outputFormat == OutputFormat.TorrentXZRomba)
+                && !(outputFormat == OutputFormat.CHD))
             {
                 outputFormat = OutputFormat.Folder;
             }
@@ -378,8 +381,31 @@ namespace SabreTools.DatTools
             if (!GetFileStream(datItem, file, isZip, out Stream fileStream))
                 return false;
 
+            // load DatItem for CHD
+            // rawsha1 no use to compare against ISO, 
+            // see https://www.mameworld.info/ubbthreads/showflat.php?Cat=&Number=342940&page=&view=&sb=5&o=&vc=1
+            DatItem originalItem = null;
+            if (outputFormat == OutputFormat.CHD && datItem.ItemType != ItemType.Disk)
+            {
+               // if chd is inside stream, write DatItem to originalItem
+                BaseArchive chdarchive = new CHDFile(fileStream);
+                if (chdarchive.Type != FileType.None)
+                { 
+                    List<BaseFile> tempentries = null;
+                    tempentries = chdarchive.GetChildren();
+                    foreach (BaseFile tempentry in tempentries)
+                    {                       
+                        originalItem = DatItem.Create(tempentry);
+                    }
+                }
+                
+                // Try to get the stream for the file, again
+                if (!GetFileStream(datItem, file, isZip, out fileStream))
+                    return false;
+            }
+
             // If either we have duplicates or we're filtering
-            if (ShouldRebuild(datFile, datItem, fileStream, inverse, out ConcurrentList<DatItem> dupes))
+            if (ShouldRebuild(datFile, datItem, fileStream, inverse, out ConcurrentList<DatItem> dupes, originalItem))
             {
                 // If we have a very specific TGZ->TGZ case, just copy it accordingly
                 if (RebuildTorrentGzip(datFile, datItem, file, outDir, outputFormat, isZip))
@@ -411,7 +437,26 @@ namespace SabreTools.DatTools
 
                     // Get the output archive, if possible
                     Folder outputArchive = GetPreconfiguredFolder(datFile, date, outputFormat);
-
+                    
+                    // If we have a Disk from CHD, change it not into a Rom
+                    BaseFile itemRom = null;
+                    if (item.ItemType == ItemType.Disk)
+                    {
+                        DatItem tempItem = (item as Disk).ConvertToRom();  
+                        itemRom = (tempItem as Rom).ConvertToBaseFile();
+                    }
+                    else                    
+                        itemRom = (item as Rom).ConvertToBaseFile();
+                    
+                        // Now rebuild to the output file
+                        if (outputFormat == OutputFormat.CHD) 
+                        {
+                            itemRom.Child = item.Machine.CloneOf;
+                            outputArchive.Write(file, outDir, itemRom);
+                        }
+                        else
+                            outputArchive.Write(fileStream, outDir, itemRom);
+                    
                     // Now rebuild to the output file
                     outputArchive.Write(fileStream, outDir, (item as Rom).ConvertToBaseFile());
                 }
@@ -483,11 +528,15 @@ namespace SabreTools.DatTools
         /// <param name="stream">Stream representing the input file</param>
         /// <param name="inverse">True if the DAT should be used as a filter instead of a template, false otherwise</param>
         /// <param name="dupes">Output list of duplicate items to rebuild to</param>
+        /// <param name="originalItem">Information for the original file to rebuild from</param>
         /// <returns>True if the item should be rebuilt, false otherwise</returns>
-        private static bool ShouldRebuild(DatFile datFile, DatItem datItem, Stream stream, bool inverse, out ConcurrentList<DatItem> dupes)
+        private static bool ShouldRebuild(DatFile datFile, DatItem datItem, Stream stream, bool inverse, out ConcurrentList<DatItem> dupes, DatItem originalItem = null)
         {
             // Find if the file has duplicates in the DAT
             dupes = datFile.Items.GetDuplicates(datItem);
+            // Find duplicates of original item (Disk) for CHD
+            if (originalItem != null && dupes.Count == 0)
+                dupes = datFile.Items.GetDuplicates(originalItem);
             bool hasDuplicates = dupes.Count > 0;
 
             // If we have duplicates but we're filtering
@@ -713,6 +762,7 @@ namespace SabreTools.DatTools
                 OutputFormat.TorrentXZ => "TorrentXZ",
                 OutputFormat.TorrentXZRomba => "TorrentXZ",
                 OutputFormat.TorrentZip => "TorrentZip",
+                OutputFormat.CHD => "CHD",
                 _ => null,
             };
         }

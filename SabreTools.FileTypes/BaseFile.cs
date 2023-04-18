@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using SabreTools.Core;
 using SabreTools.Core.Tools;
 using SabreTools.FileTypes.Aaru;
-using SabreTools.FileTypes.CHD;
+//using SabreTools.FileTypes.CHD;
 using SabreTools.IO;
 using SabreTools.Logging;
 using SabreTools.Skippers;
@@ -60,6 +60,11 @@ namespace SabreTools.FileTypes
         /// Direct parent of the file
         /// </summary>
         public string Parent { get; set; }
+
+        /// <summary>
+        /// Childs of the file
+        /// </summary>
+        public string Child { get; set; }
 
         /// <summary>
         /// Date stamp of the file
@@ -303,8 +308,8 @@ namespace SabreTools.FileTypes
             BaseFile baseFile;
             if (fileType == FileType.AaruFormat && !asFiles.HasFlag(TreatAsFile.AaruFormat))
                 baseFile = AaruFormat.Create(inputStream);
-            else if (fileType == FileType.CHD && !asFiles.HasFlag(TreatAsFile.CHD))
-                baseFile = CHDFile.Create(inputStream);
+//            else if (fileType == FileType.CHD && !asFiles.HasFlag(TreatAsFile.CHD))
+//                baseFile = CHDFile.Create(inputStream);
             else
                 baseFile = GetInfo(inputStream, hashes: hashes, keepReadOpen: false);
 

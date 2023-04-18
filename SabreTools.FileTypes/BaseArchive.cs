@@ -2,6 +2,7 @@
 using System.IO;
 
 using SabreTools.FileTypes.Archives;
+using SabreTools.FileTypes.CHD;
 
 namespace SabreTools.FileTypes
 {
@@ -84,6 +85,10 @@ namespace SabreTools.FileTypes
                     archive = new ZipArchive(input);
                     break;
 
+                case FileType.CHD:
+                    archive = new CHDFile(input);
+                    break;
+                    
                 default:
                     // We ignore all other types for now
                     break;

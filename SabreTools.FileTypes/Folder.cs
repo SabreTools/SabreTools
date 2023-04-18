@@ -5,6 +5,7 @@ using System.Linq;
 
 using SabreTools.Core.Tools;
 using SabreTools.FileTypes.Archives;
+using SabreTools.FileTypes.CHD;
 using SabreTools.IO;
 using SabreTools.Logging;
 
@@ -77,6 +78,9 @@ namespace SabreTools.FileTypes
 
                 case OutputFormat.ParentFolder:
                     return new Folder(true);
+
+                case OutputFormat.CHD:
+                    return new CHDFile();
 
                 case OutputFormat.TapeArchive:
                     return new TapeArchive();

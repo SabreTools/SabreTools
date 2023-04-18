@@ -84,9 +84,11 @@ namespace SabreTools.FileTypes.CHD
         /// <summary>
         /// Return internal MD5 hash
         /// </summary>
+/*
         public override byte[] GetHash()
         {
             return md5;
         }
+*/
     }
 }

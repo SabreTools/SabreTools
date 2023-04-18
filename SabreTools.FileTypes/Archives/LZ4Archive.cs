@@ -8,6 +8,7 @@ namespace SabreTools.FileTypes.Archives
     /// Represents a TorrentLRZip archive for reading and writing
     /// </summary>
     /// TODO: Implement from source at https://github.com/lz4/lz4
+    /// http://fastcompression.blogspot.com/2013/04/lz4-streaming-format-final.html (2013)
     public class LZ4Archive : BaseArchive
     {
         #region Constructors
