@@ -43,6 +43,7 @@ namespace SabreTools.DatTools
             DatFile datFile,
             string basePath,
             TreatAsFile asFiles = 0x00,
+            bool addAsFiles = false,
             SkipFileType skipFileType = SkipFileType.None,
             bool addBlanks = false,
             Hash hashes = Hash.Standard)
@@ -71,7 +72,7 @@ namespace SabreTools.DatTools
                 logger.User(totalSize, currentSize);
                 foreach (string item in files)
                 {
-                    CheckFileForHashes(datFile, item, basePath, asFiles, skipFileType, addBlanks, hashes);
+                    CheckFileForHashes(datFile, item, basePath, asFiles, addAsFiles, skipFileType, addBlanks, hashes);
                     currentSize += new FileInfo(item).Length;
                     logger.User(totalSize, currentSize, item);
                 }
@@ -88,7 +89,7 @@ namespace SabreTools.DatTools
                 logger.User(totalSize, currentSize);
 
                 string parentPath = Path.GetDirectoryName(Path.GetDirectoryName(basePath));
-                CheckFileForHashes(datFile, basePath, parentPath, asFiles, skipFileType, addBlanks, hashes);
+                CheckFileForHashes(datFile, basePath, parentPath, asFiles, addAsFiles, skipFileType, addBlanks, hashes);
                 logger.User(totalSize, totalSize, basePath);
             }
 
@@ -111,6 +112,7 @@ namespace SabreTools.DatTools
             string item,
             string basePath,
             TreatAsFile asFiles,
+            bool addAsFiles,
             SkipFileType skipFileType,
             bool addBlanks,
             Hash hashes)
@@ -141,7 +143,7 @@ namespace SabreTools.DatTools
                 }
 
                 // Process as archive if we're not treating archives as files
-                else if (!asFiles.HasFlag(TreatAsFile.Archive))
+                else if (!asFiles.HasFlag(TreatAsFile.Archive) || addAsFiles)
                 {
                     var extracted = archive.GetChildren();
 
@@ -155,10 +157,8 @@ namespace SabreTools.DatTools
                 }
 
                 // Process as file if we're treating archives as files
-                else
-                {
-                    ProcessFile(datFile, item, basePath, hashes, asFiles);
-                }
+                if (asFiles.HasFlag(TreatAsFile.Archive) || addAsFiles)
+                    ProcessFile(datFile, item, basePath, hashes, asFiles, addAsFiles);
             }
 
             // Process non-archives according to flags
@@ -170,7 +170,7 @@ namespace SabreTools.DatTools
 
                 // Process as file
                 else
-                    ProcessFile(datFile, item, basePath, hashes, asFiles);
+                    ProcessFile(datFile, item, basePath, hashes, asFiles, addAsFiles);
             }
         }
 
@@ -305,13 +305,21 @@ namespace SabreTools.DatTools
         /// <param name="basePath">Path the represents the parent directory</param>
         /// <param name="hashes">Hashes to include in the information</param>
         /// <param name="asFiles">TreatAsFiles representing CHD and Archive scanning</param>
-        private static void ProcessFile(DatFile datFile, string item, string basePath, Hash hashes, TreatAsFile asFiles)
+        /// <param name="addAsFiles">TreatAsFiles representing CHD and Archive and as whole file scanning</param>
+        private static void ProcessFile(DatFile datFile, string item, string basePath, Hash hashes, TreatAsFile asFiles, bool addAsFiles)
         {
             logger.Verbose($"'{Path.GetFileName(item)}' treated like a file");
             BaseFile baseFile = BaseFile.GetInfo(item, header: datFile.Header.HeaderSkipper, hashes: hashes, asFiles: asFiles);
             DatItem datItem = DatItem.Create(baseFile);
-            ProcessFileHelper(datFile, item, datItem, basePath, string.Empty);
+            
+            // Get the parent path for all items
+            string parent = string.Empty;
+            if (addAsFiles)
+                parent = (Path.GetDirectoryName(Path.GetFullPath(item)) + Path.DirectorySeparatorChar).Remove(0, basePath.Length) + Path.GetFileNameWithoutExtension(item);
+
+            ProcessFileHelper(datFile, item, datItem, basePath, parent);
         }
+
 
         /// <summary>
         /// Process a single file as a file (with found Rom data)

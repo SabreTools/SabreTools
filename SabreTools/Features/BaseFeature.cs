@@ -163,6 +163,20 @@ namespace SabreTools.Features
                     longDescription: "Normally, CHDs would be processed using their internal hash to compare against the input DATs. This flag forces all CHDs to be treated like regular files.");
             }
         }
+        
+        internal const string AddAsFilesValue = "add-as-files";
+        internal static Feature AddAsFilesFlag
+        {
+            get
+            {
+                return new Feature(
+                    AddAsFilesValue,
+                    new List<string>() { "-adaf", "--add-as-files" },
+                    "Treat Archives as regular files and process internal files",
+                    ParameterType.Flag,
+                    longDescription: "Instead of trying to enumerate the files within archives, treat the archives as files themselves and also the inside files. This is good for uncompressed sets that include archives that should be read as-is and also have a hash for the whole file.");
+            }
+        }
 
         internal const string CleanValue = "clean";
         internal static Feature CleanFlag
