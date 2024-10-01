@@ -414,6 +414,7 @@ namespace SabreTools.DatFiles.Formats
         {
             var diskArea = new Models.SoftwareList.DiskArea
             {
+                Name = item.DiskArea.Name,
                 Disk = CreateDisk(item),
             };
             return new Models.SoftwareList.DiskArea[] { diskArea };

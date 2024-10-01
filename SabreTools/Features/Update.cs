@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 using SabreTools.Core;
 using SabreTools.DatFiles;
+using SabreTools.DatItems;
 using SabreTools.DatTools;
 using SabreTools.Help;
 using SabreTools.IO;
@@ -288,6 +289,12 @@ namespace SabreTools.Features
             // Output differences against a base DAT
             if (updateMode.HasFlag(UpdateMode.DiffAgainst))
             {
+                // For comparison's sake, we want to use a base ordering
+                if (GetBoolean(Features, ByGameValue))
+                    userInputDat.Items.BucketBy(ItemKey.Machine, DedupeType.None);
+                else
+                    userInputDat.Items.BucketBy(ItemKey.CRC, DedupeType.None);
+
                 // Loop through each input and diff against the base
                 Parallel.ForEach(inputPaths, Globals.ParallelOptions, inputPath =>
                 {
@@ -315,7 +322,7 @@ namespace SabreTools.Features
             if (updateMode.HasFlag(UpdateMode.BaseReplace))
             {
                 // Loop through each input and apply the base DatFile
-                Parallel.ForEach(inputPaths, Globals.ParallelOptions, inputPath =>
+                foreach (var inputPath in inputPaths)
                 {
                     // Parse the path to a new DatFile
                     DatFile repDat = DatFile.Create(Header);
@@ -339,7 +346,7 @@ namespace SabreTools.Features
                     // Finally output the replaced DatFile
                     string interOutDir = inputPath.GetOutputPath(OutputDir, GetBoolean(features, InplaceValue));
                     Writer.Write(repDat, interOutDir, overwrite: GetBoolean(features, InplaceValue));
-                });
+                }
             }
 
             // Merge all input files and write

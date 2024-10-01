@@ -149,12 +149,6 @@ namespace SabreTools.DatTools
         /// <param name="useGames">True to diff using games, false to use hashes</param>
         public static void DiffAgainst(DatFile datFile, DatFile intDat, bool useGames)
         {
-            // For comparison's sake, we want to use a base ordering
-            if (useGames)
-                datFile.Items.BucketBy(ItemKey.Machine, DedupeType.None);
-            else
-                datFile.Items.BucketBy(ItemKey.CRC, DedupeType.None);
-
             InternalStopwatch watch = new($"Comparing '{intDat.Header.FileName}' to base DAT");
 
             // For comparison's sake, we want to a the base bucketing
@@ -500,7 +494,7 @@ namespace SabreTools.DatTools
 
             return datFiles.Select(d => d.Header).ToList();
         }
-    
+
         /// <summary>
         /// Add items from another DatFile to the existing DatFile
         /// </summary>

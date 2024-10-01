@@ -66,6 +66,7 @@ in -old DAT file. Ignores those entries in -old that are not in -new.";
             datfile.Header.Name = name;
             datfile.Header.Description = description;
             Parser.ParseInto(datfile, olddat);
+            datfile.Items.BucketBy(SabreTools.DatItems.ItemKey.CRC, DedupeType.None);
 
             // Diff against the new datfile
             DatFile intDat = Parser.CreateAndParse(newdat);

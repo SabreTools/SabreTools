@@ -58,6 +58,7 @@ namespace RombaSharp.Features
 
             // Create the encapsulating datfile
             DatFile datfile = Parser.CreateAndParse(olddat);
+            datfile.Items.BucketBy(SabreTools.DatItems.ItemKey.CRC, DedupeType.None);
 
             // Diff against the new datfile
             DatFile intDat = Parser.CreateAndParse(newdat);
