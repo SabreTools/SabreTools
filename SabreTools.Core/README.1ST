@@ -129,7 +129,7 @@ Universal Options:
 
   -ll=, --log-level=          Set the lowest log level for output
       Set the lowest log level for output.
-      Possible values are: Verbose, User, Warning, Error
+      Possible values are: None, Verbose, User, Warning, Error
 
   -sc, --script                Enable script mode (no clear screen)
       For times when SabreTools is being used in a scripted environment, the

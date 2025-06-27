@@ -864,7 +864,7 @@ Possible values are: None, Zip, Unzip, Partial, Flat");
             ["-ll", "--log-level"],
             "Set the lowest log level for output",
             longDescription: @"Set the lowest log level for output.
-Possible values are: Verbose, User, Warning, Error");
+Possible values are: None, Verbose, User, Warning, Error");
 
         internal const string NameStringValue = "name";
         internal static StringFeature NameStringInput => new(
@@ -1100,11 +1100,17 @@ Some special strings that can be used:
             FilterRunner = GetFilterRunner(features);
             Header = GetDatHeader(features);
             Modifiers = GetDatModifiers(features);
-            LogLevel = GetString(features, LogLevelStringValue).AsLogLevel();
             OutputDir = GetString(features, OutputDirStringValue)?.Trim('"');
             Remover = GetRemover(features);
             ScriptMode = GetBoolean(features, ScriptValue);
             Splitter = GetSplitter(features);
+
+            // Handle logging levels
+            string? logLevel = GetString(features, LogLevelStringValue);
+            if (logLevel?.ToLowerInvariant() == "none")
+                LogLevel = (LogLevel)int.MaxValue;
+            else
+                LogLevel = logLevel.AsLogLevel();
 
             // Set threading flag, if necessary
 #if NET452_OR_GREATER || NETCOREAPP

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using SabreTools.Core;
 using SabreTools.Features;
 using SabreTools.Help;
 using SabreTools.IO;
@@ -32,17 +31,6 @@ namespace SabreTools
         /// <param name="args">String array representing command line parameters</param>
         public static void Main(string[] args)
         {
-            // Perform initial setup and verification
-#if NET20 || NET35
-            LoggerImpl.SetFilename(Path.Combine(Path.Combine(PathTool.GetRuntimeDirectory(), "logs"), "sabretools.log"), true);
-#else
-            LoggerImpl.SetFilename(Path.Combine(PathTool.GetRuntimeDirectory(), "logs", "sabretools.log"), true);
-#endif
-            LoggerImpl.AppendPrefix = true;
-            LoggerImpl.LowestLogLevel = LogLevel.VERBOSE;
-            LoggerImpl.ThrowOnError = false;
-            LoggerImpl.Start();
-
             // Reformat the arguments, if needed
             if (Array.Exists(args, a => a.Contains("\"")))
                 args = ReformatArguments(args);
@@ -54,7 +42,6 @@ namespace SabreTools
             if (Array.Exists(args, a => a == "--credits"))
             {
                 FeatureSet.OutputCredits();
-                LoggerImpl.Close();
                 return;
             }
 
@@ -62,7 +49,6 @@ namespace SabreTools
             if (args.Length == 0)
             {
                 _help.OutputGenericHelp();
-                LoggerImpl.Close();
                 return;
             }
 
@@ -74,14 +60,13 @@ namespace SabreTools
             // TODO: Re-evaluate feature flags with this change in mind
             featureName = featureName.TrimStart('-');
             if (args[0].StartsWith("-"))
-                _staticLogger.User($"Feature flags no longer require leading '-' characters");
+                Console.WriteLine($"Feature flags no longer require leading '-' characters");
 
             // Verify that the flag is valid
             if (!_help.TopLevelFlag(featureName))
             {
-                _staticLogger.User($"'{featureName}' is not valid feature flag");
+                Console.WriteLine($"'{featureName}' is not valid feature flag");
                 _help.OutputIndividualFeature(featureName);
-                LoggerImpl.Close();
                 return;
             }
 
@@ -95,19 +80,32 @@ namespace SabreTools
             if (featureName == DisplayHelp.DisplayName || featureName == DisplayHelpDetailed.DisplayName)
             {
                 feature.ProcessArgs(args, _help);
-                LoggerImpl.Close();
                 return;
             }
 
             // Now verify that all other flags are valid
             if (!feature.ProcessArgs(args, _help))
-            {
-                LoggerImpl.Close();
                 return;
+
+            // Set the output log name and level, if necessary
+            if (feature.LogLevel == (LogLevel)int.MaxValue)
+            {
+                LoggerImpl.LowestLogLevel = LogLevel.VERBOSE;
+            }
+            else
+            {
+                LoggerImpl.LowestLogLevel = feature.LogLevel;
+#if NET20 || NET35
+                LoggerImpl.SetFilename(Path.Combine(Path.Combine(PathTool.GetRuntimeDirectory(), "logs"), "sabretools.log"), true);
+#else
+                LoggerImpl.SetFilename(Path.Combine(PathTool.GetRuntimeDirectory(), "logs", "sabretools.log"), true);
+#endif
             }
 
-            // Set the new log level based on settings
-            LoggerImpl.LowestLogLevel = feature.LogLevel;
+            // Setup default logging
+            LoggerImpl.AppendPrefix = true;
+            LoggerImpl.ThrowOnError = false;
+            LoggerImpl.Start();
 
 #if NET452_OR_GREATER || NETCOREAPP
             // If output is being redirected or we are in script mode, don't allow clear screens
