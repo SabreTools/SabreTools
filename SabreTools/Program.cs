@@ -87,32 +87,12 @@ namespace SabreTools
             if (!feature.ProcessArgs(args, _help))
                 return;
 
-            // Set the output log name and level, if necessary
-            if (feature.LogLevel == (LogLevel)int.MaxValue)
-            {
-                LoggerImpl.LowestLogLevel = LogLevel.VERBOSE;
-            }
-            else
-            {
-                LoggerImpl.LowestLogLevel = feature.LogLevel;
-#if NET20 || NET35
-                LoggerImpl.SetFilename(Path.Combine(Path.Combine(PathTool.GetRuntimeDirectory(), "logs"), "sabretools.log"), true);
-#else
-                LoggerImpl.SetFilename(Path.Combine(PathTool.GetRuntimeDirectory(), "logs", "sabretools.log"), true);
-#endif
-            }
-
-            // Setup default logging
-            LoggerImpl.AppendPrefix = true;
-            LoggerImpl.ThrowOnError = false;
-            LoggerImpl.Start();
-
 #if NET452_OR_GREATER || NETCOREAPP
             // If output is being redirected or we are in script mode, don't allow clear screens
             if (!Console.IsOutputRedirected && feature.ScriptMode)
             {
                 Console.Clear();
-                Globals.SetConsoleHeader("SabreTools");
+                SabreTools.Core.Globals.SetConsoleHeader("SabreTools");
             }
 #endif
 

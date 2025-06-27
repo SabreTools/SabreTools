@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using SabreTools.Core.Filter;
-using SabreTools.Core.Tools;
 using SabreTools.DatFiles;
 using SabreTools.DatTools;
 using SabreTools.FileTypes;
 using SabreTools.Hashing;
 using SabreTools.Help;
+using SabreTools.IO;
 using SabreTools.IO.Logging;
 using SabreTools.Reports;
 
@@ -995,11 +996,6 @@ Some special strings that can be used:
         protected DatModifiers? Modifiers { get; set; }
 
         /// <summary>
-        /// Lowest log level for output
-        /// </summary>
-        public LogLevel LogLevel { get; protected set; }
-
-        /// <summary>
         /// Output directory
         /// </summary>
         protected string? OutputDir { get; set; }
@@ -1108,9 +1104,23 @@ Some special strings that can be used:
             // Handle logging levels
             string? logLevel = GetString(features, LogLevelStringValue);
             if (logLevel?.ToLowerInvariant() == "none")
-                LogLevel = (LogLevel)int.MaxValue;
+            {
+                LoggerImpl.LowestLogLevel = LogLevel.VERBOSE;
+            }
             else
-                LogLevel = logLevel.AsLogLevel();
+            {
+                LoggerImpl.LowestLogLevel = logLevel.AsLogLevel();
+#if NET20 || NET35
+                LoggerImpl.SetFilename(Path.Combine(Path.Combine(PathTool.GetRuntimeDirectory(), "logs"), "sabretools.log"), true);
+#else
+                LoggerImpl.SetFilename(Path.Combine(PathTool.GetRuntimeDirectory(), "logs", "sabretools.log"), true);
+#endif
+            }
+
+            // Setup default logging
+            LoggerImpl.AppendPrefix = true;
+            LoggerImpl.ThrowOnError = false;
+            LoggerImpl.Start();
 
             // Set threading flag, if necessary
 #if NET452_OR_GREATER || NETCOREAPP
