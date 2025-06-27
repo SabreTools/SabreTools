@@ -1106,15 +1106,12 @@ Some special strings that can be used:
             if (logLevel?.ToLowerInvariant() == "none")
             {
                 LoggerImpl.LowestLogLevel = LogLevel.VERBOSE;
+                // Do not set a filename to avoid writing to a file
             }
             else
             {
                 LoggerImpl.LowestLogLevel = logLevel.AsLogLevel();
-#if NET20 || NET35
-                LoggerImpl.SetFilename(Path.Combine(Path.Combine(PathTool.GetRuntimeDirectory(), "logs"), "sabretools.log"), true);
-#else
-                LoggerImpl.SetFilename(Path.Combine(PathTool.GetRuntimeDirectory(), "logs", "sabretools.log"), true);
-#endif
+                LoggerImpl.SetFilename(GetLogFilename(), true);
             }
 
             // Setup default logging
@@ -1136,6 +1133,24 @@ Some special strings that can be used:
 
             return true;
         }
+
+        /// <summary>
+        /// Generate the required log filename for output
+        /// </summary>
+        private static string GetLogFilename()
+        {
+#if NET20 || NET35 || NET40 || NET452
+            string runtimeDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+#else
+            string runtimeDir = AppContext.BaseDirectory;
+#endif
+
+#if NET20 || NET35
+            return Path.Combine(Path.Combine(runtimeDir, "logs"), "sabretools.log");
+#else
+            return Path.Combine(runtimeDir, "logs", "sabretools.log");
+#endif
+        } 
 
         #region Protected Specific Extraction
 
