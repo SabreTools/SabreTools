@@ -71,6 +71,7 @@ namespace SabreTools.DatTools
                 disk.SetFieldValue<string?>(Models.Metadata.Disk.SHA1Key, baseFile.SHA1.ToHexString());
             }
 
+            disk.RemoveField(Models.Metadata.Disk.StatusKey);
             disk.SetFieldValue<DupeType>(DatItem.DupeTypeKey, 0x00);
 
             return disk;
@@ -149,6 +150,7 @@ namespace SabreTools.DatTools
             if (baseFile.SpamSum != null)
                 rom.SetFieldValue<string?>(Models.Metadata.Rom.SpamSumKey, System.Text.Encoding.UTF8.GetString(baseFile.SpamSum));
 
+            rom.RemoveField(Models.Metadata.Rom.StatusKey);
             rom.SetFieldValue<DupeType>(DatItem.DupeTypeKey, 0x00);
 
             return rom;
