@@ -6,7 +6,6 @@ using SabreTools.DatTools;
 using SabreTools.FileTypes;
 using SabreTools.Hashing;
 using SabreTools.Help;
-using SabreTools.IO;
 using SabreTools.IO.Logging;
 using SabreTools.Reports;
 
@@ -1142,7 +1141,7 @@ Some special strings that can be used:
 #if NET20 || NET35 || NET40 || NET452
             string runtimeDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 #else
-            string runtimeDir = AppContext.BaseDirectory;
+            string runtimeDir = System.AppContext.BaseDirectory;
 #endif
 
 #if NET20 || NET35
