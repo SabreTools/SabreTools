@@ -1460,6 +1460,7 @@ namespace SabreTools.DatFiles
                     {
                         Items.RemoveItem(bucket, items[i], i);
                         items.RemoveAt(i);
+                        i--;
                         continue;
                     }
 
