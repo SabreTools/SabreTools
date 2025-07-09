@@ -5,6 +5,7 @@ using SabreTools.DatTools;
 using SabreTools.FileTypes;
 using SabreTools.Help;
 using SabreTools.IO;
+using SabreTools.IO.Extensions;
 using SabreTools.IO.Logging;
 
 namespace SabreTools.Features
@@ -83,6 +84,9 @@ namespace SabreTools.Features
                 else if (outputFormat == OutputFormat.TorrentXZ)
                     outputFormat = OutputFormat.TorrentXZRomba;
             }
+
+            // Ensure the output directory
+            OutputDir = OutputDir.Ensure();
 
             // Get a list of files from the input datfiles
             var datfiles = GetList(features, DatListValue);

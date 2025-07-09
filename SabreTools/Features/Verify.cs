@@ -4,6 +4,7 @@ using SabreTools.DatTools;
 using SabreTools.Hashing;
 using SabreTools.Help;
 using SabreTools.IO;
+using SabreTools.IO.Extensions;
 using SabreTools.IO.Logging;
 
 namespace SabreTools.Features
@@ -55,6 +56,9 @@ namespace SabreTools.Features
             bool quickScan = GetBoolean(features, QuickValue);
             HashType[] hashes = quickScan ? [HashType.CRC32] : [HashType.CRC32, HashType.MD5, HashType.SHA1];
             var dfd = new DatTools.DatFromDir(hashes, SkipFileType.None, treatAsFile, addBlanks: false);
+
+            // Ensure the output directory
+            OutputDir = OutputDir.Ensure();
 
             // If we are in individual mode, process each DAT on their own
             if (GetBoolean(features, IndividualValue))
