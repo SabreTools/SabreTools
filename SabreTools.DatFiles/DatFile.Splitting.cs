@@ -50,6 +50,9 @@ namespace SabreTools.DatFiles
             // Now that we have looped through the cloneof tags, we loop through the romof tags
             RemoveItemsFromRomOfChild();
 
+            // Remove any name duplicates left over
+            RemoveNameDuplicates();
+
             // Finally, remove the romof and cloneof tags so it's not picked up by the manager
             RemoveMachineRelationshipTags();
         }
@@ -93,6 +96,9 @@ namespace SabreTools.DatFiles
 
             // Now that we have looped through the cloneof tags, we loop through the romof tags
             RemoveItemsFromRomOfChild();
+
+            // Remove any name duplicates left over
+            RemoveNameDuplicates();
 
             // Finally, remove the romof and cloneof tags so it's not picked up by the manager
             RemoveMachineRelationshipTags();
@@ -227,6 +233,16 @@ namespace SabreTools.DatFiles
         {
             RemoveMachineRelationshipTagsImpl();
             RemoveMachineRelationshipTagsImplDB();
+        }
+
+        /// <summary>
+        /// Remove duplicates within a bucket that share the same name
+        /// </summary>
+        /// <remarks>Assumes items are bucketed by <see cref="ItemKey.Machine"/></remarks>
+        internal void RemoveNameDuplicates()
+        {
+            RemoveNameDuplicatesImpl();
+            RemoveNameDuplicatesImplDB();
         }
 
         #endregion
@@ -1410,6 +1426,87 @@ namespace SabreTools.DatFiles
 #else
             }
 #endif
+        }
+
+        /// <summary>
+        /// Remove duplicates within a bucket that share the same name
+        /// </summary>
+        /// <remarks>Applies to <see cref="Items"/></remarks>
+        private void RemoveNameDuplicatesImpl()
+        {
+            string[] buckets = [.. Items.SortedKeys];
+            foreach (string bucket in buckets)
+            {
+                // If the bucket has no items in it
+                List<DatItem> items = GetItemsForBucket(bucket);
+                if (items.Count == 0)
+                    continue;
+
+                // Loop through the items and ignore existing names
+                List<string> names = [];
+                for (int i = 0; i < items.Count; i++)
+                {
+                    // Skip non-Disk and non-Rom items
+                    if (items[i] is not Disk && items[i] is not Rom)
+                        continue;
+
+                    // Get the item name
+                    string? name = items[i].GetName();
+                    if (string.IsNullOrEmpty(name))
+                        continue;
+
+                    // If the item already exists
+                    if (names.Contains(name!))
+                    {
+                        Items.RemoveItem(bucket, items[i], i);
+                        items.RemoveAt(i);
+                        continue;
+                    }
+
+                    // Add the name to the list for checking
+                    names.Add(name!);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Remove duplicates within a bucket that share the same name
+        /// </summary>
+        /// <remarks>Applies to <see cref="ItemsDB"/></remarks>
+        private void RemoveNameDuplicatesImplDB()
+        {
+            string[] buckets = [.. ItemsDB.SortedKeys];
+            foreach (string bucket in buckets)
+            {
+                // If the bucket has no items in it
+                Dictionary<long, DatItem> items = GetItemsForBucketDB(bucket);
+                if (items.Count == 0)
+                    continue;
+
+                // Loop through the items and ignore existing names
+                List<string> names = [];
+                foreach (var item in items)
+                {
+                    // Skip non-Disk and non-Rom items
+                    if (item.Value is not Disk && item.Value is not Rom)
+                        continue;
+
+                    // Get the item name
+                    string? name = item.Value.GetName();
+                    if (string.IsNullOrEmpty(name))
+                        continue;
+
+                    // If the item already exists
+                    if (names.Contains(name!))
+                    {
+                        ItemsDB.RemoveItem(item.Key);
+                        continue;
+                    }
+
+                    // Add the name to the list for checking
+                    names.Add(name!);
+                }
+            }
         }
 
         #endregion
