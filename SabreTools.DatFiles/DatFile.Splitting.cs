@@ -342,7 +342,7 @@ namespace SabreTools.DatFiles
                         }
 
                         // If the parent doesn't already contain this item, add to subfolder of parent
-                        else if (!GetItemsForBucket(cloneOf).Contains(item) || skipDedup)
+                        else if (!GetItemsForBucket(cloneOf).Exists(i => i.Equals(item)) || skipDedup)
                         {
                             if (subfolder)
                                 rom.SetName($"{item.GetMachine()!.GetName()}\\{rom.GetName()}");
@@ -353,7 +353,7 @@ namespace SabreTools.DatFiles
                     }
 
                     // All other that would be missing to subfolder of parent
-                    else if (!GetItemsForBucket(cloneOf).Contains(item))
+                    else if (!GetItemsForBucket(cloneOf).Exists(i => i.Equals(item)))
                     {
                         if (subfolder)
                             item.SetName($"{item.GetMachine()!.GetName()}\\{item.GetName()}");
@@ -540,7 +540,7 @@ namespace SabreTools.DatFiles
                     DatItem datItem = (DatItem)item.Clone();
                     datItem.CopyMachineInformation(copyFrom);
                     if (!items.Exists(i => string.Equals(i.GetName(), datItem.GetName(), StringComparison.OrdinalIgnoreCase))
-                        && !items.Contains(datItem))
+                        && !items.Exists(i => i.Equals(datItem)))
                     {
                         AddItem(datItem, statsOnly: false);
                     }
@@ -978,7 +978,7 @@ namespace SabreTools.DatFiles
                 {
                     DatItem datItem = (DatItem)item.Clone();
                     datItem.CopyMachineInformation(copyFrom);
-                    if (!items.Exists(i => i.GetName() == datItem.GetName()) && !items.Contains(datItem))
+                    if (!items.Exists(i => i.GetName() == datItem.GetName()) && !items.Exists(i => i.Equals(datItem)))
                         AddItem(datItem, statsOnly: false);
                 }
             }
