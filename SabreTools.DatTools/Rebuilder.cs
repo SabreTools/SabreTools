@@ -138,15 +138,12 @@ namespace SabreTools.DatTools
                     continue;
 
                 // If we have a path, we want to try to get the rom information
-                GZipArchive archive = new(foundpath);
+                var archive = new GZipArchive(foundpath);
                 BaseFile? fileinfo = archive.GetTorrentGZFileInfo();
 
                 // If the file information is null, then we continue
                 if (fileinfo == null)
                     continue;
-
-                // Ensure we are sorted correctly (some other calls can change this)
-                //datFile.BucketBy(ItemKey.SHA1, DedupeType.None);
 
                 // If there are no items in the hash, we continue
                 var items = datFile.GetItemsForBucket(hash);
@@ -156,13 +153,13 @@ namespace SabreTools.DatTools
                 // Otherwise, we rebuild that file to all locations that we need to
                 bool usedInternally;
                 if (items[0].GetStringFieldValue(Models.Metadata.DatItem.TypeKey).AsItemType() == ItemType.Disk)
-                    usedInternally = RebuildIndividualFile(datFile, fileinfo.ConvertToDisk(), foundpath, outDir, date, inverse, outputFormat, isZip: false);
+                    usedInternally = RebuildIndividualFile(datFile, fileinfo.ConvertToDisk(), foundpath, outDir, date, inverse, forceSorted: true, outputFormat, isZip: false);
                 else if (items[0].GetStringFieldValue(Models.Metadata.DatItem.TypeKey).AsItemType() == ItemType.File)
-                    usedInternally = RebuildIndividualFile(datFile, fileinfo.ConvertToFile(), foundpath, outDir, date, inverse, outputFormat, isZip: false);
+                    usedInternally = RebuildIndividualFile(datFile, fileinfo.ConvertToFile(), foundpath, outDir, date, inverse, forceSorted: true, outputFormat, isZip: false);
                 else if (items[0].GetStringFieldValue(Models.Metadata.DatItem.TypeKey).AsItemType() == ItemType.Media)
-                    usedInternally = RebuildIndividualFile(datFile, fileinfo.ConvertToMedia(), foundpath, outDir, date, inverse, outputFormat, isZip: false);
+                    usedInternally = RebuildIndividualFile(datFile, fileinfo.ConvertToMedia(), foundpath, outDir, date, inverse, forceSorted: true, outputFormat, isZip: false);
                 else
-                    usedInternally = RebuildIndividualFile(datFile, fileinfo.ConvertToRom(), foundpath, outDir, date, inverse, outputFormat, isZip: false);
+                    usedInternally = RebuildIndividualFile(datFile, fileinfo.ConvertToRom(), foundpath, outDir, date, inverse, forceSorted: true, outputFormat, isZip: false);
 
                 // If we are supposed to delete the depot file, do so
                 if (delete && usedInternally)
@@ -345,7 +342,7 @@ namespace SabreTools.DatTools
                     internalDatItem = internalFileInfo.ConvertToRom();
 
                 if (internalDatItem != null)
-                    usedExternally = RebuildIndividualFile(datFile, internalDatItem, file, outDir, date, inverse, outputFormat);
+                    usedExternally = RebuildIndividualFile(datFile, internalDatItem, file, outDir, date, inverse, forceSorted: false, outputFormat);
             }
             // Otherwise, loop through the entries and try to match
             else if (entries != null)
@@ -356,7 +353,7 @@ namespace SabreTools.DatTools
                     if (internalDatItem == null)
                         continue;
 
-                    usedInternally |= RebuildIndividualFile(datFile, internalDatItem, file, outDir, date, inverse, outputFormat, !isSingleTorrent /* isZip */);
+                    usedInternally |= RebuildIndividualFile(datFile, internalDatItem, file, outDir, date, inverse, forceSorted: false, outputFormat, !isSingleTorrent /* isZip */);
                 }
             }
 
@@ -372,6 +369,7 @@ namespace SabreTools.DatTools
         /// <param name="outDir">Output directory to use to build to</param>
         /// <param name="date">True if the date from the DAT should be used if available, false otherwise</param>
         /// <param name="inverse">True if the DAT should be used as a filter instead of a template, false otherwise</param>
+        /// <param name="forceSorted">True if the input DAT is already sorted, false to let the program decide</param>
         /// <param name="outputFormat">Output format that files should be written to</param>
         /// <param name="isZip">True if the input file is an archive, false if the file is TGZ/TXZ, null otherwise</param>
         /// <returns>True if the file was able to be rebuilt, false otherwise</returns>
@@ -382,6 +380,7 @@ namespace SabreTools.DatTools
             string outDir,
             bool date,
             bool inverse,
+            bool forceSorted,
             OutputFormat outputFormat,
             bool? isZip = null)
         {
@@ -412,8 +411,8 @@ namespace SabreTools.DatTools
                 return false;
 
             // If either we have duplicates or we're filtering
-            if (ShouldRebuild(datFile, datItem, fileStream, inverse, out List<DatItem> dupes))
-            //if (ShouldRebuildDB(datFile, datItem, fileStream, inverse, out List<DatItem> dupes))
+            if (ShouldRebuild(datFile, datItem, fileStream, inverse, forceSorted, out List<DatItem> dupes))
+            //if (ShouldRebuildDB(datFile, datItem, fileStream, inverse, forceSorted, out List<DatItem> dupes))
             {
                 // If we have a very specific TGZ->TGZ case, just copy it accordingly
                 if (RebuildTorrentGzip(datFile, datItem, file, outDir, outputFormat, isZip))
@@ -502,8 +501,8 @@ namespace SabreTools.DatTools
                         Rom headerless = FileTypeTool.GetInfo(transformStream, hashes).ConvertToRom();
 
                         // If we have duplicates and we're not filtering
-                        if (ShouldRebuild(datFile, headerless, transformStream, false, out dupes))
-                        //if (ShouldRebuildDB(datFile, headerless, transformStream, false, out dupes))
+                        if (ShouldRebuild(datFile, headerless, transformStream, inverse: false, forceSorted, out dupes))
+                        //if (ShouldRebuildDB(datFile, headerless, transformStream, inverse: false, forceSorted, out dupes))
                         {
                             _staticLogger.User($"Headerless matches found for '{Path.GetFileName(datItem.GetName() ?? datItem.GetStringFieldValue(Models.Metadata.DatItem.TypeKey).AsItemType().AsStringValue())}', rebuilding accordingly...");
                             rebuilt = true;
@@ -547,12 +546,13 @@ namespace SabreTools.DatTools
         /// <param name="datItem">Information for the current file to rebuild from</param>
         /// <param name="stream">Stream representing the input file</param>
         /// <param name="inverse">True if the DAT should be used as a filter instead of a template, false otherwise</param>
+        /// <param name="forceSorted">True if the input DAT is already sorted, false to let the program decide</param>
         /// <param name="dupes">Output list of duplicate items to rebuild to</param>
         /// <returns>True if the item should be rebuilt, false otherwise</returns>
-        private static bool ShouldRebuild(DatFile datFile, DatItem datItem, Stream? stream, bool inverse, out List<DatItem> dupes)
+        private static bool ShouldRebuild(DatFile datFile, DatItem datItem, Stream? stream, bool inverse, bool forceSorted, out List<DatItem> dupes)
         {
             // Find if the file has duplicates in the DAT
-            dupes = datFile.GetDuplicates(datItem);
+            dupes = datFile.GetDuplicates(datItem, forceSorted);
             bool hasDuplicates = dupes.Count > 0;
 
             // If we have duplicates but we're filtering
@@ -603,12 +603,13 @@ namespace SabreTools.DatTools
         /// <param name="datItem">Information for the current file to rebuild from</param>
         /// <param name="stream">Stream representing the input file</param>
         /// <param name="inverse">True if the DAT should be used as a filter instead of a template, false otherwise</param>
+        /// <param name="forceSorted">True if the input DAT is already sorted, false to let the program decide</param>
         /// <param name="dupes">Output list of duplicate items to rebuild to</param>
         /// <returns>True if the item should be rebuilt, false otherwise</returns>
-        private static bool ShouldRebuildDB(DatFile datFile, KeyValuePair<long, DatItem> datItem, Stream? stream, bool inverse, out Dictionary<long, DatItem> dupes)
+        private static bool ShouldRebuildDB(DatFile datFile, KeyValuePair<long, DatItem> datItem, Stream? stream, bool inverse, bool forceSorted, out Dictionary<long, DatItem> dupes)
         {
             // Find if the file has duplicates in the DAT
-            dupes = datFile.GetDuplicatesDB(datItem);
+            dupes = datFile.GetDuplicatesDB(datItem, forceSorted);
             bool hasDuplicates = dupes.Count > 0;
 
             // If we have duplicates but we're filtering
