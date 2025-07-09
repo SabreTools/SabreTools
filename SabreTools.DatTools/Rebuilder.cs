@@ -153,13 +153,53 @@ namespace SabreTools.DatTools
                 // Otherwise, we rebuild that file to all locations that we need to
                 bool usedInternally;
                 if (items[0].GetStringFieldValue(Models.Metadata.DatItem.TypeKey).AsItemType() == ItemType.Disk)
-                    usedInternally = RebuildIndividualFile(datFile, fileinfo.ConvertToDisk(), foundpath, outDir, date, inverse, forceSorted: true, outputFormat, isZip: false);
+                {
+                    usedInternally = RebuildIndividualFile(datFile,
+                        fileinfo.ConvertToDisk(),
+                        foundpath,
+                        outDir,
+                        date,
+                        inverse,
+                        forceSorted: true,
+                        outputFormat,
+                        isZip: false);
+                }
                 else if (items[0].GetStringFieldValue(Models.Metadata.DatItem.TypeKey).AsItemType() == ItemType.File)
-                    usedInternally = RebuildIndividualFile(datFile, fileinfo.ConvertToFile(), foundpath, outDir, date, inverse, forceSorted: true, outputFormat, isZip: false);
+                {
+                    usedInternally = RebuildIndividualFile(datFile,
+                        fileinfo.ConvertToFile(),
+                        foundpath,
+                        outDir,
+                        date,
+                        inverse,
+                        forceSorted: true,
+                        outputFormat,
+                        isZip: false);
+                }
                 else if (items[0].GetStringFieldValue(Models.Metadata.DatItem.TypeKey).AsItemType() == ItemType.Media)
-                    usedInternally = RebuildIndividualFile(datFile, fileinfo.ConvertToMedia(), foundpath, outDir, date, inverse, forceSorted: true, outputFormat, isZip: false);
+                {
+                    usedInternally = RebuildIndividualFile(datFile,
+                        fileinfo.ConvertToMedia(),
+                        foundpath,
+                        outDir,
+                        date,
+                        inverse,
+                        forceSorted: true,
+                        outputFormat,
+                        isZip: false);
+                }
                 else
-                    usedInternally = RebuildIndividualFile(datFile, fileinfo.ConvertToRom(), foundpath, outDir, date, inverse, forceSorted: true, outputFormat, isZip: false);
+                {
+                    usedInternally = RebuildIndividualFile(datFile,
+                        fileinfo.ConvertToRom(),
+                        foundpath,
+                        outDir,
+                        date,
+                        inverse,
+                        forceSorted: true,
+                        outputFormat,
+                        isZip: false);
+                }
 
                 // If we are supposed to delete the depot file, do so
                 if (delete && usedInternally)
@@ -342,7 +382,16 @@ namespace SabreTools.DatTools
                     internalDatItem = internalFileInfo.ConvertToRom();
 
                 if (internalDatItem != null)
-                    usedExternally = RebuildIndividualFile(datFile, internalDatItem, file, outDir, date, inverse, forceSorted: false, outputFormat);
+                {
+                    usedExternally = RebuildIndividualFile(datFile,
+                        internalDatItem,
+                        file,
+                        outDir,
+                        date,
+                        inverse,
+                        forceSorted: false,
+                        outputFormat);
+                }
             }
             // Otherwise, loop through the entries and try to match
             else if (entries != null)
@@ -353,7 +402,15 @@ namespace SabreTools.DatTools
                     if (internalDatItem == null)
                         continue;
 
-                    usedInternally |= RebuildIndividualFile(datFile, internalDatItem, file, outDir, date, inverse, forceSorted: false, outputFormat, !isSingleTorrent /* isZip */);
+                    usedInternally |= RebuildIndividualFile(datFile,
+                        internalDatItem,
+                        file,
+                        outDir,
+                        date,
+                        inverse,
+                        forceSorted: false,
+                        outputFormat,
+                        isZip: !isSingleTorrent);
                 }
             }
 

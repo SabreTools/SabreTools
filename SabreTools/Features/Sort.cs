@@ -115,9 +115,27 @@ namespace SabreTools.Features
                     // If we have the depot flag, respect it
                     bool success;
                     if (inputDepot?.IsActive ?? false)
-                        success = Rebuilder.RebuildDepot(datdata, Inputs, Path.Combine(OutputDir!, datdata.Header.GetStringFieldValue(DatHeader.FileNameKey)!), date, delete, inverse, outputFormat);
+                    {
+                        success = Rebuilder.RebuildDepot(datdata,
+                            Inputs,
+                            Path.Combine(OutputDir!, datdata.Header.GetStringFieldValue(DatHeader.FileNameKey)!),
+                            date,
+                            delete,
+                            inverse,
+                            outputFormat);
+                    }
                     else
-                        success = Rebuilder.RebuildGeneric(datdata, Inputs, Path.Combine(OutputDir!, datdata.Header.GetStringFieldValue(DatHeader.FileNameKey)!), quickScan, date, delete, inverse, outputFormat, asFile);
+                    {
+                        success = Rebuilder.RebuildGeneric(datdata,
+                            Inputs,
+                            Path.Combine(OutputDir!, datdata.Header.GetStringFieldValue(DatHeader.FileNameKey)!),
+                            quickScan,
+                            date,
+                            delete,
+                            inverse,
+                            outputFormat,
+                            asFile);
+                    }
 
                     // If we have a success and we're updating the DAT, write it out
                     if (success && updateDat)
@@ -161,9 +179,27 @@ namespace SabreTools.Features
                 // If we have the depot flag, respect it
                 bool success;
                 if (inputDepot?.IsActive ?? false)
-                    success = Rebuilder.RebuildDepot(datdata, Inputs, OutputDir!, date, delete, inverse, outputFormat);
+                {
+                    success = Rebuilder.RebuildDepot(datdata,
+                        Inputs,
+                        OutputDir!,
+                        date,
+                        delete,
+                        inverse,
+                        outputFormat);
+                }
                 else
-                    success = Rebuilder.RebuildGeneric(datdata, Inputs, OutputDir!, quickScan, date, delete, inverse, outputFormat, asFile);
+                {
+                    success = Rebuilder.RebuildGeneric(datdata,
+                        Inputs,
+                        OutputDir!,
+                        quickScan,
+                        date,
+                        delete,
+                        inverse,
+                        outputFormat,
+                        asFile);
+                }
 
                 // If we have a success and we're updating the DAT, write it out
                 if (success && updateDat)
