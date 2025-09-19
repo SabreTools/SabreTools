@@ -304,6 +304,14 @@ namespace SabreTools.DatItems
                     key = ZeroHash.MD5Str;
                     break;
 
+                case ItemKey.RIPEMD128:
+                    key = ZeroHash.GetString(HashType.RIPEMD128);
+                    break;
+
+                case ItemKey.RIPEMD160:
+                    key = ZeroHash.GetString(HashType.RIPEMD160);
+                    break;
+
                 case ItemKey.SHA1:
                     key = ZeroHash.SHA1Str;
                     break;

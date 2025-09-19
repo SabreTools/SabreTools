@@ -43,6 +43,8 @@ namespace SabreTools.DatTools.Test
         [InlineData(DatFormat.RedumpMD2, DatFormat.RedumpMD2)]
         [InlineData(DatFormat.RedumpMD4, DatFormat.RedumpMD4)]
         [InlineData(DatFormat.RedumpMD5, DatFormat.RedumpMD5)]
+        [InlineData(DatFormat.RedumpRIPEMD128, DatFormat.RedumpRIPEMD128)]
+        [InlineData(DatFormat.RedumpRIPEMD160, DatFormat.RedumpRIPEMD160)]
         [InlineData(DatFormat.RedumpSHA1, DatFormat.RedumpSHA1)]
         [InlineData(DatFormat.RedumpSHA256, DatFormat.RedumpSHA256)]
         [InlineData(DatFormat.RedumpSHA384, DatFormat.RedumpSHA384)]
@@ -81,6 +83,8 @@ namespace SabreTools.DatTools.Test
         [InlineData(DatFormat.RedumpMD2, DatFormat.RedumpMD2)]
         [InlineData(DatFormat.RedumpMD4, DatFormat.RedumpMD4)]
         [InlineData(DatFormat.RedumpMD5, DatFormat.RedumpMD5)]
+        [InlineData(DatFormat.RedumpRIPEMD128, DatFormat.RedumpRIPEMD128)]
+        [InlineData(DatFormat.RedumpRIPEMD160, DatFormat.RedumpRIPEMD160)]
         [InlineData(DatFormat.RedumpSHA1, DatFormat.RedumpSHA1)]
         [InlineData(DatFormat.RedumpSHA256, DatFormat.RedumpSHA256)]
         [InlineData(DatFormat.RedumpSHA384, DatFormat.RedumpSHA384)]
@@ -123,6 +127,8 @@ namespace SabreTools.DatTools.Test
         [InlineData(DatFormat.RedumpMD2, DatFormat.RedumpMD2)]
         [InlineData(DatFormat.RedumpMD4, DatFormat.RedumpMD4)]
         [InlineData(DatFormat.RedumpMD5, DatFormat.RedumpMD5)]
+        [InlineData(DatFormat.RedumpRIPEMD128, DatFormat.RedumpRIPEMD128)]
+        [InlineData(DatFormat.RedumpRIPEMD160, DatFormat.RedumpRIPEMD160)]
         [InlineData(DatFormat.RedumpSHA1, DatFormat.RedumpSHA1)]
         [InlineData(DatFormat.RedumpSHA256, DatFormat.RedumpSHA256)]
         [InlineData(DatFormat.RedumpSHA384, DatFormat.RedumpSHA384)]
@@ -170,6 +176,8 @@ namespace SabreTools.DatTools.Test
         [InlineData("test-md2.md2", DatFormat.RedumpMD2, 1)]
         [InlineData("test-md4.md4", DatFormat.RedumpMD4, 1)]
         [InlineData("test-md5.md5", DatFormat.RedumpMD5, 1)]
+        // [InlineData("test-ripemd128.ripemd128", DatFormat.RedumpRIPEMD128, 1)] // TODO: Enable when Serialization is updated
+        // [InlineData("test-ripemd160.ripemd160", DatFormat.RedumpRIPEMD160, 1)] // TODO: Enable when Serialization is updated
         [InlineData("test-sha1.sha1", DatFormat.RedumpSHA1, 1)]
         [InlineData("test-sha256.sha256", DatFormat.RedumpSHA256, 1)]
         [InlineData("test-sha384.sha384", DatFormat.RedumpSHA384, 1)]
@@ -217,6 +225,8 @@ namespace SabreTools.DatTools.Test
         [InlineData("test-md2.md2", DatFormat.RedumpMD2, 1)]
         [InlineData("test-md4.md4", DatFormat.RedumpMD4, 1)]
         [InlineData("test-md5.md5", DatFormat.RedumpMD5, 1)]
+        //[InlineData("test-ripemd128.ripemd128", DatFormat.RedumpRIPEMD128, 1)] // TODO: Enable when Serialization is updated
+        //[InlineData("test-ripemd160.ripemd160", DatFormat.RedumpRIPEMD160, 1)] // TODO: Enable when Serialization is updated
         [InlineData("test-sha1.sha1", DatFormat.RedumpSHA1, 1)]
         [InlineData("test-sha256.sha256", DatFormat.RedumpSHA256, 1)]
         [InlineData("test-sha384.sha384", DatFormat.RedumpSHA384, 1)]

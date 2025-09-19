@@ -99,6 +99,8 @@ namespace SabreTools.FileTypes
                     MD2 = hashDict.ContainsKey(HashType.MD2) ? hashDict[HashType.MD2].FromHexString() : null,
                     MD4 = hashDict.ContainsKey(HashType.MD4) ? hashDict[HashType.MD4].FromHexString() : null,
                     MD5 = hashDict.ContainsKey(HashType.MD5) ? hashDict[HashType.MD5].FromHexString() : null,
+                    RIPEMD128 = hashDict.ContainsKey(HashType.RIPEMD128) ? hashDict[HashType.RIPEMD128].FromHexString() : null,
+                    RIPEMD160 = hashDict.ContainsKey(HashType.RIPEMD160) ? hashDict[HashType.RIPEMD160].FromHexString() : null,
                     SHA1 = hashDict.ContainsKey(HashType.SHA1) ? hashDict[HashType.SHA1].FromHexString() : null,
                     SHA256 = hashDict.ContainsKey(HashType.SHA256) ? hashDict[HashType.SHA256].FromHexString() : null,
                     SHA384 = hashDict.ContainsKey(HashType.SHA384) ? hashDict[HashType.SHA384].FromHexString() : null,
@@ -130,6 +132,8 @@ namespace SabreTools.FileTypes
             to.MD2 ??= from.MD2;
             to.MD4 ??= from.MD4;
             to.MD5 ??= from.MD5;
+            to.RIPEMD128 ??= from.RIPEMD128;
+            to.RIPEMD160 ??= from.RIPEMD160;
             to.SHA1 ??= from.SHA1;
             to.SHA256 ??= from.SHA256;
             to.SHA384 ??= from.SHA384;

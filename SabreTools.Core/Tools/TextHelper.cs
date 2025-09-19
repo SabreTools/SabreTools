@@ -54,6 +54,18 @@ namespace SabreTools.Core.Tools
             => NormalizeHashData(hash, Constants.MD5Length);
 
         /// <summary>
+        /// Normalize a RIPEMD128 string and pad to the correct size
+        /// </summary>
+        public static string? NormalizeRIPEMD128(string? hash)
+            => NormalizeHashData(hash, Constants.MD5Length);
+
+        /// <summary>
+        /// Normalize a RIPEMD160 string and pad to the correct size
+        /// </summary>
+        public static string? NormalizeRIPEMD160(string? hash)
+            => NormalizeHashData(hash, Constants.SHA1Length);
+
+        /// <summary>
         /// Normalize a SHA1 string and pad to the correct size
         /// </summary>
         public static string? NormalizeSHA1(string? hash)

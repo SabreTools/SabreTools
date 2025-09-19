@@ -107,6 +107,54 @@ namespace SabreTools.Core.Test.Tools
 
         #endregion
 
+        #region NormalizeRIPEMD128
+
+        [Theory]
+        [InlineData(null, null)]
+        [InlineData("", "")]
+        [InlineData("-", "")]
+        [InlineData("_", "")]
+        [InlineData("0x", "")]
+        [InlineData("1234", "00000000000000000000000000001234")]
+        [InlineData("0x1234", "00000000000000000000000000001234")]
+        [InlineData("1234ABCD1234ABCD1234ABCD1234ABCDE", "")]
+        [InlineData("0x1234ABCD1234ABCD1234ABCD1234ABCDE", "")]
+        [InlineData("1234ABCD1234ABCD1234ABCD1234ABCD", "1234abcd1234abcd1234abcd1234abcd")]
+        [InlineData("0x1234ABCD1234ABCD1234ABCD1234ABCD", "1234abcd1234abcd1234abcd1234abcd")]
+        [InlineData("abcdefghabcdefghabcdefghabcdefgh", "")]
+        [InlineData("0xabcdefghabcdefghabcdefghabcdefgh", "")]
+        public void NormalizeRIPEMD128Test(string? hash, string? expected)
+        {
+            string? actual = TextHelper.NormalizeRIPEMD128(hash);
+            Assert.Equal(expected, actual);
+        }
+
+        #endregion
+
+        #region NormalizeRIPEMD160
+
+        [Theory]
+        [InlineData(null, null)]
+        [InlineData("", "")]
+        [InlineData("-", "")]
+        [InlineData("_", "")]
+        [InlineData("0x", "")]
+        [InlineData("1234", "0000000000000000000000000000000000001234")]
+        [InlineData("0x1234", "0000000000000000000000000000000000001234")]
+        [InlineData("1234ABCD1234ABCD1234ABCD1234ABCD1234ABCDE", "")]
+        [InlineData("0x1234ABCD1234ABCD1234ABCD1234ABCD1234ABCDE", "")]
+        [InlineData("1234ABCD1234ABCD1234ABCD1234ABCD1234ABCD", "1234abcd1234abcd1234abcd1234abcd1234abcd")]
+        [InlineData("0x1234ABCD1234ABCD1234ABCD1234ABCD1234ABCD", "1234abcd1234abcd1234abcd1234abcd1234abcd")]
+        [InlineData("abcdefghabcdefghabcdefghabcdefghabcdefgh", "")]
+        [InlineData("0xabcdefghabcdefghabcdefghabcdefghabcdefgh", "")]
+        public void NormalizeRIPEMD160Test(string? hash, string? expected)
+        {
+            string? actual = TextHelper.NormalizeRIPEMD160(hash);
+            Assert.Equal(expected, actual);
+        }
+
+        #endregion
+
         #region NormalizeSHA1
 
         [Theory]

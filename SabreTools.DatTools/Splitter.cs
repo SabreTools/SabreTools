@@ -244,6 +244,8 @@ namespace SabreTools.DatTools
                 [Models.Metadata.Rom.SHA384Key] = " (SHA-384)",
                 [Models.Metadata.Rom.SHA256Key] = " (SHA-256)",
                 [Models.Metadata.Rom.SHA1Key] = " (SHA-1)",
+                ["RIPEMD160"] = " (RIPEMD160)",
+                ["RIPEMD128"] = " (RIPEMD128)",
                 [Models.Metadata.Rom.MD5Key] = " (MD5)",
                 [Models.Metadata.Rom.MD4Key] = " (MD4)",
                 [Models.Metadata.Rom.MD2Key] = " (MD2)",
@@ -326,6 +328,10 @@ namespace SabreTools.DatTools
                                 fieldDats[Models.Metadata.Rom.SHA256Key].AddItem(item, statsOnly: false);
                             else if (!string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.SHA1Key)))
                                 fieldDats[Models.Metadata.Rom.SHA1Key].AddItem(item, statsOnly: false);
+                            else if (!string.IsNullOrEmpty(rom.GetStringFieldValue("RIPEMD160")))
+                                fieldDats["RIPEMD160"].AddItem(item, statsOnly: false);
+                            else if (!string.IsNullOrEmpty(rom.GetStringFieldValue("RIPEMD128")))
+                                fieldDats["RIPEMD128"].AddItem(item, statsOnly: false);
                             else if (!string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.MD5Key)))
                                 fieldDats[Models.Metadata.Rom.MD5Key].AddItem(item, statsOnly: false);
                             else if (!string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.MD4Key)))
@@ -374,6 +380,8 @@ namespace SabreTools.DatTools
                 _ = fieldDats[Models.Metadata.Rom.SHA384Key].AddSourceDB(source.Value);
                 _ = fieldDats[Models.Metadata.Rom.SHA256Key].AddSourceDB(source.Value);
                 _ = fieldDats[Models.Metadata.Rom.SHA1Key].AddSourceDB(source.Value);
+                _ = fieldDats["RIPEMD160"].AddSourceDB(source.Value);
+                _ = fieldDats["RIPEMD128"].AddSourceDB(source.Value);
                 _ = fieldDats[Models.Metadata.Rom.MD5Key].AddSourceDB(source.Value);
                 _ = fieldDats[Models.Metadata.Rom.MD4Key].AddSourceDB(source.Value);
                 _ = fieldDats[Models.Metadata.Rom.MD2Key].AddSourceDB(source.Value);
@@ -389,6 +397,8 @@ namespace SabreTools.DatTools
                 _ = fieldDats[Models.Metadata.Rom.SHA384Key].AddMachineDB(machine.Value);
                 _ = fieldDats[Models.Metadata.Rom.SHA256Key].AddMachineDB(machine.Value);
                 _ = fieldDats[Models.Metadata.Rom.SHA1Key].AddMachineDB(machine.Value);
+                _ = fieldDats["RIPEMD128"].AddMachineDB(machine.Value);
+                _ = fieldDats["RIPEMD160"].AddMachineDB(machine.Value);
                 _ = fieldDats[Models.Metadata.Rom.MD5Key].AddMachineDB(machine.Value);
                 _ = fieldDats[Models.Metadata.Rom.MD4Key].AddMachineDB(machine.Value);
                 _ = fieldDats[Models.Metadata.Rom.MD2Key].AddMachineDB(machine.Value);
@@ -448,6 +458,10 @@ namespace SabreTools.DatTools
                             fieldDats[Models.Metadata.Rom.SHA256Key].AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
                         else if (!string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.SHA1Key)))
                             fieldDats[Models.Metadata.Rom.SHA1Key].AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
+                        else if (!string.IsNullOrEmpty(rom.GetStringFieldValue("RIPEMD160")))
+                            fieldDats["RIPEMD160"].AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
+                        else if (!string.IsNullOrEmpty(rom.GetStringFieldValue("RIPEMD128")))
+                            fieldDats["RIPEMD128"].AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
                         else if (!string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.MD5Key)))
                             fieldDats[Models.Metadata.Rom.MD5Key].AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
                         else if (!string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.MD4Key)))

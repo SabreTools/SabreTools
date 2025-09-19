@@ -464,6 +464,56 @@ namespace SabreTools.DatFiles.Test
         }
 
         [Fact]
+        public void RipeMD128File_SupportedTypes()
+        {
+            var datFile = new RipeMD128File(null);
+            var actual = datFile.SupportedTypes;
+            Assert.True(actual.SequenceEqual([
+                ItemType.Rom,
+            ]));
+        }
+
+        [Fact]
+        public void RipeMD128File_GetMissingRequiredFields_Rom()
+        {
+            var datItem = new Rom();
+            var datFile = new RipeMD128File(null);
+
+            var actual = datFile.GetMissingRequiredFields(datItem);
+
+            Assert.NotNull(actual);
+            Assert.True(actual.SequenceEqual([
+                Models.Metadata.Rom.NameKey,
+                "RIPEMD128",
+            ]));
+        }
+
+        [Fact]
+        public void RipeMD160File_SupportedTypes()
+        {
+            var datFile = new RipeMD160File(null);
+            var actual = datFile.SupportedTypes;
+            Assert.True(actual.SequenceEqual([
+                ItemType.Rom,
+            ]));
+        }
+
+        [Fact]
+        public void RipeMD160File_GetMissingRequiredFields_Rom()
+        {
+            var datItem = new Rom();
+            var datFile = new RipeMD160File(null);
+
+            var actual = datFile.GetMissingRequiredFields(datItem);
+
+            Assert.NotNull(actual);
+            Assert.True(actual.SequenceEqual([
+                Models.Metadata.Rom.NameKey,
+                "RIPEMD160",
+            ]));
+        }
+
+        [Fact]
         public void Sha1File_SupportedTypes()
         {
             var datFile = new Sha1File(null);

@@ -202,6 +202,8 @@ namespace SabreTools.DatTools.Test
             string md2 = TextHelper.NormalizeMD2("1234abcd")!;
             string md4 = TextHelper.NormalizeMD4("1234abcd")!;
             string md5 = TextHelper.NormalizeMD5("1234abcd")!;
+            string ripemd128 = TextHelper.NormalizeRIPEMD128("1234abcd")!;
+            string ripemd160 = TextHelper.NormalizeRIPEMD160("1234abcd")!;
             string sha1 = TextHelper.NormalizeSHA1("1234abcd")!;
             string sha256 = TextHelper.NormalizeSHA256("1234abcd")!;
             string sha384 = TextHelper.NormalizeSHA384("1234abcd")!;
@@ -216,6 +218,8 @@ namespace SabreTools.DatTools.Test
                 MD2 = md2.FromHexString(),
                 MD4 = md4.FromHexString(),
                 MD5 = md5.FromHexString(),
+                RIPEMD128 = ripemd128.FromHexString(),
+                RIPEMD160 = ripemd160.FromHexString(),
                 SHA1 = sha1.FromHexString(),
                 SHA256 = sha256.FromHexString(),
                 SHA384 = sha384.FromHexString(),
@@ -232,6 +236,8 @@ namespace SabreTools.DatTools.Test
             Assert.Equal(md2, actual.GetStringFieldValue(Models.Metadata.Rom.MD2Key));
             Assert.Equal(md4, actual.GetStringFieldValue(Models.Metadata.Rom.MD4Key));
             Assert.Equal(md5, actual.GetStringFieldValue(Models.Metadata.Rom.MD5Key));
+            Assert.Equal(ripemd128, actual.GetStringFieldValue("RIPEMD128"));
+            Assert.Equal(ripemd160, actual.GetStringFieldValue("RIPEMD160"));
             Assert.Equal(sha1, actual.GetStringFieldValue(Models.Metadata.Rom.SHA1Key));
             Assert.Equal(sha256, actual.GetStringFieldValue(Models.Metadata.Rom.SHA256Key));
             Assert.Equal(sha384, actual.GetStringFieldValue(Models.Metadata.Rom.SHA384Key));
@@ -334,6 +340,8 @@ namespace SabreTools.DatTools.Test
             string md2 = TextHelper.NormalizeMD2("1234abcd")!;
             string md4 = TextHelper.NormalizeMD4("1234abcd")!;
             string md5 = TextHelper.NormalizeMD5("1234abcd")!;
+            string ripemd128 = TextHelper.NormalizeRIPEMD128("1234abcd")!;
+            string ripemd160 = TextHelper.NormalizeRIPEMD160("1234abcd")!;
             string sha1 = TextHelper.NormalizeSHA1("1234abcd")!;
             string sha256 = TextHelper.NormalizeSHA256("1234abcd")!;
             string sha384 = TextHelper.NormalizeSHA384("1234abcd")!;
@@ -348,6 +356,8 @@ namespace SabreTools.DatTools.Test
             rom.SetFieldValue<string?>(Models.Metadata.Rom.MD2Key, md2);
             rom.SetFieldValue<string?>(Models.Metadata.Rom.MD4Key, md4);
             rom.SetFieldValue<string?>(Models.Metadata.Rom.MD5Key, md5);
+            rom.SetFieldValue<string?>("RIPEMD128", ripemd128);
+            rom.SetFieldValue<string?>("RIPEMD160", ripemd160);
             rom.SetFieldValue<string?>(Models.Metadata.Rom.SHA1Key, sha1);
             rom.SetFieldValue<string?>(Models.Metadata.Rom.SHA256Key, sha256);
             rom.SetFieldValue<string?>(Models.Metadata.Rom.SHA384Key, sha384);
@@ -363,6 +373,8 @@ namespace SabreTools.DatTools.Test
             Assert.Equal(md2, actual.MD2.ToHexString());
             Assert.Equal(md4, actual.MD4.ToHexString());
             Assert.Equal(md5, actual.MD5.ToHexString());
+            Assert.Equal(ripemd128, actual.RIPEMD128.ToHexString());
+            Assert.Equal(ripemd160, actual.RIPEMD160.ToHexString());
             Assert.Equal(sha1, actual.SHA1.ToHexString());
             Assert.Equal(sha256, actual.SHA256.ToHexString());
             Assert.Equal(sha384, actual.SHA384.ToHexString());

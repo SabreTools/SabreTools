@@ -20,6 +20,8 @@ namespace SabreTools.DatItems.Test.Formats
             Assert.Null(self.GetStringFieldValue(Models.Metadata.Rom.MD2Key));
             Assert.Null(self.GetStringFieldValue(Models.Metadata.Rom.MD4Key));
             Assert.Null(self.GetStringFieldValue(Models.Metadata.Rom.MD5Key));
+            Assert.Null(self.GetStringFieldValue("RIPEMD128"));
+            Assert.Null(self.GetStringFieldValue("RIPEMD160"));
             Assert.Null(self.GetStringFieldValue(Models.Metadata.Rom.SHA1Key));
             Assert.Null(self.GetStringFieldValue(Models.Metadata.Rom.SHA256Key));
             Assert.Null(self.GetStringFieldValue(Models.Metadata.Rom.SHA384Key));
@@ -37,6 +39,8 @@ namespace SabreTools.DatItems.Test.Formats
             other.SetFieldValue(Models.Metadata.Rom.MD2Key, "XXXXXX");
             other.SetFieldValue(Models.Metadata.Rom.MD4Key, "XXXXXX");
             other.SetFieldValue(Models.Metadata.Rom.MD5Key, "XXXXXX");
+            other.SetFieldValue("RIPEMD128", "XXXXXX");
+            other.SetFieldValue("RIPEMD160", "XXXXXX");
             other.SetFieldValue(Models.Metadata.Rom.SHA1Key, "XXXXXX");
             other.SetFieldValue(Models.Metadata.Rom.SHA256Key, "XXXXXX");
             other.SetFieldValue(Models.Metadata.Rom.SHA384Key, "XXXXXX");
@@ -49,6 +53,8 @@ namespace SabreTools.DatItems.Test.Formats
             Assert.Equal("XXXXXX", self.GetStringFieldValue(Models.Metadata.Rom.MD2Key));
             Assert.Equal("XXXXXX", self.GetStringFieldValue(Models.Metadata.Rom.MD4Key));
             Assert.Equal("XXXXXX", self.GetStringFieldValue(Models.Metadata.Rom.MD5Key));
+            Assert.Equal("XXXXXX", self.GetStringFieldValue("RIPEMD128"));
+            Assert.Equal("XXXXXX", self.GetStringFieldValue("RIPEMD160"));
             Assert.Equal("XXXXXX", self.GetStringFieldValue(Models.Metadata.Rom.SHA1Key));
             Assert.Equal("XXXXXX", self.GetStringFieldValue(Models.Metadata.Rom.SHA256Key));
             Assert.Equal("XXXXXX", self.GetStringFieldValue(Models.Metadata.Rom.SHA384Key));
@@ -76,6 +82,8 @@ namespace SabreTools.DatItems.Test.Formats
             self.SetFieldValue(Models.Metadata.Rom.MD2Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.MD4Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.MD5Key, string.Empty);
+            self.SetFieldValue("RIPEMD128", string.Empty);
+            self.SetFieldValue("RIPEMD160", string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA1Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA256Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA384Key, string.Empty);
@@ -94,6 +102,8 @@ namespace SabreTools.DatItems.Test.Formats
             self.SetFieldValue(Models.Metadata.Rom.MD2Key, "XXXXXX");
             self.SetFieldValue(Models.Metadata.Rom.MD4Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.MD5Key, string.Empty);
+            self.SetFieldValue("RIPEMD128", string.Empty);
+            self.SetFieldValue("RIPEMD160", string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA1Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA256Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA384Key, string.Empty);
@@ -112,6 +122,8 @@ namespace SabreTools.DatItems.Test.Formats
             self.SetFieldValue(Models.Metadata.Rom.MD2Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.MD4Key, "XXXXXX");
             self.SetFieldValue(Models.Metadata.Rom.MD5Key, string.Empty);
+            self.SetFieldValue("RIPEMD128", string.Empty);
+            self.SetFieldValue("RIPEMD160", string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA1Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA256Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA384Key, string.Empty);
@@ -130,6 +142,48 @@ namespace SabreTools.DatItems.Test.Formats
             self.SetFieldValue(Models.Metadata.Rom.MD2Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.MD4Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.MD5Key, "XXXXXX");
+            self.SetFieldValue("RIPEMD128", string.Empty);
+            self.SetFieldValue("RIPEMD160", string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.SHA1Key, string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.SHA256Key, string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.SHA384Key, string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.SHA512Key, string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.SpamSumKey, string.Empty);
+
+            bool actual = self.HasHashes();
+            Assert.True(actual);
+        }
+
+        [Fact]
+        public void HasHashes_RIPEMD128_True()
+        {
+            Rom self = new Rom();
+            self.SetFieldValue(Models.Metadata.Rom.CRCKey, string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.MD2Key, string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.MD4Key, string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.MD5Key, string.Empty);
+            self.SetFieldValue("RIPEMD128", "XXXXXX");
+            self.SetFieldValue("RIPEMD160", string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.SHA1Key, string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.SHA256Key, string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.SHA384Key, string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.SHA512Key, string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.SpamSumKey, string.Empty);
+
+            bool actual = self.HasHashes();
+            Assert.True(actual);
+        }
+
+        [Fact]
+        public void HasHashes_RIPEMD160_True()
+        {
+            Rom self = new Rom();
+            self.SetFieldValue(Models.Metadata.Rom.CRCKey, string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.MD2Key, string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.MD4Key, string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.MD5Key, string.Empty);
+            self.SetFieldValue("RIPEMD128", string.Empty);
+            self.SetFieldValue("RIPEMD160", "XXXXXX");
             self.SetFieldValue(Models.Metadata.Rom.SHA1Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA256Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA384Key, string.Empty);
@@ -148,6 +202,8 @@ namespace SabreTools.DatItems.Test.Formats
             self.SetFieldValue(Models.Metadata.Rom.MD2Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.MD4Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.MD5Key, string.Empty);
+            self.SetFieldValue("RIPEMD128", string.Empty);
+            self.SetFieldValue("RIPEMD160", string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA1Key, "XXXXXX");
             self.SetFieldValue(Models.Metadata.Rom.SHA256Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA384Key, string.Empty);
@@ -166,6 +222,8 @@ namespace SabreTools.DatItems.Test.Formats
             self.SetFieldValue(Models.Metadata.Rom.MD2Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.MD4Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.MD5Key, string.Empty);
+            self.SetFieldValue("RIPEMD128", string.Empty);
+            self.SetFieldValue("RIPEMD160", string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA1Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA256Key, "XXXXXX");
             self.SetFieldValue(Models.Metadata.Rom.SHA384Key, string.Empty);
@@ -184,6 +242,8 @@ namespace SabreTools.DatItems.Test.Formats
             self.SetFieldValue(Models.Metadata.Rom.MD2Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.MD4Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.MD5Key, string.Empty);
+            self.SetFieldValue("RIPEMD128", string.Empty);
+            self.SetFieldValue("RIPEMD160", string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA1Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA256Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA384Key, "XXXXXX");
@@ -202,6 +262,8 @@ namespace SabreTools.DatItems.Test.Formats
             self.SetFieldValue(Models.Metadata.Rom.MD2Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.MD4Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.MD5Key, string.Empty);
+            self.SetFieldValue("RIPEMD128", string.Empty);
+            self.SetFieldValue("RIPEMD160", string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA1Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA256Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA384Key, string.Empty);
@@ -220,6 +282,8 @@ namespace SabreTools.DatItems.Test.Formats
             self.SetFieldValue(Models.Metadata.Rom.MD2Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.MD4Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.MD5Key, string.Empty);
+            self.SetFieldValue("RIPEMD128", string.Empty);
+            self.SetFieldValue("RIPEMD160", string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA1Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA256Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA384Key, string.Empty);
@@ -238,6 +302,8 @@ namespace SabreTools.DatItems.Test.Formats
             self.SetFieldValue(Models.Metadata.Rom.MD2Key, "XXXXXX");
             self.SetFieldValue(Models.Metadata.Rom.MD4Key, "XXXXXX");
             self.SetFieldValue(Models.Metadata.Rom.MD5Key, "XXXXXX");
+            self.SetFieldValue("RIPEMD128", "XXXXXX");
+            self.SetFieldValue("RIPEMD160", "XXXXXX");
             self.SetFieldValue(Models.Metadata.Rom.SHA1Key, "XXXXXX");
             self.SetFieldValue(Models.Metadata.Rom.SHA256Key, "XXXXXX");
             self.SetFieldValue(Models.Metadata.Rom.SHA384Key, "XXXXXX");
@@ -265,7 +331,11 @@ namespace SabreTools.DatItems.Test.Formats
         {
             Rom self = new Rom();
             self.SetFieldValue(Models.Metadata.Rom.CRCKey, "XXXXXX");
+            self.SetFieldValue(Models.Metadata.Rom.MD2Key, "XXXXXX");
+            self.SetFieldValue(Models.Metadata.Rom.MD4Key, "XXXXXX");
             self.SetFieldValue(Models.Metadata.Rom.MD5Key, "XXXXXX");
+            self.SetFieldValue("RIPEMD128", "XXXXXX");
+            self.SetFieldValue("RIPEMD160", "XXXXXX");
             self.SetFieldValue(Models.Metadata.Rom.SHA1Key, "XXXXXX");
             self.SetFieldValue(Models.Metadata.Rom.SHA256Key, "XXXXXX");
             self.SetFieldValue(Models.Metadata.Rom.SHA384Key, "XXXXXX");
@@ -281,7 +351,11 @@ namespace SabreTools.DatItems.Test.Formats
         {
             Rom self = new Rom();
             self.SetFieldValue(Models.Metadata.Rom.CRCKey, ZeroHash.CRC32Str);
+            self.SetFieldValue(Models.Metadata.Rom.MD2Key, string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.MD4Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.MD5Key, string.Empty);
+            self.SetFieldValue("RIPEMD128", string.Empty);
+            self.SetFieldValue("RIPEMD160", string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA1Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA256Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA384Key, string.Empty);
@@ -300,6 +374,8 @@ namespace SabreTools.DatItems.Test.Formats
             self.SetFieldValue(Models.Metadata.Rom.MD2Key, ZeroHash.GetString(HashType.MD2));
             self.SetFieldValue(Models.Metadata.Rom.MD4Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.MD5Key, string.Empty);
+            self.SetFieldValue("RIPEMD128", string.Empty);
+            self.SetFieldValue("RIPEMD160", string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA1Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA256Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA384Key, string.Empty);
@@ -318,6 +394,8 @@ namespace SabreTools.DatItems.Test.Formats
             self.SetFieldValue(Models.Metadata.Rom.MD2Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.MD4Key, ZeroHash.GetString(HashType.MD4));
             self.SetFieldValue(Models.Metadata.Rom.MD5Key, string.Empty);
+            self.SetFieldValue("RIPEMD128", string.Empty);
+            self.SetFieldValue("RIPEMD160", string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA1Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA256Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA384Key, string.Empty);
@@ -336,6 +414,48 @@ namespace SabreTools.DatItems.Test.Formats
             self.SetFieldValue(Models.Metadata.Rom.MD2Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.MD4Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.MD5Key, ZeroHash.MD5Str);
+            self.SetFieldValue("RIPEMD128", string.Empty);
+            self.SetFieldValue("RIPEMD160", string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.SHA1Key, string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.SHA256Key, string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.SHA384Key, string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.SHA512Key, string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.SpamSumKey, string.Empty);
+
+            bool actual = self.HasZeroHash();
+            Assert.True(actual);
+        }
+
+        [Fact]
+        public void HasZeroHash_ZeroRIPEMD128_True()
+        {
+            Rom self = new Rom();
+            self.SetFieldValue(Models.Metadata.Rom.CRCKey, string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.MD2Key, string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.MD4Key, string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.MD5Key, string.Empty);
+            self.SetFieldValue("RIPEMD128", ZeroHash.GetString(HashType.RIPEMD128));
+            self.SetFieldValue("RIPEMD160", string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.SHA1Key, string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.SHA256Key, string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.SHA384Key, string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.SHA512Key, string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.SpamSumKey, string.Empty);
+
+            bool actual = self.HasZeroHash();
+            Assert.True(actual);
+        }
+
+        [Fact]
+        public void HasZeroHash_ZeroRIPEMD160_True()
+        {
+            Rom self = new Rom();
+            self.SetFieldValue(Models.Metadata.Rom.CRCKey, string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.MD2Key, string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.MD4Key, string.Empty);
+            self.SetFieldValue(Models.Metadata.Rom.MD5Key, string.Empty);
+            self.SetFieldValue("RIPEMD128", string.Empty);
+            self.SetFieldValue("RIPEMD160", ZeroHash.GetString(HashType.RIPEMD160));
             self.SetFieldValue(Models.Metadata.Rom.SHA1Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA256Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA384Key, string.Empty);
@@ -354,6 +474,8 @@ namespace SabreTools.DatItems.Test.Formats
             self.SetFieldValue(Models.Metadata.Rom.MD2Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.MD4Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.MD5Key, string.Empty);
+            self.SetFieldValue("RIPEMD128", string.Empty);
+            self.SetFieldValue("RIPEMD160", string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA1Key, ZeroHash.SHA1Str);
             self.SetFieldValue(Models.Metadata.Rom.SHA256Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA384Key, string.Empty);
@@ -372,6 +494,8 @@ namespace SabreTools.DatItems.Test.Formats
             self.SetFieldValue(Models.Metadata.Rom.MD2Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.MD4Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.MD5Key, string.Empty);
+            self.SetFieldValue("RIPEMD128", string.Empty);
+            self.SetFieldValue("RIPEMD160", string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA1Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA256Key, ZeroHash.SHA256Str);
             self.SetFieldValue(Models.Metadata.Rom.SHA384Key, string.Empty);
@@ -390,6 +514,8 @@ namespace SabreTools.DatItems.Test.Formats
             self.SetFieldValue(Models.Metadata.Rom.MD2Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.MD4Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.MD5Key, string.Empty);
+            self.SetFieldValue("RIPEMD128", string.Empty);
+            self.SetFieldValue("RIPEMD160", string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA1Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA256Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA384Key, ZeroHash.SHA384Str);
@@ -408,6 +534,8 @@ namespace SabreTools.DatItems.Test.Formats
             self.SetFieldValue(Models.Metadata.Rom.MD2Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.MD4Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.MD5Key, string.Empty);
+            self.SetFieldValue("RIPEMD128", string.Empty);
+            self.SetFieldValue("RIPEMD160", string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA1Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA256Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA384Key, string.Empty);
@@ -426,6 +554,8 @@ namespace SabreTools.DatItems.Test.Formats
             self.SetFieldValue(Models.Metadata.Rom.MD2Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.MD4Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.MD5Key, string.Empty);
+            self.SetFieldValue("RIPEMD128", string.Empty);
+            self.SetFieldValue("RIPEMD160", string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA1Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA256Key, string.Empty);
             self.SetFieldValue(Models.Metadata.Rom.SHA384Key, string.Empty);
@@ -444,6 +574,8 @@ namespace SabreTools.DatItems.Test.Formats
             self.SetFieldValue(Models.Metadata.Rom.MD2Key, ZeroHash.GetString(HashType.MD2));
             self.SetFieldValue(Models.Metadata.Rom.MD4Key, ZeroHash.GetString(HashType.MD4));
             self.SetFieldValue(Models.Metadata.Rom.MD5Key, ZeroHash.MD5Str);
+            self.SetFieldValue("RIPEMD128", ZeroHash.GetString(HashType.RIPEMD128));
+            self.SetFieldValue("RIPEMD160", ZeroHash.GetString(HashType.RIPEMD160));
             self.SetFieldValue(Models.Metadata.Rom.SHA1Key, ZeroHash.SHA1Str);
             self.SetFieldValue(Models.Metadata.Rom.SHA256Key, ZeroHash.SHA256Str);
             self.SetFieldValue(Models.Metadata.Rom.SHA384Key, ZeroHash.SHA384Str);
@@ -484,6 +616,14 @@ namespace SabreTools.DatItems.Test.Formats
         [InlineData(ItemKey.MD5, false, true, "DEADBEEF")]
         [InlineData(ItemKey.MD5, true, false, "deadbeef")]
         [InlineData(ItemKey.MD5, true, true, "deadbeef")]
+        [InlineData(ItemKey.RIPEMD128, false, false, "DEADBEEF")]
+        [InlineData(ItemKey.RIPEMD128, false, true, "DEADBEEF")]
+        [InlineData(ItemKey.RIPEMD128, true, false, "deadbeef")]
+        [InlineData(ItemKey.RIPEMD128, true, true, "deadbeef")]
+        [InlineData(ItemKey.RIPEMD160, false, false, "DEADBEEF")]
+        [InlineData(ItemKey.RIPEMD160, false, true, "DEADBEEF")]
+        [InlineData(ItemKey.RIPEMD160, true, false, "deadbeef")]
+        [InlineData(ItemKey.RIPEMD160, true, true, "deadbeef")]
         [InlineData(ItemKey.SHA1, false, false, "DEADBEEF")]
         [InlineData(ItemKey.SHA1, false, true, "DEADBEEF")]
         [InlineData(ItemKey.SHA1, true, false, "deadbeef")]
@@ -516,6 +656,8 @@ namespace SabreTools.DatItems.Test.Formats
             datItem.SetFieldValue(Models.Metadata.Rom.MD2Key, "DEADBEEF");
             datItem.SetFieldValue(Models.Metadata.Rom.MD4Key, "DEADBEEF");
             datItem.SetFieldValue(Models.Metadata.Rom.MD5Key, "DEADBEEF");
+            datItem.SetFieldValue("RIPEMD128", "DEADBEEF");
+            datItem.SetFieldValue("RIPEMD160", "DEADBEEF");
             datItem.SetFieldValue(Models.Metadata.Rom.SHA1Key, "DEADBEEF");
             datItem.SetFieldValue(Models.Metadata.Rom.SHA256Key, "DEADBEEF");
             datItem.SetFieldValue(Models.Metadata.Rom.SHA384Key, "DEADBEEF");

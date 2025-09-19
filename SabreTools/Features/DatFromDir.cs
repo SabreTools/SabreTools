@@ -28,6 +28,8 @@ namespace SabreTools.Features
             AddFeature(IncludeMd2Flag);
             AddFeature(IncludeMd4Flag);
             AddFeature(IncludeMd5Flag);
+            AddFeature(IncludeRipeMD128Flag);
+            AddFeature(IncludeRipeMD160Flag);
             AddFeature(IncludeSha1Flag);
             AddFeature(IncludeSha256Flag);
             AddFeature(IncludeSha384Flag);

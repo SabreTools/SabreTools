@@ -812,6 +812,10 @@ namespace SabreTools.DatFiles
                     datItem.SetFieldValue<string?>(Models.Metadata.Rom.MD4Key, TextHelper.NormalizeMD5(datItem.GetStringFieldValue(Models.Metadata.Rom.MD4Key)));
                 if (datItem.GetStringFieldValue(Models.Metadata.Rom.MD5Key) != null)
                     datItem.SetFieldValue<string?>(Models.Metadata.Rom.MD5Key, TextHelper.NormalizeMD5(datItem.GetStringFieldValue(Models.Metadata.Rom.MD5Key)));
+                if (datItem.GetStringFieldValue("RIPEMD128") != null)
+                    datItem.SetFieldValue<string?>("RIPEMD128", TextHelper.NormalizeRIPEMD128(datItem.GetStringFieldValue("RIPEMD128")));
+                if (datItem.GetStringFieldValue("RIPEMD160") != null)
+                    datItem.SetFieldValue<string?>("RIPEMD160", TextHelper.NormalizeRIPEMD160(datItem.GetStringFieldValue("RIPEMD160")));
                 if (datItem.GetStringFieldValue(Models.Metadata.Rom.SHA1Key) != null)
                     datItem.SetFieldValue<string?>(Models.Metadata.Rom.SHA1Key, TextHelper.NormalizeSHA1(datItem.GetStringFieldValue(Models.Metadata.Rom.SHA1Key)));
                 if (datItem.GetStringFieldValue(Models.Metadata.Rom.SHA256Key) != null)

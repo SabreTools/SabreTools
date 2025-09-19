@@ -139,29 +139,39 @@ namespace SabreTools.DatFiles
         RedumpMD5 = 1 << 22,
 
         /// <summary>
+        /// RIPEMD128 hash list
+        /// </summary>
+        RedumpRIPEMD128 = 1 << 23,
+
+        /// <summary>
+        /// RIPEMD160 hash list
+        /// </summary>
+        RedumpRIPEMD160 = 1 << 24,
+
+        /// <summary>
         /// SHA-1 hash list
         /// </summary>
-        RedumpSHA1 = 1 << 23,
+        RedumpSHA1 = 1 << 25,
 
         /// <summary>
         /// SHA-256 hash list
         /// </summary>
-        RedumpSHA256 = 1 << 24,
+        RedumpSHA256 = 1 << 26,
 
         /// <summary>
         /// SHA-384 hash list
         /// </summary>
-        RedumpSHA384 = 1 << 25,
+        RedumpSHA384 = 1 << 27,
 
         /// <summary>
         /// SHA-512 hash list
         /// </summary>
-        RedumpSHA512 = 1 << 26,
+        RedumpSHA512 = 1 << 28,
 
         /// <summary>
         /// SpamSum hash list
         /// </summary>
-        RedumpSpamSum = 1 << 27,
+        RedumpSpamSum = 1 << 29,
 
         #endregion
 

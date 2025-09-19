@@ -113,6 +113,8 @@ namespace SabreTools.Core.Tools
                 "md2" => true,
                 "md4" => true,
                 "md5" => true,
+                "ripemd128" => true,
+                "ripemd160" => true,
                 "sfv" => true,
                 "sha1" => true,
                 "sha256" => true,

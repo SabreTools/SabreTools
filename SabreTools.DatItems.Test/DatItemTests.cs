@@ -308,6 +308,14 @@ namespace SabreTools.DatItems.Test
         [InlineData(ItemKey.MD5, false, true, "d41d8cd98f00b204e9800998ecf8427e")]
         [InlineData(ItemKey.MD5, true, false, "d41d8cd98f00b204e9800998ecf8427e")]
         [InlineData(ItemKey.MD5, true, true, "d41d8cd98f00b204e9800998ecf8427e")]
+        [InlineData(ItemKey.RIPEMD128, false, false, "cdf26213a150dc3ecb610f18f6b38b46")]
+        [InlineData(ItemKey.RIPEMD128, false, true, "cdf26213a150dc3ecb610f18f6b38b46")]
+        [InlineData(ItemKey.RIPEMD128, true, false, "cdf26213a150dc3ecb610f18f6b38b46")]
+        [InlineData(ItemKey.RIPEMD128, true, true, "cdf26213a150dc3ecb610f18f6b38b46")]
+        [InlineData(ItemKey.RIPEMD160, false, false, "9c1185a5c5e9fc54612808977ee8f548b2258d31")]
+        [InlineData(ItemKey.RIPEMD160, false, true, "9c1185a5c5e9fc54612808977ee8f548b2258d31")]
+        [InlineData(ItemKey.RIPEMD160, true, false, "9c1185a5c5e9fc54612808977ee8f548b2258d31")]
+        [InlineData(ItemKey.RIPEMD160, true, true, "9c1185a5c5e9fc54612808977ee8f548b2258d31")]
         [InlineData(ItemKey.SHA1, false, false, "da39a3ee5e6b4b0d3255bfef95601890afd80709")]
         [InlineData(ItemKey.SHA1, false, true, "da39a3ee5e6b4b0d3255bfef95601890afd80709")]
         [InlineData(ItemKey.SHA1, true, false, "da39a3ee5e6b4b0d3255bfef95601890afd80709")]
@@ -366,6 +374,14 @@ namespace SabreTools.DatItems.Test
         [InlineData(ItemKey.MD5, false, true, "DEADBEEF")]
         [InlineData(ItemKey.MD5, true, false, "deadbeef")]
         [InlineData(ItemKey.MD5, true, true, "deadbeef")]
+        [InlineData(ItemKey.RIPEMD128, false, false, "DEADBEEF")]
+        [InlineData(ItemKey.RIPEMD128, false, true, "DEADBEEF")]
+        [InlineData(ItemKey.RIPEMD128, true, false, "deadbeef")]
+        [InlineData(ItemKey.RIPEMD128, true, true, "deadbeef")]
+        [InlineData(ItemKey.RIPEMD160, false, false, "DEADBEEF")]
+        [InlineData(ItemKey.RIPEMD160, false, true, "DEADBEEF")]
+        [InlineData(ItemKey.RIPEMD160, true, false, "deadbeef")]
+        [InlineData(ItemKey.RIPEMD160, true, true, "deadbeef")]
         [InlineData(ItemKey.SHA1, false, false, "DEADBEEF")]
         [InlineData(ItemKey.SHA1, false, true, "DEADBEEF")]
         [InlineData(ItemKey.SHA1, true, false, "deadbeef")]
@@ -398,6 +414,8 @@ namespace SabreTools.DatItems.Test
             datItem.SetFieldValue(Models.Metadata.Rom.MD2Key, "DEADBEEF");
             datItem.SetFieldValue(Models.Metadata.Rom.MD4Key, "DEADBEEF");
             datItem.SetFieldValue(Models.Metadata.Rom.MD5Key, "DEADBEEF");
+            datItem.SetFieldValue("RIPEMD128", "DEADBEEF");
+            datItem.SetFieldValue("RIPEMD160", "DEADBEEF");
             datItem.SetFieldValue(Models.Metadata.Rom.SHA1Key, "DEADBEEF");
             datItem.SetFieldValue(Models.Metadata.Rom.SHA256Key, "DEADBEEF");
             datItem.SetFieldValue(Models.Metadata.Rom.SHA384Key, "DEADBEEF");

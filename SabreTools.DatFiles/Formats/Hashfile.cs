@@ -259,6 +259,90 @@ namespace SabreTools.DatFiles.Formats
     }
 
     /// <summary>
+    /// Represents an RIPEMD128 hashfile
+    /// </summary>
+    public sealed class RipeMD128File : Hashfile
+    {
+        /// <inheritdoc/>
+        public override ItemType[] SupportedTypes
+            => [
+                ItemType.Rom,
+            ];
+
+        /// <summary>
+        /// Constructor designed for casting a base DatFile
+        /// </summary>
+        /// <param name="datFile">Parent DatFile to copy from</param>
+        public RipeMD128File(DatFile? datFile) : base(datFile)
+        {
+            _hash = HashType.RIPEMD128;
+            Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, DatFormat.RedumpRIPEMD128);
+        }
+
+        /// <inheritdoc/>
+        protected internal override List<string>? GetMissingRequiredFields(DatItem datItem)
+        {
+            List<string> missingFields = [];
+
+            // Check item name
+            if (string.IsNullOrEmpty(datItem.GetName()))
+                missingFields.Add(Models.Metadata.Rom.NameKey);
+
+            switch (datItem)
+            {
+                case Rom rom:
+                    if (string.IsNullOrEmpty(rom.GetStringFieldValue("RIPEMD128")))
+                        missingFields.Add("RIPEMD128");
+                    break;
+            }
+
+            return missingFields;
+        }
+    }
+
+    /// <summary>
+    /// Represents an RIPEMD160 hashfile
+    /// </summary>
+    public sealed class RipeMD160File : Hashfile
+    {
+        /// <inheritdoc/>
+        public override ItemType[] SupportedTypes
+            => [
+                ItemType.Rom,
+            ];
+
+        /// <summary>
+        /// Constructor designed for casting a base DatFile
+        /// </summary>
+        /// <param name="datFile">Parent DatFile to copy from</param>
+        public RipeMD160File(DatFile? datFile) : base(datFile)
+        {
+            _hash = HashType.RIPEMD160;
+            Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, DatFormat.RedumpRIPEMD160);
+        }
+
+        /// <inheritdoc/>
+        protected internal override List<string>? GetMissingRequiredFields(DatItem datItem)
+        {
+            List<string> missingFields = [];
+
+            // Check item name
+            if (string.IsNullOrEmpty(datItem.GetName()))
+                missingFields.Add(Models.Metadata.Rom.NameKey);
+
+            switch (datItem)
+            {
+                case Rom rom:
+                    if (string.IsNullOrEmpty(rom.GetStringFieldValue("RIPEMD160")))
+                        missingFields.Add("RIPEMD160");
+                    break;
+            }
+
+            return missingFields;
+        }
+    }
+
+    /// <summary>
     /// Represents an SHA-1 hashfile
     /// </summary>
     public sealed class Sha1File : Hashfile

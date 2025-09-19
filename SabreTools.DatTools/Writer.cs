@@ -45,6 +45,12 @@ namespace SabreTools.DatTools
             // .md5
             { DatFormat.RedumpMD5, new string[] { ".md5" } },
 
+            // .ripemd128
+            { DatFormat.RedumpRIPEMD128, new string[] { ".ripemd128" } },
+
+            // .ripemd160
+            { DatFormat.RedumpRIPEMD160, new string[] { ".ripemd160" } },
+
             // .sfv
             { DatFormat.RedumpSFV, new string[] { ".sfv" } },
 
@@ -427,6 +433,10 @@ namespace SabreTools.DatTools
                 usedFormats.Add(DatFormat.RedumpMD4);
             if ((datFormat & DatFormat.RedumpMD5) != 0)
                 usedFormats.Add(DatFormat.RedumpMD5);
+            if ((datFormat & DatFormat.RedumpRIPEMD128) != 0)
+                usedFormats.Add(DatFormat.RedumpRIPEMD128);
+            if ((datFormat & DatFormat.RedumpRIPEMD160) != 0)
+                usedFormats.Add(DatFormat.RedumpRIPEMD160);
             if ((datFormat & DatFormat.RedumpSFV) != 0)
                 usedFormats.Add(DatFormat.RedumpSFV);
             if ((datFormat & DatFormat.RedumpSHA1) != 0)
@@ -484,6 +494,10 @@ namespace SabreTools.DatTools
                 usedFormats.Add(DatFormat.RedumpMD4);
             if (datFormat.HasFlag(DatFormat.RedumpMD5))
                 usedFormats.Add(DatFormat.RedumpMD5);
+            if (datFormat.HasFlag(DatFormat.RedumpRIPEMD128))
+                usedFormats.Add(DatFormat.RedumpRIPEMD128);
+            if (datFormat.HasFlag(DatFormat.RedumpRIPEMD160))
+                usedFormats.Add(DatFormat.RedumpRIPEMD160);
             if (datFormat.HasFlag(DatFormat.RedumpSFV))
                 usedFormats.Add(DatFormat.RedumpSFV);
             if (datFormat.HasFlag(DatFormat.RedumpSHA1))

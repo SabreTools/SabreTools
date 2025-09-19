@@ -65,6 +65,8 @@ namespace SabreTools.DatTools
                 DatFormat.RedumpMD2 => new Md2File(baseDat),
                 DatFormat.RedumpMD4 => new Md4File(baseDat),
                 DatFormat.RedumpMD5 => new Md5File(baseDat),
+                DatFormat.RedumpRIPEMD128 => new RipeMD128File(baseDat),
+                DatFormat.RedumpRIPEMD160 => new RipeMD160File(baseDat),
                 DatFormat.RedumpSFV => new SfvFile(baseDat),
                 DatFormat.RedumpSHA1 => new Sha1File(baseDat),
                 DatFormat.RedumpSHA256 => new Sha256File(baseDat),
@@ -367,6 +369,10 @@ namespace SabreTools.DatTools
                     return DatFormat.RedumpMD4;
                 case "md5":
                     return DatFormat.RedumpMD5;
+                case "ripemd128":
+                    return DatFormat.RedumpRIPEMD128;
+                case "ripemd160":
+                    return DatFormat.RedumpRIPEMD160;
                 case "sfv":
                     return DatFormat.RedumpSFV;
                 case "sha1":

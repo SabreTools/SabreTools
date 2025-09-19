@@ -299,6 +299,20 @@ namespace SabreTools.Features
             "Include MD5 in output",
             longDescription: "This enables MD5 calculation for each of the files. Adding this flag overrides the default hashing behavior of including CRC32, MD5, and SHA-1 hashes.");
 
+        internal const string IncludeRipeMD128Value = "include-ripemd128";
+        internal static FlagFeature IncludeRipeMD128Flag => new(
+            IncludeRipeMD128Value,
+            ["-ripemd128", "--include-ripemd128"],
+            "Include RIPEMD128 in output",
+            longDescription: "This enables RIPEMD128 calculation for each of the files. Adding this flag overrides the default hashing behavior of including CRC32, MD5, and SHA-1 hashes.");
+
+        internal const string IncludeRipeMD160Value = "include-ripemd160";
+        internal static FlagFeature IncludeRipeMD160Flag => new(
+            IncludeRipeMD128Value,
+            ["-ripemd160", "--include-ripemd160"],
+            "Include RIPEMD160 in output",
+            longDescription: "This enables RIPEMD160 calculation for each of the files. Adding this flag overrides the default hashing behavior of including CRC32, MD5, and SHA-1 hashes.");
+
         internal const string IncludeSha1Value = "include-sha1";
         internal static FlagFeature IncludeSha1Flag => new(
             IncludeSha1Value,
@@ -702,34 +716,36 @@ namespace SabreTools.Features
             longDescription: @"Add outputting the created DAT to known format. Multiple instances of this flag are allowed.
 
 Possible values are:
-    all              - All available DAT types
-    ado, archive     - Archive.org file list
-    am, attractmode  - AttractMode XML
-    cmp, clrmamepro  - ClrMamePro
-    csv              - Standardized Comma-Separated Value
-    dc, doscenter    - DOSCenter
-    lr, listrom      - MAME Listrom
-    lx, listxml      - MAME Listxml
-    miss, missfile   - GoodTools Missfile
-    md2              - MD2
-    md4              - MD4
-    md5              - MD5
-    msx, openmsx     - openMSX Software List
-    ol, offlinelist  - OfflineList XML
-    rc, romcenter    - RomCenter
-    sj, sabrejson    - SabreJSON
-    sx, sabrexml     - SabreDAT XML
-    sfv              - SFV
-    sha1             - SHA1
-    sha256           - SHA256
-    sha384           - SHA384
-    sha512           - SHA512
-    smdb, everdrive  - Everdrive SMDB
-    sl, softwarelist - MAME Software List XML
-    spamsum          - SpamSum
-    ssv              - Standardized Semicolon-Separated Value
-    tsv              - Standardized Tab-Separated Value
-    xml, logiqx      - Logiqx XML");
+    all                         - All available DAT types
+    ado, archive                - Archive.org file list
+    am, attractmode             - AttractMode XML
+    cmp, clrmamepro             - ClrMamePro
+    csv                         - Standardized Comma-Separated Value
+    dc, doscenter               - DOSCenter
+    everdrive, smdb             - Everdrive SMDB
+    json, sj, sabrejson         - SabreJSON
+    lr, listrom                 - MAME Listrom
+    lx, listxml                 - MAME Listxml
+    miss, missfile              - GoodTools Missfile
+    md2                         - MD2
+    md4                         - MD4
+    md5                         - MD5
+    msx, openmsx                - openMSX Software List
+    ol, offlinelist             - OfflineList XML
+    rc, romcenter               - RomCenter
+    ripemd128                   - RIPEMD128
+    ripemd160                   - RIPEMD160
+    sd, sabredat, sx, sabrexml  - SabreDAT XML
+    sfv                         - SFV
+    sha1                        - SHA1
+    sha256                      - SHA256
+    sha384                      - SHA384
+    sha512                      - SHA512
+    sl, softwarelist            - MAME Software List XML
+    spamsum                     - SpamSum
+    ssv                         - Standardized Semicolon-Separated Value
+    tsv                         - Standardized Tab-Separated Value
+    xml, logiqx                 - Logiqx XML");
 
         internal const string RegionListValue = "region";
         internal static ListFeature RegionListInput => new(
@@ -897,6 +913,8 @@ Some special strings that can be used:
 - %md2% - Replaced with the MD2
 - %md4% - Replaced with the MD4
 - %md5% - Replaced with the MD5
+- %ripemd128% - Replaced with the RIPEMD128
+- %ripemd160% - Replaced with the RIPEMD160
 - %sha1% - Replaced with the SHA-1
 - %sha256% - Replaced with the SHA-256
 - %sha384% - Replaced with the SHA-384
@@ -920,6 +938,8 @@ Some special strings that can be used:
 - %md2% - Replaced with the MD2
 - %md4% - Replaced with the MD4
 - %md5% - Replaced with the MD5
+- %ripemd128% - Replaced with the RIPEMD128
+- %ripemd160% - Replaced with the RIPEMD160
 - %sha1% - Replaced with the SHA-1
 - %sha256% - Replaced with the SHA-256
 - %sha384% - Replaced with the SHA-384
@@ -1168,6 +1188,10 @@ Some special strings that can be used:
                 includeInScan.Add(HashType.MD4);
             if (GetBoolean(features, IncludeMd5Value))
                 includeInScan.Add(HashType.MD5);
+            if (GetBoolean(features, IncludeRipeMD128Value))
+                includeInScan.Add(HashType.RIPEMD128);
+            if (GetBoolean(features, IncludeRipeMD160Value))
+                includeInScan.Add(HashType.RIPEMD160);
             if (GetBoolean(features, IncludeSha1Value))
                 includeInScan.Add(HashType.SHA1);
             if (GetBoolean(features, IncludeSha256Value))
@@ -1586,6 +1610,8 @@ Some special strings that can be used:
                 "msx" or "openmsx" => DatFormat.OpenMSX,
                 "ol" or "offlinelist" => DatFormat.OfflineList,
                 "rc" or "romcenter" => DatFormat.RomCenter,
+                "ripemd128" => DatFormat.RedumpRIPEMD128,
+                "ripemd160" => DatFormat.RedumpRIPEMD160,
                 "sd" or "sabredat" or "sx" or "sabrexml" => DatFormat.SabreXML,
                 "sfv" => DatFormat.RedumpSFV,
                 "sha1" => DatFormat.RedumpSHA1,

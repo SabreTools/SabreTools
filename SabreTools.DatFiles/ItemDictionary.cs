@@ -155,6 +155,8 @@ namespace SabreTools.DatFiles
                     rom.SetFieldValue<string?>(Models.Metadata.Rom.MD2Key, null); // ZeroHash.GetString(HashType.MD2)
                     rom.SetFieldValue<string?>(Models.Metadata.Rom.MD4Key, null); // ZeroHash.GetString(HashType.MD4)
                     rom.SetFieldValue<string?>(Models.Metadata.Rom.MD5Key, ZeroHash.MD5Str);
+                    rom.SetFieldValue<string?>("RIPEMD128", null); // ZeroHash.GetString(HashType.RIPEMD128)
+                    rom.SetFieldValue<string?>("RIPEMD160", null); // ZeroHash.GetString(HashType.RIPEMD160)
                     rom.SetFieldValue<string?>(Models.Metadata.Rom.SHA1Key, ZeroHash.SHA1Str);
                     rom.SetFieldValue<string?>(Models.Metadata.Rom.SHA256Key, null); // ZeroHash.SHA256Str;
                     rom.SetFieldValue<string?>(Models.Metadata.Rom.SHA384Key, null); // ZeroHash.SHA384Str;
@@ -677,6 +679,14 @@ namespace SabreTools.DatFiles
             // If all items are supposed to have a SHA-1, we bucket by that
             else if (diskCount + mediaCount + romCount - nodumpCount == DatStatistics.GetHashCount(HashType.SHA1))
                 return ItemKey.SHA1;
+
+            // If all items are supposed to have a RIPEMD160, we bucket by that
+            else if (diskCount + mediaCount + romCount - nodumpCount == DatStatistics.GetHashCount(HashType.RIPEMD160))
+                return ItemKey.RIPEMD160;
+
+            // If all items are supposed to have a RIPEMD128, we bucket by that
+            else if (diskCount + mediaCount + romCount - nodumpCount == DatStatistics.GetHashCount(HashType.RIPEMD128))
+                return ItemKey.RIPEMD128;
 
             // If all items are supposed to have a MD5, we bucket by that
             else if (diskCount + mediaCount + romCount - nodumpCount == DatStatistics.GetHashCount(HashType.MD5))

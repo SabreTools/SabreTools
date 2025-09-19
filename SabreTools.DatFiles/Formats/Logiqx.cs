@@ -284,7 +284,11 @@ namespace SabreTools.DatFiles.Formats
                     if (rom.GetInt64FieldValue(Models.Metadata.Rom.SizeKey) == null || rom.GetInt64FieldValue(Models.Metadata.Rom.SizeKey) < 0)
                         missingFields.Add(Models.Metadata.Rom.SizeKey);
                     if (string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.CRCKey))
+                        && string.IsNullOrEmpty(rom.GetStringFieldValue("MD2"))
+                        && string.IsNullOrEmpty(rom.GetStringFieldValue("MD4"))
                         && string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.MD5Key))
+                        && string.IsNullOrEmpty(rom.GetStringFieldValue("RIPEMD128"))
+                        && string.IsNullOrEmpty(rom.GetStringFieldValue("RIPEMD160"))
                         && string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.SHA1Key))
                         && string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.SHA256Key))
                         && string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.SHA384Key))

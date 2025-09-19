@@ -485,6 +485,18 @@ namespace SabreTools.DatTools
                     rom.SetFieldValue<string?>(Models.Metadata.Rom.MD5Key, newItem.GetStringFieldValue(Models.Metadata.Rom.MD5Key));
             }
 
+            if (datItemFields.Contains("RIPEMD128"))
+            {
+                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue("RIPEMD128")))
+                    rom.SetFieldValue<string?>("RIPEMD128", newItem.GetStringFieldValue("RIPEMD128"));
+            }
+
+            if (datItemFields.Contains("RIPEMD160"))
+            {
+                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue("RIPEMD160")))
+                    rom.SetFieldValue<string?>("RIPEMD160", newItem.GetStringFieldValue("RIPEMD160"));
+            }
+
             if (datItemFields.Contains(Models.Metadata.Rom.SHA1Key))
             {
                 if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Models.Metadata.Rom.SHA1Key)))

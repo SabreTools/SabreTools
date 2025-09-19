@@ -500,6 +500,14 @@ namespace SabreTools.Core
             string? otherMd5 = other.ReadString(Rom.MD5Key);
             bool conditionalMd5 = Tools.Utilities.ConditionalHashEquals(selfMd5, otherMd5);
 
+            string? selfRipeMD128 = self.ReadString("RIPEMD128");
+            string? otherRipeMD128 = other.ReadString("RIPEMD128");
+            bool conditionaRipeMD128 = Tools.Utilities.ConditionalHashEquals(selfRipeMD128, otherRipeMD128);
+
+            string? selfRipeMD160 = self.ReadString("RIPEMD160");
+            string? otherRipeMD160 = other.ReadString("RIPEMD160");
+            bool conditionaRipeMD160 = Tools.Utilities.ConditionalHashEquals(selfRipeMD160, otherRipeMD160);
+
             string? selfSha1 = self.ReadString(Rom.SHA1Key);
             string? otherSha1 = other.ReadString(Rom.SHA1Key);
             bool conditionalSha1 = Tools.Utilities.ConditionalHashEquals(selfSha1, otherSha1);
@@ -524,6 +532,8 @@ namespace SabreTools.Core
                 && conditionalMd2
                 && conditionalMd4
                 && conditionalMd5
+                && conditionaRipeMD128
+                && conditionaRipeMD160
                 && conditionalSha1
                 && conditionalSha256
                 && conditionalSha384
@@ -614,6 +624,12 @@ namespace SabreTools.Core
             bool md5Null = string.IsNullOrEmpty(self.ReadString(Rom.MD5Key));
             md5Null ^= string.IsNullOrEmpty(other.ReadString(Rom.MD5Key));
 
+            bool ripeMD128Null = string.IsNullOrEmpty(self.ReadString("RIPEMD128"));
+            ripeMD128Null ^= string.IsNullOrEmpty(other.ReadString("RIPEMD128"));
+
+            bool ripeMD160Null = string.IsNullOrEmpty(self.ReadString("RIPEMD160"));
+            ripeMD160Null ^= string.IsNullOrEmpty(other.ReadString("RIPEMD160"));
+
             bool sha1Null = string.IsNullOrEmpty(self.ReadString(Rom.SHA1Key));
             sha1Null ^= string.IsNullOrEmpty(other.ReadString(Rom.SHA1Key));
 
@@ -633,6 +649,8 @@ namespace SabreTools.Core
                 || !md2Null
                 || !md4Null
                 || !md5Null
+                || !ripeMD128Null
+                || !ripeMD160Null
                 || !sha1Null
                 || !sha256Null
                 || !sha384Null
@@ -677,6 +695,8 @@ namespace SabreTools.Core
             bool md2Null = string.IsNullOrEmpty(rom.ReadString(Rom.MD2Key));
             bool md4Null = string.IsNullOrEmpty(rom.ReadString(Rom.MD4Key));
             bool md5Null = string.IsNullOrEmpty(rom.ReadString(Rom.MD5Key));
+            bool ripeMD128Null = string.IsNullOrEmpty(rom.ReadString("RIPEMD128"));
+            bool ripeMD160Null = string.IsNullOrEmpty(rom.ReadString("RIPEMD160"));
             bool sha1Null = string.IsNullOrEmpty(rom.ReadString(Rom.SHA1Key));
             bool sha256Null = string.IsNullOrEmpty(rom.ReadString(Rom.SHA256Key));
             bool sha384Null = string.IsNullOrEmpty(rom.ReadString(Rom.SHA384Key));
@@ -687,6 +707,8 @@ namespace SabreTools.Core
                 || !md2Null
                 || !md4Null
                 || !md5Null
+                || !ripeMD128Null
+                || !ripeMD160Null
                 || !sha1Null
                 || !sha256Null
                 || !sha384Null
@@ -749,6 +771,12 @@ namespace SabreTools.Core
             string? md5 = rom.ReadString(Rom.MD5Key);
             bool md5Null = string.IsNullOrEmpty(md5) || string.Equals(md5, ZeroHash.MD5Str, StringComparison.OrdinalIgnoreCase);
 
+            string? ripeMD128 = rom.ReadString("RIPEMD128");
+            bool ripeMD128Null = string.IsNullOrEmpty(value: ripeMD128) || string.Equals(ripeMD128, ZeroHash.GetString(HashType.RIPEMD128), StringComparison.OrdinalIgnoreCase);
+
+            string? ripeMD160 = rom.ReadString("RIPEMD160");
+            bool ripeMD160Null = string.IsNullOrEmpty(ripeMD160) || string.Equals(ripeMD160, ZeroHash.GetString(HashType.RIPEMD160), StringComparison.OrdinalIgnoreCase);
+
             string? sha1 = rom.ReadString(Rom.SHA1Key);
             bool sha1Null = string.IsNullOrEmpty(sha1) || string.Equals(sha1, ZeroHash.SHA1Str, StringComparison.OrdinalIgnoreCase);
 
@@ -768,6 +796,8 @@ namespace SabreTools.Core
                 && md2Null
                 && md4Null
                 && md5Null
+                && ripeMD128Null
+                && ripeMD160Null
                 && sha1Null
                 && sha256Null
                 && sha384Null
@@ -881,6 +911,16 @@ namespace SabreTools.Core
             string? otherMd5 = other.ReadString(Rom.MD5Key);
             if (string.IsNullOrEmpty(selfMd5) && !string.IsNullOrEmpty(otherMd5))
                 self[Rom.MD5Key] = otherMd5;
+
+            string? selfRipeMD128 = self.ReadString("RIPEMD128");
+            string? otherRipeMD128 = other.ReadString("RIPEMD128");
+            if (string.IsNullOrEmpty(selfRipeMD128) && !string.IsNullOrEmpty(otherRipeMD128))
+                self["RIPEMD128"] = otherRipeMD128;
+
+            string? selfRipeMD160 = self.ReadString("RIPEMD160");
+            string? otherRipeMD160 = other.ReadString("RIPEMD160");
+            if (string.IsNullOrEmpty(selfRipeMD160) && !string.IsNullOrEmpty(otherRipeMD160))
+                self["RIPEMD160"] = otherRipeMD160;
 
             string? selfSha1 = self.ReadString(Rom.SHA1Key);
             string? otherSha1 = other.ReadString(Rom.SHA1Key);

@@ -14,6 +14,8 @@ namespace SabreTools.DatTools.Test
         [InlineData(DatFormat.RedumpMD2, "md2")]
         [InlineData(DatFormat.RedumpMD4, "md4")]
         [InlineData(DatFormat.RedumpMD5, "md5")]
+        [InlineData(DatFormat.RedumpRIPEMD128, "ripemd128")]
+        [InlineData(DatFormat.RedumpRIPEMD160, "ripemd160")]
         [InlineData(DatFormat.RedumpSFV, "sfv")]
         [InlineData(DatFormat.RedumpSHA1, "sha1")]
         [InlineData(DatFormat.RedumpSHA256, "sha256")]
@@ -64,7 +66,7 @@ namespace SabreTools.DatTools.Test
             var actual = Writer.CreateOutFileNames(datHeader, outDir, overwrite: true);
 
             // Check the normalized results
-            Assert.Equal(28, actual.Count);
+            Assert.Equal(30, actual.Count);
             Assert.Equal("C:\\Test\\test.csv", actual[DatFormat.CSV].Replace('/', '\\'));
             Assert.Equal("C:\\Test\\test.dat", actual[DatFormat.ClrMamePro].Replace('/', '\\'));
             Assert.Equal("C:\\Test\\test.rc.dat", actual[DatFormat.RomCenter].Replace('/', '\\'));
@@ -73,6 +75,8 @@ namespace SabreTools.DatTools.Test
             Assert.Equal("C:\\Test\\test.md2", actual[DatFormat.RedumpMD2].Replace('/', '\\'));
             Assert.Equal("C:\\Test\\test.md4", actual[DatFormat.RedumpMD4].Replace('/', '\\'));
             Assert.Equal("C:\\Test\\test.md5", actual[DatFormat.RedumpMD5].Replace('/', '\\'));
+            Assert.Equal("C:\\Test\\test.ripemd128", actual[DatFormat.RedumpRIPEMD128].Replace('/', '\\'));
+            Assert.Equal("C:\\Test\\test.ripemd160", actual[DatFormat.RedumpRIPEMD160].Replace('/', '\\'));
             Assert.Equal("C:\\Test\\test.sfv", actual[DatFormat.RedumpSFV].Replace('/', '\\'));
             Assert.Equal("C:\\Test\\test.sha1", actual[DatFormat.RedumpSHA1].Replace('/', '\\'));
             Assert.Equal("C:\\Test\\test.sha256", actual[DatFormat.RedumpSHA256].Replace('/', '\\'));

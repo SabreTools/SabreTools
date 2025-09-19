@@ -45,6 +45,16 @@
         public byte[]? MD5 { get; set; }
 
         /// <summary>
+        /// RIPEMD128 hash of the file
+        /// </summary>
+        public byte[]? RIPEMD128 { get; set; }
+
+        /// <summary>
+        /// RIPEMD160 hash of the file
+        /// </summary>
+        public byte[]? RIPEMD160 { get; set; }
+
+        /// <summary>
         /// SHA-1 hash of the file
         /// </summary>
         public byte[]? SHA1 { get; set; }

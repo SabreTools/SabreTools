@@ -298,6 +298,8 @@ namespace SabreTools.DatItems
         MD2,
         MD4,
         MD5,
+        RIPEMD128,
+        RIPEMD160,
         SHA1,
         SHA256,
         SHA384,
