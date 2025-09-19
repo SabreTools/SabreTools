@@ -87,7 +87,7 @@ namespace SabreTools.FileTypes
             try
             {
                 // Run the hashing on the input stream
-                var hashDict = HashTool.GetStreamHashesAndSize(input, hashes, out long size);
+                var hashDict = HashTool.GetStreamHashesAndSize(input, hashes, leaveOpen: true, out long size);
                 if (hashDict == null)
                     return new BaseFile();
 
