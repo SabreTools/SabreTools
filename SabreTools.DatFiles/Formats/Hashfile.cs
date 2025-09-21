@@ -38,7 +38,7 @@ namespace SabreTools.DatFiles.Formats
             try
             {
                 // Deserialize the input file
-                var hashfile = Serialization.Deserializers.Hashfile.DeserializeFile(filename, _hash);
+                var hashfile = new Serialization.Deserializers.Hashfile().Deserialize(filename, _hash);
                 var metadata = new Serialization.CrossModel.Hashfile().Serialize(hashfile);
 
                 // Convert to the internal format

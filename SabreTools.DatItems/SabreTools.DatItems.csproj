@@ -29,8 +29,8 @@
 
     <ItemGroup>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-        <PackageReference Include="SabreTools.IO" Version="1.6.3" />
-        <PackageReference Include="SabreTools.Models" Version="1.5.8" />
+        <PackageReference Include="SabreTools.IO" Version="1.7.3" />
+        <PackageReference Include="SabreTools.Models" Version="1.7.1" />
     </ItemGroup>
 
 </Project>

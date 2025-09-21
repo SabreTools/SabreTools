@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using SabreTools.Core.Filter;
-using SabreTools.Core.Tools;
 using SabreTools.DatItems;
 using SabreTools.DatItems.Formats;
 
@@ -54,7 +53,7 @@ namespace SabreTools.DatFiles.Formats
             try
             {
                 // Deserialize the input file
-                var metadataFile = Serialization.Deserializers.ClrMamePro.DeserializeFile(filename, quotes: true);
+                var metadataFile = new Serialization.Deserializers.ClrMamePro().Deserialize(filename, quotes: true);
                 var metadata = new Serialization.CrossModel.ClrMamePro().Serialize(metadataFile);
 
                 // Convert to the internal format

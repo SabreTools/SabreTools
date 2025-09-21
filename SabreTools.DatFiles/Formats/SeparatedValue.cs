@@ -47,7 +47,7 @@ namespace SabreTools.DatFiles.Formats
             try
             {
                 // Deserialize the input file
-                var metadataFile = Serialization.Deserializers.SeparatedValue.DeserializeFile(filename, _delim);
+                var metadataFile = new Serialization.Deserializers.SeparatedValue().Deserialize(filename, _delim);
                 var metadata = new Serialization.CrossModel.SeparatedValue().Serialize(metadataFile);
 
                 // Convert to the internal format

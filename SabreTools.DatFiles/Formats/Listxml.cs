@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using SabreTools.Core.Filter;
-using SabreTools.Core.Tools;
 using SabreTools.DatItems;
 using SabreTools.DatItems.Formats;
 
@@ -231,11 +230,11 @@ namespace SabreTools.DatFiles.Formats
             try
             {
                 // Deserialize the input file
-                var mame = Serialization.Deserializers.Listxml.DeserializeFile(filename);
+                var mame = new Serialization.Deserializers.Listxml().Deserialize(filename);
                 Models.Metadata.MetadataFile? metadata;
                 if (mame == null)
                 {
-                    var m1 = Serialization.Deserializers.M1.DeserializeFile(filename);
+                    var m1 = new Serialization.Deserializers.M1().Deserialize(filename);
                     metadata = new Serialization.CrossModel.M1().Serialize(m1);
                 }
                 else

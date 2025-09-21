@@ -375,9 +375,9 @@ namespace SabreTools.DatFiles.Formats
                 // Only write the doctype if we don't have No-Intro data
                 bool success;
                 if (string.IsNullOrEmpty(Header.GetStringFieldValue(Models.Metadata.Header.IdKey)))
-                    success = Serialization.Serializers.Logiqx.SerializeFile(datafile!, outfile);
+                    success = new Serialization.Serializers.Logiqx().Serialize(datafile, outfile, null, null, null, null);
                 else
-                    success = Serialization.Serializers.Logiqx.SerializeFile(datafile, outfile);
+                    success = new Serialization.Serializers.Logiqx().Serialize(datafile, outfile, null, null, null, null);
 
                 if (!success)
                 {
