@@ -66,7 +66,7 @@ namespace SabreTools.FileTypes
         public abstract string? CopyToFile(string entryName, string outDir);
 
         /// <inheritdoc/>
-        public abstract (Stream?, string?) GetEntryStream(string entryName);
+        public abstract Stream? GetEntryStream(string entryName, out string? realEntry);
 
         #endregion
 

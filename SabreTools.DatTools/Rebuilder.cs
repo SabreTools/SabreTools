@@ -832,7 +832,7 @@ namespace SabreTools.DatTools
                 try
                 {
                     ItemType itemType = datItem.GetStringFieldValue(Models.Metadata.DatItem.TypeKey).AsItemType();
-                    (stream, _) = archive.GetEntryStream(datItem.GetName() ?? itemType.AsStringValue() ?? string.Empty);
+                    stream = archive.GetEntryStream(datItem.GetName() ?? itemType.AsStringValue() ?? string.Empty, out _);
                 }
                 catch
                 {

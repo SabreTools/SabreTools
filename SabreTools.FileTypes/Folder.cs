@@ -168,11 +168,14 @@ namespace SabreTools.FileTypes
         }
 
         /// <inheritdoc/>
-        public (Stream?, string?) GetEntryStream(string entryName)
+        public Stream? GetEntryStream(string entryName, out string? realEntry)
         {
+            // Set the default real entry name
+            realEntry = null;
+
             // If we have an invalid filename
             if (Filename == null)
-                return (null, null);
+                return null;
 
             // Copy single file from the current folder to the output directory, if exists
             try
@@ -188,17 +191,14 @@ namespace SabreTools.FileTypes
 
                 // If we had a file, open and return the stream
                 if (!string.IsNullOrEmpty(match))
-                {
-                    Stream stream = File.Open(match, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                    return (stream, match);
-                }
+                    return File.Open(match, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 
-                return (null, null);
+                return null;
             }
             catch (Exception ex)
             {
                 _logger.Error(ex);
-                return (null, null);
+                return null;
             }
         }
 

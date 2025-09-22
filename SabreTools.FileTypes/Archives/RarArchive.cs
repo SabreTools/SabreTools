@@ -91,7 +91,7 @@ namespace SabreTools.FileTypes.Archives
         public override string? CopyToFile(string entryName, string outDir)
         {
             // Try to extract a stream using the given information
-            (Stream? stream, string? realEntry) = GetEntryStream(entryName);
+            var stream = GetEntryStream(entryName, out string? realEntry);
             if (stream == null || realEntry == null)
                 return null;
 
@@ -130,17 +130,19 @@ namespace SabreTools.FileTypes.Archives
         }
 
         /// <inheritdoc/>
-        public override (Stream?, string?) GetEntryStream(string entryName)
+        public override Stream? GetEntryStream(string entryName, out string? realEntry)
         {
-#if NET462_OR_GREATER || NETCOREAPP
+            // Set the default real entry name
+            realEntry = null;
+
             // If we have an invalid file
             if (Filename == null)
-                return (null, null);
+                return null;
 
+#if NET462_OR_GREATER || NETCOREAPP
             try
             {
                 Stream? stream = null;
-                string? realEntry = null;
 
                 var ra = SharpCompress.Archives.Rar.RarArchive.Open(Filename, new ReaderOptions { LeaveStreamOpen = false, });
                 foreach (RarArchiveEntry entry in ra.Entries)
@@ -164,16 +166,16 @@ namespace SabreTools.FileTypes.Archives
                 }
 
                 ra.Dispose();
-                return (stream, realEntry);
+                return stream;
             }
             catch (Exception ex)
             {
                 _logger.Error(ex);
-                return (null, null);
+                return null;
             }
 #else
             // TODO: Support RAR archives in old .NET
-            return (null, null);
+            return null;
 #endif
         }
 

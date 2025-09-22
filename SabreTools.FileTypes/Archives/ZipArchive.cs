@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD
 using System.IO.Compression;
 #endif
 using System.Linq;
@@ -177,7 +177,7 @@ namespace SabreTools.FileTypes.Archives
         public override string? CopyToFile(string entryName, string outDir)
         {
             // Try to extract a stream using the given information
-            (Stream? stream, string? realEntry) = GetEntryStream(entryName);
+            var stream = GetEntryStream(entryName, out string? realEntry);
             if (stream == null || realEntry == null)
                 return null;
 
@@ -216,16 +216,18 @@ namespace SabreTools.FileTypes.Archives
         }
 
         /// <inheritdoc/>
-        public override (Stream?, string?) GetEntryStream(string entryName)
+        public override Stream? GetEntryStream(string entryName, out string? realEntry)
         {
+            // Set the default real entry name
+            realEntry = null;
+
             // If we have an invalid file
             if (Filename == null)
-                return (null, null);
+                return null;
 
             try
             {
                 Stream? stream = null;
-                string? realEntry = null;
 
 #if NET20 || NET35 || NET40
                 var zf = new Zip();
@@ -257,7 +259,7 @@ namespace SabreTools.FileTypes.Archives
                 }
 
                 zf.ZipFileClose();
-                return (stream, realEntry);
+                return stream;
 #else
                 var zf = ZipFile.OpenRead(Filename);
                 if (zf == null)
@@ -291,13 +293,13 @@ namespace SabreTools.FileTypes.Archives
                 }
 
                 zf.Dispose();
-                return (stream, realEntry);
+                return stream;
 #endif
             }
             catch (Exception ex)
             {
                 _logger.Error(ex);
-                return (null, null);
+                return null;
             }
         }
 
@@ -455,28 +457,28 @@ namespace SabreTools.FileTypes.Archives
                 if (zr != ZipReturn.ZipGood)
                     throw new Exception(CompressUtils.ZipErrorMessageText(zr));
 
-                List<(string, bool)> zipEntries = new();
+                Dictionary<string, bool> zipEntries = [];
                 for (int i = 0; i < zf.LocalFilesCount(); i++)
                 {
-                    zipEntries.Add((zf.GetLocalFile(i).Filename!, zf.GetLocalFile(i).IsDirectory));
+                    zipEntries.Add(zf.GetLocalFile(i).Filename!, zf.GetLocalFile(i).IsDirectory);
                 }
 
-                zipEntries = zipEntries.OrderBy(p => p.Item1, new NaturalReversedComparer()).ToList();
+                var pairs = zipEntries.OrderBy(p => p.Key, new NaturalReversedComparer()).ToList();
                 string? lastZipEntry = null;
-                foreach ((string, bool) entry in zipEntries)
+                foreach (var entry in pairs)
                 {
                     // If the current is a superset of last, we skip it
-                    if (lastZipEntry != null && lastZipEntry.StartsWith(entry.Item1))
+                    if (lastZipEntry != null && lastZipEntry.StartsWith(entry.Key))
                     {
                         // No-op
                     }
                     // If the entry is a directory, we add it
                     else
                     {
-                        if (entry.Item2)
-                            empties.Add(entry.Item1);
+                        if (entry.Value)
+                            empties.Add(entry.Key);
 
-                        lastZipEntry = entry.Item1;
+                        lastZipEntry = entry.Key;
                     }
                 }
 #else
@@ -484,7 +486,7 @@ namespace SabreTools.FileTypes.Archives
                 if (zf == null)
                     throw new Exception($"Could not open {Filename} as a zip file");
 
-                List<(string, bool)> zipEntries = [];
+                Dictionary<string, bool> zipEntries = [];
                 for (int i = 0; i < zf.Entries.Count; i++)
                 {
                     // Get the local file
@@ -501,25 +503,25 @@ namespace SabreTools.FileTypes.Archives
                         isDirectory = true;
                     }
 
-                    zipEntries.Add((entry.FullName, isDirectory));
+                    zipEntries.Add(entry.FullName, isDirectory);
                 }
 
-                zipEntries = zipEntries.OrderBy(p => p.Item1, new NaturalReversedComparer()).ToList();
+                var pairs = zipEntries.OrderBy(p => p.Key, new NaturalReversedComparer()).ToList();
                 string? lastZipEntry = null;
-                foreach ((string, bool) entry in zipEntries)
+                foreach (var entry in pairs)
                 {
                     // If the current is a superset of last, we skip it
-                    if (lastZipEntry != null && lastZipEntry.StartsWith(entry.Item1))
+                    if (lastZipEntry != null && lastZipEntry.StartsWith(entry.Key))
                     {
                         // No-op
                     }
                     // If the entry is a directory, we add it
                     else
                     {
-                        if (entry.Item2)
-                            empties.Add(entry.Item1);
+                        if (entry.Value)
+                            empties.Add(entry.Key);
 
-                        lastZipEntry = entry.Item1;
+                        lastZipEntry = entry.Key;
                     }
                 }
 #endif

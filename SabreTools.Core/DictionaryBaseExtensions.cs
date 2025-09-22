@@ -240,6 +240,7 @@ namespace SabreTools.Core
                 return false;
 
             // Check based on the item type
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER || NETSTANDARD2_0_OR_GREATER
             return (self, other) switch
             {
                 (Disk diskSelf, Disk diskOther) => EqualsImpl(diskSelf, diskOther),
@@ -247,6 +248,16 @@ namespace SabreTools.Core
                 (Rom romSelf, Rom romOther) => EqualsImpl(romSelf, romOther),
                 _ => EqualsImpl(self, other),
             };
+#else
+            if (self is Disk diskSelf && other is Disk diskOther)
+                return EqualsImpl(diskSelf, diskOther);
+            else if (self is Media mediaSelf && other is Media mediaOther)
+                return EqualsImpl(mediaSelf, mediaOther);
+            else if (self is Rom romSelf && other is Rom romOther)
+                return EqualsImpl(romSelf, romOther);
+            else
+                return EqualsImpl(self, other);
+#endif
         }
 
         /// <summary>
@@ -267,6 +278,7 @@ namespace SabreTools.Core
             // Check all pairs to see if they're equal
             foreach (var kvp in self)
             {
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 switch (kvp.Value, other[kvp.Key])
                 {
                     case (string selfString, string otherString):
@@ -319,6 +331,57 @@ namespace SabreTools.Core
 
                         break;
                 }
+#else
+                if (kvp.Value is string selfString && other[kvp.Key] is string otherString)
+                {
+                    if (!string.Equals(selfString, otherString, StringComparison.OrdinalIgnoreCase))
+                        return false;
+                }
+                else if (kvp.Value is ModelBackedItem selfMbi && other[kvp.Key] is ModelBackedItem otherMbi)
+                {
+                    if (!selfMbi.Equals(otherMbi))
+                        return false;
+                }
+                else if (kvp.Value is DictionaryBase selfDb && other[kvp.Key] is DictionaryBase otherDb)
+                {
+                    if (!selfDb.Equals(otherDb))
+                        return false;
+                }
+                else if (kvp.Value is string[] selfStrArr && other[kvp.Key] is string[] otherStrArr)
+                {
+                    // TODO: Make this case-insensitive
+                    if (selfStrArr.Length != otherStrArr.Length)
+                        return false;
+                    if (selfStrArr.Except(otherStrArr).Any())
+                        return false;
+                    if (otherStrArr.Except(selfStrArr).Any())
+                        return false;
+                }
+                else if (kvp.Value is DictionaryBase[] selfDbArr && other[kvp.Key] is DictionaryBase[] otherDbArr)
+                {
+                    // TODO: Fix the logic here for real equality
+                    if (selfDbArr.Length != otherDbArr.Length)
+                        return false;
+                    if (selfDbArr.Except(otherDbArr).Any())
+                        return false;
+                    if (otherDbArr.Except(selfDbArr).Any())
+                        return false;
+                }
+                else
+                {
+                    // Handle cases where a null is involved
+                    if (kvp.Value == null && other[kvp.Key] == null)
+                        return true;
+                    else if (kvp.Value == null && other[kvp.Key] != null)
+                        return false;
+                    else if (kvp.Value != null && other[kvp.Key] == null)
+                        return false;
+
+                    // Try to rely on type hashes
+                    else if (kvp.Value!.GetHashCode() != other[kvp.Key]!.GetHashCode())
+                        return false;
+                }
+#endif
             }
 
             return true;
@@ -817,6 +880,7 @@ namespace SabreTools.Core
             if (self == null || other == null)
                 return;
 
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             switch (self, other)
             {
                 case (Disk diskSelf, Disk diskOther):
@@ -829,6 +893,14 @@ namespace SabreTools.Core
                     romSelf.FillMissingHashes(romOther);
                     break;
             }
+#else
+            if (self is Disk diskSelf && other is Disk diskOther)
+                diskSelf.FillMissingHashes(diskOther);
+            else if (self is Media mediaSelf && other is Media mediaOther)
+                mediaSelf.FillMissingHashes(mediaOther);
+            else if (self is Rom romSelf && other is Rom romOther)
+                romSelf.FillMissingHashes(romOther);
+#endif
         }
 
         /// <summary>

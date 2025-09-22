@@ -443,7 +443,7 @@ namespace SabreTools.DatTools
                 return DatFormat.EverdriveSMDB;
 
             // If we have an INI-based DAT
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD
             else if (first.Contains("[") && first.Contains("]"))
 #else
             else if (first.Contains('[') && first.Contains(']'))
@@ -464,14 +464,14 @@ namespace SabreTools.DatTools
             else if (first.Contains("doscenter"))
                 return DatFormat.DOSCenter;
 
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD
             else if (first.ToLowerInvariant().Contains("#name;title;emulator;cloneof;year;manufacturer;category;players;rotation;control;status;displaycount;displaytype;altromname;alttitle;extra"))
 #else
             else if (first.Contains("#Name;Title;Emulator;CloneOf;Year;Manufacturer;Category;Players;Rotation;Control;Status;DisplayCount;DisplayType;AltRomname;AltTitle;Extra", StringComparison.InvariantCultureIgnoreCase))
 #endif
                 return DatFormat.AttractMode;
 
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD
             else if (first.ToLowerInvariant().Contains("#romname;title;emulator;cloneof;year;manufacturer;category;players;rotation;control;status;displaycount;displaytype;altromname;alttitle;extra"))
 #else
             else if (first.Contains("#RomName;Title;Emulator;CloneOf;Year;Manufacturer;Category;Players;Rotation;Control;Status;DisplayCount;DisplayType;AltRomname;AltTitle;Extra", StringComparison.InvariantCultureIgnoreCase))

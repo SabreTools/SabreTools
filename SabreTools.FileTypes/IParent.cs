@@ -29,8 +29,9 @@ namespace SabreTools.FileTypes
         /// Attempt to extract a stream from an archive
         /// </summary>
         /// <param name="entryName">Name of the entry to be extracted</param>
+        /// <param name="realEntry">Real name of the entry, reported by the parent</param>
         /// <returns>Stream representing the entry, null on error</returns>
-        (Stream?, string?) GetEntryStream(string entryName);
+        Stream? GetEntryStream(string entryName, out string? realEntry);
 
         #endregion
 

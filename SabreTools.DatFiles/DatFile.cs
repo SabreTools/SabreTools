@@ -115,7 +115,7 @@ namespace SabreTools.DatFiles
             else if (string.IsNullOrEmpty(name) && string.IsNullOrEmpty(description))
             {
                 string[] splitpath = path.TrimEnd(Path.DirectorySeparatorChar).Split(Path.DirectorySeparatorChar);
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD
                 name = splitpath[splitpath.Length - 1];
                 description = splitpath[splitpath.Length - 1] + (bare ? string.Empty : $" ({date})");
 #else

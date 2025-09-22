@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD
 using System.Net;
 using System.Threading.Tasks;
 #endif

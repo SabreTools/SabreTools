@@ -228,7 +228,7 @@ namespace SabreTools.Core.Tools
             return readable.ToString("0.### ") + suffix;
         }
 
-#if NETFRAMEWORK || NETCOREAPP3_1 || NET5_0 || NET6_0
+#if NETFRAMEWORK || NETCOREAPP3_1 || NET5_0 || NET6_0 || NETSTANDARD
         /// <summary>
         /// Indicates whether a character is categorized as an ASCII hexademical digit.
         /// </summary>

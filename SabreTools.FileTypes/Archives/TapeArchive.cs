@@ -92,7 +92,7 @@ namespace SabreTools.FileTypes.Archives
         public override string? CopyToFile(string entryName, string outDir)
         {
             // Try to extract a stream using the given information
-            (Stream? stream, string? realEntry) = GetEntryStream(entryName);
+            var stream = GetEntryStream(entryName, out string? realEntry);
             if (stream == null || realEntry == null)
                 return null;
 
@@ -131,13 +131,15 @@ namespace SabreTools.FileTypes.Archives
         }
 
         /// <inheritdoc/>
-        public override (Stream?, string?) GetEntryStream(string entryName)
+        public override Stream? GetEntryStream(string entryName, out string? realEntry)
         {
+            // Set the default real entry name
+            realEntry = null;
+
 #if NET462_OR_GREATER || NETCOREAPP
             try
             {
                 Stream? stream = null;
-                string? realEntry = null;
 
                 var ta = TarArchive.Open(Filename!, new ReaderOptions { LeaveStreamOpen = false, });
                 foreach (TarArchiveEntry entry in ta.Entries)
@@ -161,16 +163,16 @@ namespace SabreTools.FileTypes.Archives
                 }
 
                 ta.Dispose();
-                return (stream, realEntry);
+                return stream;
             }
             catch (Exception ex)
             {
                 _logger.Error(ex);
-                return (null, null);
+                return null;
             }
 #else
             // TODO: Support tape archives in old .NET
-            return (null, null);
+            return null;
 #endif
         }
 

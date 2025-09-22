@@ -106,7 +106,7 @@ namespace SabreTools.FileTypes.Archives
         public override string? CopyToFile(string entryName, string outDir)
         {
             // Try to extract a stream using the given information
-            (Stream? stream, string? realEntry) = GetEntryStream(entryName);
+            var stream = GetEntryStream(entryName, out string? realEntry);
             if (stream == null || realEntry == null)
                 return null;
 
@@ -145,30 +145,33 @@ namespace SabreTools.FileTypes.Archives
         }
 
         /// <inheritdoc/>
-        public override (Stream?, string?) GetEntryStream(string entryName)
+        public override Stream? GetEntryStream(string entryName, out string? realEntry)
         {
-#if NET462_OR_GREATER || NETCOREAPP
+            // Set the default real entry name
+            realEntry = null;
+
             // If we have an invalid file
             if (Filename == null)
-                return (null, null);
+                return null;
 
+#if NET462_OR_GREATER || NETCOREAPP
             try
             {
                 // Open the entry stream
-                string realEntry = Path.GetFileNameWithoutExtension(Filename);
+                realEntry = Path.GetFileNameWithoutExtension(Filename);
                 var stream = new XZStream(File.Open(Filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
 
                 // Return the stream
-                return (stream, realEntry);
+                return stream;
             }
             catch (Exception ex)
             {
                 _logger.Error(ex);
-                return (null, null);
+                return null;
             }
 #else
             // TODO: Support XZ archives in old .NET
-            return (null, null);
+            return null;
 #endif
         }
 

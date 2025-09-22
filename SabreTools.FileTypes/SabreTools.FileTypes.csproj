@@ -2,18 +2,17 @@
 
     <PropertyGroup>
         <!-- Assembly Properties -->
-        <TargetFrameworks>net20;net35;net40;net452;net462;net472;net48;netcoreapp3.1;net5.0;net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
+        <TargetFrameworks>net20;net35;net40;net452;net462;net472;net48;netcoreapp3.1;net5.0;net6.0;net7.0;net8.0;net9.0;netstandard2.0;netstandard2.1</TargetFrameworks>
         <CheckEolTargetFramework>false</CheckEolTargetFramework>
         <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
         <IncludeSymbols>true</IncludeSymbols>
         <LangVersion>latest</LangVersion>
-        <NoWarn>NU1902;NU1903</NoWarn>
+        <NoWarn>CA2200;CA2022;CS0168;CS0618;CS8600;CS8602;CS8603;CS8604;CS8618;CS8625;NU1902;NU1903</NoWarn>
         <Nullable>enable</Nullable>
         <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <Version>1.2.1</Version>
-        <WarningsNotAsErrors>CA2200;CA2022;CS0168;CS0618;CS8600;CS8602;CS8603;CS8604;CS8618;CS8625</WarningsNotAsErrors>
 
         <!-- Package Properties -->
         <Authors>Matt Nadareski</Authors>

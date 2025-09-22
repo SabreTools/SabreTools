@@ -153,7 +153,7 @@ namespace SabreTools.DatTools
                     string rootpath = inputs[source.Index].ParentPath ?? string.Empty;
 
                     if (rootpath.Length > 0
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD
                         && !rootpath.EndsWith(Path.DirectorySeparatorChar.ToString())
                         && !rootpath.EndsWith(Path.AltDirectorySeparatorChar.ToString()))
 #else
@@ -230,7 +230,7 @@ namespace SabreTools.DatTools
                     string rootpath = inputs[source.Value.Index].ParentPath ?? string.Empty;
 
                     if (rootpath.Length > 0
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD
                         && !rootpath!.EndsWith(Path.DirectorySeparatorChar.ToString())
                         && !rootpath!.EndsWith(Path.AltDirectorySeparatorChar.ToString()))
 #else
