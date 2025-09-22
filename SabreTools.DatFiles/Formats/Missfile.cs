@@ -189,7 +189,7 @@ namespace SabreTools.DatFiles.Formats
             var machine = GetMachineForItemDB(datItem.Key).Value;
             WriteDatItemImpl(sw, datItem.Value, machine!, lastgame);
         }
-    
+
         /// <summary>
         /// Write out DatItem using the supplied StreamWriter
         /// </summary>

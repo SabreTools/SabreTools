@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text.RegularExpressions;
 using SabreTools.Features;
 using SabreTools.Help;
-using SabreTools.IO;
 using SabreTools.IO.Logging;
 
 namespace SabreTools

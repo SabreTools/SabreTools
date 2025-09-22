@@ -1169,7 +1169,7 @@ Some special strings that can be used:
 #else
             return Path.Combine(runtimeDir, "logs", "sabretools.log");
 #endif
-        } 
+        }
 
         #region Protected Specific Extraction
 

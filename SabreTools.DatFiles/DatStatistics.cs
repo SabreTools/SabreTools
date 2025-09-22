@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using SabreTools.Core.Tools;
 using SabreTools.DatItems;
 using SabreTools.DatItems.Formats;
 using SabreTools.Hashing;

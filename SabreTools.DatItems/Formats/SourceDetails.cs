@@ -1,6 +1,5 @@
 using System.Xml.Serialization;
 using Newtonsoft.Json;
-using SabreTools.Core.Tools;
 
 // TODO: Add item mappings for all fields
 namespace SabreTools.DatItems.Formats

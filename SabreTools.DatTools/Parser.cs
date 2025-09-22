@@ -546,7 +546,7 @@ namespace SabreTools.DatTools
 
             return line ?? string.Empty;
         }
-    
+
         #endregion
 
         #region BaseReport
@@ -567,7 +567,7 @@ namespace SabreTools.DatTools
                 StatReportFormat.HTML => new Reports.Formats.Html(statsList),
                 StatReportFormat.SSV => new Reports.Formats.SemicolonSeparatedValue(statsList),
                 StatReportFormat.TSV => new Reports.Formats.TabSeparatedValue(statsList),
-                
+
                 // We use textfile output as a backup for generic BaseReport
                 _ => new Reports.Formats.Textfile(statsList),
             };

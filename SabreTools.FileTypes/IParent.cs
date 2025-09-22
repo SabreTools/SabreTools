@@ -60,7 +60,7 @@ namespace SabreTools.FileTypes
         /// <param name="outDir">Output directory to build to</param>
         /// <param name="baseFile">BaseFile representing the new information</param>
         /// <returns>True if the write was a success, false otherwise</returns>
-        bool Write(string file,  string outDir, BaseFile? baseFile);
+        bool Write(string file, string outDir, BaseFile? baseFile);
 
         /// <summary>
         /// Write an input stream to an output folder

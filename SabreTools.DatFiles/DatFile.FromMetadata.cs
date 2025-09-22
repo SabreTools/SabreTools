@@ -1006,7 +1006,7 @@ namespace SabreTools.DatFiles
                             string? loadFlag = rom.ReadString(Models.Metadata.Rom.LoadFlagKey);
                             if (loadFlag != null
                                 && (loadFlag.Equals("continue", StringComparison.OrdinalIgnoreCase)
-                                    ||  loadFlag.Equals("ignore", StringComparison.OrdinalIgnoreCase)))
+                                    || loadFlag.Equals("ignore", StringComparison.OrdinalIgnoreCase)))
                             {
                                 var lastRom = addRoms[addRoms.Count - 1];
                                 long? lastSize = lastRom.GetInt64FieldValue(Models.Metadata.Rom.SizeKey);

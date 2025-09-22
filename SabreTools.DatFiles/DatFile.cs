@@ -1143,7 +1143,7 @@ namespace SabreTools.DatFiles
         {
             // Create the comparer extenal to the delegate
             var nc = new NaturalComparer();
-            
+
             items.Sort(delegate (DatItem x, DatItem y)
             {
                 try
@@ -1200,7 +1200,7 @@ namespace SabreTools.DatFiles
         {
             // Create the comparer extenal to the delegate
             var nc = new NaturalComparer();
-            
+
             mappings.Sort(delegate (KeyValuePair<long, DatItem> x, KeyValuePair<long, DatItem> y)
             {
                 try

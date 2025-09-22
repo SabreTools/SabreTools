@@ -23,7 +23,7 @@ namespace SabreTools.DatTools
         private static readonly Logger _staticLogger = new();
 
         #endregion
-        
+
         /// <summary>
         /// Verify a DatFile against a set of depots, leaving only missing files
         /// </summary>

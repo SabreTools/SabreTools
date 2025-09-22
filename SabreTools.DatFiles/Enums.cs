@@ -263,6 +263,6 @@ namespace SabreTools.DatFiles
         /// Force all sets to have all archives treated as files
         /// </summary>
         [Mapping("fileonly")]
-        FileOnly, 
+        FileOnly,
     }
 }

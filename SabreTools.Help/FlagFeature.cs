@@ -61,7 +61,7 @@ namespace SabreTools.Help
             Flags.ForEach(flag => sb.Append($"{flag}, "));
             return sb.ToString().TrimEnd(' ', ',');
         }
-        
+
         #endregion
     }
 }
