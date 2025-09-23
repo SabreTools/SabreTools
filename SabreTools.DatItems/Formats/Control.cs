@@ -44,6 +44,12 @@ namespace SabreTools.DatItems.Formats
                 SetFieldValue<string?>(Models.Metadata.Control.ControlTypeKey, GetStringFieldValue(Models.Metadata.Control.ControlTypeKey).AsControlType().AsStringValue());
         }
 
+        public Control(Models.Metadata.Control item, Machine machine, Source source) : this(item)
+        {
+            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            CopyMachineInformation(machine);
+        }
+
         #endregion
     }
 }

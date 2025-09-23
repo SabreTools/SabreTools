@@ -200,7 +200,7 @@ namespace SabreTools.DatFiles
 
             // Loop through the machines and add
 #if NET452_OR_GREATER || NETCOREAPP
-            Parallel.ForEach(items, Core.Globals.ParallelOptions, machine =>
+            Parallel.ForEach(items, Globals.ParallelOptions, machine =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(items, machine =>
 #else
@@ -246,97 +246,172 @@ namespace SabreTools.DatFiles
             {
                 var items = item.ReadItemArray<Models.Metadata.Adjuster>(Models.Metadata.Machine.AdjusterKey) ?? [];
                 var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
-                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
+                Array.ForEach(filtered, item =>
+                {
+                    var datItem = new Adjuster(item, machine, source);
+                    AddItem(datItem, statsOnly);
+                    // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
+                });
             }
             if (item.ContainsKey(Models.Metadata.Machine.ArchiveKey))
             {
                 var items = item.ReadItemArray<Models.Metadata.Archive>(Models.Metadata.Machine.ArchiveKey) ?? [];
                 var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
-                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
+                Array.ForEach(filtered, item =>
+                {
+                    var datItem = new Archive(item, machine, source);
+                    AddItem(datItem, statsOnly);
+                    // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
+                });
             }
             if (item.ContainsKey(Models.Metadata.Machine.BiosSetKey))
             {
                 var items = item.ReadItemArray<Models.Metadata.BiosSet>(Models.Metadata.Machine.BiosSetKey) ?? [];
                 var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
-                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
+                Array.ForEach(filtered, item =>
+                {
+                    var datItem = new BiosSet(item, machine, source);
+                    AddItem(datItem, statsOnly);
+                    // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
+                });
             }
             if (item.ContainsKey(Models.Metadata.Machine.ChipKey))
             {
                 var items = item.ReadItemArray<Models.Metadata.Chip>(Models.Metadata.Machine.ChipKey) ?? [];
                 var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
-                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
+                Array.ForEach(filtered, item =>
+                {
+                    var datItem = new Chip(item, machine, source);
+                    AddItem(datItem, statsOnly);
+                    // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
+                });
             }
             if (item.ContainsKey(Models.Metadata.Machine.ConfigurationKey))
             {
                 var items = item.ReadItemArray<Models.Metadata.Configuration>(Models.Metadata.Machine.ConfigurationKey) ?? [];
                 var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
-                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
+                Array.ForEach(filtered, item =>
+                {
+                    var datItem = new Configuration(item, machine, source);
+                    AddItem(datItem, statsOnly);
+                    // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
+                });
             }
             if (item.ContainsKey(Models.Metadata.Machine.DeviceKey))
             {
                 var items = item.ReadItemArray<Models.Metadata.Device>(Models.Metadata.Machine.DeviceKey) ?? [];
                 var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
-                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
+                Array.ForEach(filtered, item =>
+                {
+                    var datItem = new Device(item, machine, source);
+                    AddItem(datItem, statsOnly);
+                    // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
+                });
             }
             if (item.ContainsKey(Models.Metadata.Machine.DeviceRefKey))
             {
                 var items = item.ReadItemArray<Models.Metadata.DeviceRef>(Models.Metadata.Machine.DeviceRefKey) ?? [];
                 // Do not filter these due to later use
-                ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly);
+                Array.ForEach(items, item =>
+                {
+                    var datItem = new DeviceRef(item, machine, source);
+                    AddItem(datItem, statsOnly);
+                    // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
+                });
             }
             if (item.ContainsKey(Models.Metadata.Machine.DipSwitchKey))
             {
                 var items = item.ReadItemArray<Models.Metadata.DipSwitch>(Models.Metadata.Machine.DipSwitchKey) ?? [];
                 var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
-                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
+                Array.ForEach(filtered, item =>
+                {
+                    var datItem = new DipSwitch(item, machine, source);
+                    AddItem(datItem, statsOnly);
+                    // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
+                });
             }
             if (item.ContainsKey(Models.Metadata.Machine.DiskKey))
             {
                 var items = item.ReadItemArray<Models.Metadata.Disk>(Models.Metadata.Machine.DiskKey) ?? [];
                 var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
-                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
+                Array.ForEach(filtered, item =>
+                {
+                    var datItem = new Disk(item, machine, source);
+                    AddItem(datItem, statsOnly);
+                    // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
+                });
             }
             if (item.ContainsKey(Models.Metadata.Machine.DisplayKey))
             {
                 var items = item.ReadItemArray<Models.Metadata.Display>(Models.Metadata.Machine.DisplayKey) ?? [];
                 var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
-                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
+                Array.ForEach(filtered, item =>
+                {
+                    var datItem = new Display(item, machine, source);
+                    AddItem(datItem, statsOnly);
+                    // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
+                });
             }
             if (item.ContainsKey(Models.Metadata.Machine.DriverKey))
             {
                 var items = item.ReadItemArray<Models.Metadata.Driver>(Models.Metadata.Machine.DriverKey) ?? [];
                 var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
-                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
+                Array.ForEach(filtered, item =>
+                {
+                    var datItem = new Driver(item, machine, source);
+                    AddItem(datItem, statsOnly);
+                    // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
+                });
             }
             if (item.ContainsKey(Models.Metadata.Machine.DumpKey))
             {
                 var items = item.ReadItemArray<Models.Metadata.Dump>(Models.Metadata.Machine.DumpKey) ?? [];
                 string? machineName = machine.GetName();
-                ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly, machineName, filterRunner);
+                ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly, filterRunner);
             }
             if (item.ContainsKey(Models.Metadata.Machine.FeatureKey))
             {
                 var items = item.ReadItemArray<Models.Metadata.Feature>(Models.Metadata.Machine.FeatureKey) ?? [];
                 var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
-                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
+                Array.ForEach(filtered, item =>
+                {
+                    var datItem = new Feature(item, machine, source);
+                    AddItem(datItem, statsOnly);
+                    // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
+                });
             }
             if (item.ContainsKey(Models.Metadata.Machine.InfoKey))
             {
                 var items = item.ReadItemArray<Models.Metadata.Info>(Models.Metadata.Machine.InfoKey) ?? [];
                 var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
-                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
+                Array.ForEach(filtered, item =>
+                {
+                    var datItem = new Info(item, machine, source);
+                    AddItem(datItem, statsOnly);
+                    // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
+                });
             }
             if (item.ContainsKey(Models.Metadata.Machine.InputKey))
             {
                 var items = item.ReadItemArray<Models.Metadata.Input>(Models.Metadata.Machine.InputKey) ?? [];
                 var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
-                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
+                Array.ForEach(filtered, item =>
+                {
+                    var datItem = new Input(item, machine, source);
+                    AddItem(datItem, statsOnly);
+                    // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
+                });
             }
             if (item.ContainsKey(Models.Metadata.Machine.MediaKey))
             {
                 var items = item.ReadItemArray<Models.Metadata.Media>(Models.Metadata.Machine.MediaKey) ?? [];
                 var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
-                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
+                Array.ForEach(filtered, item =>
+                {
+                    var datItem = new Media(item, machine, source);
+                    AddItem(datItem, statsOnly);
+                    // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
+                });
             }
             if (item.ContainsKey(Models.Metadata.Machine.PartKey))
             {
@@ -347,360 +422,114 @@ namespace SabreTools.DatFiles
             {
                 var items = item.ReadItemArray<Models.Metadata.Port>(Models.Metadata.Machine.PortKey) ?? [];
                 var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
-                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
+                Array.ForEach(filtered, item =>
+                {
+                    var datItem = new Port(item, machine, source);
+                    AddItem(datItem, statsOnly);
+                    // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
+                });
             }
             if (item.ContainsKey(Models.Metadata.Machine.RamOptionKey))
             {
                 var items = item.ReadItemArray<Models.Metadata.RamOption>(Models.Metadata.Machine.RamOptionKey) ?? [];
                 var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
-                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
+                Array.ForEach(filtered, item =>
+                {
+                    var datItem = new RamOption(item, machine, source);
+                    AddItem(datItem, statsOnly);
+                    // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
+                });
             }
             if (item.ContainsKey(Models.Metadata.Machine.ReleaseKey))
             {
                 var items = item.ReadItemArray<Models.Metadata.Release>(Models.Metadata.Machine.ReleaseKey) ?? [];
                 var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
-                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
+                Array.ForEach(filtered, item =>
+                {
+                    var datItem = new Release(item, machine, source);
+                    AddItem(datItem, statsOnly);
+                    // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
+                });
             }
             if (item.ContainsKey(Models.Metadata.Machine.RomKey))
             {
                 var items = item.ReadItemArray<Models.Metadata.Rom>(Models.Metadata.Machine.RomKey) ?? [];
                 var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
-                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
+                Array.ForEach(filtered, item =>
+                {
+                    var datItem = new Rom(item, machine, source);
+                    datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
+                    datItem.CopyMachineInformation(machine);
+
+                    AddItem(datItem, statsOnly);
+                    // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
+                });
             }
             if (item.ContainsKey(Models.Metadata.Machine.SampleKey))
             {
                 var items = item.ReadItemArray<Models.Metadata.Sample>(Models.Metadata.Machine.SampleKey) ?? [];
                 var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
-                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
+                Array.ForEach(filtered, item =>
+                {
+                    var datItem = new Sample(item, machine, source);
+                    AddItem(datItem, statsOnly);
+                    // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
+                });
             }
             if (item.ContainsKey(Models.Metadata.Machine.SharedFeatKey))
             {
                 var items = item.ReadItemArray<Models.Metadata.SharedFeat>(Models.Metadata.Machine.SharedFeatKey) ?? [];
                 var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
-                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
+                Array.ForEach(filtered, item =>
+                {
+                    var datItem = new SharedFeat(item, machine, source);
+                    AddItem(datItem, statsOnly);
+                    // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
+                });
             }
             if (item.ContainsKey(Models.Metadata.Machine.SlotKey))
             {
                 var items = item.ReadItemArray<Models.Metadata.Slot>(Models.Metadata.Machine.SlotKey) ?? [];
                 // Do not filter these due to later use
-                ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly);
+                Array.ForEach(items, item =>
+                {
+                    var datItem = new Slot(item, machine, source);
+                    AddItem(datItem, statsOnly);
+                    // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
+                });
             }
             if (item.ContainsKey(Models.Metadata.Machine.SoftwareListKey))
             {
                 var items = item.ReadItemArray<Models.Metadata.SoftwareList>(Models.Metadata.Machine.SoftwareListKey) ?? [];
                 var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
-                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
+                Array.ForEach(filtered, item =>
+                {
+                    var datItem = new SoftwareList(item, machine, source);
+                    AddItem(datItem, statsOnly);
+                    // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
+                });
             }
             if (item.ContainsKey(Models.Metadata.Machine.SoundKey))
             {
                 var items = item.ReadItemArray<Models.Metadata.Sound>(Models.Metadata.Machine.SoundKey) ?? [];
                 var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
-                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
+                Array.ForEach(filtered, item =>
+                {
+                    var datItem = new Sound(item, machine, source);
+                    AddItem(datItem, statsOnly);
+                    // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
+                });
             }
             if (item.ContainsKey(Models.Metadata.Machine.VideoKey))
             {
                 var items = item.ReadItemArray<Models.Metadata.Video>(Models.Metadata.Machine.VideoKey) ?? [];
                 var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
-                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
-            }
-        }
-
-        /// <summary>
-        /// Convert Adjuster information 
-        /// </summary>
-        /// <param name="items">Array of internal items to convert</param>
-        /// <param name="machine">Machine to use with the converted items</param>
-        /// <param name="machineIndex">Index of the Machine to use with the converted items</param>
-        /// <param name="source">Source to use with the converted items</param>
-        /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
-        /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
-        private void ProcessItems(Models.Metadata.Adjuster[]? items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
-        {
-            // If the array is null or empty, return without processing
-            if (items == null || items.Length == 0)
-                return;
-
-            // Loop through the items and add
-            foreach (var item in items)
-            {
-                var datItem = new Adjuster(item);
-                datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
-                datItem.CopyMachineInformation(machine);
-
-                AddItem(datItem, statsOnly);
-                //AddItemDB(datItem, machineIndex, sourceIndex, statsOnly, filterRunner);
-            }
-        }
-
-        /// <summary>
-        /// Convert Archive information 
-        /// </summary>
-        /// <param name="items">Array of internal items to convert</param>
-        /// <param name="machine">Machine to use with the converted items</param>
-        /// <param name="machineIndex">Index of the Machine to use with the converted items</param>
-        /// <param name="source">Source to use with the converted items</param>
-        /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
-        /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        private void ProcessItems(Models.Metadata.Archive[]? items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
-        {
-            // If the array is null or empty, return without processing
-            if (items == null || items.Length == 0)
-                return;
-
-            // Loop through the items and add
-            foreach (var item in items)
-            {
-                var datItem = new Archive(item);
-                datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
-                datItem.CopyMachineInformation(machine);
-
-                AddItem(datItem, statsOnly);
-                // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
-            }
-        }
-
-        /// <summary>
-        /// Convert BiosSet information 
-        /// </summary>
-        /// <param name="items">Array of internal items to convert</param>
-        /// <param name="machine">Machine to use with the converted items</param>
-        /// <param name="machineIndex">Index of the Machine to use with the converted items</param>
-        /// <param name="source">Source to use with the converted items</param>
-        /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
-        /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        private void ProcessItems(Models.Metadata.BiosSet[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
-        {
-            // If the array is null or empty, return without processing
-            if (items == null || items.Length == 0)
-                return;
-
-            // Loop through the items and add
-            foreach (var item in items)
-            {
-                var datItem = new BiosSet(item);
-                datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
-                datItem.CopyMachineInformation(machine);
-
-                AddItem(datItem, statsOnly);
-                // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
-            }
-        }
-
-        /// <summary>
-        /// Convert Chip information 
-        /// </summary>
-        /// <param name="items">Array of internal items to convert</param>
-        /// <param name="machine">Machine to use with the converted items</param>
-        /// <param name="machineIndex">Index of the Machine to use with the converted items</param>
-        /// <param name="source">Source to use with the converted items</param>
-        /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
-        /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        private void ProcessItems(Models.Metadata.Chip[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
-        {
-            // If the array is null or empty, return without processing
-            if (items == null || items.Length == 0)
-                return;
-
-            // Loop through the items and add
-            foreach (var item in items)
-            {
-                var datItem = new Chip(item);
-                datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
-                datItem.CopyMachineInformation(machine);
-
-                AddItem(datItem, statsOnly);
-                // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
-            }
-        }
-
-        /// <summary>
-        /// Convert Configuration information 
-        /// </summary>
-        /// <param name="items">Array of internal items to convert</param>
-        /// <param name="machine">Machine to use with the converted items</param>
-        /// <param name="machineIndex">Index of the Machine to use with the converted items</param>
-        /// <param name="source">Source to use with the converted items</param>
-        /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
-        /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        private void ProcessItems(Models.Metadata.Configuration[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
-        {
-            // If the array is null or empty, return without processing
-            if (items == null || items.Length == 0)
-                return;
-
-            // Loop through the items and add
-            foreach (var item in items)
-            {
-                var datItem = new Configuration(item);
-                datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
-                datItem.CopyMachineInformation(machine);
-
-                AddItem(datItem, statsOnly);
-                // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
-            }
-        }
-
-        /// <summary>
-        /// Convert Device information 
-        /// </summary>
-        /// <param name="items">Array of internal items to convert</param>
-        /// <param name="machine">Machine to use with the converted items</param>
-        /// <param name="machineIndex">Index of the Machine to use with the converted items</param>
-        /// <param name="source">Source to use with the converted items</param>
-        /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
-        /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        private void ProcessItems(Models.Metadata.Device[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
-        {
-            // If the array is null or empty, return without processing
-            if (items == null || items.Length == 0)
-                return;
-
-            // Loop through the items and add
-            foreach (var item in items)
-            {
-                var datItem = new Device(item);
-                datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
-                datItem.CopyMachineInformation(machine);
-
-                AddItem(datItem, statsOnly);
-                // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
-            }
-        }
-
-        /// <summary>
-        /// Convert DeviceRef information 
-        /// </summary>
-        /// <param name="items">Array of internal items to convert</param>
-        /// <param name="machine">Machine to use with the converted items</param>
-        /// <param name="machineIndex">Index of the Machine to use with the converted items</param>
-        /// <param name="source">Source to use with the converted items</param>
-        /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
-        /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        /// <remarks>Does not get filtered here just in case merging or splitting is done</remarks>
-        private void ProcessItems(Models.Metadata.DeviceRef[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
-        {
-            // If the array is null or empty, return without processing
-            if (items == null || items.Length == 0)
-                return;
-
-            // Loop through the items and add
-            foreach (var item in items)
-            {
-                var datItem = new DeviceRef(item);
-                datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
-                datItem.CopyMachineInformation(machine);
-
-                AddItem(datItem, statsOnly);
-                // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
-            }
-        }
-
-        /// <summary>
-        /// Convert DipSwitch information 
-        /// </summary>
-        /// <param name="items">Array of internal items to convert</param>
-        /// <param name="machine">Machine to use with the converted items</param>
-        /// <param name="machineIndex">Index of the Machine to use with the converted items</param>
-        /// <param name="source">Source to use with the converted items</param>
-        /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
-        /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        private void ProcessItems(Models.Metadata.DipSwitch[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
-        {
-            // If the array is null or empty, return without processing
-            if (items == null || items.Length == 0)
-                return;
-
-            // Loop through the items and add
-            foreach (var item in items)
-            {
-                var datItem = new DipSwitch(item);
-                datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
-                datItem.CopyMachineInformation(machine);
-
-                AddItem(datItem, statsOnly);
-                // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
-            }
-        }
-
-        /// <summary>
-        /// Convert Disk information 
-        /// </summary>
-        /// <param name="items">Array of internal items to convert</param>
-        /// <param name="machine">Machine to use with the converted items</param>
-        /// <param name="machineIndex">Index of the Machine to use with the converted items</param>
-        /// <param name="source">Source to use with the converted items</param>
-        /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
-        /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        private void ProcessItems(Models.Metadata.Disk[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
-        {
-            // If the array is null or empty, return without processing
-            if (items == null || items.Length == 0)
-                return;
-
-            // Loop through the items and add
-            foreach (var item in items)
-            {
-                var datItem = new Disk(item);
-                datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
-                datItem.CopyMachineInformation(machine);
-
-                AddItem(datItem, statsOnly);
-                // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
-            }
-        }
-
-        /// <summary>
-        /// Convert Display information 
-        /// </summary>
-        /// <param name="items">Array of internal items to convert</param>
-        /// <param name="machine">Machine to use with the converted items</param>
-        /// <param name="machineIndex">Index of the Machine to use with the converted items</param>
-        /// <param name="source">Source to use with the converted items</param>
-        /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
-        /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        private void ProcessItems(Models.Metadata.Display[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
-        {
-            // If the array is null or empty, return without processing
-            if (items == null || items.Length == 0)
-                return;
-
-            // Loop through the items and add
-            foreach (var item in items)
-            {
-                var datItem = new Display(item);
-                datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
-                datItem.CopyMachineInformation(machine);
-
-                AddItem(datItem, statsOnly);
-                // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
-            }
-        }
-
-        /// <summary>
-        /// Convert Driver information 
-        /// </summary>
-        /// <param name="items">Array of internal items to convert</param>
-        /// <param name="machine">Machine to use with the converted items</param>
-        /// <param name="machineIndex">Index of the Machine to use with the converted items</param>
-        /// <param name="source">Source to use with the converted items</param>
-        /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
-        /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        private void ProcessItems(Models.Metadata.Driver[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
-        {
-            // If the array is null or empty, return without processing
-            if (items == null || items.Length == 0)
-                return;
-
-            // Loop through the items and add
-            foreach (var item in items)
-            {
-                var datItem = new Driver(item);
-                datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
-                datItem.CopyMachineInformation(machine);
-
-                AddItem(datItem, statsOnly);
-                // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
+                Array.ForEach(filtered, item =>
+                {
+                    var datItem = new Display(item, machine, source);
+                    AddItem(datItem, statsOnly);
+                    // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
+                });
             }
         }
 
@@ -713,14 +542,16 @@ namespace SabreTools.DatFiles
         /// <param name="source">Source to use with the converted items</param>
         /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
         /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        /// <param name="machineName">Machine name to use when constructing item names</param>
         /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
         /// TODO: Convert this into a constructor in Rom
-        private void ProcessItems(Models.Metadata.Dump[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly, string? machineName, FilterRunner? filterRunner)
+        private void ProcessItems(Models.Metadata.Dump[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly, FilterRunner? filterRunner)
         {
             // If the array is null or empty, return without processing
-            if (items == null || items.Length == 0)
+            if (items.Length == 0)
                 return;
+
+            // Cache the machine name
+            string? machineName = machine.GetName();
 
             // Loop through the items and add
             int index = 0;
@@ -807,114 +638,6 @@ namespace SabreTools.DatFiles
         }
 
         /// <summary>
-        /// Convert Feature information 
-        /// </summary>
-        /// <param name="items">Array of internal items to convert</param>
-        /// <param name="machine">Machine to use with the converted items</param>
-        /// <param name="machineIndex">Index of the Machine to use with the converted items</param>
-        /// <param name="source">Source to use with the converted items</param>
-        /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
-        /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        private void ProcessItems(Models.Metadata.Feature[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
-        {
-            // If the array is null or empty, return without processing
-            if (items == null || items.Length == 0)
-                return;
-
-            // Loop through the items and add
-            foreach (var item in items)
-            {
-                var datItem = new Feature(item);
-                datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
-                datItem.CopyMachineInformation(machine);
-
-                AddItem(datItem, statsOnly);
-                // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
-            }
-        }
-
-        /// <summary>
-        /// Convert Info information 
-        /// </summary>
-        /// <param name="items">Array of internal items to convert</param>
-        /// <param name="machine">Machine to use with the converted items</param>
-        /// <param name="machineIndex">Index of the Machine to use with the converted items</param>
-        /// <param name="source">Source to use with the converted items</param>
-        /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
-        /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        private void ProcessItems(Models.Metadata.Info[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
-        {
-            // If the array is null or empty, return without processing
-            if (items == null || items.Length == 0)
-                return;
-
-            // Loop through the items and add
-            foreach (var item in items)
-            {
-                var datItem = new Info(item);
-                datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
-                datItem.CopyMachineInformation(machine);
-
-                AddItem(datItem, statsOnly);
-                // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
-            }
-        }
-
-        /// <summary>
-        /// Convert Input information 
-        /// </summary>
-        /// <param name="items">Array of internal items to convert</param>
-        /// <param name="machine">Machine to use with the converted items</param>
-        /// <param name="machineIndex">Index of the Machine to use with the converted items</param>
-        /// <param name="source">Source to use with the converted items</param>
-        /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
-        /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        private void ProcessItems(Models.Metadata.Input[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
-        {
-            // If the array is null or empty, return without processing
-            if (items == null || items.Length == 0)
-                return;
-
-            // Loop through the items and add
-            foreach (var item in items)
-            {
-                var datItem = new Input(item);
-                datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
-                datItem.CopyMachineInformation(machine);
-
-                AddItem(datItem, statsOnly);
-                // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
-            }
-        }
-
-        /// <summary>
-        /// Convert Media information 
-        /// </summary>
-        /// <param name="items">Array of internal items to convert</param>
-        /// <param name="machine">Machine to use with the converted items</param>
-        /// <param name="machineIndex">Index of the Machine to use with the converted items</param>
-        /// <param name="source">Source to use with the converted items</param>
-        /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
-        /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        private void ProcessItems(Models.Metadata.Media[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
-        {
-            // If the array is null or empty, return without processing
-            if (items == null || items.Length == 0)
-                return;
-
-            // Loop through the items and add
-            foreach (var item in items)
-            {
-                var datItem = new Media(item);
-                datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
-                datItem.CopyMachineInformation(machine);
-
-                AddItem(datItem, statsOnly);
-                // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
-            }
-        }
-
-        /// <summary>
         /// Convert Part information 
         /// </summary>
         /// <param name="items">Array of internal items to convert</param>
@@ -924,16 +647,16 @@ namespace SabreTools.DatFiles
         /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
         /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
         /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
-        private void ProcessItems(Models.Metadata.Part[]? items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly, FilterRunner? filterRunner)
+        private void ProcessItems(Models.Metadata.Part[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly, FilterRunner? filterRunner)
         {
             // If the array is null or empty, return without processing
-            if (items == null || items.Length == 0)
+            if (items.Length == 0)
                 return;
 
             // Loop through the items and add
             foreach (var item in items)
             {
-                var partItem = new Part(item);
+                var partItem = new Part(item, machine, source);
 
                 // Handle subitems
                 var dataAreas = item.ReadItemArray<Models.Metadata.DataArea>(Models.Metadata.Part.DataAreaKey);
@@ -941,7 +664,7 @@ namespace SabreTools.DatFiles
                 {
                     foreach (var dataArea in dataAreas)
                     {
-                        var dataAreaItem = new DataArea(dataArea);
+                        var dataAreaItem = new DataArea(dataArea, machine, source);
                         var roms = dataArea.ReadItemArray<Models.Metadata.Rom>(Models.Metadata.DataArea.RomKey);
                         if (roms == null)
                             continue;
@@ -955,7 +678,7 @@ namespace SabreTools.DatFiles
                                 continue;
 
                             // Convert the item
-                            var romItem = new Rom(rom);
+                            var romItem = new Rom(rom, machine, source);
                             long? size = romItem.GetInt64FieldValue(Models.Metadata.Rom.SizeKey);
 
                             // If the rom is a continue or ignore
@@ -972,8 +695,6 @@ namespace SabreTools.DatFiles
 
                             romItem.SetFieldValue<DataArea?>(Rom.DataAreaKey, dataAreaItem);
                             romItem.SetFieldValue<Part?>(Rom.PartKey, partItem);
-                            romItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
-                            romItem.CopyMachineInformation(machine);
 
                             addRoms.Add(romItem);
                         }
@@ -992,7 +713,7 @@ namespace SabreTools.DatFiles
                 {
                     foreach (var diskArea in diskAreas)
                     {
-                        var diskAreaitem = new DiskArea(diskArea);
+                        var diskAreaitem = new DiskArea(diskArea, machine, source);
                         var disks = diskArea.ReadItemArray<Models.Metadata.Disk>(Models.Metadata.DiskArea.DiskKey);
                         if (disks == null)
                             continue;
@@ -1003,11 +724,9 @@ namespace SabreTools.DatFiles
                             if (filterRunner != null && !filterRunner.Run(disk))
                                 continue;
 
-                            var diskItem = new Disk(disk);
+                            var diskItem = new Disk(disk, machine, source);
                             diskItem.SetFieldValue<DiskArea?>(Disk.DiskAreaKey, diskAreaitem);
                             diskItem.SetFieldValue<Part?>(Disk.PartKey, partItem);
-                            diskItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
-                            diskItem.CopyMachineInformation(machine);
 
                             AddItem(diskItem, statsOnly);
                             // AddItemDB(diskItem, machineIndex, sourceIndex, statsOnly);
@@ -1024,10 +743,8 @@ namespace SabreTools.DatFiles
                         if (filterRunner != null && !filterRunner.Run(dipSwitch))
                             continue;
 
-                        var dipSwitchItem = new DipSwitch(dipSwitch);
+                        var dipSwitchItem = new DipSwitch(dipSwitch, machine, source);
                         dipSwitchItem.SetFieldValue<Part?>(DipSwitch.PartKey, partItem);
-                        dipSwitchItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
-                        dipSwitchItem.CopyMachineInformation(machine);
 
                         AddItem(dipSwitchItem, statsOnly);
                         // AddItemDB(dipSwitchItem, machineIndex, sourceIndex, statsOnly);
@@ -1052,276 +769,6 @@ namespace SabreTools.DatFiles
                         // AddItemDB(partFeatureItem, machineIndex, sourceIndex, statsOnly);
                     }
                 }
-            }
-        }
-
-        /// <summary>
-        /// Convert Port information 
-        /// </summary>
-        /// <param name="items">Array of internal items to convert</param>
-        /// <param name="machine">Machine to use with the converted items</param>
-        /// <param name="machineIndex">Index of the Machine to use with the converted items</param>
-        /// <param name="source">Source to use with the converted items</param>
-        /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
-        /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        private void ProcessItems(Models.Metadata.Port[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
-        {
-            // If the array is null or empty, return without processing
-            if (items == null || items.Length == 0)
-                return;
-
-            // Loop through the items and add
-            foreach (var item in items)
-            {
-                var datItem = new Port(item);
-                datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
-                datItem.CopyMachineInformation(machine);
-
-                AddItem(datItem, statsOnly);
-                // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
-            }
-        }
-
-        /// <summary>
-        /// Convert RamOption information 
-        /// </summary>
-        /// <param name="items">Array of internal items to convert</param>
-        /// <param name="machine">Machine to use with the converted items</param>
-        /// <param name="machineIndex">Index of the Machine to use with the converted items</param>
-        /// <param name="source">Source to use with the converted items</param>
-        /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
-        /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        private void ProcessItems(Models.Metadata.RamOption[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
-        {
-            // If the array is null or empty, return without processing
-            if (items == null || items.Length == 0)
-                return;
-
-            // Loop through the items and add
-            foreach (var item in items)
-            {
-                var datItem = new RamOption(item);
-                datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
-                datItem.CopyMachineInformation(machine);
-
-                AddItem(datItem, statsOnly);
-                // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
-            }
-        }
-
-        /// <summary>
-        /// Convert Release information 
-        /// </summary>
-        /// <param name="items">Array of internal items to convert</param>
-        /// <param name="machine">Machine to use with the converted items</param>
-        /// <param name="machineIndex">Index of the Machine to use with the converted items</param>
-        /// <param name="source">Source to use with the converted items</param>
-        /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
-        /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        private void ProcessItems(Models.Metadata.Release[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
-        {
-            // If the array is null or empty, return without processing
-            if (items == null || items.Length == 0)
-                return;
-
-            // Loop through the items and add
-            foreach (var item in items)
-            {
-                var datItem = new Release(item);
-                datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
-                datItem.CopyMachineInformation(machine);
-
-                AddItem(datItem, statsOnly);
-                // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
-            }
-        }
-
-        /// <summary>
-        /// Convert Rom information 
-        /// </summary>
-        /// <param name="items">Array of internal items to convert</param>
-        /// <param name="machine">Machine to use with the converted items</param>
-        /// <param name="machineIndex">Index of the Machine to use with the converted items</param>
-        /// <param name="source">Source to use with the converted items</param>
-        /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
-        /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        private void ProcessItems(Models.Metadata.Rom[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
-        {
-            // If the array is null or empty, return without processing
-            if (items == null || items.Length == 0)
-                return;
-
-            // Loop through the items and add
-            foreach (var item in items)
-            {
-                var datItem = new Rom(item);
-                datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
-                datItem.CopyMachineInformation(machine);
-
-                AddItem(datItem, statsOnly);
-                // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
-            }
-        }
-
-        /// <summary>
-        /// Convert Sample information 
-        /// </summary>
-        /// <param name="items">Array of internal items to convert</param>
-        /// <param name="machine">Machine to use with the converted items</param>
-        /// <param name="machineIndex">Index of the Machine to use with the converted items</param>
-        /// <param name="source">Source to use with the converted items</param>
-        /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
-        /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        private void ProcessItems(Models.Metadata.Sample[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
-        {
-            // If the array is null or empty, return without processing
-            if (items == null || items.Length == 0)
-                return;
-
-            // Loop through the items and add
-            foreach (var item in items)
-            {
-                var datItem = new Sample(item);
-                datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
-                datItem.CopyMachineInformation(machine);
-
-                AddItem(datItem, statsOnly);
-                // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
-            }
-        }
-
-        /// <summary>
-        /// Convert SharedFeat information 
-        /// </summary>
-        /// <param name="items">Array of internal items to convert</param>
-        /// <param name="machine">Machine to use with the converted items</param>
-        /// <param name="machineIndex">Index of the Machine to use with the converted items</param>
-        /// <param name="source">Source to use with the converted items</param>
-        /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
-        /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        private void ProcessItems(Models.Metadata.SharedFeat[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
-        {
-            // If the array is null or empty, return without processing
-            if (items == null || items.Length == 0)
-                return;
-
-            // Loop through the items and add
-            foreach (var item in items)
-            {
-                var datItem = new SharedFeat(item);
-                datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
-                datItem.CopyMachineInformation(machine);
-
-                AddItem(datItem, statsOnly);
-                // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
-            }
-        }
-
-        /// <summary>
-        /// Convert Slot information 
-        /// </summary>
-        /// <param name="items">Array of internal items to convert</param>
-        /// <param name="machine">Machine to use with the converted items</param>
-        /// <param name="machineIndex">Index of the Machine to use with the converted items</param>
-        /// <param name="source">Source to use with the converted items</param>
-        /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
-        /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        private void ProcessItems(Models.Metadata.Slot[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
-        {
-            // If the array is null or empty, return without processing
-            if (items == null || items.Length == 0)
-                return;
-
-            // Loop through the items and add
-            foreach (var item in items)
-            {
-                var datItem = new Slot(item);
-                datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
-                datItem.CopyMachineInformation(machine);
-
-                AddItem(datItem, statsOnly);
-                // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
-            }
-        }
-
-        /// <summary>
-        /// Convert SoftwareList information 
-        /// </summary>
-        /// <param name="items">Array of internal items to convert</param>
-        /// <param name="machine">Machine to use with the converted items</param>
-        /// <param name="machineIndex">Index of the Machine to use with the converted items</param>
-        /// <param name="source">Source to use with the converted items</param>
-        /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
-        /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        private void ProcessItems(Models.Metadata.SoftwareList[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
-        {
-            // If the array is null or empty, return without processing
-            if (items == null || items.Length == 0)
-                return;
-
-            // Loop through the items and add
-            foreach (var item in items)
-            {
-                var datItem = new SoftwareList(item);
-                datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
-                datItem.CopyMachineInformation(machine);
-
-                AddItem(datItem, statsOnly);
-                // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
-            }
-        }
-
-        /// <summary>
-        /// Convert Sound information 
-        /// </summary>
-        /// <param name="items">Array of internal items to convert</param>
-        /// <param name="machine">Machine to use with the converted items</param>
-        /// <param name="machineIndex">Index of the Machine to use with the converted items</param>
-        /// <param name="source">Source to use with the converted items</param>
-        /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
-        /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        private void ProcessItems(Models.Metadata.Sound[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
-        {
-            // If the array is null or empty, return without processing
-            if (items == null || items.Length == 0)
-                return;
-
-            // Loop through the items and add
-            foreach (var item in items)
-            {
-                var datItem = new Sound(item);
-                datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
-                datItem.CopyMachineInformation(machine);
-
-                AddItem(datItem, statsOnly);
-                // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
-            }
-        }
-
-        /// <summary>
-        /// Convert Video information 
-        /// </summary>
-        /// <param name="items">Array of internal items to convert</param>
-        /// <param name="machine">Machine to use with the converted items</param>
-        /// <param name="machineIndex">Index of the Machine to use with the converted items</param>
-        /// <param name="source">Source to use with the converted items</param>
-        /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
-        /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        private void ProcessItems(Models.Metadata.Video[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
-        {
-            // If the array is null or empty, return without processing
-            if (items == null || items.Length == 0)
-                return;
-
-            // Loop through the items and add
-            foreach (var item in items)
-            {
-                var datItem = new Display(item);
-                datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
-                datItem.CopyMachineInformation(machine);
-
-                AddItem(datItem, statsOnly);
-                // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
             }
         }
 

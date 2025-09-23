@@ -28,6 +28,12 @@ namespace SabreTools.DatItems.Formats
                 SetFieldValue<string?>(Models.Metadata.Release.DefaultKey, GetBoolFieldValue(Models.Metadata.Release.DefaultKey).FromYesNo());
         }
 
+        public Release(Models.Metadata.Release item, Machine machine, Source source) : this(item)
+        {
+            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            CopyMachineInformation(machine);
+        }
+
         #endregion
     }
 }

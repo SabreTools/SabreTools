@@ -30,6 +30,12 @@ namespace SabreTools.DatItems.Formats
                 SetFieldValue<string?>(Models.Metadata.Chip.ChipTypeKey, GetStringFieldValue(Models.Metadata.Chip.ChipTypeKey).AsChipType().AsStringValue());
         }
 
+        public Chip(Models.Metadata.Chip item, Machine machine, Source source) : this(item)
+        {
+            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            CopyMachineInformation(machine);
+        }
+
         #endregion
     }
 }

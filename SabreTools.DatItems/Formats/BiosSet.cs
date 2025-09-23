@@ -28,6 +28,12 @@ namespace SabreTools.DatItems.Formats
                 SetFieldValue<string?>(Models.Metadata.BiosSet.DefaultKey, GetBoolFieldValue(Models.Metadata.BiosSet.DefaultKey).FromYesNo());
         }
 
+        public BiosSet(Models.Metadata.BiosSet item, Machine machine, Source source) : this(item)
+        {
+            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            CopyMachineInformation(machine);
+        }
+
         #endregion
     }
 }

@@ -33,6 +33,12 @@ namespace SabreTools.DatItems.Formats
 
         public Part(Models.Metadata.Part item) : base(item) { }
 
+        public Part(Models.Metadata.Part item, Machine machine, Source source) : this(item)
+        {
+            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            CopyMachineInformation(machine);
+        }
+
         #endregion
     }
 }

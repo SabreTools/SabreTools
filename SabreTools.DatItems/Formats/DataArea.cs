@@ -32,6 +32,12 @@ namespace SabreTools.DatItems.Formats
                 SetFieldValue<string?>(Models.Metadata.DataArea.WidthKey, GetInt64FieldValue(Models.Metadata.DataArea.WidthKey).ToString());
         }
 
+        public DataArea(Models.Metadata.DataArea item, Machine machine, Source source) : this(item)
+        {
+            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            CopyMachineInformation(machine);
+        }
+
         #endregion
     }
 }

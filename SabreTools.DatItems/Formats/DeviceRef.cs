@@ -22,6 +22,12 @@ namespace SabreTools.DatItems.Formats
 
         public DeviceRef(Models.Metadata.DeviceRef item) : base(item) { }
 
+        public DeviceRef(Models.Metadata.DeviceRef item, Machine machine, Source source) : this(item)
+        {
+            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            CopyMachineInformation(machine);
+        }
+
         #endregion
     }
 }

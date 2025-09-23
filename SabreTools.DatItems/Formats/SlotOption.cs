@@ -28,6 +28,12 @@ namespace SabreTools.DatItems.Formats
                 SetFieldValue<string?>(Models.Metadata.SlotOption.DefaultKey, GetBoolFieldValue(Models.Metadata.SlotOption.DefaultKey).FromYesNo());
         }
 
+        public SlotOption(Models.Metadata.SlotOption item, Machine machine, Source source) : this(item)
+        {
+            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            CopyMachineInformation(machine);
+        }
+
         #endregion
     }
 }

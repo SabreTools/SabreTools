@@ -22,6 +22,12 @@ namespace SabreTools.DatItems.Formats
 
         public Instance(Models.Metadata.Instance item) : base(item) { }
 
+        public Instance(Models.Metadata.Instance item, Machine machine, Source source) : this(item)
+        {
+            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            CopyMachineInformation(machine);
+        }
+
         #endregion
     }
 }

@@ -22,6 +22,12 @@ namespace SabreTools.DatItems.Formats
 
         public Extension(Models.Metadata.Extension item) : base(item) { }
 
+        public Extension(Models.Metadata.Extension item, Machine machine, Source source) : this(item)
+        {
+            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            CopyMachineInformation(machine);
+        }
+
         #endregion
     }
 }

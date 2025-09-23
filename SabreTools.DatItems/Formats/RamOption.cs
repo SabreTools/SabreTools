@@ -28,6 +28,12 @@ namespace SabreTools.DatItems.Formats
                 SetFieldValue<string?>(Models.Metadata.RamOption.DefaultKey, GetBoolFieldValue(Models.Metadata.RamOption.DefaultKey).FromYesNo());
         }
 
+        public RamOption(Models.Metadata.RamOption item, Machine machine, Source source) : this(item)
+        {
+            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            CopyMachineInformation(machine);
+        }
+
         #endregion
     }
 }

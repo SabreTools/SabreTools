@@ -38,6 +38,12 @@ namespace SabreTools.DatItems.Formats
                 SetFieldValue<string?>(Models.Metadata.Media.SHA256Key, TextHelper.NormalizeSHA256(GetStringFieldValue(Models.Metadata.Media.SHA256Key)));
         }
 
+        public Media(Models.Metadata.Media item, Machine machine, Source source) : this(item)
+        {
+            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            CopyMachineInformation(machine);
+        }
+
         #endregion
 
         #region Cloning Methods

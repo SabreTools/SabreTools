@@ -52,6 +52,12 @@ namespace SabreTools.DatItems.Formats
                 SetFieldValue<string?>(Models.Metadata.Display.WidthKey, GetInt64FieldValue(Models.Metadata.Display.WidthKey).ToString());
         }
 
+        public Display(Models.Metadata.Display item, Machine machine, Source source) : this(item)
+        {
+            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            CopyMachineInformation(machine);
+        }
+
         public Display(Models.Metadata.Video item) : base()
         {
             SetFieldValue<long?>(Models.Metadata.Video.AspectXKey, NumberHelper.ConvertToInt64(item.ReadString(Models.Metadata.Video.AspectXKey)));
@@ -84,6 +90,12 @@ namespace SabreTools.DatItems.Formats
                 SetFieldValue<string?>(Models.Metadata.Display.DisplayTypeKey, GetStringFieldValue(Models.Metadata.Video.ScreenKey).AsDisplayType().AsStringValue());
             if (GetInt64FieldValue(Models.Metadata.Video.WidthKey) != null)
                 SetFieldValue<string?>(Models.Metadata.Display.WidthKey, GetInt64FieldValue(Models.Metadata.Video.WidthKey).ToString());
+        }
+
+        public Display(Models.Metadata.Video item, Machine machine, Source source) : this(item)
+        {
+            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            CopyMachineInformation(machine);
         }
 
         #endregion

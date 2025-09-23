@@ -28,6 +28,12 @@ namespace SabreTools.DatItems.Formats
                 SetFieldValue<string?>(Models.Metadata.DipLocation.InvertedKey, GetBoolFieldValue(Models.Metadata.DipLocation.InvertedKey).FromYesNo());
         }
 
+        public DipLocation(Models.Metadata.DipLocation item, Machine machine, Source source) : this(item)
+        {
+            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            CopyMachineInformation(machine);
+        }
+
         #endregion
     }
 }

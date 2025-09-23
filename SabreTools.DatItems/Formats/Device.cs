@@ -64,6 +64,12 @@ namespace SabreTools.DatItems.Formats
             }
         }
 
+        public Device(Models.Metadata.Device item, Machine machine, Source source) : this(item)
+        {
+            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            CopyMachineInformation(machine);
+        }
+
         #endregion
 
         #region Cloning Methods

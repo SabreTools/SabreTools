@@ -28,6 +28,12 @@ namespace SabreTools.DatItems.Formats
                 SetFieldValue<string?>(Models.Metadata.ConfLocation.InvertedKey, GetBoolFieldValue(Models.Metadata.ConfLocation.InvertedKey).FromYesNo());
         }
 
+        public ConfLocation(Models.Metadata.ConfLocation item, Machine machine, Source source) : this(item)
+        {
+            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            CopyMachineInformation(machine);
+        }
+
         #endregion
     }
 }

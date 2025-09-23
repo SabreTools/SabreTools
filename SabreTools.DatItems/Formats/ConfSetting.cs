@@ -43,6 +43,12 @@ namespace SabreTools.DatItems.Formats
                 SetFieldValue<Condition?>(Models.Metadata.ConfSetting.ConditionKey, new Condition(condition));
         }
 
+        public ConfSetting(Models.Metadata.ConfSetting item, Machine machine, Source source) : this(item)
+        {
+            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            CopyMachineInformation(machine);
+        }
+
         #endregion
 
         #region Cloning Methods

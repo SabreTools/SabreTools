@@ -48,6 +48,12 @@ namespace SabreTools.DatItems.Formats
                 SetFieldValue<string?>(Models.Metadata.Driver.UnofficialKey, GetBoolFieldValue(Models.Metadata.Driver.UnofficialKey).FromYesNo());
         }
 
+        public Driver(Models.Metadata.Driver item, Machine machine, Source source) : this(item)
+        {
+            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            CopyMachineInformation(machine);
+        }
+
         #endregion
     }
 }

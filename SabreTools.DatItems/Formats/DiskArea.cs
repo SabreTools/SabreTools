@@ -23,6 +23,12 @@ namespace SabreTools.DatItems.Formats
 
         public DiskArea(Models.Metadata.DiskArea item) : base(item) { }
 
+        public DiskArea(Models.Metadata.DiskArea item, Machine machine, Source source) : this(item)
+        {
+            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            CopyMachineInformation(machine);
+        }
+
         #endregion
     }
 }

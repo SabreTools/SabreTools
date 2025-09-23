@@ -30,6 +30,12 @@ namespace SabreTools.DatItems.Formats
             // TODO: Handle the Software subitem
         }
 
+        public SoftwareList(Models.Metadata.SoftwareList item, Machine machine, Source source) : this(item)
+        {
+            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            CopyMachineInformation(machine);
+        }
+
         #endregion
     }
 }

@@ -81,6 +81,12 @@ namespace SabreTools.DatItems.Formats
                 SetFieldValue<string?>(Models.Metadata.Disk.SHA1Key, TextHelper.NormalizeSHA1(GetStringFieldValue(Models.Metadata.Disk.SHA1Key)));
         }
 
+        public Disk(Models.Metadata.Disk item, Machine machine, Source source) : this(item)
+        {
+            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            CopyMachineInformation(machine);
+        }
+
         #endregion
 
         #region Cloning Methods

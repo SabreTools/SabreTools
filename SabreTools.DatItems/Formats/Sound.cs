@@ -27,6 +27,12 @@ namespace SabreTools.DatItems.Formats
                 SetFieldValue<string?>(Models.Metadata.Sound.ChannelsKey, GetInt64FieldValue(Models.Metadata.Sound.ChannelsKey).ToString());
         }
 
+        public Sound(Models.Metadata.Sound item, Machine machine, Source source) : this(item)
+        {
+            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            CopyMachineInformation(machine);
+        }
+
         #endregion
     }
 }

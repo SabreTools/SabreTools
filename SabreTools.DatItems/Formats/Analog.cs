@@ -22,6 +22,12 @@ namespace SabreTools.DatItems.Formats
 
         public Analog(Models.Metadata.Analog item) : base(item) { }
 
+        public Analog(Models.Metadata.Analog item, Machine machine, Source source) : this(item)
+        {
+            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            CopyMachineInformation(machine);
+        }
+
         #endregion
     }
 }

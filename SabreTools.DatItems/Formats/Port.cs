@@ -43,6 +43,12 @@ namespace SabreTools.DatItems.Formats
             }
         }
 
+        public Port(Models.Metadata.Port item, Machine machine, Source source) : this(item)
+        {
+            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            CopyMachineInformation(machine);
+        }
+
         #endregion
 
         #region Cloning Methods

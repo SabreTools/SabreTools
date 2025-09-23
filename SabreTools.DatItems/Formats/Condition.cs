@@ -27,6 +27,12 @@ namespace SabreTools.DatItems.Formats
                 SetFieldValue<string?>(Models.Metadata.Condition.RelationKey, GetStringFieldValue(Models.Metadata.Condition.RelationKey).AsRelation().AsStringValue());
         }
 
+        public Condition(Models.Metadata.Condition item, Machine machine, Source source) : this(item)
+        {
+            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            CopyMachineInformation(machine);
+        }
+
         #endregion
     }
 }
