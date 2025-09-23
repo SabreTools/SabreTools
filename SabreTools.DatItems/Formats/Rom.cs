@@ -86,6 +86,79 @@ namespace SabreTools.DatItems.Formats
             SetFieldValue<string?>(Models.Metadata.Rom.StatusKey, ItemStatus.None.AsStringValue());
         }
 
+        public Rom(Models.Metadata.Dump item, Machine machine, Source source, int index)
+        {
+            // If we don't have rom data, we can't do anything
+            Models.Metadata.Rom? rom = null;
+            OpenMSXSubType subType = OpenMSXSubType.NULL;
+            if (item.Read<Models.Metadata.Rom>(Models.Metadata.Dump.RomKey) != null)
+            {
+                rom = item.Read<Models.Metadata.Rom>(Models.Metadata.Dump.RomKey);
+                subType = OpenMSXSubType.Rom;
+            }
+            else if (item.Read<Models.Metadata.Rom>(Models.Metadata.Dump.MegaRomKey) != null)
+            {
+                rom = item.Read<Models.Metadata.Rom>(Models.Metadata.Dump.MegaRomKey);
+                subType = OpenMSXSubType.MegaRom;
+            }
+            else if (item.Read<Models.Metadata.Rom>(Models.Metadata.Dump.SCCPlusCartKey) != null)
+            {
+                rom = item.Read<Models.Metadata.Rom>(Models.Metadata.Dump.SCCPlusCartKey);
+                subType = OpenMSXSubType.SCCPlusCart;
+            }
+
+            // Just return if nothing valid was found
+            if (rom == null)
+                return;
+
+            string name = $"{machine.GetName()}_{index++}{(!string.IsNullOrEmpty(rom!.ReadString(Models.Metadata.Rom.RemarkKey)) ? $" {rom.ReadString(Models.Metadata.Rom.RemarkKey)}" : string.Empty)}";
+
+            SetName(name);
+            SetFieldValue<string?>(Models.Metadata.Rom.OffsetKey, rom.ReadString(Models.Metadata.Rom.StartKey));
+            SetFieldValue<string?>(Models.Metadata.Rom.OpenMSXMediaType, subType.AsStringValue());
+            SetFieldValue<string?>(Models.Metadata.Rom.OpenMSXType, rom.ReadString(Models.Metadata.Rom.OpenMSXType) ?? rom.ReadString(Models.Metadata.Rom.TypeKey));
+            SetFieldValue<string?>(Models.Metadata.Rom.RemarkKey, rom.ReadString(Models.Metadata.Rom.RemarkKey));
+            SetFieldValue<string?>(Models.Metadata.Rom.SHA1Key, rom.ReadString(Models.Metadata.Rom.SHA1Key));
+            SetFieldValue<string?>(Models.Metadata.Rom.StartKey, rom.ReadString(Models.Metadata.Rom.StartKey));
+            SetFieldValue<Source?>(DatItem.SourceKey, source);
+
+            if (item.Read<Models.Metadata.Original>(Models.Metadata.Dump.OriginalKey) != null)
+            {
+                var original = item.Read<Models.Metadata.Original>(Models.Metadata.Dump.OriginalKey)!;
+                SetFieldValue<Original?>("ORIGINAL", new Original
+                {
+                    Value = original.ReadBool(Models.Metadata.Original.ValueKey),
+                    Content = original.ReadString(Models.Metadata.Original.ContentKey),
+                });
+            }
+
+            CopyMachineInformation(machine);
+
+            // Process hash values
+            if (GetInt64FieldValue(Models.Metadata.Rom.SizeKey) != null)
+                SetFieldValue<string?>(Models.Metadata.Rom.SizeKey, GetInt64FieldValue(Models.Metadata.Rom.SizeKey).ToString());
+            if (GetStringFieldValue(Models.Metadata.Rom.CRCKey) != null)
+                SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, TextHelper.NormalizeCRC32(GetStringFieldValue(Models.Metadata.Rom.CRCKey)));
+            if (GetStringFieldValue(Models.Metadata.Rom.MD2Key) != null)
+                SetFieldValue<string?>(Models.Metadata.Rom.MD2Key, TextHelper.NormalizeMD2(GetStringFieldValue(Models.Metadata.Rom.MD2Key)));
+            if (GetStringFieldValue(Models.Metadata.Rom.MD4Key) != null)
+                SetFieldValue<string?>(Models.Metadata.Rom.MD4Key, TextHelper.NormalizeMD5(GetStringFieldValue(Models.Metadata.Rom.MD4Key)));
+            if (GetStringFieldValue(Models.Metadata.Rom.MD5Key) != null)
+                SetFieldValue<string?>(Models.Metadata.Rom.MD5Key, TextHelper.NormalizeMD5(GetStringFieldValue(Models.Metadata.Rom.MD5Key)));
+            if (GetStringFieldValue("RIPEMD128") != null)
+                SetFieldValue<string?>("RIPEMD128", TextHelper.NormalizeRIPEMD128(GetStringFieldValue("RIPEMD128")));
+            if (GetStringFieldValue("RIPEMD160") != null)
+                SetFieldValue<string?>("RIPEMD160", TextHelper.NormalizeRIPEMD160(GetStringFieldValue("RIPEMD160")));
+            if (GetStringFieldValue(Models.Metadata.Rom.SHA1Key) != null)
+                SetFieldValue<string?>(Models.Metadata.Rom.SHA1Key, TextHelper.NormalizeSHA1(GetStringFieldValue(Models.Metadata.Rom.SHA1Key)));
+            if (GetStringFieldValue(Models.Metadata.Rom.SHA256Key) != null)
+                SetFieldValue<string?>(Models.Metadata.Rom.SHA256Key, TextHelper.NormalizeSHA256(GetStringFieldValue(Models.Metadata.Rom.SHA256Key)));
+            if (GetStringFieldValue(Models.Metadata.Rom.SHA384Key) != null)
+                SetFieldValue<string?>(Models.Metadata.Rom.SHA384Key, TextHelper.NormalizeSHA384(GetStringFieldValue(Models.Metadata.Rom.SHA384Key)));
+            if (GetStringFieldValue(Models.Metadata.Rom.SHA512Key) != null)
+                SetFieldValue<string?>(Models.Metadata.Rom.SHA512Key, TextHelper.NormalizeSHA512(GetStringFieldValue(Models.Metadata.Rom.SHA512Key)));
+        }
+
         public Rom(Models.Metadata.Rom item) : base(item)
         {
             SetFieldValue<DupeType>(DatItem.DupeTypeKey, 0x00);

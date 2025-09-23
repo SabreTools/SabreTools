@@ -366,8 +366,15 @@ namespace SabreTools.DatFiles
             if (item.ContainsKey(Models.Metadata.Machine.DumpKey))
             {
                 var items = item.ReadItemArray<Models.Metadata.Dump>(Models.Metadata.Machine.DumpKey) ?? [];
-                string? machineName = machine.GetName();
-                ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly, filterRunner);
+                for (int i = 0; i < items.Length; i++)
+                {
+                    var datItem = new Rom(items[i], machine, source, i);
+                    if (datItem.GetName() != null)
+                    {
+                        AddItem(datItem, statsOnly);
+                        // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
+                    }
+                }
             }
             if (item.ContainsKey(Models.Metadata.Machine.FeatureKey))
             {
@@ -530,110 +537,6 @@ namespace SabreTools.DatFiles
                     AddItem(datItem, statsOnly);
                     // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
                 });
-            }
-        }
-
-        /// <summary>
-        /// Convert Dump information 
-        /// </summary>
-        /// <param name="items">Array of internal items to convert</param>
-        /// <param name="machine">Machine to use with the converted items</param>
-        /// <param name="machineIndex">Index of the Machine to use with the converted items</param>
-        /// <param name="source">Source to use with the converted items</param>
-        /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
-        /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
-        /// TODO: Convert this into a constructor in Rom
-        private void ProcessItems(Models.Metadata.Dump[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly, FilterRunner? filterRunner)
-        {
-            // If the array is null or empty, return without processing
-            if (items.Length == 0)
-                return;
-
-            // Cache the machine name
-            string? machineName = machine.GetName();
-
-            // Loop through the items and add
-            int index = 0;
-            foreach (var dump in items)
-            {
-                // If we don't have rom data, we can't do anything
-                Models.Metadata.Rom? rom = null;
-                OpenMSXSubType subType = OpenMSXSubType.NULL;
-                if (dump?.Read<Models.Metadata.Rom>(Models.Metadata.Dump.RomKey) != null)
-                {
-                    rom = dump.Read<Models.Metadata.Rom>(Models.Metadata.Dump.RomKey);
-                    subType = OpenMSXSubType.Rom;
-                }
-                else if (dump?.Read<Models.Metadata.Rom>(Models.Metadata.Dump.MegaRomKey) != null)
-                {
-                    rom = dump.Read<Models.Metadata.Rom>(Models.Metadata.Dump.MegaRomKey);
-                    subType = OpenMSXSubType.MegaRom;
-                }
-                else if (dump?.Read<Models.Metadata.Rom>(Models.Metadata.Dump.SCCPlusCartKey) != null)
-                {
-                    rom = dump.Read<Models.Metadata.Rom>(Models.Metadata.Dump.SCCPlusCartKey);
-                    subType = OpenMSXSubType.SCCPlusCart;
-                }
-                else
-                {
-                    continue;
-                }
-
-                // If the item doesn't pass the filter
-                if (filterRunner != null && !filterRunner.Run(rom!))
-                    continue;
-
-                string name = $"{machineName}_{index++}{(!string.IsNullOrEmpty(rom!.ReadString(Models.Metadata.Rom.RemarkKey)) ? $" {rom.ReadString(Models.Metadata.Rom.RemarkKey)}" : string.Empty)}";
-
-                var datItem = new Rom();
-                datItem.SetName(name);
-                datItem.SetFieldValue<string?>(Models.Metadata.Rom.OffsetKey, rom.ReadString(Models.Metadata.Rom.StartKey));
-                datItem.SetFieldValue<string?>(Models.Metadata.Rom.OpenMSXMediaType, subType.AsStringValue());
-                datItem.SetFieldValue<string?>(Models.Metadata.Rom.OpenMSXType, rom.ReadString(Models.Metadata.Rom.OpenMSXType) ?? rom.ReadString(Models.Metadata.Rom.TypeKey));
-                datItem.SetFieldValue<string?>(Models.Metadata.Rom.RemarkKey, rom.ReadString(Models.Metadata.Rom.RemarkKey));
-                datItem.SetFieldValue<string?>(Models.Metadata.Rom.SHA1Key, rom.ReadString(Models.Metadata.Rom.SHA1Key));
-                datItem.SetFieldValue<string?>(Models.Metadata.Rom.StartKey, rom.ReadString(Models.Metadata.Rom.StartKey));
-                datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
-
-                if (dump.Read<Models.Metadata.Original>(Models.Metadata.Dump.OriginalKey) != null)
-                {
-                    var original = dump.Read<Models.Metadata.Original>(Models.Metadata.Dump.OriginalKey)!;
-                    datItem.SetFieldValue<Original?>("ORIGINAL", new Original
-                    {
-                        Value = original.ReadBool(Models.Metadata.Original.ValueKey),
-                        Content = original.ReadString(Models.Metadata.Original.ContentKey),
-                    });
-                }
-
-                datItem.CopyMachineInformation(machine);
-
-                // Process hash values
-                if (datItem.GetInt64FieldValue(Models.Metadata.Rom.SizeKey) != null)
-                    datItem.SetFieldValue<string?>(Models.Metadata.Rom.SizeKey, datItem.GetInt64FieldValue(Models.Metadata.Rom.SizeKey).ToString());
-                if (datItem.GetStringFieldValue(Models.Metadata.Rom.CRCKey) != null)
-                    datItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, TextHelper.NormalizeCRC32(datItem.GetStringFieldValue(Models.Metadata.Rom.CRCKey)));
-                if (datItem.GetStringFieldValue(Models.Metadata.Rom.MD2Key) != null)
-                    datItem.SetFieldValue<string?>(Models.Metadata.Rom.MD2Key, TextHelper.NormalizeMD2(datItem.GetStringFieldValue(Models.Metadata.Rom.MD2Key)));
-                if (datItem.GetStringFieldValue(Models.Metadata.Rom.MD4Key) != null)
-                    datItem.SetFieldValue<string?>(Models.Metadata.Rom.MD4Key, TextHelper.NormalizeMD5(datItem.GetStringFieldValue(Models.Metadata.Rom.MD4Key)));
-                if (datItem.GetStringFieldValue(Models.Metadata.Rom.MD5Key) != null)
-                    datItem.SetFieldValue<string?>(Models.Metadata.Rom.MD5Key, TextHelper.NormalizeMD5(datItem.GetStringFieldValue(Models.Metadata.Rom.MD5Key)));
-                if (datItem.GetStringFieldValue("RIPEMD128") != null)
-                    datItem.SetFieldValue<string?>("RIPEMD128", TextHelper.NormalizeRIPEMD128(datItem.GetStringFieldValue("RIPEMD128")));
-                if (datItem.GetStringFieldValue("RIPEMD160") != null)
-                    datItem.SetFieldValue<string?>("RIPEMD160", TextHelper.NormalizeRIPEMD160(datItem.GetStringFieldValue("RIPEMD160")));
-                if (datItem.GetStringFieldValue(Models.Metadata.Rom.SHA1Key) != null)
-                    datItem.SetFieldValue<string?>(Models.Metadata.Rom.SHA1Key, TextHelper.NormalizeSHA1(datItem.GetStringFieldValue(Models.Metadata.Rom.SHA1Key)));
-                if (datItem.GetStringFieldValue(Models.Metadata.Rom.SHA256Key) != null)
-                    datItem.SetFieldValue<string?>(Models.Metadata.Rom.SHA256Key, TextHelper.NormalizeSHA256(datItem.GetStringFieldValue(Models.Metadata.Rom.SHA256Key)));
-                if (datItem.GetStringFieldValue(Models.Metadata.Rom.SHA384Key) != null)
-                    datItem.SetFieldValue<string?>(Models.Metadata.Rom.SHA384Key, TextHelper.NormalizeSHA384(datItem.GetStringFieldValue(Models.Metadata.Rom.SHA384Key)));
-                if (datItem.GetStringFieldValue(Models.Metadata.Rom.SHA512Key) != null)
-                    datItem.SetFieldValue<string?>(Models.Metadata.Rom.SHA512Key, TextHelper.NormalizeSHA512(datItem.GetStringFieldValue(Models.Metadata.Rom.SHA512Key)));
-
-                AddItem(datItem, statsOnly);
-                // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
             }
         }
 
