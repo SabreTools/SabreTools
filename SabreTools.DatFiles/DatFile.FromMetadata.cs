@@ -244,139 +244,164 @@ namespace SabreTools.DatFiles
             // Convert items in the machine
             if (item.ContainsKey(Models.Metadata.Machine.AdjusterKey))
             {
-                var items = item.ReadItemArray<Models.Metadata.Adjuster>(Models.Metadata.Machine.AdjusterKey);
-                ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly, filterRunner);
+                var items = item.ReadItemArray<Models.Metadata.Adjuster>(Models.Metadata.Machine.AdjusterKey) ?? [];
+                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
             }
             if (item.ContainsKey(Models.Metadata.Machine.ArchiveKey))
             {
-                var items = item.ReadItemArray<Models.Metadata.Archive>(Models.Metadata.Machine.ArchiveKey);
-                ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly, filterRunner);
+                var items = item.ReadItemArray<Models.Metadata.Archive>(Models.Metadata.Machine.ArchiveKey) ?? [];
+                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
             }
             if (item.ContainsKey(Models.Metadata.Machine.BiosSetKey))
             {
-                var items = item.ReadItemArray<Models.Metadata.BiosSet>(Models.Metadata.Machine.BiosSetKey);
-                ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly, filterRunner);
+                var items = item.ReadItemArray<Models.Metadata.BiosSet>(Models.Metadata.Machine.BiosSetKey) ?? [];
+                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
             }
             if (item.ContainsKey(Models.Metadata.Machine.ChipKey))
             {
-                var items = item.ReadItemArray<Models.Metadata.Chip>(Models.Metadata.Machine.ChipKey);
-                ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly, filterRunner);
+                var items = item.ReadItemArray<Models.Metadata.Chip>(Models.Metadata.Machine.ChipKey) ?? [];
+                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
             }
             if (item.ContainsKey(Models.Metadata.Machine.ConfigurationKey))
             {
-                var items = item.ReadItemArray<Models.Metadata.Configuration>(Models.Metadata.Machine.ConfigurationKey);
-                ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly, filterRunner);
+                var items = item.ReadItemArray<Models.Metadata.Configuration>(Models.Metadata.Machine.ConfigurationKey) ?? [];
+                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
             }
             if (item.ContainsKey(Models.Metadata.Machine.DeviceKey))
             {
-                var items = item.ReadItemArray<Models.Metadata.Device>(Models.Metadata.Machine.DeviceKey);
-                ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly, filterRunner);
+                var items = item.ReadItemArray<Models.Metadata.Device>(Models.Metadata.Machine.DeviceKey) ?? [];
+                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
             }
             if (item.ContainsKey(Models.Metadata.Machine.DeviceRefKey))
             {
-                var items = item.ReadItemArray<Models.Metadata.DeviceRef>(Models.Metadata.Machine.DeviceRefKey);
+                var items = item.ReadItemArray<Models.Metadata.DeviceRef>(Models.Metadata.Machine.DeviceRefKey) ?? [];
+                // Do not filter these due to later use
                 ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly);
             }
             if (item.ContainsKey(Models.Metadata.Machine.DipSwitchKey))
             {
-                var items = item.ReadItemArray<Models.Metadata.DipSwitch>(Models.Metadata.Machine.DipSwitchKey);
-                ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly, filterRunner);
+                var items = item.ReadItemArray<Models.Metadata.DipSwitch>(Models.Metadata.Machine.DipSwitchKey) ?? [];
+                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
             }
             if (item.ContainsKey(Models.Metadata.Machine.DiskKey))
             {
-                var items = item.ReadItemArray<Models.Metadata.Disk>(Models.Metadata.Machine.DiskKey);
-                ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly, filterRunner);
+                var items = item.ReadItemArray<Models.Metadata.Disk>(Models.Metadata.Machine.DiskKey) ?? [];
+                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
             }
             if (item.ContainsKey(Models.Metadata.Machine.DisplayKey))
             {
-                var items = item.ReadItemArray<Models.Metadata.Display>(Models.Metadata.Machine.DisplayKey);
-                ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly, filterRunner);
+                var items = item.ReadItemArray<Models.Metadata.Display>(Models.Metadata.Machine.DisplayKey) ?? [];
+                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
             }
             if (item.ContainsKey(Models.Metadata.Machine.DriverKey))
             {
-                var items = item.ReadItemArray<Models.Metadata.Driver>(Models.Metadata.Machine.DriverKey);
-                ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly, filterRunner);
+                var items = item.ReadItemArray<Models.Metadata.Driver>(Models.Metadata.Machine.DriverKey) ?? [];
+                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
             }
             if (item.ContainsKey(Models.Metadata.Machine.DumpKey))
             {
-                var items = item.ReadItemArray<Models.Metadata.Dump>(Models.Metadata.Machine.DumpKey);
+                var items = item.ReadItemArray<Models.Metadata.Dump>(Models.Metadata.Machine.DumpKey) ?? [];
                 string? machineName = machine.GetName();
                 ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly, machineName, filterRunner);
             }
             if (item.ContainsKey(Models.Metadata.Machine.FeatureKey))
             {
-                var items = item.ReadItemArray<Models.Metadata.Feature>(Models.Metadata.Machine.FeatureKey);
-                ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly, filterRunner);
+                var items = item.ReadItemArray<Models.Metadata.Feature>(Models.Metadata.Machine.FeatureKey) ?? [];
+                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
             }
             if (item.ContainsKey(Models.Metadata.Machine.InfoKey))
             {
-                var items = item.ReadItemArray<Models.Metadata.Info>(Models.Metadata.Machine.InfoKey);
-                ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly, filterRunner);
+                var items = item.ReadItemArray<Models.Metadata.Info>(Models.Metadata.Machine.InfoKey) ?? [];
+                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
             }
             if (item.ContainsKey(Models.Metadata.Machine.InputKey))
             {
-                var items = item.ReadItemArray<Models.Metadata.Input>(Models.Metadata.Machine.InputKey);
-                ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly, filterRunner);
+                var items = item.ReadItemArray<Models.Metadata.Input>(Models.Metadata.Machine.InputKey) ?? [];
+                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
             }
             if (item.ContainsKey(Models.Metadata.Machine.MediaKey))
             {
-                var items = item.ReadItemArray<Models.Metadata.Media>(Models.Metadata.Machine.MediaKey);
-                ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly, filterRunner);
+                var items = item.ReadItemArray<Models.Metadata.Media>(Models.Metadata.Machine.MediaKey) ?? [];
+                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
             }
             if (item.ContainsKey(Models.Metadata.Machine.PartKey))
             {
-                var items = item.ReadItemArray<Models.Metadata.Part>(Models.Metadata.Machine.PartKey);
+                var items = item.ReadItemArray<Models.Metadata.Part>(Models.Metadata.Machine.PartKey) ?? [];
                 ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly, filterRunner);
             }
             if (item.ContainsKey(Models.Metadata.Machine.PortKey))
             {
-                var items = item.ReadItemArray<Models.Metadata.Port>(Models.Metadata.Machine.PortKey);
-                ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly, filterRunner);
+                var items = item.ReadItemArray<Models.Metadata.Port>(Models.Metadata.Machine.PortKey) ?? [];
+                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
             }
             if (item.ContainsKey(Models.Metadata.Machine.RamOptionKey))
             {
-                var items = item.ReadItemArray<Models.Metadata.RamOption>(Models.Metadata.Machine.RamOptionKey);
-                ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly, filterRunner);
+                var items = item.ReadItemArray<Models.Metadata.RamOption>(Models.Metadata.Machine.RamOptionKey) ?? [];
+                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
             }
             if (item.ContainsKey(Models.Metadata.Machine.ReleaseKey))
             {
-                var items = item.ReadItemArray<Models.Metadata.Release>(Models.Metadata.Machine.ReleaseKey);
-                ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly, filterRunner);
+                var items = item.ReadItemArray<Models.Metadata.Release>(Models.Metadata.Machine.ReleaseKey) ?? [];
+                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
             }
             if (item.ContainsKey(Models.Metadata.Machine.RomKey))
             {
-                var items = item.ReadItemArray<Models.Metadata.Rom>(Models.Metadata.Machine.RomKey);
-                ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly, filterRunner);
+                var items = item.ReadItemArray<Models.Metadata.Rom>(Models.Metadata.Machine.RomKey) ?? [];
+                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
             }
             if (item.ContainsKey(Models.Metadata.Machine.SampleKey))
             {
-                var items = item.ReadItemArray<Models.Metadata.Sample>(Models.Metadata.Machine.SampleKey);
-                ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly, filterRunner);
+                var items = item.ReadItemArray<Models.Metadata.Sample>(Models.Metadata.Machine.SampleKey) ?? [];
+                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
             }
             if (item.ContainsKey(Models.Metadata.Machine.SharedFeatKey))
             {
-                var items = item.ReadItemArray<Models.Metadata.SharedFeat>(Models.Metadata.Machine.SharedFeatKey);
-                ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly, filterRunner);
+                var items = item.ReadItemArray<Models.Metadata.SharedFeat>(Models.Metadata.Machine.SharedFeatKey) ?? [];
+                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
             }
             if (item.ContainsKey(Models.Metadata.Machine.SlotKey))
             {
-                var items = item.ReadItemArray<Models.Metadata.Slot>(Models.Metadata.Machine.SlotKey);
+                var items = item.ReadItemArray<Models.Metadata.Slot>(Models.Metadata.Machine.SlotKey) ?? [];
+                // Do not filter these due to later use
                 ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly);
             }
             if (item.ContainsKey(Models.Metadata.Machine.SoftwareListKey))
             {
-                var items = item.ReadItemArray<Models.Metadata.SoftwareList>(Models.Metadata.Machine.SoftwareListKey);
-                ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly, filterRunner);
+                var items = item.ReadItemArray<Models.Metadata.SoftwareList>(Models.Metadata.Machine.SoftwareListKey) ?? [];
+                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
             }
             if (item.ContainsKey(Models.Metadata.Machine.SoundKey))
             {
-                var items = item.ReadItemArray<Models.Metadata.Sound>(Models.Metadata.Machine.SoundKey);
-                ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly, filterRunner);
+                var items = item.ReadItemArray<Models.Metadata.Sound>(Models.Metadata.Machine.SoundKey) ?? [];
+                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
             }
             if (item.ContainsKey(Models.Metadata.Machine.VideoKey))
             {
-                var items = item.ReadItemArray<Models.Metadata.Video>(Models.Metadata.Machine.VideoKey);
-                ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly, filterRunner);
+                var items = item.ReadItemArray<Models.Metadata.Video>(Models.Metadata.Machine.VideoKey) ?? [];
+                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                ProcessItems(filtered, machine, machineIndex: 0, source, sourceIndex, statsOnly);
             }
         }
 
@@ -390,7 +415,7 @@ namespace SabreTools.DatFiles
         /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
         /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
         /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
-        private void ProcessItems(Models.Metadata.Adjuster[]? items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly, FilterRunner? filterRunner)
+        private void ProcessItems(Models.Metadata.Adjuster[]? items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
         {
             // If the array is null or empty, return without processing
             if (items == null || items.Length == 0)
@@ -399,10 +424,6 @@ namespace SabreTools.DatFiles
             // Loop through the items and add
             foreach (var item in items)
             {
-                // If the item doesn't pass the filter
-                if (filterRunner != null && !filterRunner.Run(item))
-                    continue;
-
                 var datItem = new Adjuster(item);
                 datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
                 datItem.CopyMachineInformation(machine);
@@ -421,8 +442,7 @@ namespace SabreTools.DatFiles
         /// <param name="source">Source to use with the converted items</param>
         /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
         /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
-        private void ProcessItems(Models.Metadata.Archive[]? items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly, FilterRunner? filterRunner)
+        private void ProcessItems(Models.Metadata.Archive[]? items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
         {
             // If the array is null or empty, return without processing
             if (items == null || items.Length == 0)
@@ -431,10 +451,6 @@ namespace SabreTools.DatFiles
             // Loop through the items and add
             foreach (var item in items)
             {
-                // If the item doesn't pass the filter
-                if (filterRunner != null && !filterRunner.Run(item))
-                    continue;
-
                 var datItem = new Archive(item);
                 datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
                 datItem.CopyMachineInformation(machine);
@@ -453,8 +469,7 @@ namespace SabreTools.DatFiles
         /// <param name="source">Source to use with the converted items</param>
         /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
         /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
-        private void ProcessItems(Models.Metadata.BiosSet[]? items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly, FilterRunner? filterRunner)
+        private void ProcessItems(Models.Metadata.BiosSet[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
         {
             // If the array is null or empty, return without processing
             if (items == null || items.Length == 0)
@@ -463,10 +478,6 @@ namespace SabreTools.DatFiles
             // Loop through the items and add
             foreach (var item in items)
             {
-                // If the item doesn't pass the filter
-                if (filterRunner != null && !filterRunner.Run(item))
-                    continue;
-
                 var datItem = new BiosSet(item);
                 datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
                 datItem.CopyMachineInformation(machine);
@@ -485,8 +496,7 @@ namespace SabreTools.DatFiles
         /// <param name="source">Source to use with the converted items</param>
         /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
         /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
-        private void ProcessItems(Models.Metadata.Chip[]? items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly, FilterRunner? filterRunner)
+        private void ProcessItems(Models.Metadata.Chip[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
         {
             // If the array is null or empty, return without processing
             if (items == null || items.Length == 0)
@@ -495,10 +505,6 @@ namespace SabreTools.DatFiles
             // Loop through the items and add
             foreach (var item in items)
             {
-                // If the item doesn't pass the filter
-                if (filterRunner != null && !filterRunner.Run(item))
-                    continue;
-
                 var datItem = new Chip(item);
                 datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
                 datItem.CopyMachineInformation(machine);
@@ -517,8 +523,7 @@ namespace SabreTools.DatFiles
         /// <param name="source">Source to use with the converted items</param>
         /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
         /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
-        private void ProcessItems(Models.Metadata.Configuration[]? items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly, FilterRunner? filterRunner)
+        private void ProcessItems(Models.Metadata.Configuration[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
         {
             // If the array is null or empty, return without processing
             if (items == null || items.Length == 0)
@@ -527,10 +532,6 @@ namespace SabreTools.DatFiles
             // Loop through the items and add
             foreach (var item in items)
             {
-                // If the item doesn't pass the filter
-                if (filterRunner != null && !filterRunner.Run(item))
-                    continue;
-
                 var datItem = new Configuration(item);
                 datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
                 datItem.CopyMachineInformation(machine);
@@ -549,8 +550,7 @@ namespace SabreTools.DatFiles
         /// <param name="source">Source to use with the converted items</param>
         /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
         /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
-        private void ProcessItems(Models.Metadata.Device[]? items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly, FilterRunner? filterRunner)
+        private void ProcessItems(Models.Metadata.Device[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
         {
             // If the array is null or empty, return without processing
             if (items == null || items.Length == 0)
@@ -559,10 +559,6 @@ namespace SabreTools.DatFiles
             // Loop through the items and add
             foreach (var item in items)
             {
-                // If the item doesn't pass the filter
-                if (filterRunner != null && !filterRunner.Run(item))
-                    continue;
-
                 var datItem = new Device(item);
                 datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
                 datItem.CopyMachineInformation(machine);
@@ -582,7 +578,7 @@ namespace SabreTools.DatFiles
         /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
         /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
         /// <remarks>Does not get filtered here just in case merging or splitting is done</remarks>
-        private void ProcessItems(Models.Metadata.DeviceRef[]? items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
+        private void ProcessItems(Models.Metadata.DeviceRef[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
         {
             // If the array is null or empty, return without processing
             if (items == null || items.Length == 0)
@@ -609,8 +605,7 @@ namespace SabreTools.DatFiles
         /// <param name="source">Source to use with the converted items</param>
         /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
         /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
-        private void ProcessItems(Models.Metadata.DipSwitch[]? items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly, FilterRunner? filterRunner)
+        private void ProcessItems(Models.Metadata.DipSwitch[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
         {
             // If the array is null or empty, return without processing
             if (items == null || items.Length == 0)
@@ -619,10 +614,6 @@ namespace SabreTools.DatFiles
             // Loop through the items and add
             foreach (var item in items)
             {
-                // If the item doesn't pass the filter
-                if (filterRunner != null && !filterRunner.Run(item))
-                    continue;
-
                 var datItem = new DipSwitch(item);
                 datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
                 datItem.CopyMachineInformation(machine);
@@ -641,8 +632,7 @@ namespace SabreTools.DatFiles
         /// <param name="source">Source to use with the converted items</param>
         /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
         /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
-        private void ProcessItems(Models.Metadata.Disk[]? items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly, FilterRunner? filterRunner)
+        private void ProcessItems(Models.Metadata.Disk[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
         {
             // If the array is null or empty, return without processing
             if (items == null || items.Length == 0)
@@ -651,10 +641,6 @@ namespace SabreTools.DatFiles
             // Loop through the items and add
             foreach (var item in items)
             {
-                // If the item doesn't pass the filter
-                if (filterRunner != null && !filterRunner.Run(item))
-                    continue;
-
                 var datItem = new Disk(item);
                 datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
                 datItem.CopyMachineInformation(machine);
@@ -673,8 +659,7 @@ namespace SabreTools.DatFiles
         /// <param name="source">Source to use with the converted items</param>
         /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
         /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
-        private void ProcessItems(Models.Metadata.Display[]? items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly, FilterRunner? filterRunner)
+        private void ProcessItems(Models.Metadata.Display[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
         {
             // If the array is null or empty, return without processing
             if (items == null || items.Length == 0)
@@ -683,10 +668,6 @@ namespace SabreTools.DatFiles
             // Loop through the items and add
             foreach (var item in items)
             {
-                // If the item doesn't pass the filter
-                if (filterRunner != null && !filterRunner.Run(item))
-                    continue;
-
                 var datItem = new Display(item);
                 datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
                 datItem.CopyMachineInformation(machine);
@@ -705,8 +686,7 @@ namespace SabreTools.DatFiles
         /// <param name="source">Source to use with the converted items</param>
         /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
         /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
-        private void ProcessItems(Models.Metadata.Driver[]? items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly, FilterRunner? filterRunner)
+        private void ProcessItems(Models.Metadata.Driver[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
         {
             // If the array is null or empty, return without processing
             if (items == null || items.Length == 0)
@@ -715,10 +695,6 @@ namespace SabreTools.DatFiles
             // Loop through the items and add
             foreach (var item in items)
             {
-                // If the item doesn't pass the filter
-                if (filterRunner != null && !filterRunner.Run(item))
-                    continue;
-
                 var datItem = new Driver(item);
                 datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
                 datItem.CopyMachineInformation(machine);
@@ -740,7 +716,7 @@ namespace SabreTools.DatFiles
         /// <param name="machineName">Machine name to use when constructing item names</param>
         /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
         /// TODO: Convert this into a constructor in Rom
-        private void ProcessItems(Models.Metadata.Dump[]? items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly, string? machineName, FilterRunner? filterRunner)
+        private void ProcessItems(Models.Metadata.Dump[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly, string? machineName, FilterRunner? filterRunner)
         {
             // If the array is null or empty, return without processing
             if (items == null || items.Length == 0)
@@ -839,8 +815,7 @@ namespace SabreTools.DatFiles
         /// <param name="source">Source to use with the converted items</param>
         /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
         /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
-        private void ProcessItems(Models.Metadata.Feature[]? items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly, FilterRunner? filterRunner)
+        private void ProcessItems(Models.Metadata.Feature[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
         {
             // If the array is null or empty, return without processing
             if (items == null || items.Length == 0)
@@ -849,10 +824,6 @@ namespace SabreTools.DatFiles
             // Loop through the items and add
             foreach (var item in items)
             {
-                // If the item doesn't pass the filter
-                if (filterRunner != null && !filterRunner.Run(item))
-                    continue;
-
                 var datItem = new Feature(item);
                 datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
                 datItem.CopyMachineInformation(machine);
@@ -871,8 +842,7 @@ namespace SabreTools.DatFiles
         /// <param name="source">Source to use with the converted items</param>
         /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
         /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
-        private void ProcessItems(Models.Metadata.Info[]? items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly, FilterRunner? filterRunner)
+        private void ProcessItems(Models.Metadata.Info[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
         {
             // If the array is null or empty, return without processing
             if (items == null || items.Length == 0)
@@ -881,10 +851,6 @@ namespace SabreTools.DatFiles
             // Loop through the items and add
             foreach (var item in items)
             {
-                // If the item doesn't pass the filter
-                if (filterRunner != null && !filterRunner.Run(item))
-                    continue;
-
                 var datItem = new Info(item);
                 datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
                 datItem.CopyMachineInformation(machine);
@@ -903,8 +869,7 @@ namespace SabreTools.DatFiles
         /// <param name="source">Source to use with the converted items</param>
         /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
         /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
-        private void ProcessItems(Models.Metadata.Input[]? items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly, FilterRunner? filterRunner)
+        private void ProcessItems(Models.Metadata.Input[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
         {
             // If the array is null or empty, return without processing
             if (items == null || items.Length == 0)
@@ -913,10 +878,6 @@ namespace SabreTools.DatFiles
             // Loop through the items and add
             foreach (var item in items)
             {
-                // If the item doesn't pass the filter
-                if (filterRunner != null && !filterRunner.Run(item))
-                    continue;
-
                 var datItem = new Input(item);
                 datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
                 datItem.CopyMachineInformation(machine);
@@ -935,8 +896,7 @@ namespace SabreTools.DatFiles
         /// <param name="source">Source to use with the converted items</param>
         /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
         /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
-        private void ProcessItems(Models.Metadata.Media[]? items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly, FilterRunner? filterRunner)
+        private void ProcessItems(Models.Metadata.Media[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
         {
             // If the array is null or empty, return without processing
             if (items == null || items.Length == 0)
@@ -945,10 +905,6 @@ namespace SabreTools.DatFiles
             // Loop through the items and add
             foreach (var item in items)
             {
-                // If the item doesn't pass the filter
-                if (filterRunner != null && !filterRunner.Run(item))
-                    continue;
-
                 var datItem = new Media(item);
                 datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
                 datItem.CopyMachineInformation(machine);
@@ -1108,8 +1064,7 @@ namespace SabreTools.DatFiles
         /// <param name="source">Source to use with the converted items</param>
         /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
         /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
-        private void ProcessItems(Models.Metadata.Port[]? items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly, FilterRunner? filterRunner)
+        private void ProcessItems(Models.Metadata.Port[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
         {
             // If the array is null or empty, return without processing
             if (items == null || items.Length == 0)
@@ -1118,10 +1073,6 @@ namespace SabreTools.DatFiles
             // Loop through the items and add
             foreach (var item in items)
             {
-                // If the item doesn't pass the filter
-                if (filterRunner != null && !filterRunner.Run(item))
-                    continue;
-
                 var datItem = new Port(item);
                 datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
                 datItem.CopyMachineInformation(machine);
@@ -1140,8 +1091,7 @@ namespace SabreTools.DatFiles
         /// <param name="source">Source to use with the converted items</param>
         /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
         /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
-        private void ProcessItems(Models.Metadata.RamOption[]? items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly, FilterRunner? filterRunner)
+        private void ProcessItems(Models.Metadata.RamOption[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
         {
             // If the array is null or empty, return without processing
             if (items == null || items.Length == 0)
@@ -1150,10 +1100,6 @@ namespace SabreTools.DatFiles
             // Loop through the items and add
             foreach (var item in items)
             {
-                // If the item doesn't pass the filter
-                if (filterRunner != null && !filterRunner.Run(item))
-                    continue;
-
                 var datItem = new RamOption(item);
                 datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
                 datItem.CopyMachineInformation(machine);
@@ -1172,8 +1118,7 @@ namespace SabreTools.DatFiles
         /// <param name="source">Source to use with the converted items</param>
         /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
         /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
-        private void ProcessItems(Models.Metadata.Release[]? items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly, FilterRunner? filterRunner)
+        private void ProcessItems(Models.Metadata.Release[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
         {
             // If the array is null or empty, return without processing
             if (items == null || items.Length == 0)
@@ -1182,10 +1127,6 @@ namespace SabreTools.DatFiles
             // Loop through the items and add
             foreach (var item in items)
             {
-                // If the item doesn't pass the filter
-                if (filterRunner != null && !filterRunner.Run(item))
-                    continue;
-
                 var datItem = new Release(item);
                 datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
                 datItem.CopyMachineInformation(machine);
@@ -1204,8 +1145,7 @@ namespace SabreTools.DatFiles
         /// <param name="source">Source to use with the converted items</param>
         /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
         /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
-        private void ProcessItems(Models.Metadata.Rom[]? items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly, FilterRunner? filterRunner)
+        private void ProcessItems(Models.Metadata.Rom[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
         {
             // If the array is null or empty, return without processing
             if (items == null || items.Length == 0)
@@ -1214,10 +1154,6 @@ namespace SabreTools.DatFiles
             // Loop through the items and add
             foreach (var item in items)
             {
-                // If the item doesn't pass the filter
-                if (filterRunner != null && !filterRunner.Run(item))
-                    continue;
-
                 var datItem = new Rom(item);
                 datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
                 datItem.CopyMachineInformation(machine);
@@ -1236,8 +1172,7 @@ namespace SabreTools.DatFiles
         /// <param name="source">Source to use with the converted items</param>
         /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
         /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
-        private void ProcessItems(Models.Metadata.Sample[]? items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly, FilterRunner? filterRunner)
+        private void ProcessItems(Models.Metadata.Sample[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
         {
             // If the array is null or empty, return without processing
             if (items == null || items.Length == 0)
@@ -1246,10 +1181,6 @@ namespace SabreTools.DatFiles
             // Loop through the items and add
             foreach (var item in items)
             {
-                // If the item doesn't pass the filter
-                if (filterRunner != null && !filterRunner.Run(item))
-                    continue;
-
                 var datItem = new Sample(item);
                 datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
                 datItem.CopyMachineInformation(machine);
@@ -1268,8 +1199,7 @@ namespace SabreTools.DatFiles
         /// <param name="source">Source to use with the converted items</param>
         /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
         /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
-        private void ProcessItems(Models.Metadata.SharedFeat[]? items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly, FilterRunner? filterRunner)
+        private void ProcessItems(Models.Metadata.SharedFeat[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
         {
             // If the array is null or empty, return without processing
             if (items == null || items.Length == 0)
@@ -1278,10 +1208,6 @@ namespace SabreTools.DatFiles
             // Loop through the items and add
             foreach (var item in items)
             {
-                // If the item doesn't pass the filter
-                if (filterRunner != null && !filterRunner.Run(item))
-                    continue;
-
                 var datItem = new SharedFeat(item);
                 datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
                 datItem.CopyMachineInformation(machine);
@@ -1300,8 +1226,7 @@ namespace SabreTools.DatFiles
         /// <param name="source">Source to use with the converted items</param>
         /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
         /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        /// <remarks>Does not get filtered here just in case merging or splitting is done</remarks>
-        private void ProcessItems(Models.Metadata.Slot[]? items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
+        private void ProcessItems(Models.Metadata.Slot[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
         {
             // If the array is null or empty, return without processing
             if (items == null || items.Length == 0)
@@ -1328,8 +1253,7 @@ namespace SabreTools.DatFiles
         /// <param name="source">Source to use with the converted items</param>
         /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
         /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
-        private void ProcessItems(Models.Metadata.SoftwareList[]? items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly, FilterRunner? filterRunner)
+        private void ProcessItems(Models.Metadata.SoftwareList[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
         {
             // If the array is null or empty, return without processing
             if (items == null || items.Length == 0)
@@ -1338,17 +1262,9 @@ namespace SabreTools.DatFiles
             // Loop through the items and add
             foreach (var item in items)
             {
-                // If the item doesn't pass the filter
-                if (filterRunner != null && !filterRunner.Run(item))
-                    continue;
-
                 var datItem = new SoftwareList(item);
                 datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
                 datItem.CopyMachineInformation(machine);
-
-                // If the item doesn't pass the filter
-                if (filterRunner != null && !filterRunner.Run(item))
-                    continue;
 
                 AddItem(datItem, statsOnly);
                 // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
@@ -1364,8 +1280,7 @@ namespace SabreTools.DatFiles
         /// <param name="source">Source to use with the converted items</param>
         /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
         /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
-        private void ProcessItems(Models.Metadata.Sound[]? items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly, FilterRunner? filterRunner)
+        private void ProcessItems(Models.Metadata.Sound[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
         {
             // If the array is null or empty, return without processing
             if (items == null || items.Length == 0)
@@ -1374,10 +1289,6 @@ namespace SabreTools.DatFiles
             // Loop through the items and add
             foreach (var item in items)
             {
-                // If the item doesn't pass the filter
-                if (filterRunner != null && !filterRunner.Run(item))
-                    continue;
-
                 var datItem = new Sound(item);
                 datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
                 datItem.CopyMachineInformation(machine);
@@ -1396,8 +1307,7 @@ namespace SabreTools.DatFiles
         /// <param name="source">Source to use with the converted items</param>
         /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
         /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
-        private void ProcessItems(Models.Metadata.Video[]? items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly, FilterRunner? filterRunner)
+        private void ProcessItems(Models.Metadata.Video[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly)
         {
             // If the array is null or empty, return without processing
             if (items == null || items.Length == 0)
@@ -1406,10 +1316,6 @@ namespace SabreTools.DatFiles
             // Loop through the items and add
             foreach (var item in items)
             {
-                // If the item doesn't pass the filter
-                if (filterRunner != null && !filterRunner.Run(item))
-                    continue;
-
                 var datItem = new Display(item);
                 datItem.SetFieldValue<Source?>(DatItem.SourceKey, source);
                 datItem.CopyMachineInformation(machine);
