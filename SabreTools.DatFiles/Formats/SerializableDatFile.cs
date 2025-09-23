@@ -17,6 +17,25 @@ namespace SabreTools.DatFiles.Formats
         where TFileSerializer : IFileSerializer<TModel>
         where TModelSerializer : IModelSerializer<TModel, MetadataFile>
     {
+        #region Static Serialization Instances
+        
+        /// <summary>
+        /// File deserializer instance
+        /// </summary>
+        private static readonly TFileDeserializer FileDeserializer = Activator.CreateInstance<TFileDeserializer>();
+
+        /// <summary>
+        /// File serializer instance
+        /// </summary>
+        private static readonly TFileSerializer FileSerializer = Activator.CreateInstance<TFileSerializer>();
+
+        /// <summary>
+        /// Cross-model serializer instance
+        /// </summary>
+        private static readonly TModelSerializer CrossModelSerializer = Activator.CreateInstance<TModelSerializer>();
+
+        #endregion
+
         /// <inheritdoc/>
         protected SerializableDatFile(DatFile? datFile) : base(datFile) { }
 
@@ -31,8 +50,8 @@ namespace SabreTools.DatFiles.Formats
             try
             {
                 // Deserialize the input file in two steps
-                var specificFormat = Activator.CreateInstance<TFileDeserializer>().Deserialize(filename);
-                var internalFormat = Activator.CreateInstance<TModelSerializer>().Serialize(specificFormat);
+                var specificFormat = FileDeserializer.Deserialize(filename);
+                var internalFormat = CrossModelSerializer.Serialize(specificFormat);
 
                 // Convert to the internal format
                 ConvertFromMetadata(internalFormat, filename, indexId, keep, statsOnly, filterRunner);
@@ -53,8 +72,8 @@ namespace SabreTools.DatFiles.Formats
 
                 // Serialize the input file in two steps
                 var internalFormat = ConvertToMetadata(ignoreblanks);
-                var specificFormat = Activator.CreateInstance<TModelSerializer>().Deserialize(internalFormat);
-                if (!Activator.CreateInstance<TFileSerializer>().Serialize(specificFormat, outfile))
+                var specificFormat = CrossModelSerializer.Deserialize(internalFormat);
+                if (!FileSerializer.Serialize(specificFormat, outfile))
                 {
                     _logger.Warning($"File '{outfile}' could not be written! See the log for more details.");
                     return false;
