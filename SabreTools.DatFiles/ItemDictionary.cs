@@ -155,8 +155,8 @@ namespace SabreTools.DatFiles
                     rom.SetFieldValue<string?>(Models.Metadata.Rom.MD2Key, null); // ZeroHash.GetString(HashType.MD2)
                     rom.SetFieldValue<string?>(Models.Metadata.Rom.MD4Key, null); // ZeroHash.GetString(HashType.MD4)
                     rom.SetFieldValue<string?>(Models.Metadata.Rom.MD5Key, ZeroHash.MD5Str);
-                    rom.SetFieldValue<string?>("RIPEMD128", null); // ZeroHash.GetString(HashType.RIPEMD128)
-                    rom.SetFieldValue<string?>("RIPEMD160", null); // ZeroHash.GetString(HashType.RIPEMD160)
+                    rom.SetFieldValue<string?>(Models.Metadata.Rom.RIPEMD128Key, null); // ZeroHash.GetString(HashType.RIPEMD128)
+                    rom.SetFieldValue<string?>(Models.Metadata.Rom.RIPEMD160Key, null); // ZeroHash.GetString(HashType.RIPEMD160)
                     rom.SetFieldValue<string?>(Models.Metadata.Rom.SHA1Key, ZeroHash.SHA1Str);
                     rom.SetFieldValue<string?>(Models.Metadata.Rom.SHA256Key, null); // ZeroHash.SHA256Str;
                     rom.SetFieldValue<string?>(Models.Metadata.Rom.SHA384Key, null); // ZeroHash.SHA384Str;

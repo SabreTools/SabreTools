@@ -484,7 +484,7 @@ namespace SabreTools.DatFiles.Test
             Assert.NotNull(actual);
             Assert.True(actual.SequenceEqual([
                 Models.Metadata.Rom.NameKey,
-                "RIPEMD128",
+                Models.Metadata.Rom.RIPEMD128Key,
             ]));
         }
 
@@ -509,7 +509,7 @@ namespace SabreTools.DatFiles.Test
             Assert.NotNull(actual);
             Assert.True(actual.SequenceEqual([
                 Models.Metadata.Rom.NameKey,
-                "RIPEMD160",
+                Models.Metadata.Rom.RIPEMD160Key,
             ]));
         }
 

@@ -414,8 +414,8 @@ namespace SabreTools.DatItems.Test
             datItem.SetFieldValue(Models.Metadata.Rom.MD2Key, "DEADBEEF");
             datItem.SetFieldValue(Models.Metadata.Rom.MD4Key, "DEADBEEF");
             datItem.SetFieldValue(Models.Metadata.Rom.MD5Key, "DEADBEEF");
-            datItem.SetFieldValue("RIPEMD128", "DEADBEEF");
-            datItem.SetFieldValue("RIPEMD160", "DEADBEEF");
+            datItem.SetFieldValue(Models.Metadata.Rom.RIPEMD128Key, "DEADBEEF");
+            datItem.SetFieldValue(Models.Metadata.Rom.RIPEMD160Key, "DEADBEEF");
             datItem.SetFieldValue(Models.Metadata.Rom.SHA1Key, "DEADBEEF");
             datItem.SetFieldValue(Models.Metadata.Rom.SHA256Key, "DEADBEEF");
             datItem.SetFieldValue(Models.Metadata.Rom.SHA384Key, "DEADBEEF");

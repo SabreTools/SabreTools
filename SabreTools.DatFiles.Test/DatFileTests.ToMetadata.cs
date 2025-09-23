@@ -1041,8 +1041,8 @@ namespace SabreTools.DatFiles.Test
             Assert.Equal("publisher", rom.ReadString(Models.Metadata.Rom.PublisherKey));
             Assert.Equal("region", rom.ReadString(Models.Metadata.Rom.RegionKey));
             Assert.Equal("remark", rom.ReadString(Models.Metadata.Rom.RemarkKey));
-            Assert.Equal(ZeroHash.GetString(HashType.RIPEMD128), rom.ReadString("RIPEMD128"));
-            Assert.Equal(ZeroHash.GetString(HashType.RIPEMD160), rom.ReadString("RIPEMD160"));
+            Assert.Equal(ZeroHash.GetString(HashType.RIPEMD128), rom.ReadString(Models.Metadata.Rom.RIPEMD128Key));
+            Assert.Equal(ZeroHash.GetString(HashType.RIPEMD160), rom.ReadString(Models.Metadata.Rom.RIPEMD160Key));
             Assert.Equal("rotation", rom.ReadString(Models.Metadata.Rom.RotationKey));
             Assert.Equal("serial", rom.ReadString(Models.Metadata.Rom.SerialKey));
             Assert.Equal(ZeroHash.SHA1Str, rom.ReadString(Models.Metadata.Rom.SHA1Key));

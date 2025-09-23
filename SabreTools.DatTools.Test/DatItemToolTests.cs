@@ -236,8 +236,8 @@ namespace SabreTools.DatTools.Test
             Assert.Equal(md2, actual.GetStringFieldValue(Models.Metadata.Rom.MD2Key));
             Assert.Equal(md4, actual.GetStringFieldValue(Models.Metadata.Rom.MD4Key));
             Assert.Equal(md5, actual.GetStringFieldValue(Models.Metadata.Rom.MD5Key));
-            Assert.Equal(ripemd128, actual.GetStringFieldValue("RIPEMD128"));
-            Assert.Equal(ripemd160, actual.GetStringFieldValue("RIPEMD160"));
+            Assert.Equal(ripemd128, actual.GetStringFieldValue(Models.Metadata.Rom.RIPEMD128Key));
+            Assert.Equal(ripemd160, actual.GetStringFieldValue(Models.Metadata.Rom.RIPEMD160Key));
             Assert.Equal(sha1, actual.GetStringFieldValue(Models.Metadata.Rom.SHA1Key));
             Assert.Equal(sha256, actual.GetStringFieldValue(Models.Metadata.Rom.SHA256Key));
             Assert.Equal(sha384, actual.GetStringFieldValue(Models.Metadata.Rom.SHA384Key));
@@ -356,8 +356,8 @@ namespace SabreTools.DatTools.Test
             rom.SetFieldValue<string?>(Models.Metadata.Rom.MD2Key, md2);
             rom.SetFieldValue<string?>(Models.Metadata.Rom.MD4Key, md4);
             rom.SetFieldValue<string?>(Models.Metadata.Rom.MD5Key, md5);
-            rom.SetFieldValue<string?>("RIPEMD128", ripemd128);
-            rom.SetFieldValue<string?>("RIPEMD160", ripemd160);
+            rom.SetFieldValue<string?>(Models.Metadata.Rom.RIPEMD128Key, ripemd128);
+            rom.SetFieldValue<string?>(Models.Metadata.Rom.RIPEMD160Key, ripemd160);
             rom.SetFieldValue<string?>(Models.Metadata.Rom.SHA1Key, sha1);
             rom.SetFieldValue<string?>(Models.Metadata.Rom.SHA256Key, sha256);
             rom.SetFieldValue<string?>(Models.Metadata.Rom.SHA384Key, sha384);

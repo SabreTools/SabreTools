@@ -774,8 +774,8 @@ namespace SabreTools.DatFiles.Test
                 [Models.Metadata.Rom.PublisherKey] = "publisher",
                 [Models.Metadata.Rom.RegionKey] = "region",
                 [Models.Metadata.Rom.RemarkKey] = "remark",
-                ["RIPEMD128"] = ZeroHash.GetString(HashType.RIPEMD128),
-                ["RIPEMD160"] = ZeroHash.GetString(HashType.RIPEMD160),
+                [Models.Metadata.Rom.RIPEMD128Key] = ZeroHash.GetString(HashType.RIPEMD128),
+                [Models.Metadata.Rom.RIPEMD160Key] = ZeroHash.GetString(HashType.RIPEMD160),
                 [Models.Metadata.Rom.RotationKey] = "rotation",
                 [Models.Metadata.Rom.SerialKey] = "serial",
                 [Models.Metadata.Rom.SHA1Key] = ZeroHash.SHA1Str,
@@ -1438,8 +1438,8 @@ namespace SabreTools.DatFiles.Test
             Assert.Equal("publisher", rom.GetStringFieldValue(Models.Metadata.Rom.PublisherKey));
             Assert.Equal("region", rom.GetStringFieldValue(Models.Metadata.Rom.RegionKey));
             Assert.Equal("remark", rom.GetStringFieldValue(Models.Metadata.Rom.RemarkKey));
-            Assert.Equal(ZeroHash.GetString(HashType.RIPEMD128), rom.GetStringFieldValue("RIPEMD128"));
-            Assert.Equal(ZeroHash.GetString(HashType.RIPEMD160), rom.GetStringFieldValue("RIPEMD160"));
+            Assert.Equal(ZeroHash.GetString(HashType.RIPEMD128), rom.GetStringFieldValue(Models.Metadata.Rom.RIPEMD128Key));
+            Assert.Equal(ZeroHash.GetString(HashType.RIPEMD160), rom.GetStringFieldValue(Models.Metadata.Rom.RIPEMD160Key));
             Assert.Equal("rotation", rom.GetStringFieldValue(Models.Metadata.Rom.RotationKey));
             Assert.Equal("serial", rom.GetStringFieldValue(Models.Metadata.Rom.SerialKey));
             Assert.Equal(ZeroHash.SHA1Str, rom.GetStringFieldValue(Models.Metadata.Rom.SHA1Key));

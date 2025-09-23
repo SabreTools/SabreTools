@@ -142,8 +142,8 @@ namespace SabreTools.DatTools
             rom.SetFieldValue<string?>(Models.Metadata.Rom.MD2Key, baseFile.MD2.ToHexString());
             rom.SetFieldValue<string?>(Models.Metadata.Rom.MD4Key, baseFile.MD4.ToHexString());
             rom.SetFieldValue<string?>(Models.Metadata.Rom.MD5Key, baseFile.MD5.ToHexString());
-            rom.SetFieldValue<string?>("RIPEMD128", baseFile.RIPEMD128.ToHexString());
-            rom.SetFieldValue<string?>("RIPEMD160", baseFile.RIPEMD160.ToHexString());
+            rom.SetFieldValue<string?>(Models.Metadata.Rom.RIPEMD128Key, baseFile.RIPEMD128.ToHexString());
+            rom.SetFieldValue<string?>(Models.Metadata.Rom.RIPEMD160Key, baseFile.RIPEMD160.ToHexString());
             rom.SetFieldValue<string?>(Models.Metadata.Rom.SHA1Key, baseFile.SHA1.ToHexString());
             rom.SetFieldValue<string?>(Models.Metadata.Rom.SHA256Key, baseFile.SHA256.ToHexString());
             rom.SetFieldValue<string?>(Models.Metadata.Rom.SHA384Key, baseFile.SHA384.ToHexString());
@@ -253,8 +253,8 @@ namespace SabreTools.DatTools
                 MD2 = rom.GetStringFieldValue(Models.Metadata.Rom.MD2Key).FromHexString(),
                 MD4 = rom.GetStringFieldValue(Models.Metadata.Rom.MD4Key).FromHexString(),
                 MD5 = rom.GetStringFieldValue(Models.Metadata.Rom.MD5Key).FromHexString(),
-                RIPEMD128 = rom.GetStringFieldValue("RIPEMD128").FromHexString(),
-                RIPEMD160 = rom.GetStringFieldValue("RIPEMD160").FromHexString(),
+                RIPEMD128 = rom.GetStringFieldValue(Models.Metadata.Rom.RIPEMD128Key).FromHexString(),
+                RIPEMD160 = rom.GetStringFieldValue(Models.Metadata.Rom.RIPEMD160Key).FromHexString(),
                 SHA1 = rom.GetStringFieldValue(Models.Metadata.Rom.SHA1Key).FromHexString(),
                 SHA256 = rom.GetStringFieldValue(Models.Metadata.Rom.SHA256Key).FromHexString(),
                 SHA384 = rom.GetStringFieldValue(Models.Metadata.Rom.SHA384Key).FromHexString(),

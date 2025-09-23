@@ -291,8 +291,8 @@ namespace SabreTools.DatFiles.Formats
             switch (datItem)
             {
                 case Rom rom:
-                    if (string.IsNullOrEmpty(rom.GetStringFieldValue("RIPEMD128")))
-                        missingFields.Add("RIPEMD128");
+                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.RIPEMD128Key)))
+                        missingFields.Add(Models.Metadata.Rom.RIPEMD128Key);
                     break;
             }
 
@@ -333,8 +333,8 @@ namespace SabreTools.DatFiles.Formats
             switch (datItem)
             {
                 case Rom rom:
-                    if (string.IsNullOrEmpty(rom.GetStringFieldValue("RIPEMD160")))
-                        missingFields.Add("RIPEMD160");
+                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.RIPEMD160Key)))
+                        missingFields.Add(Models.Metadata.Rom.RIPEMD160Key);
                     break;
             }
 

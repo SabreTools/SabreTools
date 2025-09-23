@@ -145,10 +145,10 @@ namespace SabreTools.DatItems.Formats
                 SetFieldValue<string?>(Models.Metadata.Rom.MD4Key, TextHelper.NormalizeMD5(GetStringFieldValue(Models.Metadata.Rom.MD4Key)));
             if (GetStringFieldValue(Models.Metadata.Rom.MD5Key) != null)
                 SetFieldValue<string?>(Models.Metadata.Rom.MD5Key, TextHelper.NormalizeMD5(GetStringFieldValue(Models.Metadata.Rom.MD5Key)));
-            if (GetStringFieldValue("RIPEMD128") != null)
-                SetFieldValue<string?>("RIPEMD128", TextHelper.NormalizeRIPEMD128(GetStringFieldValue("RIPEMD128")));
-            if (GetStringFieldValue("RIPEMD160") != null)
-                SetFieldValue<string?>("RIPEMD160", TextHelper.NormalizeRIPEMD160(GetStringFieldValue("RIPEMD160")));
+            if (GetStringFieldValue(Models.Metadata.Rom.RIPEMD128Key) != null)
+                SetFieldValue<string?>(Models.Metadata.Rom.RIPEMD128Key, TextHelper.NormalizeRIPEMD128(GetStringFieldValue(Models.Metadata.Rom.RIPEMD128Key)));
+            if (GetStringFieldValue(Models.Metadata.Rom.RIPEMD160Key) != null)
+                SetFieldValue<string?>(Models.Metadata.Rom.RIPEMD160Key, TextHelper.NormalizeRIPEMD160(GetStringFieldValue(Models.Metadata.Rom.RIPEMD160Key)));
             if (GetStringFieldValue(Models.Metadata.Rom.SHA1Key) != null)
                 SetFieldValue<string?>(Models.Metadata.Rom.SHA1Key, TextHelper.NormalizeSHA1(GetStringFieldValue(Models.Metadata.Rom.SHA1Key)));
             if (GetStringFieldValue(Models.Metadata.Rom.SHA256Key) != null)
@@ -192,10 +192,10 @@ namespace SabreTools.DatItems.Formats
                 SetFieldValue<string?>(Models.Metadata.Rom.MD4Key, TextHelper.NormalizeMD4(GetStringFieldValue(Models.Metadata.Rom.MD4Key)));
             if (GetStringFieldValue(Models.Metadata.Rom.MD5Key) != null)
                 SetFieldValue<string?>(Models.Metadata.Rom.MD5Key, TextHelper.NormalizeMD5(GetStringFieldValue(Models.Metadata.Rom.MD5Key)));
-            if (GetStringFieldValue("RIPEMD128") != null)
-                SetFieldValue<string?>("RIPEMD128", TextHelper.NormalizeRIPEMD128(GetStringFieldValue("RIPEMD128")));
-            if (GetStringFieldValue("RIPEMD160") != null)
-                SetFieldValue<string?>("RIPEMD160", TextHelper.NormalizeRIPEMD160(GetStringFieldValue("RIPEMD160")));
+            if (GetStringFieldValue(Models.Metadata.Rom.RIPEMD128Key) != null)
+                SetFieldValue<string?>(Models.Metadata.Rom.RIPEMD128Key, TextHelper.NormalizeRIPEMD128(GetStringFieldValue(Models.Metadata.Rom.RIPEMD128Key)));
+            if (GetStringFieldValue(Models.Metadata.Rom.RIPEMD160Key) != null)
+                SetFieldValue<string?>(Models.Metadata.Rom.RIPEMD160Key, TextHelper.NormalizeRIPEMD160(GetStringFieldValue(Models.Metadata.Rom.RIPEMD160Key)));
             if (GetStringFieldValue(Models.Metadata.Rom.SHA1Key) != null)
                 SetFieldValue<string?>(Models.Metadata.Rom.SHA1Key, TextHelper.NormalizeSHA1(GetStringFieldValue(Models.Metadata.Rom.SHA1Key)));
             if (GetStringFieldValue(Models.Metadata.Rom.SHA256Key) != null)
@@ -265,11 +265,11 @@ namespace SabreTools.DatItems.Formats
                     break;
 
                 case ItemKey.RIPEMD128:
-                    key = GetStringFieldValue("RIPEMD128");
+                    key = GetStringFieldValue(Models.Metadata.Rom.RIPEMD128Key);
                     break;
 
                 case ItemKey.RIPEMD160:
-                    key = GetStringFieldValue("RIPEMD160");
+                    key = GetStringFieldValue(Models.Metadata.Rom.RIPEMD160Key);
                     break;
 
                 case ItemKey.SHA1:

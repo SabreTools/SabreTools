@@ -262,7 +262,7 @@ namespace SabreTools.Features
             HashValue,
             ["-hs", "--hash"],
             "Split DAT(s) or folder by best-available hashes",
-            longDescription: "For a DAT, or set of DATs, allow for splitting based on the best available hash for each file within. The order of preference for the outputted DATs is as follows: Nodump, SHA-512, SHA-384, SHA-256, SHA-1, MD5, MD4, MD2, CRC (or worse).");
+            longDescription: "For a DAT, or set of DATs, allow for splitting based on the best available hash for each file within. The order of preference for the outputted DATs is as follows: Nodump, SHA-512, SHA-384, SHA-256, SHA-1, RIPEMD160, RIPEMD128, MD5, MD4, MD2, CRC (or worse).");
 
         internal const string HashOnlyValue = "hash-only";
         internal static FlagFeature HashOnlyFlag => new(

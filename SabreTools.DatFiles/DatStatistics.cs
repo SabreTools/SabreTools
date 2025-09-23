@@ -468,8 +468,8 @@ namespace SabreTools.DatFiles
                 AddHashCount(HashType.MD2, string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.MD2Key)) ? 0 : 1);
                 AddHashCount(HashType.MD4, string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.MD4Key)) ? 0 : 1);
                 AddHashCount(HashType.MD5, string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.MD5Key)) ? 0 : 1);
-                AddHashCount(HashType.RIPEMD128, string.IsNullOrEmpty(rom.GetStringFieldValue("RIPEMD128")) ? 0 : 1);
-                AddHashCount(HashType.RIPEMD160, string.IsNullOrEmpty(rom.GetStringFieldValue("RIPEMD160")) ? 0 : 1);
+                AddHashCount(HashType.RIPEMD128, string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.RIPEMD128Key)) ? 0 : 1);
+                AddHashCount(HashType.RIPEMD160, string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.RIPEMD160Key)) ? 0 : 1);
                 AddHashCount(HashType.SHA1, string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.SHA1Key)) ? 0 : 1);
                 AddHashCount(HashType.SHA256, string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.SHA256Key)) ? 0 : 1);
                 AddHashCount(HashType.SHA384, string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.SHA384Key)) ? 0 : 1);
@@ -496,8 +496,8 @@ namespace SabreTools.DatFiles
                 AddHashCount(HashType.MD2, string.IsNullOrEmpty(rom.ReadString(Models.Metadata.Rom.MD2Key)) ? 0 : 1);
                 AddHashCount(HashType.MD4, string.IsNullOrEmpty(rom.ReadString(Models.Metadata.Rom.MD4Key)) ? 0 : 1);
                 AddHashCount(HashType.MD5, string.IsNullOrEmpty(rom.ReadString(Models.Metadata.Rom.MD5Key)) ? 0 : 1);
-                AddHashCount(HashType.RIPEMD128, string.IsNullOrEmpty(rom.ReadString("RIPEMD128")) ? 0 : 1);
-                AddHashCount(HashType.RIPEMD160, string.IsNullOrEmpty(rom.ReadString("RIPEMD160")) ? 0 : 1);
+                AddHashCount(HashType.RIPEMD128, string.IsNullOrEmpty(rom.ReadString(Models.Metadata.Rom.RIPEMD128Key)) ? 0 : 1);
+                AddHashCount(HashType.RIPEMD160, string.IsNullOrEmpty(rom.ReadString(Models.Metadata.Rom.RIPEMD160Key)) ? 0 : 1);
                 AddHashCount(HashType.SHA1, string.IsNullOrEmpty(rom.ReadString(Models.Metadata.Rom.SHA1Key)) ? 0 : 1);
                 AddHashCount(HashType.SHA256, string.IsNullOrEmpty(rom.ReadString(Models.Metadata.Rom.SHA256Key)) ? 0 : 1);
                 AddHashCount(HashType.SHA384, string.IsNullOrEmpty(rom.ReadString(Models.Metadata.Rom.SHA384Key)) ? 0 : 1);
@@ -651,8 +651,8 @@ namespace SabreTools.DatFiles
                 RemoveHashCount(HashType.MD2, string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.MD2Key)) ? 0 : 1);
                 RemoveHashCount(HashType.MD4, string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.MD4Key)) ? 0 : 1);
                 RemoveHashCount(HashType.MD5, string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.MD5Key)) ? 0 : 1);
-                RemoveHashCount(HashType.RIPEMD128, string.IsNullOrEmpty(rom.GetStringFieldValue("RIPEMD128")) ? 0 : 1);
-                RemoveHashCount(HashType.RIPEMD160, string.IsNullOrEmpty(rom.GetStringFieldValue("RIPEMD160")) ? 0 : 1);
+                RemoveHashCount(HashType.RIPEMD128, string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.RIPEMD128Key)) ? 0 : 1);
+                RemoveHashCount(HashType.RIPEMD160, string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.RIPEMD160Key)) ? 0 : 1);
                 RemoveHashCount(HashType.SHA1, string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.SHA1Key)) ? 0 : 1);
                 RemoveHashCount(HashType.SHA256, string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.SHA256Key)) ? 0 : 1);
                 RemoveHashCount(HashType.SHA384, string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.SHA384Key)) ? 0 : 1);
@@ -679,8 +679,8 @@ namespace SabreTools.DatFiles
                 RemoveHashCount(HashType.MD2, string.IsNullOrEmpty(rom.ReadString(Models.Metadata.Rom.MD2Key)) ? 0 : 1);
                 RemoveHashCount(HashType.MD4, string.IsNullOrEmpty(rom.ReadString(Models.Metadata.Rom.MD4Key)) ? 0 : 1);
                 RemoveHashCount(HashType.MD5, string.IsNullOrEmpty(rom.ReadString(Models.Metadata.Rom.MD5Key)) ? 0 : 1);
-                RemoveHashCount(HashType.RIPEMD128, string.IsNullOrEmpty(rom.ReadString("RIPEMD128")) ? 0 : 1);
-                RemoveHashCount(HashType.RIPEMD160, string.IsNullOrEmpty(rom.ReadString("RIPEMD160")) ? 0 : 1);
+                RemoveHashCount(HashType.RIPEMD128, string.IsNullOrEmpty(rom.ReadString(Models.Metadata.Rom.RIPEMD128Key)) ? 0 : 1);
+                RemoveHashCount(HashType.RIPEMD160, string.IsNullOrEmpty(rom.ReadString(Models.Metadata.Rom.RIPEMD160Key)) ? 0 : 1);
                 RemoveHashCount(HashType.SHA1, string.IsNullOrEmpty(rom.ReadString(Models.Metadata.Rom.SHA1Key)) ? 0 : 1);
                 RemoveHashCount(HashType.SHA256, string.IsNullOrEmpty(rom.ReadString(Models.Metadata.Rom.SHA256Key)) ? 0 : 1);
                 RemoveHashCount(HashType.SHA384, string.IsNullOrEmpty(rom.ReadString(Models.Metadata.Rom.SHA384Key)) ? 0 : 1);

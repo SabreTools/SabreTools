@@ -142,8 +142,8 @@ namespace SabreTools.DatTools.Test
             datItem.SetFieldValue<string?>(Models.Metadata.Rom.MD2Key, ZeroHash.GetString(HashType.MD2));
             datItem.SetFieldValue<string?>(Models.Metadata.Rom.MD4Key, ZeroHash.GetString(HashType.MD4));
             datItem.SetFieldValue<string?>(Models.Metadata.Rom.MD5Key, ZeroHash.MD5Str);
-            datItem.SetFieldValue<string?>("RIPEMD128", ZeroHash.GetString(HashType.RIPEMD128));
-            datItem.SetFieldValue<string?>("RIPEMD160", ZeroHash.GetString(HashType.RIPEMD160));
+            datItem.SetFieldValue<string?>(Models.Metadata.Rom.RIPEMD128Key, ZeroHash.GetString(HashType.RIPEMD128));
+            datItem.SetFieldValue<string?>(Models.Metadata.Rom.RIPEMD160Key, ZeroHash.GetString(HashType.RIPEMD160));
             datItem.SetFieldValue<string?>(Models.Metadata.Rom.SHA1Key, ZeroHash.SHA1Str);
             datItem.SetFieldValue<string?>(Models.Metadata.Rom.SHA256Key, ZeroHash.SHA256Str);
             datItem.SetFieldValue<string?>(Models.Metadata.Rom.SHA384Key, ZeroHash.SHA384Str);
@@ -156,8 +156,8 @@ namespace SabreTools.DatTools.Test
             datItem.SetFieldValue<string?>(Models.Metadata.Rom.MD2Key, "deadbeef");
             datItem.SetFieldValue<string?>(Models.Metadata.Rom.MD4Key, "deadbeef");
             datItem.SetFieldValue<string?>(Models.Metadata.Rom.MD5Key, "deadbeef");
-            datItem.SetFieldValue<string?>("RIPEMD128", "deadbeef");
-            datItem.SetFieldValue<string?>("RIPEMD160", "deadbeef");
+            datItem.SetFieldValue<string?>(Models.Metadata.Rom.RIPEMD128Key, "deadbeef");
+            datItem.SetFieldValue<string?>(Models.Metadata.Rom.RIPEMD160Key, "deadbeef");
             datItem.SetFieldValue<string?>(Models.Metadata.Rom.SHA1Key, "deadbeef");
             datItem.SetFieldValue<string?>(Models.Metadata.Rom.SHA256Key, "deadbeef");
             datItem.SetFieldValue<string?>(Models.Metadata.Rom.SHA384Key, "deadbeef");
@@ -173,8 +173,8 @@ namespace SabreTools.DatTools.Test
                     Models.Metadata.Rom.MD2Key,
                     Models.Metadata.Rom.MD4Key,
                     Models.Metadata.Rom.MD5Key,
-                    "RIPEMD128",
-                    "RIPEMD160",
+                    Models.Metadata.Rom.RIPEMD128Key,
+                    Models.Metadata.Rom.RIPEMD160Key,
                     Models.Metadata.Rom.SHA1Key,
                     Models.Metadata.Rom.SHA256Key,
                     Models.Metadata.Rom.SHA384Key,
@@ -190,8 +190,8 @@ namespace SabreTools.DatTools.Test
             Assert.Equal("deadbeef", datItem.GetStringFieldValue(Models.Metadata.Rom.MD2Key));
             Assert.Equal("deadbeef", datItem.GetStringFieldValue(Models.Metadata.Rom.MD4Key));
             Assert.Equal("deadbeef", datItem.GetStringFieldValue(Models.Metadata.Rom.MD5Key));
-            Assert.Equal("deadbeef", datItem.GetStringFieldValue("RIPEMD128"));
-            Assert.Equal("deadbeef", datItem.GetStringFieldValue("RIPEMD160"));
+            Assert.Equal("deadbeef", datItem.GetStringFieldValue(Models.Metadata.Rom.RIPEMD128Key));
+            Assert.Equal("deadbeef", datItem.GetStringFieldValue(Models.Metadata.Rom.RIPEMD160Key));
             Assert.Equal("deadbeef", datItem.GetStringFieldValue(Models.Metadata.Rom.SHA1Key));
             Assert.Equal("deadbeef", datItem.GetStringFieldValue(Models.Metadata.Rom.SHA256Key));
             Assert.Equal("deadbeef", datItem.GetStringFieldValue(Models.Metadata.Rom.SHA384Key));

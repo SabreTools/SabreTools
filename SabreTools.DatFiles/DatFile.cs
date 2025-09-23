@@ -629,8 +629,8 @@ namespace SabreTools.DatFiles
                 md2 = rom.GetStringFieldValue(Models.Metadata.Rom.MD2Key) ?? string.Empty;
                 md4 = rom.GetStringFieldValue(Models.Metadata.Rom.MD4Key) ?? string.Empty;
                 md5 = rom.GetStringFieldValue(Models.Metadata.Rom.MD5Key) ?? string.Empty;
-                ripemd128 = rom.GetStringFieldValue("RIPEMD128") ?? string.Empty;
-                ripemd160 = rom.GetStringFieldValue("RIPEMD160") ?? string.Empty;
+                ripemd128 = rom.GetStringFieldValue(Models.Metadata.Rom.RIPEMD128Key) ?? string.Empty;
+                ripemd160 = rom.GetStringFieldValue(Models.Metadata.Rom.RIPEMD160Key) ?? string.Empty;
                 sha1 = rom.GetStringFieldValue(Models.Metadata.Rom.SHA1Key) ?? string.Empty;
                 sha256 = rom.GetStringFieldValue(Models.Metadata.Rom.SHA256Key) ?? string.Empty;
                 sha384 = rom.GetStringFieldValue(Models.Metadata.Rom.SHA384Key) ?? string.Empty;
@@ -693,10 +693,10 @@ namespace SabreTools.DatFiles
                 rom.GetStringFieldValue(Models.Metadata.Rom.MD4Key) == "null" ? ZeroHash.GetString(HashType.MD4) : null);
             rom.SetFieldValue<string?>(Models.Metadata.Rom.MD5Key,
                 rom.GetStringFieldValue(Models.Metadata.Rom.MD5Key) == "null" ? ZeroHash.MD5Str : null);
-            rom.SetFieldValue<string?>("RIPEMD128",
-                rom.GetStringFieldValue("RIPEMD128") == "null" ? ZeroHash.GetString(HashType.RIPEMD128) : null);
-            rom.SetFieldValue<string?>("RIPEMD160",
-                rom.GetStringFieldValue("RIPEMD160") == "null" ? ZeroHash.GetString(HashType.RIPEMD160) : null);
+            rom.SetFieldValue<string?>(Models.Metadata.Rom.RIPEMD128Key,
+                rom.GetStringFieldValue(Models.Metadata.Rom.RIPEMD128Key) == "null" ? ZeroHash.GetString(HashType.RIPEMD128) : null);
+            rom.SetFieldValue<string?>(Models.Metadata.Rom.RIPEMD160Key,
+                rom.GetStringFieldValue(Models.Metadata.Rom.RIPEMD160Key) == "null" ? ZeroHash.GetString(HashType.RIPEMD160) : null);
             rom.SetFieldValue<string?>(Models.Metadata.Rom.SHA1Key,
                 rom.GetStringFieldValue(Models.Metadata.Rom.SHA1Key) == "null" ? ZeroHash.SHA1Str : null);
             rom.SetFieldValue<string?>(Models.Metadata.Rom.SHA256Key,
@@ -1102,11 +1102,11 @@ namespace SabreTools.DatFiles
             if (!string.IsNullOrEmpty(md5))
                 return $"_{md5}";
 
-            string? ripemd128 = datItem.GetStringFieldValue("RIPEMD128");
+            string? ripemd128 = datItem.GetStringFieldValue(Models.Metadata.Rom.RIPEMD128Key);
             if (!string.IsNullOrEmpty(ripemd128))
                 return $"_{ripemd128}";
 
-            string? ripemd160 = datItem.GetStringFieldValue("RIPEMD160");
+            string? ripemd160 = datItem.GetStringFieldValue(Models.Metadata.Rom.RIPEMD160Key);
             if (!string.IsNullOrEmpty(ripemd160))
                 return $"_{ripemd160}";
 
