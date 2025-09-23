@@ -35,7 +35,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="SabreTools.IO" Version="1.7.3" />
+        <PackageReference Include="SabreTools.IO" Version="1.7.4" />
         <PackageReference Include="SabreTools.Matching" Version="1.6.0" />
         <PackageReference Include="SabreTools.Skippers" Version="1.4.0" />
     </ItemGroup>
