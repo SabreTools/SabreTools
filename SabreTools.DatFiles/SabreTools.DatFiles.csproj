@@ -35,10 +35,9 @@
         <PackageReference Include="MinValueTupleBridge" Version="0.2.1" Condition="$(TargetFramework.StartsWith(`net2`)) OR $(TargetFramework.StartsWith(`net3`))" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
         <PackageReference Include="SabreTools.Hashing" Version="1.5.0" />
-        <PackageReference Include="SabreTools.IO" Version="1.7.4" />
-        <PackageReference Include="SabreTools.Matching" Version="1.6.0" />
+        <PackageReference Include="SabreTools.IO" Version="1.7.5" />
         <PackageReference Include="SabreTools.Models" Version="1.7.2" />
-        <PackageReference Include="SabreTools.Serialization" Version="1.9.5" />
+        <PackageReference Include="SabreTools.Serialization" Version="1.9.6" />
         <PackageReference Include="System.ValueTuple" Version="4.5.0" Condition="$(TargetFramework.StartsWith(`net4`))" />
     </ItemGroup>
 

@@ -24,7 +24,7 @@ namespace SabreTools.Core.Tools
                 return false;
 
             // Otherwise, they need to match exactly
-            return Matching.Extensions.EqualsExactly(firstHash, secondHash);
+            return firstHash.EqualsExactly(secondHash);
         }
 
         /// <summary>

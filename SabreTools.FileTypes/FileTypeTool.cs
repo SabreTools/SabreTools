@@ -6,7 +6,6 @@ using SabreTools.FileTypes.CHD;
 using SabreTools.Hashing;
 using SabreTools.IO.Extensions;
 using SabreTools.IO.Logging;
-using SabreTools.Matching;
 using SabreTools.Skippers;
 using static SabreTools.FileTypes.Constants;
 

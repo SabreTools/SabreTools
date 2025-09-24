@@ -4,7 +4,7 @@ using System.IO;
 #if NET462_OR_GREATER || NETCOREAPP
 using System.Linq;
 using SabreTools.Hashing;
-using SabreTools.Matching.Compare;
+using SabreTools.IO.Compare;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Rar;
 using SharpCompress.Readers;

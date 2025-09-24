@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 using SabreTools.DatFiles;
 using SabreTools.DatItems;
 using SabreTools.DatItems.Formats;
+using SabreTools.IO.Compare;
 using SabreTools.IO.Extensions;
 using SabreTools.IO.Logging;
-using SabreTools.Matching.Compare;
 
 namespace SabreTools.DatTools
 {
