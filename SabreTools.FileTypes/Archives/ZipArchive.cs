@@ -58,101 +58,18 @@ namespace SabreTools.FileTypes.Archives
         {
             bool encounteredErrors = true;
 
+            // If we have an invalid file
+            if (Filename == null)
+                return true;
+
             try
             {
-                // Create the temp directory
-                Directory.CreateDirectory(outDir);
+                // Open the input file
+                using var inputFile = File.Open(Filename, FileMode.Open, FileAccess.Read, FileShare.Read);
+                var pkzip = Serialization.Wrappers.PKZIP.Create(inputFile);
 
-#if NET20 || NET35 || NET40
-                // Extract all files to the temp directory
-                var zf = new Zip();
-                ZipReturn zr = zf.ZipFileOpen(Filename!, -1, true);
-                if (zr != ZipReturn.ZipGood)
-                    throw new Exception(CompressUtils.ZipErrorMessageText(zr));
-
-                for (int i = 0; i < zf.LocalFilesCount() && zr == ZipReturn.ZipGood; i++)
-                {
-                    // Get the entry
-                    var entry = zf.GetLocalFile(i);
-
-                    // Open the read stream
-                    zr = zf.ZipFileOpenReadStream(i, false, out Stream? readStream, out ulong streamsize, out ushort cm);
-
-                    // If the entry ends with a directory separator, continue to the next item, if any
-                    if (entry.Filename!.EndsWith(Path.DirectorySeparatorChar.ToString())
-                        || entry.Filename!.EndsWith(Path.AltDirectorySeparatorChar.ToString())
-                        || entry.Filename!.EndsWith(Path.PathSeparator.ToString()))
-                    {
-                        zf.ZipFileCloseReadStream();
-                        continue;
-                    }
-
-                    // Create the rest of the path, if needed
-                    if (!string.IsNullOrEmpty(Path.GetDirectoryName(entry.Filename)))
-                        Directory.CreateDirectory(Path.Combine(outDir, Path.GetDirectoryName(entry.Filename)!));
-
-                    FileStream writeStream = File.Create(Path.Combine(outDir, entry.Filename!));
-
-                    // If the stream is smaller than the buffer, just run one loop through to avoid issues
-                    if (streamsize < _bufferSize)
-                    {
-                        byte[] ibuffer = new byte[streamsize];
-                        int ilen = readStream!.Read(ibuffer, 0, (int)streamsize);
-                        writeStream.Write(ibuffer, 0, ilen);
-                        writeStream.Flush();
-                    }
-                    // Otherwise, we do the normal loop
-                    else
-                    {
-                        int realBufferSize = (streamsize < _bufferSize ? (int)streamsize : _bufferSize);
-                        byte[] ibuffer = new byte[realBufferSize];
-                        int ilen;
-                        while ((ilen = readStream!.Read(ibuffer, 0, realBufferSize)) > 0)
-                        {
-                            writeStream.Write(ibuffer, 0, ilen);
-                            writeStream.Flush();
-                        }
-                    }
-
-                    zr = zf.ZipFileCloseReadStream();
-                    writeStream.Dispose();
-                }
-
-                zf.ZipFileClose();
-                encounteredErrors = false;
-#else
-                // Extract all files to the temp directory
-                var zf = ZipFile.OpenRead(Filename!);
-                if (zf == null)
-                    throw new Exception($"Could not open {Filename} as a zip file");
-
-                for (int i = 0; i < zf.Entries.Count; i++)
-                {
-                    // Get the entry
-                    var entry = zf.Entries[i];
-                    var readStream = entry.Open();
-
-                    // If the entry ends with a directory separator, continue to the next item, if any
-                    if (entry.FullName.EndsWith(Path.DirectorySeparatorChar.ToString())
-                        || entry.FullName.EndsWith(Path.AltDirectorySeparatorChar.ToString())
-                        || entry.FullName.EndsWith(Path.PathSeparator.ToString()))
-                    {
-                        readStream.Dispose();
-                        continue;
-                    }
-
-                    // Create the rest of the path, if needed
-                    if (!string.IsNullOrEmpty(Path.GetDirectoryName(entry.FullName)))
-                        Directory.CreateDirectory(Path.Combine(outDir, Path.GetDirectoryName(entry.FullName)!));
-
-                    // Extract the file to the output directory
-                    entry.ExtractToFile(Path.Combine(outDir, entry.FullName));
-                    readStream.Dispose();
-                }
-
-                zf.Dispose();
-                encounteredErrors = false;
-#endif
+                // Write the output file
+                encounteredErrors = !pkzip.Extract(outDir, includeDebug: false);
             }
             catch (EndOfStreamException ex)
             {

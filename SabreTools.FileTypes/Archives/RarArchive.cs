@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-#if NET462_OR_GREATER || NETCOREAPP
 using System.Linq;
 using SabreTools.Hashing;
 using SabreTools.IO.Compare;
-using SharpCompress.Archives;
+#if NET462_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
 using SharpCompress.Archives.Rar;
 using SharpCompress.Readers;
 #endif
@@ -43,7 +42,6 @@ namespace SabreTools.FileTypes.Archives
         /// <inheritdoc/>
         public override bool CopyAll(string outDir)
         {
-#if NET462_OR_GREATER || NETCOREAPP
             bool encounteredErrors = true;
 
             // If we have an invalid file
@@ -52,17 +50,12 @@ namespace SabreTools.FileTypes.Archives
 
             try
             {
-                // Create the temp directory
-                Directory.CreateDirectory(outDir);
+                // Open the input file
+                using var inputFile = File.Open(Filename, FileMode.Open, FileAccess.Read, FileShare.Read);
+                var rar = Serialization.Wrappers.RAR.Create(inputFile);
 
-                // Extract all files to the temp directory
-                SharpCompress.Archives.Rar.RarArchive ra = SharpCompress.Archives.Rar.RarArchive.Open(Filename);
-                foreach (RarArchiveEntry entry in ra.Entries)
-                {
-                    entry.WriteToDirectory(outDir, new SharpCompress.Common.ExtractionOptions { PreserveFileTime = true, ExtractFullPath = true, Overwrite = true });
-                }
-                encounteredErrors = false;
-                ra.Dispose();
+                // Write the output files
+                encounteredErrors = !rar.Extract(outDir, includeDebug: false);
             }
             catch (EndOfStreamException ex)
             {
@@ -81,10 +74,6 @@ namespace SabreTools.FileTypes.Archives
             }
 
             return encounteredErrors;
-#else
-            // TODO: Support RAR archives in old .NET
-            return true;
-#endif
         }
 
         /// <inheritdoc/>

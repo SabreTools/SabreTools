@@ -60,24 +60,20 @@ namespace SabreTools.FileTypes.Archives
         /// <inheritdoc/>
         public override bool CopyAll(string outDir)
         {
-#if NET462_OR_GREATER || NETCOREAPP
             bool encounteredErrors = true;
+
+            // If we have an invalid file
+            if (Filename == null)
+                return true;
 
             try
             {
-                // Create the temp directory
-                Directory.CreateDirectory(outDir);
+                // Open the input file
+                using var inputFile = File.Open(Filename, FileMode.Open, FileAccess.Read, FileShare.Read);
+                var xz = Serialization.Wrappers.XZ.Create(inputFile);
 
-                // Decompress the _filename stream
-                FileStream outstream = File.Create(Path.Combine(outDir, Path.GetFileNameWithoutExtension(Filename)!));
-                var xz = new XZStream(File.Open(Filename!, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
-                xz.CopyTo(outstream);
-
-                // Dispose of the streams
-                outstream.Dispose();
-                xz.Dispose();
-
-                encounteredErrors = false;
+                // Write the output file
+                encounteredErrors = !xz.Extract(outDir, includeDebug: false);
             }
             catch (EndOfStreamException ex)
             {
@@ -96,10 +92,6 @@ namespace SabreTools.FileTypes.Archives
             }
 
             return encounteredErrors;
-#else
-            // TODO: Support XZ archives in old .NET
-            return true;
-#endif
         }
 
         /// <inheritdoc/>

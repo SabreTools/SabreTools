@@ -58,62 +58,12 @@ namespace SabreTools.FileTypes.Archives
 
             try
             {
-                // Create the temp directory
-                Directory.CreateDirectory(outDir);
+                // Open the input file
+                using var inputFile = File.Open(Filename, FileMode.Open, FileAccess.Read, FileShare.Read);
+                var sevenZip = Serialization.Wrappers.SevenZip.Create(inputFile);
 
-                // Extract all files to the temp directory
-                var zf = new SevenZ();
-                ZipReturn zr = zf.ZipFileOpen(Filename, -1, true);
-                if (zr != ZipReturn.ZipGood)
-                    throw new Exception(CompressUtils.ZipErrorMessageText(zr));
-
-                for (int i = 0; i < zf.LocalFilesCount() && zr == ZipReturn.ZipGood; i++)
-                {
-                    // Open the read stream
-                    zr = zf.ZipFileOpenReadStream(i, out Stream? readStream, out ulong streamsize);
-
-                    // Create the rest of the path, if needed
-                    if (!string.IsNullOrEmpty(Path.GetDirectoryName(zf.GetLocalFile(i).Filename)))
-                        Directory.CreateDirectory(Path.Combine(outDir, Path.GetDirectoryName(zf.GetLocalFile(i).Filename)!));
-
-                    // If the entry ends with a directory separator, continue to the next item, if any
-                    if (zf.GetLocalFile(i).Filename!.EndsWith(Path.DirectorySeparatorChar.ToString())
-                        || zf.GetLocalFile(i).Filename!.EndsWith(Path.AltDirectorySeparatorChar.ToString())
-                        || zf.GetLocalFile(i).Filename!.EndsWith(Path.PathSeparator.ToString()))
-                    {
-                        zf.ZipFileCloseReadStream();
-                        continue;
-                    }
-
-                    FileStream writeStream = File.Create(Path.Combine(outDir, zf.GetLocalFile(i).Filename!));
-
-                    // If the stream is smaller than the buffer, just run one loop through to avoid issues
-                    if (streamsize < _bufferSize)
-                    {
-                        byte[] ibuffer = new byte[streamsize];
-                        int ilen = readStream!.Read(ibuffer, 0, (int)streamsize);
-                        writeStream.Write(ibuffer, 0, ilen);
-                        writeStream.Flush();
-                    }
-                    // Otherwise, we do the normal loop
-                    else
-                    {
-                        int realBufferSize = (streamsize < _bufferSize ? (int)streamsize : _bufferSize);
-                        byte[] ibuffer = new byte[realBufferSize];
-                        int ilen;
-                        while ((ilen = readStream!.Read(ibuffer, 0, realBufferSize)) > 0)
-                        {
-                            writeStream.Write(ibuffer, 0, ilen);
-                            writeStream.Flush();
-                        }
-                    }
-
-                    zr = zf.ZipFileCloseReadStream();
-                    writeStream.Dispose();
-                }
-
-                zf.ZipFileClose();
-                encounteredErrors = false;
+                // Write the output files
+                encounteredErrors = !sevenZip.Extract(outDir, includeDebug: false);
             }
             catch (EndOfStreamException ex)
             {

@@ -80,27 +80,12 @@ namespace SabreTools.FileTypes.Archives
 
             try
             {
-                // Create the temp directory
-                Directory.CreateDirectory(outDir);
+                // Open the input file
+                using var inputFile = File.Open(Filename, FileMode.Open, FileAccess.Read, FileShare.Read);
+                var gzip = Serialization.Wrappers.GZip.Create(inputFile);
 
-                // Decompress the _filename stream
-                FileStream outstream = File.Create(Path.Combine(outDir, Path.GetFileNameWithoutExtension(Filename)));
-                var gz = new gZip();
-                ZipReturn ret = gz.ZipFileOpen(Filename);
-                ret = gz.ZipFileOpenReadStream(0, out Stream? gzstream, out ulong streamSize);
-                byte[] buffer = new byte[32768];
-                int read;
-                while ((read = gzstream!.Read(buffer, 0, buffer.Length)) > 0)
-                {
-                    outstream.Write(buffer, 0, read);
-                }
-
-                // Dispose of the streams
-                outstream.Dispose();
-                ret = gz.ZipFileCloseReadStream();
-                gz.ZipFileClose();
-
-                encounteredErrors = false;
+                // Write the output file
+                encounteredErrors = !gzip.Extract(outDir, includeDebug: false);
             }
             catch (EndOfStreamException ex)
             {

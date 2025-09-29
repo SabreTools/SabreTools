@@ -48,22 +48,20 @@ namespace SabreTools.FileTypes.Archives
         /// <inheritdoc/>
         public override bool CopyAll(string outDir)
         {
-#if NET462_OR_GREATER || NETCOREAPP
             bool encounteredErrors = true;
+
+            // If we have an invalid file
+            if (Filename == null)
+                return true;
 
             try
             {
-                // Create the temp directory
-                Directory.CreateDirectory(outDir);
+                // Open the input file
+                using var inputFile = File.Open(Filename, FileMode.Open, FileAccess.Read, FileShare.Read);
+                var tar = Serialization.Wrappers.TapeArchive.Create(inputFile);
 
-                // Extract all files to the temp directory
-                TarArchive ta = TarArchive.Open(Filename!);
-                foreach (TarArchiveEntry entry in ta.Entries)
-                {
-                    entry.WriteToDirectory(outDir, new ExtractionOptions { PreserveFileTime = true, ExtractFullPath = true, Overwrite = true });
-                }
-                encounteredErrors = false;
-                ta.Dispose();
+                // Write the output files
+                encounteredErrors = !tar.Extract(outDir, includeDebug: false);
             }
             catch (EndOfStreamException ex)
             {
@@ -82,10 +80,6 @@ namespace SabreTools.FileTypes.Archives
             }
 
             return encounteredErrors;
-#else
-            // TODO: Support tape archives in old .NET
-            return true;
-#endif
         }
 
         /// <inheritdoc/>
