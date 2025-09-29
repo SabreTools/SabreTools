@@ -99,11 +99,11 @@ namespace SabreTools.DatTools
                 var key = new FilterKey(field);
                 switch (key.ItemName)
                 {
-                    case Models.Metadata.MetadataFile.HeaderKey:
+                    case Data.Models.Metadata.MetadataFile.HeaderKey:
                         HeaderFieldNames.Add(key.FieldName);
                         return true;
 
-                    case Models.Metadata.MetadataFile.MachineKey:
+                    case Data.Models.Metadata.MetadataFile.MachineKey:
                         MachineFieldNames.Add(key.FieldName);
                         return true;
 
@@ -243,7 +243,7 @@ namespace SabreTools.DatTools
                 return;
 
             // If there are no field names for this type or generic, return
-            string? itemType = datItem.GetStringFieldValue(Models.Metadata.DatItem.TypeKey).AsItemType().AsStringValue();
+            string? itemType = datItem.GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey).AsItemType().AsStringValue();
             if (itemType == null || (!ItemFieldNames.ContainsKey(itemType) && !ItemFieldNames.ContainsKey("item")))
                 return;
 
@@ -255,7 +255,7 @@ namespace SabreTools.DatTools
                 fields.UnionWith(ItemFieldNames["item"]);
 
             // If the field specifically contains Name, set it separately
-            if (fields.Contains(Models.Metadata.Rom.NameKey))
+            if (fields.Contains(Data.Models.Metadata.Rom.NameKey))
                 datItem.SetName(null);
 
             #endregion
@@ -294,7 +294,7 @@ namespace SabreTools.DatTools
         /// <param name="adjuster">Adjuster to remove fields from</param>
         private void RemoveNestedFields(Adjuster adjuster)
         {
-            var conditions = adjuster.GetFieldValue<Condition[]?>(Models.Metadata.Adjuster.ConditionKey) ?? [];
+            var conditions = adjuster.GetFieldValue<Condition[]?>(Data.Models.Metadata.Adjuster.ConditionKey) ?? [];
             foreach (Condition subCondition in conditions)
             {
                 RemoveFields(subCondition);
@@ -307,19 +307,19 @@ namespace SabreTools.DatTools
         /// <param name="configuration">Configuration to remove fields from</param>
         private void RemoveNestedFields(Configuration configuration)
         {
-            var conditions = configuration.GetFieldValue<Condition[]?>(Models.Metadata.Configuration.ConditionKey) ?? [];
+            var conditions = configuration.GetFieldValue<Condition[]?>(Data.Models.Metadata.Configuration.ConditionKey) ?? [];
             foreach (Condition subCondition in conditions)
             {
                 RemoveFields(subCondition);
             }
 
-            var locations = configuration.GetFieldValue<ConfLocation[]?>(Models.Metadata.Configuration.ConfLocationKey) ?? [];
+            var locations = configuration.GetFieldValue<ConfLocation[]?>(Data.Models.Metadata.Configuration.ConfLocationKey) ?? [];
             foreach (ConfLocation subLocation in locations)
             {
                 RemoveFields(subLocation);
             }
 
-            var settings = configuration.GetFieldValue<ConfSetting[]?>(Models.Metadata.Configuration.ConfSettingKey) ?? [];
+            var settings = configuration.GetFieldValue<ConfSetting[]?>(Data.Models.Metadata.Configuration.ConfSettingKey) ?? [];
             foreach (ConfSetting subSetting in settings)
             {
                 RemoveFields(subSetting);
@@ -332,7 +332,7 @@ namespace SabreTools.DatTools
         /// <param name="confsetting">ConfSetting to remove fields from</param>
         private void RemoveNestedFields(ConfSetting confsetting)
         {
-            var conditions = confsetting.GetFieldValue<Condition[]?>(Models.Metadata.ConfSetting.ConditionKey) ?? [];
+            var conditions = confsetting.GetFieldValue<Condition[]?>(Data.Models.Metadata.ConfSetting.ConditionKey) ?? [];
             foreach (Condition subCondition in conditions)
             {
                 RemoveFields(subCondition);
@@ -345,13 +345,13 @@ namespace SabreTools.DatTools
         /// <param name="device">Device to remove fields from</param>
         private void RemoveNestedFields(Device device)
         {
-            var extensions = device.GetFieldValue<Extension[]?>(Models.Metadata.Device.ExtensionKey) ?? [];
+            var extensions = device.GetFieldValue<Extension[]?>(Data.Models.Metadata.Device.ExtensionKey) ?? [];
             foreach (Extension subExtension in extensions)
             {
                 RemoveFields(subExtension);
             }
 
-            var instances = device.GetFieldValue<Instance[]?>(Models.Metadata.Device.InstanceKey) ?? [];
+            var instances = device.GetFieldValue<Instance[]?>(Data.Models.Metadata.Device.InstanceKey) ?? [];
             foreach (Instance subInstance in instances)
             {
                 RemoveFields(subInstance);
@@ -364,19 +364,19 @@ namespace SabreTools.DatTools
         /// <param name="dipSwitch">DipSwitch to remove fields from</param>
         private void RemoveNestedFields(DipSwitch dipSwitch)
         {
-            var conditions = dipSwitch.GetFieldValue<Condition[]?>(Models.Metadata.DipSwitch.ConditionKey) ?? [];
+            var conditions = dipSwitch.GetFieldValue<Condition[]?>(Data.Models.Metadata.DipSwitch.ConditionKey) ?? [];
             foreach (Condition subCondition in conditions)
             {
                 RemoveFields(subCondition);
             }
 
-            var locations = dipSwitch.GetFieldValue<DipLocation[]?>(Models.Metadata.DipSwitch.DipLocationKey) ?? [];
+            var locations = dipSwitch.GetFieldValue<DipLocation[]?>(Data.Models.Metadata.DipSwitch.DipLocationKey) ?? [];
             foreach (DipLocation subLocation in locations)
             {
                 RemoveFields(subLocation);
             }
 
-            var dipValues = dipSwitch.GetFieldValue<DipValue[]?>(Models.Metadata.DipSwitch.DipValueKey) ?? [];
+            var dipValues = dipSwitch.GetFieldValue<DipValue[]?>(Data.Models.Metadata.DipSwitch.DipValueKey) ?? [];
             foreach (DipValue subValue in dipValues)
             {
                 RemoveFields(subValue);
@@ -393,7 +393,7 @@ namespace SabreTools.DatTools
         /// <param name="dipValue">DipValue to remove fields from</param>
         private void RemoveNestedFields(DipValue dipValue)
         {
-            var conditions = dipValue.GetFieldValue<Condition[]?>(Models.Metadata.DipValue.ConditionKey) ?? [];
+            var conditions = dipValue.GetFieldValue<Condition[]?>(Data.Models.Metadata.DipValue.ConditionKey) ?? [];
             foreach (Condition subCondition in conditions)
             {
                 RemoveFields(subCondition);
@@ -421,7 +421,7 @@ namespace SabreTools.DatTools
         /// <param name="input">Input to remove fields from</param>
         private void RemoveNestedFields(Input input)
         {
-            var controls = input.GetFieldValue<Control[]?>(Models.Metadata.Input.ControlKey) ?? [];
+            var controls = input.GetFieldValue<Control[]?>(Data.Models.Metadata.Input.ControlKey) ?? [];
             foreach (Control subControl in controls)
             {
                 RemoveFields(subControl);
@@ -434,7 +434,7 @@ namespace SabreTools.DatTools
         /// <param name="part">Part to remove fields from</param>
         private void RemoveNestedFields(Part part)
         {
-            var features = part.GetFieldValue<PartFeature[]?>(Models.Metadata.Part.FeatureKey) ?? [];
+            var features = part.GetFieldValue<PartFeature[]?>(Data.Models.Metadata.Part.FeatureKey) ?? [];
             foreach (PartFeature subPartFeature in features)
             {
                 RemoveFields(subPartFeature);
@@ -447,7 +447,7 @@ namespace SabreTools.DatTools
         /// <param name="port">Port to remove fields from</param>
         private void RemoveNestedFields(Port port)
         {
-            var analogs = port.GetFieldValue<Analog[]?>(Models.Metadata.Port.AnalogKey) ?? [];
+            var analogs = port.GetFieldValue<Analog[]?>(Data.Models.Metadata.Port.AnalogKey) ?? [];
             foreach (Analog subAnalog in analogs)
             {
                 RemoveFields(subAnalog);
@@ -475,7 +475,7 @@ namespace SabreTools.DatTools
         /// <param name="slot">Slot to remove fields from</param>
         private void RemoveNestedFields(Slot slot)
         {
-            var slotOptions = slot.GetFieldValue<SlotOption[]?>(Models.Metadata.Slot.SlotOptionKey) ?? [];
+            var slotOptions = slot.GetFieldValue<SlotOption[]?>(Data.Models.Metadata.Slot.SlotOptionKey) ?? [];
             foreach (SlotOption subSlotOption in slotOptions)
             {
                 RemoveFields(subSlotOption);

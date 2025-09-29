@@ -62,16 +62,16 @@ namespace SabreTools.DatTools
             disk.SetName(baseFile.Filename);
             if (baseFile is CHDFile chd)
             {
-                disk.SetFieldValue<string?>(Models.Metadata.Disk.MD5Key, chd.InternalMD5.ToHexString());
-                disk.SetFieldValue<string?>(Models.Metadata.Disk.SHA1Key, chd.InternalSHA1.ToHexString());
+                disk.SetFieldValue<string?>(Data.Models.Metadata.Disk.MD5Key, chd.InternalMD5.ToHexString());
+                disk.SetFieldValue<string?>(Data.Models.Metadata.Disk.SHA1Key, chd.InternalSHA1.ToHexString());
             }
             else
             {
-                disk.SetFieldValue<string?>(Models.Metadata.Disk.MD5Key, baseFile.MD5.ToHexString());
-                disk.SetFieldValue<string?>(Models.Metadata.Disk.SHA1Key, baseFile.SHA1.ToHexString());
+                disk.SetFieldValue<string?>(Data.Models.Metadata.Disk.MD5Key, baseFile.MD5.ToHexString());
+                disk.SetFieldValue<string?>(Data.Models.Metadata.Disk.SHA1Key, baseFile.SHA1.ToHexString());
             }
 
-            disk.RemoveField(Models.Metadata.Disk.StatusKey);
+            disk.RemoveField(Data.Models.Metadata.Disk.StatusKey);
             disk.SetFieldValue<DupeType>(DatItem.DupeTypeKey, 0x00);
 
             return disk;
@@ -91,7 +91,7 @@ namespace SabreTools.DatTools
             file.SHA1 = baseFile.SHA1.ToHexString();
             file.SHA256 = baseFile.SHA256.ToHexString();
 
-            file.SetFieldValue<ItemType>(Models.Metadata.DatItem.TypeKey, ItemType.File);
+            file.SetFieldValue<ItemType>(Data.Models.Metadata.DatItem.TypeKey, ItemType.File);
             file.SetFieldValue<DupeType>(DatItem.DupeTypeKey, 0x00);
 
             return file;
@@ -109,17 +109,17 @@ namespace SabreTools.DatTools
             media.SetName(baseFile.Filename);
             if (baseFile is AaruFormat aif)
             {
-                media.SetFieldValue<string?>(Models.Metadata.Media.MD5Key, aif.InternalMD5.ToHexString());
-                media.SetFieldValue<string?>(Models.Metadata.Media.SHA1Key, aif.InternalSHA1.ToHexString());
-                media.SetFieldValue<string?>(Models.Metadata.Media.SHA256Key, aif.InternalSHA256.ToHexString());
-                media.SetFieldValue<string?>(Models.Metadata.Media.SpamSumKey, System.Text.Encoding.UTF8.GetString(aif.InternalSpamSum ?? []));
+                media.SetFieldValue<string?>(Data.Models.Metadata.Media.MD5Key, aif.InternalMD5.ToHexString());
+                media.SetFieldValue<string?>(Data.Models.Metadata.Media.SHA1Key, aif.InternalSHA1.ToHexString());
+                media.SetFieldValue<string?>(Data.Models.Metadata.Media.SHA256Key, aif.InternalSHA256.ToHexString());
+                media.SetFieldValue<string?>(Data.Models.Metadata.Media.SpamSumKey, System.Text.Encoding.UTF8.GetString(aif.InternalSpamSum ?? []));
             }
             else
             {
-                media.SetFieldValue<string?>(Models.Metadata.Media.MD5Key, baseFile.MD5.ToHexString());
-                media.SetFieldValue<string?>(Models.Metadata.Media.SHA1Key, baseFile.SHA1.ToHexString());
-                media.SetFieldValue<string?>(Models.Metadata.Media.SHA256Key, baseFile.SHA256.ToHexString());
-                media.SetFieldValue<string?>(Models.Metadata.Media.SpamSumKey, System.Text.Encoding.UTF8.GetString(baseFile.SpamSum ?? []));
+                media.SetFieldValue<string?>(Data.Models.Metadata.Media.MD5Key, baseFile.MD5.ToHexString());
+                media.SetFieldValue<string?>(Data.Models.Metadata.Media.SHA1Key, baseFile.SHA1.ToHexString());
+                media.SetFieldValue<string?>(Data.Models.Metadata.Media.SHA256Key, baseFile.SHA256.ToHexString());
+                media.SetFieldValue<string?>(Data.Models.Metadata.Media.SpamSumKey, System.Text.Encoding.UTF8.GetString(baseFile.SpamSum ?? []));
             }
 
             media.SetFieldValue<DupeType>(DatItem.DupeTypeKey, 0x00);
@@ -137,22 +137,22 @@ namespace SabreTools.DatTools
             var rom = new Rom();
 
             rom.SetName(baseFile.Filename);
-            rom.SetFieldValue<string?>(Models.Metadata.Rom.DateKey, baseFile.Date);
-            rom.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, baseFile.CRC.ToHexString());
-            rom.SetFieldValue<string?>(Models.Metadata.Rom.MD2Key, baseFile.MD2.ToHexString());
-            rom.SetFieldValue<string?>(Models.Metadata.Rom.MD4Key, baseFile.MD4.ToHexString());
-            rom.SetFieldValue<string?>(Models.Metadata.Rom.MD5Key, baseFile.MD5.ToHexString());
-            rom.SetFieldValue<string?>(Models.Metadata.Rom.RIPEMD128Key, baseFile.RIPEMD128.ToHexString());
-            rom.SetFieldValue<string?>(Models.Metadata.Rom.RIPEMD160Key, baseFile.RIPEMD160.ToHexString());
-            rom.SetFieldValue<string?>(Models.Metadata.Rom.SHA1Key, baseFile.SHA1.ToHexString());
-            rom.SetFieldValue<string?>(Models.Metadata.Rom.SHA256Key, baseFile.SHA256.ToHexString());
-            rom.SetFieldValue<string?>(Models.Metadata.Rom.SHA384Key, baseFile.SHA384.ToHexString());
-            rom.SetFieldValue<string?>(Models.Metadata.Rom.SHA512Key, baseFile.SHA512.ToHexString());
-            rom.SetFieldValue<string?>(Models.Metadata.Rom.SizeKey, baseFile.Size.ToString());
+            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.DateKey, baseFile.Date);
+            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, baseFile.CRC.ToHexString());
+            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.MD2Key, baseFile.MD2.ToHexString());
+            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.MD4Key, baseFile.MD4.ToHexString());
+            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.MD5Key, baseFile.MD5.ToHexString());
+            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.RIPEMD128Key, baseFile.RIPEMD128.ToHexString());
+            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.RIPEMD160Key, baseFile.RIPEMD160.ToHexString());
+            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA1Key, baseFile.SHA1.ToHexString());
+            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA256Key, baseFile.SHA256.ToHexString());
+            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA384Key, baseFile.SHA384.ToHexString());
+            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA512Key, baseFile.SHA512.ToHexString());
+            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SizeKey, baseFile.Size.ToString());
             if (baseFile.SpamSum != null)
-                rom.SetFieldValue<string?>(Models.Metadata.Rom.SpamSumKey, System.Text.Encoding.UTF8.GetString(baseFile.SpamSum));
+                rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SpamSumKey, System.Text.Encoding.UTF8.GetString(baseFile.SpamSum));
 
-            rom.RemoveField(Models.Metadata.Rom.StatusKey);
+            rom.RemoveField(Data.Models.Metadata.Rom.StatusKey);
             rom.SetFieldValue<DupeType>(DatItem.DupeTypeKey, 0x00);
 
             return rom;
@@ -174,10 +174,10 @@ namespace SabreTools.DatTools
             {
                 Filename = disk.GetName(),
                 Parent = machineName,
-                MD5 = disk.GetStringFieldValue(Models.Metadata.Disk.MD5Key).FromHexString(),
-                InternalMD5 = disk.GetStringFieldValue(Models.Metadata.Disk.MD5Key).FromHexString(),
-                SHA1 = disk.GetStringFieldValue(Models.Metadata.Disk.SHA1Key).FromHexString(),
-                InternalSHA1 = disk.GetStringFieldValue(Models.Metadata.Disk.SHA1Key).FromHexString(),
+                MD5 = disk.GetStringFieldValue(Data.Models.Metadata.Disk.MD5Key).FromHexString(),
+                InternalMD5 = disk.GetStringFieldValue(Data.Models.Metadata.Disk.MD5Key).FromHexString(),
+                SHA1 = disk.GetStringFieldValue(Data.Models.Metadata.Disk.SHA1Key).FromHexString(),
+                InternalSHA1 = disk.GetStringFieldValue(Data.Models.Metadata.Disk.SHA1Key).FromHexString(),
             };
         }
 
@@ -219,14 +219,14 @@ namespace SabreTools.DatTools
             {
                 Filename = media.GetName(),
                 Parent = machineName,
-                MD5 = media.GetStringFieldValue(Models.Metadata.Media.MD5Key).FromHexString(),
-                InternalMD5 = media.GetStringFieldValue(Models.Metadata.Media.MD5Key).FromHexString(),
-                SHA1 = media.GetStringFieldValue(Models.Metadata.Media.SHA1Key).FromHexString(),
-                InternalSHA1 = media.GetStringFieldValue(Models.Metadata.Media.SHA1Key).FromHexString(),
-                SHA256 = media.GetStringFieldValue(Models.Metadata.Media.SHA256Key).FromHexString(),
-                InternalSHA256 = media.GetStringFieldValue(Models.Metadata.Media.SHA256Key).FromHexString(),
-                SpamSum = System.Text.Encoding.UTF8.GetBytes(media.GetStringFieldValue(Models.Metadata.Media.SpamSumKey) ?? string.Empty),
-                InternalSpamSum = System.Text.Encoding.UTF8.GetBytes(media.GetStringFieldValue(Models.Metadata.Media.SpamSumKey) ?? string.Empty),
+                MD5 = media.GetStringFieldValue(Data.Models.Metadata.Media.MD5Key).FromHexString(),
+                InternalMD5 = media.GetStringFieldValue(Data.Models.Metadata.Media.MD5Key).FromHexString(),
+                SHA1 = media.GetStringFieldValue(Data.Models.Metadata.Media.SHA1Key).FromHexString(),
+                InternalSHA1 = media.GetStringFieldValue(Data.Models.Metadata.Media.SHA1Key).FromHexString(),
+                SHA256 = media.GetStringFieldValue(Data.Models.Metadata.Media.SHA256Key).FromHexString(),
+                InternalSHA256 = media.GetStringFieldValue(Data.Models.Metadata.Media.SHA256Key).FromHexString(),
+                SpamSum = System.Text.Encoding.UTF8.GetBytes(media.GetStringFieldValue(Data.Models.Metadata.Media.SpamSumKey) ?? string.Empty),
+                InternalSpamSum = System.Text.Encoding.UTF8.GetBytes(media.GetStringFieldValue(Data.Models.Metadata.Media.SpamSumKey) ?? string.Empty),
             };
         }
 
@@ -242,23 +242,23 @@ namespace SabreTools.DatTools
             if (machine != null)
                 machineName = machine.GetName();
 
-            string? spamSum = rom.GetStringFieldValue(Models.Metadata.Rom.SpamSumKey);
+            string? spamSum = rom.GetStringFieldValue(Data.Models.Metadata.Rom.SpamSumKey);
             return new BaseFile()
             {
                 Filename = rom.GetName(),
                 Parent = machineName,
-                Date = rom.GetStringFieldValue(Models.Metadata.Rom.DateKey),
-                Size = NumberHelper.ConvertToInt64(rom.GetStringFieldValue(Models.Metadata.Rom.SizeKey)),
-                CRC = rom.GetStringFieldValue(Models.Metadata.Rom.CRCKey).FromHexString(),
-                MD2 = rom.GetStringFieldValue(Models.Metadata.Rom.MD2Key).FromHexString(),
-                MD4 = rom.GetStringFieldValue(Models.Metadata.Rom.MD4Key).FromHexString(),
-                MD5 = rom.GetStringFieldValue(Models.Metadata.Rom.MD5Key).FromHexString(),
-                RIPEMD128 = rom.GetStringFieldValue(Models.Metadata.Rom.RIPEMD128Key).FromHexString(),
-                RIPEMD160 = rom.GetStringFieldValue(Models.Metadata.Rom.RIPEMD160Key).FromHexString(),
-                SHA1 = rom.GetStringFieldValue(Models.Metadata.Rom.SHA1Key).FromHexString(),
-                SHA256 = rom.GetStringFieldValue(Models.Metadata.Rom.SHA256Key).FromHexString(),
-                SHA384 = rom.GetStringFieldValue(Models.Metadata.Rom.SHA384Key).FromHexString(),
-                SHA512 = rom.GetStringFieldValue(Models.Metadata.Rom.SHA512Key).FromHexString(),
+                Date = rom.GetStringFieldValue(Data.Models.Metadata.Rom.DateKey),
+                Size = NumberHelper.ConvertToInt64(rom.GetStringFieldValue(Data.Models.Metadata.Rom.SizeKey)),
+                CRC = rom.GetStringFieldValue(Data.Models.Metadata.Rom.CRCKey).FromHexString(),
+                MD2 = rom.GetStringFieldValue(Data.Models.Metadata.Rom.MD2Key).FromHexString(),
+                MD4 = rom.GetStringFieldValue(Data.Models.Metadata.Rom.MD4Key).FromHexString(),
+                MD5 = rom.GetStringFieldValue(Data.Models.Metadata.Rom.MD5Key).FromHexString(),
+                RIPEMD128 = rom.GetStringFieldValue(Data.Models.Metadata.Rom.RIPEMD128Key).FromHexString(),
+                RIPEMD160 = rom.GetStringFieldValue(Data.Models.Metadata.Rom.RIPEMD160Key).FromHexString(),
+                SHA1 = rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA1Key).FromHexString(),
+                SHA256 = rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA256Key).FromHexString(),
+                SHA384 = rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA384Key).FromHexString(),
+                SHA512 = rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA512Key).FromHexString(),
                 SpamSum = spamSum != null ? System.Text.Encoding.UTF8.GetBytes(spamSum) : null,
             };
         }

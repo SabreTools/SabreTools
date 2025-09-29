@@ -6,7 +6,7 @@ namespace SabreTools.DatFiles.Formats
     /// <summary>
     /// Represents an AttractMode DAT
     /// </summary>
-    public sealed class AttractMode : SerializableDatFile<Models.AttractMode.MetadataFile, Serialization.Deserializers.AttractMode, Serialization.Serializers.AttractMode, Serialization.CrossModel.AttractMode>
+    public sealed class AttractMode : SerializableDatFile<Data.Models.AttractMode.MetadataFile, Serialization.Readers.AttractMode, Serialization.Writers.AttractMode, Serialization.CrossModel.AttractMode>
     {
         /// <inheritdoc/>
         public override ItemType[] SupportedTypes
@@ -30,7 +30,7 @@ namespace SabreTools.DatFiles.Formats
 
             // Check item name
             if (string.IsNullOrEmpty(datItem.GetName()))
-                missingFields.Add(Models.Metadata.Rom.NameKey);
+                missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
             return missingFields;
         }

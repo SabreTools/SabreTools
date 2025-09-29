@@ -7,7 +7,7 @@ namespace SabreTools.DatItems.Formats
     /// Represents a single analog item
     /// </summary>
     [JsonObject("analog"), XmlRoot("analog")]
-    public sealed class Analog : DatItem<Models.Metadata.Analog>
+    public sealed class Analog : DatItem<Data.Models.Metadata.Analog>
     {
         #region Fields
 
@@ -20,9 +20,9 @@ namespace SabreTools.DatItems.Formats
 
         public Analog() : base() { }
 
-        public Analog(Models.Metadata.Analog item) : base(item) { }
+        public Analog(Data.Models.Metadata.Analog item) : base(item) { }
 
-        public Analog(Models.Metadata.Analog item, Machine machine, Source source) : this(item)
+        public Analog(Data.Models.Metadata.Analog item, Machine machine, Source source) : this(item)
         {
             SetFieldValue<Source?>(DatItem.SourceKey, source);
             CopyMachineInformation(machine);

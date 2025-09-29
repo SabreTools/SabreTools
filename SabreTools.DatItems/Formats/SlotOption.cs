@@ -8,7 +8,7 @@ namespace SabreTools.DatItems.Formats
     /// Represents one ListXML slotoption
     /// </summary>
     [JsonObject("slotoption"), XmlRoot("slotoption")]
-    public sealed class SlotOption : DatItem<Models.Metadata.SlotOption>
+    public sealed class SlotOption : DatItem<Data.Models.Metadata.SlotOption>
     {
         #region Fields
 
@@ -21,14 +21,14 @@ namespace SabreTools.DatItems.Formats
 
         public SlotOption() : base() { }
 
-        public SlotOption(Models.Metadata.SlotOption item) : base(item)
+        public SlotOption(Data.Models.Metadata.SlotOption item) : base(item)
         {
             // Process flag values
-            if (GetBoolFieldValue(Models.Metadata.SlotOption.DefaultKey) != null)
-                SetFieldValue<string?>(Models.Metadata.SlotOption.DefaultKey, GetBoolFieldValue(Models.Metadata.SlotOption.DefaultKey).FromYesNo());
+            if (GetBoolFieldValue(Data.Models.Metadata.SlotOption.DefaultKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.SlotOption.DefaultKey, GetBoolFieldValue(Data.Models.Metadata.SlotOption.DefaultKey).FromYesNo());
         }
 
-        public SlotOption(Models.Metadata.SlotOption item, Machine machine, Source source) : this(item)
+        public SlotOption(Data.Models.Metadata.SlotOption item, Machine machine, Source source) : this(item)
         {
             SetFieldValue<Source?>(DatItem.SourceKey, source);
             CopyMachineInformation(machine);

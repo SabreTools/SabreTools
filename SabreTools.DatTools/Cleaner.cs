@@ -221,7 +221,7 @@ namespace SabreTools.DatTools
         {
             // Get the fields for processing
             string? machineName = machine.GetName();
-            string? machineDesc = machine.GetStringFieldValue(Models.Metadata.Machine.DescriptionKey);
+            string? machineDesc = machine.GetStringFieldValue(Data.Models.Metadata.Machine.DescriptionKey);
             string? datItemName = datItem.GetName();
 
             // If we're stripping unicode characters, strip machine name and description
@@ -260,7 +260,7 @@ namespace SabreTools.DatTools
 
             // Set the fields back, if necessary
             machine.SetName(machineName);
-            machine.SetFieldValue<string?>(Models.Metadata.Machine.DescriptionKey, machineDesc);
+            machine.SetFieldValue<string?>(Data.Models.Metadata.Machine.DescriptionKey, machineDesc);
             datItem.SetName(datItemName);
         }
 

@@ -8,9 +8,9 @@ namespace SabreTools.DatItems.Test
         #region Private Testing Classes
 
         /// <summary>
-        /// Testing implementation of Models.Metadata.DatItem
+        /// Testing implementation of Data.Models.Metadata.DatItem
         /// </summary>
-        private class TestDatItemModel : Models.Metadata.DatItem
+        private class TestDatItemModel : Data.Models.Metadata.DatItem
         {
             public const string NameKey = "__NAME__";
         }
@@ -208,11 +208,11 @@ namespace SabreTools.DatItems.Test
         {
             DatItem self = new Rom();
             self.SetName(selfName);
-            self.SetFieldValue(Models.Metadata.Rom.CRCKey, "DEADBEEF");
+            self.SetFieldValue(Data.Models.Metadata.Rom.CRCKey, "DEADBEEF");
 
             DatItem? other = new Rom();
             other.SetName(otherName);
-            other.SetFieldValue(Models.Metadata.Rom.CRCKey, "DEADBEEF");
+            other.SetFieldValue(Data.Models.Metadata.Rom.CRCKey, "DEADBEEF");
 
             int actual = self.CompareTo(other);
             Assert.Equal(expected, actual);
@@ -341,7 +341,7 @@ namespace SabreTools.DatItems.Test
             Source source = new Source(0);
 
             Machine machine = new Machine();
-            machine.SetFieldValue(Models.Metadata.Machine.NameKey, "Machine");
+            machine.SetFieldValue(Data.Models.Metadata.Machine.NameKey, "Machine");
 
             DatItem datItem = new Blank();
 
@@ -407,20 +407,20 @@ namespace SabreTools.DatItems.Test
             Source source = new Source(0);
 
             Machine machine = new Machine();
-            machine.SetFieldValue(Models.Metadata.Machine.NameKey, "Machine");
+            machine.SetFieldValue(Data.Models.Metadata.Machine.NameKey, "Machine");
 
             DatItem datItem = new Rom();
-            datItem.SetFieldValue(Models.Metadata.Rom.CRCKey, "DEADBEEF");
-            datItem.SetFieldValue(Models.Metadata.Rom.MD2Key, "DEADBEEF");
-            datItem.SetFieldValue(Models.Metadata.Rom.MD4Key, "DEADBEEF");
-            datItem.SetFieldValue(Models.Metadata.Rom.MD5Key, "DEADBEEF");
-            datItem.SetFieldValue(Models.Metadata.Rom.RIPEMD128Key, "DEADBEEF");
-            datItem.SetFieldValue(Models.Metadata.Rom.RIPEMD160Key, "DEADBEEF");
-            datItem.SetFieldValue(Models.Metadata.Rom.SHA1Key, "DEADBEEF");
-            datItem.SetFieldValue(Models.Metadata.Rom.SHA256Key, "DEADBEEF");
-            datItem.SetFieldValue(Models.Metadata.Rom.SHA384Key, "DEADBEEF");
-            datItem.SetFieldValue(Models.Metadata.Rom.SHA512Key, "DEADBEEF");
-            datItem.SetFieldValue(Models.Metadata.Rom.SpamSumKey, "BASE64");
+            datItem.SetFieldValue(Data.Models.Metadata.Rom.CRCKey, "DEADBEEF");
+            datItem.SetFieldValue(Data.Models.Metadata.Rom.MD2Key, "DEADBEEF");
+            datItem.SetFieldValue(Data.Models.Metadata.Rom.MD4Key, "DEADBEEF");
+            datItem.SetFieldValue(Data.Models.Metadata.Rom.MD5Key, "DEADBEEF");
+            datItem.SetFieldValue(Data.Models.Metadata.Rom.RIPEMD128Key, "DEADBEEF");
+            datItem.SetFieldValue(Data.Models.Metadata.Rom.RIPEMD160Key, "DEADBEEF");
+            datItem.SetFieldValue(Data.Models.Metadata.Rom.SHA1Key, "DEADBEEF");
+            datItem.SetFieldValue(Data.Models.Metadata.Rom.SHA256Key, "DEADBEEF");
+            datItem.SetFieldValue(Data.Models.Metadata.Rom.SHA384Key, "DEADBEEF");
+            datItem.SetFieldValue(Data.Models.Metadata.Rom.SHA512Key, "DEADBEEF");
+            datItem.SetFieldValue(Data.Models.Metadata.Rom.SpamSumKey, "BASE64");
 
             string actual = datItem.GetKey(bucketedBy, machine, source, lower, norename);
             Assert.Equal(expected, actual);

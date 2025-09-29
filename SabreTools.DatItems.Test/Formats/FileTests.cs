@@ -12,7 +12,7 @@ namespace SabreTools.DatItems.Test.Formats
         public void ConvertToRomTest()
         {
             Machine machine = new Machine();
-            machine.SetFieldValue(Models.Metadata.Machine.NameKey, "XXXXXX");
+            machine.SetFieldValue(Data.Models.Metadata.Machine.NameKey, "XXXXXX");
 
             Source source = new Source(0, "XXXXXX");
 
@@ -35,11 +35,11 @@ namespace SabreTools.DatItems.Test.Formats
             Rom actual = file.ConvertToRom();
 
             Assert.Equal("XXXXXX.XXXXXX", actual.GetName());
-            Assert.Equal(12345, actual.GetInt64FieldValue(Models.Metadata.Rom.SizeKey));
-            Assert.Equal("deadbeef", actual.GetStringFieldValue(Models.Metadata.Rom.CRCKey));
-            Assert.Equal("000000000000000000000000deadbeef", actual.GetStringFieldValue(Models.Metadata.Rom.MD5Key));
-            Assert.Equal("00000000000000000000000000000000deadbeef", actual.GetStringFieldValue(Models.Metadata.Rom.SHA1Key));
-            Assert.Equal("00000000000000000000000000000000000000000000000000000000deadbeef", actual.GetStringFieldValue(Models.Metadata.Rom.SHA256Key));
+            Assert.Equal(12345, actual.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey));
+            Assert.Equal("deadbeef", actual.GetStringFieldValue(Data.Models.Metadata.Rom.CRCKey));
+            Assert.Equal("000000000000000000000000deadbeef", actual.GetStringFieldValue(Data.Models.Metadata.Rom.MD5Key));
+            Assert.Equal("00000000000000000000000000000000deadbeef", actual.GetStringFieldValue(Data.Models.Metadata.Rom.SHA1Key));
+            Assert.Equal("00000000000000000000000000000000000000000000000000000000deadbeef", actual.GetStringFieldValue(Data.Models.Metadata.Rom.SHA256Key));
             Assert.Equal(DupeType.All | DupeType.External, actual.GetFieldValue<DupeType>(DatItem.DupeTypeKey));
 
             Machine? actualMachine = actual.GetMachine();
@@ -340,7 +340,7 @@ namespace SabreTools.DatItems.Test.Formats
             Source source = new Source(0);
 
             Machine machine = new Machine();
-            machine.SetFieldValue(Models.Metadata.Machine.NameKey, "Machine");
+            machine.SetFieldValue(Data.Models.Metadata.Machine.NameKey, "Machine");
 
             DatItem datItem = new File
             {

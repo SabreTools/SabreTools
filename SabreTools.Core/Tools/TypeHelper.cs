@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Xml.Serialization;
-using SabreTools.Models;
-using SabreTools.Models.Metadata;
+using SabreTools.Data.Attributes;
+using SabreTools.Data.Models.Metadata;
 
 namespace SabreTools.Core.Tools
 {

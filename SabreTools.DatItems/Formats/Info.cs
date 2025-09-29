@@ -7,7 +7,7 @@ namespace SabreTools.DatItems.Formats
     /// Represents special information about a machine
     /// </summary>
     [JsonObject("info"), XmlRoot("info")]
-    public sealed class Info : DatItem<Models.Metadata.Info>
+    public sealed class Info : DatItem<Data.Models.Metadata.Info>
     {
         #region Fields
 
@@ -20,9 +20,9 @@ namespace SabreTools.DatItems.Formats
 
         public Info() : base() { }
 
-        public Info(Models.Metadata.Info item) : base(item) { }
+        public Info(Data.Models.Metadata.Info item) : base(item) { }
 
-        public Info(Models.Metadata.Info item, Machine machine, Source source) : this(item)
+        public Info(Data.Models.Metadata.Info item, Machine machine, Source source) : this(item)
         {
             SetFieldValue<Source?>(DatItem.SourceKey, source);
             CopyMachineInformation(machine);

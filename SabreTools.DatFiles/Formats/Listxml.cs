@@ -9,7 +9,7 @@ namespace SabreTools.DatFiles.Formats
     /// <summary>
     /// Represents a MAME/M1 XML DAT
     /// </summary>
-    public sealed class Listxml : SerializableDatFile<Models.Listxml.Mame, Serialization.Deserializers.Listxml, Serialization.Serializers.Listxml, Serialization.CrossModel.Listxml>
+    public sealed class Listxml : SerializableDatFile<Data.Models.Listxml.Mame, Serialization.Readers.Listxml, Serialization.Writers.Listxml, Serialization.CrossModel.Listxml>
     {
         #region Constants
 
@@ -230,11 +230,11 @@ namespace SabreTools.DatFiles.Formats
             try
             {
                 // Deserialize the input file
-                var mame = new Serialization.Deserializers.Listxml().Deserialize(filename);
-                Models.Metadata.MetadataFile? metadata;
+                var mame = new Serialization.Readers.Listxml().Deserialize(filename);
+                Data.Models.Metadata.MetadataFile? metadata;
                 if (mame == null)
                 {
-                    var m1 = new Serialization.Deserializers.M1().Deserialize(filename);
+                    var m1 = new Serialization.Readers.M1().Deserialize(filename);
                     metadata = new Serialization.CrossModel.M1().Serialize(m1);
                 }
                 else
@@ -260,129 +260,129 @@ namespace SabreTools.DatFiles.Formats
             {
                 case BiosSet biosset:
                     if (string.IsNullOrEmpty(biosset.GetName()))
-                        missingFields.Add(Models.Metadata.BiosSet.NameKey);
-                    if (string.IsNullOrEmpty(biosset.GetStringFieldValue(Models.Metadata.BiosSet.DescriptionKey)))
-                        missingFields.Add(Models.Metadata.BiosSet.DescriptionKey);
+                        missingFields.Add(Data.Models.Metadata.BiosSet.NameKey);
+                    if (string.IsNullOrEmpty(biosset.GetStringFieldValue(Data.Models.Metadata.BiosSet.DescriptionKey)))
+                        missingFields.Add(Data.Models.Metadata.BiosSet.DescriptionKey);
                     break;
 
                 case Rom rom:
                     if (string.IsNullOrEmpty(rom.GetName()))
-                        missingFields.Add(Models.Metadata.Rom.NameKey);
-                    if (rom.GetInt64FieldValue(Models.Metadata.Rom.SizeKey) == null || rom.GetInt64FieldValue(Models.Metadata.Rom.SizeKey) < 0)
-                        missingFields.Add(Models.Metadata.Rom.SizeKey);
-                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.CRCKey))
-                        && string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.SHA1Key)))
+                        missingFields.Add(Data.Models.Metadata.Rom.NameKey);
+                    if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) == null || rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) < 0)
+                        missingFields.Add(Data.Models.Metadata.Rom.SizeKey);
+                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.CRCKey))
+                        && string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA1Key)))
                     {
-                        missingFields.Add(Models.Metadata.Rom.SHA1Key);
+                        missingFields.Add(Data.Models.Metadata.Rom.SHA1Key);
                     }
                     break;
 
                 case Disk disk:
                     if (string.IsNullOrEmpty(disk.GetName()))
-                        missingFields.Add(Models.Metadata.Disk.NameKey);
-                    if (string.IsNullOrEmpty(disk.GetStringFieldValue(Models.Metadata.Disk.MD5Key))
-                        && string.IsNullOrEmpty(disk.GetStringFieldValue(Models.Metadata.Disk.SHA1Key)))
+                        missingFields.Add(Data.Models.Metadata.Disk.NameKey);
+                    if (string.IsNullOrEmpty(disk.GetStringFieldValue(Data.Models.Metadata.Disk.MD5Key))
+                        && string.IsNullOrEmpty(disk.GetStringFieldValue(Data.Models.Metadata.Disk.SHA1Key)))
                     {
-                        missingFields.Add(Models.Metadata.Disk.SHA1Key);
+                        missingFields.Add(Data.Models.Metadata.Disk.SHA1Key);
                     }
                     break;
 
                 case DeviceRef deviceref:
                     if (string.IsNullOrEmpty(deviceref.GetName()))
-                        missingFields.Add(Models.Metadata.DeviceRef.NameKey);
+                        missingFields.Add(Data.Models.Metadata.DeviceRef.NameKey);
                     break;
 
                 case Sample sample:
                     if (string.IsNullOrEmpty(sample.GetName()))
-                        missingFields.Add(Models.Metadata.Sample.NameKey);
+                        missingFields.Add(Data.Models.Metadata.Sample.NameKey);
                     break;
 
                 case Chip chip:
                     if (string.IsNullOrEmpty(chip.GetName()))
-                        missingFields.Add(Models.Metadata.Chip.NameKey);
-                    if (chip.GetStringFieldValue(Models.Metadata.Chip.ChipTypeKey).AsChipType() == ChipType.NULL)
-                        missingFields.Add(Models.Metadata.Chip.ChipTypeKey);
+                        missingFields.Add(Data.Models.Metadata.Chip.NameKey);
+                    if (chip.GetStringFieldValue(Data.Models.Metadata.Chip.ChipTypeKey).AsChipType() == ChipType.NULL)
+                        missingFields.Add(Data.Models.Metadata.Chip.ChipTypeKey);
                     break;
 
                 case Display display:
-                    if (display.GetStringFieldValue(Models.Metadata.Display.DisplayTypeKey).AsDisplayType() == DisplayType.NULL)
-                        missingFields.Add(Models.Metadata.Display.DisplayTypeKey);
-                    if (display.GetDoubleFieldValue(Models.Metadata.Display.RefreshKey) == null)
-                        missingFields.Add(Models.Metadata.Display.RefreshKey);
+                    if (display.GetStringFieldValue(Data.Models.Metadata.Display.DisplayTypeKey).AsDisplayType() == DisplayType.NULL)
+                        missingFields.Add(Data.Models.Metadata.Display.DisplayTypeKey);
+                    if (display.GetDoubleFieldValue(Data.Models.Metadata.Display.RefreshKey) == null)
+                        missingFields.Add(Data.Models.Metadata.Display.RefreshKey);
                     break;
 
                 case Sound sound:
-                    if (sound.GetInt64FieldValue(Models.Metadata.Sound.ChannelsKey) == null)
-                        missingFields.Add(Models.Metadata.Sound.ChannelsKey);
+                    if (sound.GetInt64FieldValue(Data.Models.Metadata.Sound.ChannelsKey) == null)
+                        missingFields.Add(Data.Models.Metadata.Sound.ChannelsKey);
                     break;
 
                 case Input input:
-                    if (input.GetInt64FieldValue(Models.Metadata.Input.PlayersKey) == null)
-                        missingFields.Add(Models.Metadata.Input.PlayersKey);
+                    if (input.GetInt64FieldValue(Data.Models.Metadata.Input.PlayersKey) == null)
+                        missingFields.Add(Data.Models.Metadata.Input.PlayersKey);
                     break;
 
                 case DipSwitch dipswitch:
                     if (string.IsNullOrEmpty(dipswitch.GetName()))
-                        missingFields.Add(Models.Metadata.DipSwitch.NameKey);
-                    if (string.IsNullOrEmpty(dipswitch.GetStringFieldValue(Models.Metadata.DipSwitch.TagKey)))
-                        missingFields.Add(Models.Metadata.DipSwitch.TagKey);
+                        missingFields.Add(Data.Models.Metadata.DipSwitch.NameKey);
+                    if (string.IsNullOrEmpty(dipswitch.GetStringFieldValue(Data.Models.Metadata.DipSwitch.TagKey)))
+                        missingFields.Add(Data.Models.Metadata.DipSwitch.TagKey);
                     break;
 
                 case Configuration configuration:
                     if (string.IsNullOrEmpty(configuration.GetName()))
-                        missingFields.Add(Models.Metadata.Configuration.NameKey);
-                    if (string.IsNullOrEmpty(configuration.GetStringFieldValue(Models.Metadata.Configuration.TagKey)))
-                        missingFields.Add(Models.Metadata.Configuration.TagKey);
+                        missingFields.Add(Data.Models.Metadata.Configuration.NameKey);
+                    if (string.IsNullOrEmpty(configuration.GetStringFieldValue(Data.Models.Metadata.Configuration.TagKey)))
+                        missingFields.Add(Data.Models.Metadata.Configuration.TagKey);
                     break;
 
                 case Port port:
-                    if (string.IsNullOrEmpty(port.GetStringFieldValue(Models.Metadata.Port.TagKey)))
-                        missingFields.Add(Models.Metadata.Port.TagKey);
+                    if (string.IsNullOrEmpty(port.GetStringFieldValue(Data.Models.Metadata.Port.TagKey)))
+                        missingFields.Add(Data.Models.Metadata.Port.TagKey);
                     break;
 
                 case Adjuster adjuster:
                     if (string.IsNullOrEmpty(adjuster.GetName()))
-                        missingFields.Add(Models.Metadata.Adjuster.NameKey);
+                        missingFields.Add(Data.Models.Metadata.Adjuster.NameKey);
                     break;
 
                 case Driver driver:
-                    if (driver.GetStringFieldValue(Models.Metadata.Driver.StatusKey).AsSupportStatus() == SupportStatus.NULL)
-                        missingFields.Add(Models.Metadata.Driver.StatusKey);
-                    if (driver.GetStringFieldValue(Models.Metadata.Driver.EmulationKey).AsSupportStatus() == SupportStatus.NULL)
-                        missingFields.Add(Models.Metadata.Driver.EmulationKey);
-                    if (driver.GetStringFieldValue(Models.Metadata.Driver.CocktailKey).AsSupportStatus() == SupportStatus.NULL)
-                        missingFields.Add(Models.Metadata.Driver.CocktailKey);
-                    if (driver.GetStringFieldValue(Models.Metadata.Driver.SaveStateKey).AsSupportStatus() == SupportStatus.NULL)
-                        missingFields.Add(Models.Metadata.Driver.SaveStateKey);
+                    if (driver.GetStringFieldValue(Data.Models.Metadata.Driver.StatusKey).AsSupportStatus() == SupportStatus.NULL)
+                        missingFields.Add(Data.Models.Metadata.Driver.StatusKey);
+                    if (driver.GetStringFieldValue(Data.Models.Metadata.Driver.EmulationKey).AsSupportStatus() == SupportStatus.NULL)
+                        missingFields.Add(Data.Models.Metadata.Driver.EmulationKey);
+                    if (driver.GetStringFieldValue(Data.Models.Metadata.Driver.CocktailKey).AsSupportStatus() == SupportStatus.NULL)
+                        missingFields.Add(Data.Models.Metadata.Driver.CocktailKey);
+                    if (driver.GetStringFieldValue(Data.Models.Metadata.Driver.SaveStateKey).AsSupportStatus() == SupportStatus.NULL)
+                        missingFields.Add(Data.Models.Metadata.Driver.SaveStateKey);
                     break;
 
                 case Feature feature:
-                    if (feature.GetStringFieldValue(Models.Metadata.Feature.FeatureTypeKey).AsFeatureType() == FeatureType.NULL)
-                        missingFields.Add(Models.Metadata.Feature.FeatureTypeKey);
+                    if (feature.GetStringFieldValue(Data.Models.Metadata.Feature.FeatureTypeKey).AsFeatureType() == FeatureType.NULL)
+                        missingFields.Add(Data.Models.Metadata.Feature.FeatureTypeKey);
                     break;
 
                 case Device device:
-                    if (device.GetStringFieldValue(Models.Metadata.Device.DeviceTypeKey).AsDeviceType() == DeviceType.NULL)
-                        missingFields.Add(Models.Metadata.Device.DeviceTypeKey);
+                    if (device.GetStringFieldValue(Data.Models.Metadata.Device.DeviceTypeKey).AsDeviceType() == DeviceType.NULL)
+                        missingFields.Add(Data.Models.Metadata.Device.DeviceTypeKey);
                     break;
 
                 case Slot slot:
                     if (string.IsNullOrEmpty(slot.GetName()))
-                        missingFields.Add(Models.Metadata.Slot.NameKey);
+                        missingFields.Add(Data.Models.Metadata.Slot.NameKey);
                     break;
 
                 case DatItems.Formats.SoftwareList softwarelist:
-                    if (string.IsNullOrEmpty(softwarelist.GetStringFieldValue(Models.Metadata.SoftwareList.TagKey)))
-                        missingFields.Add(Models.Metadata.SoftwareList.TagKey);
+                    if (string.IsNullOrEmpty(softwarelist.GetStringFieldValue(Data.Models.Metadata.SoftwareList.TagKey)))
+                        missingFields.Add(Data.Models.Metadata.SoftwareList.TagKey);
                     if (string.IsNullOrEmpty(softwarelist.GetName()))
-                        missingFields.Add(Models.Metadata.SoftwareList.NameKey);
-                    if (softwarelist.GetStringFieldValue(Models.Metadata.SoftwareList.StatusKey).AsSoftwareListStatus() == SoftwareListStatus.None)
-                        missingFields.Add(Models.Metadata.SoftwareList.StatusKey);
+                        missingFields.Add(Data.Models.Metadata.SoftwareList.NameKey);
+                    if (softwarelist.GetStringFieldValue(Data.Models.Metadata.SoftwareList.StatusKey).AsSoftwareListStatus() == SoftwareListStatus.None)
+                        missingFields.Add(Data.Models.Metadata.SoftwareList.StatusKey);
                     break;
 
                 case RamOption ramoption:
                     if (string.IsNullOrEmpty(ramoption.GetName()))
-                        missingFields.Add(Models.Metadata.RamOption.NameKey);
+                        missingFields.Add(Data.Models.Metadata.RamOption.NameKey);
                     break;
             }
 

@@ -11,7 +11,7 @@ namespace SabreTools.DatFiles
     /// Represents all possible DAT header information
     /// </summary>
     [JsonObject("header"), XmlRoot("header")]
-    public sealed class DatHeader : ModelBackedItem<Models.Metadata.Header>, ICloneable
+    public sealed class DatHeader : ModelBackedItem<Data.Models.Metadata.Header>, ICloneable
     {
         #region Constants
 
@@ -34,7 +34,7 @@ namespace SabreTools.DatFiles
         {
             get
             {
-                var canOpen = GetStringArrayFieldValue(Models.Metadata.Header.CanOpenKey);
+                var canOpen = GetStringArrayFieldValue(Data.Models.Metadata.Header.CanOpenKey);
                 return canOpen != null && canOpen.Length > 0;
             }
         }
@@ -44,7 +44,7 @@ namespace SabreTools.DatFiles
         {
             get
             {
-                return GetFieldValue<Models.OfflineList.Images?>(Models.Metadata.Header.ImagesKey) != null;
+                return GetFieldValue<Data.Models.OfflineList.Images?>(Data.Models.Metadata.Header.ImagesKey) != null;
             }
         }
 
@@ -53,7 +53,7 @@ namespace SabreTools.DatFiles
         {
             get
             {
-                return GetFieldValue<Models.OfflineList.Infos?>(Models.Metadata.Header.InfosKey) != null;
+                return GetFieldValue<Data.Models.OfflineList.Infos?>(Data.Models.Metadata.Header.InfosKey) != null;
             }
         }
 
@@ -62,7 +62,7 @@ namespace SabreTools.DatFiles
         {
             get
             {
-                return GetFieldValue<Models.OfflineList.NewDat?>(Models.Metadata.Header.NewDatKey) != null;
+                return GetFieldValue<Data.Models.OfflineList.NewDat?>(Data.Models.Metadata.Header.NewDatKey) != null;
             }
         }
 
@@ -71,7 +71,7 @@ namespace SabreTools.DatFiles
         {
             get
             {
-                return GetFieldValue<Models.OfflineList.Search?>(Models.Metadata.Header.SearchKey) != null;
+                return GetFieldValue<Data.Models.OfflineList.Search?>(Data.Models.Metadata.Header.SearchKey) != null;
             }
         }
 
@@ -81,13 +81,13 @@ namespace SabreTools.DatFiles
 
         public DatHeader() { }
 
-        public DatHeader(Models.Metadata.Header header)
+        public DatHeader(Data.Models.Metadata.Header header)
         {
             // Create a new internal model
-            _internal = new Models.Metadata.Header();
+            _internal = new Data.Models.Metadata.Header();
 
             // Get all fields to automatically copy without processing
-            var nonItemFields = TypeHelper.GetConstants(typeof(Models.Metadata.Header));
+            var nonItemFields = TypeHelper.GetConstants(typeof(Data.Models.Metadata.Header));
             if (nonItemFields != null)
             {
                 // Populate the internal machine from non-filter fields
@@ -111,16 +111,16 @@ namespace SabreTools.DatFiles
             }
 
             // Get all no-filter fields
-            if (header.ContainsKey(Models.Metadata.Header.CanOpenKey))
-                _internal[Models.Metadata.Header.CanOpenKey] = header[Models.Metadata.Header.CanOpenKey];
-            if (header.ContainsKey(Models.Metadata.Header.ImagesKey))
-                _internal[Models.Metadata.Header.ImagesKey] = header[Models.Metadata.Header.ImagesKey];
-            if (header.ContainsKey(Models.Metadata.Header.InfosKey))
-                _internal[Models.Metadata.Header.InfosKey] = header[Models.Metadata.Header.InfosKey];
-            if (header.ContainsKey(Models.Metadata.Header.NewDatKey))
-                _internal[Models.Metadata.Header.NewDatKey] = header[Models.Metadata.Header.NewDatKey];
-            if (header.ContainsKey(Models.Metadata.Header.SearchKey))
-                _internal[Models.Metadata.Header.SearchKey] = header[Models.Metadata.Header.SearchKey];
+            if (header.ContainsKey(Data.Models.Metadata.Header.CanOpenKey))
+                _internal[Data.Models.Metadata.Header.CanOpenKey] = header[Data.Models.Metadata.Header.CanOpenKey];
+            if (header.ContainsKey(Data.Models.Metadata.Header.ImagesKey))
+                _internal[Data.Models.Metadata.Header.ImagesKey] = header[Data.Models.Metadata.Header.ImagesKey];
+            if (header.ContainsKey(Data.Models.Metadata.Header.InfosKey))
+                _internal[Data.Models.Metadata.Header.InfosKey] = header[Data.Models.Metadata.Header.InfosKey];
+            if (header.ContainsKey(Data.Models.Metadata.Header.NewDatKey))
+                _internal[Data.Models.Metadata.Header.NewDatKey] = header[Data.Models.Metadata.Header.NewDatKey];
+            if (header.ContainsKey(Data.Models.Metadata.Header.SearchKey))
+                _internal[Data.Models.Metadata.Header.SearchKey] = header[Data.Models.Metadata.Header.SearchKey];
         }
 
         #endregion
@@ -148,35 +148,35 @@ namespace SabreTools.DatFiles
         /// <summary>
         /// Get a clone of the current internal model
         /// </summary>
-        public Models.Metadata.Header GetInternalClone()
+        public Data.Models.Metadata.Header GetInternalClone()
         {
-            var header = (_internal.Clone() as Models.Metadata.Header)!;
+            var header = (_internal.Clone() as Data.Models.Metadata.Header)!;
 
             // Remove fields with default values
-            if (header.ReadString(Models.Metadata.Header.ForceMergingKey).AsMergingFlag() == MergingFlag.None)
-                header.Remove(Models.Metadata.Header.ForceMergingKey);
-            if (header.ReadString(Models.Metadata.Header.ForceNodumpKey).AsNodumpFlag() == NodumpFlag.None)
-                header.Remove(Models.Metadata.Header.ForceNodumpKey);
-            if (header.ReadString(Models.Metadata.Header.ForcePackingKey).AsPackingFlag() == PackingFlag.None)
-                header.Remove(Models.Metadata.Header.ForcePackingKey);
-            if (header.ReadString(Models.Metadata.Header.BiosModeKey).AsMergingFlag() == MergingFlag.None)
-                header.Remove(Models.Metadata.Header.BiosModeKey);
-            if (header.ReadString(Models.Metadata.Header.RomModeKey).AsMergingFlag() == MergingFlag.None)
-                header.Remove(Models.Metadata.Header.RomModeKey);
-            if (header.ReadString(Models.Metadata.Header.SampleModeKey).AsMergingFlag() == MergingFlag.None)
-                header.Remove(Models.Metadata.Header.SampleModeKey);
+            if (header.ReadString(Data.Models.Metadata.Header.ForceMergingKey).AsMergingFlag() == MergingFlag.None)
+                header.Remove(Data.Models.Metadata.Header.ForceMergingKey);
+            if (header.ReadString(Data.Models.Metadata.Header.ForceNodumpKey).AsNodumpFlag() == NodumpFlag.None)
+                header.Remove(Data.Models.Metadata.Header.ForceNodumpKey);
+            if (header.ReadString(Data.Models.Metadata.Header.ForcePackingKey).AsPackingFlag() == PackingFlag.None)
+                header.Remove(Data.Models.Metadata.Header.ForcePackingKey);
+            if (header.ReadString(Data.Models.Metadata.Header.BiosModeKey).AsMergingFlag() == MergingFlag.None)
+                header.Remove(Data.Models.Metadata.Header.BiosModeKey);
+            if (header.ReadString(Data.Models.Metadata.Header.RomModeKey).AsMergingFlag() == MergingFlag.None)
+                header.Remove(Data.Models.Metadata.Header.RomModeKey);
+            if (header.ReadString(Data.Models.Metadata.Header.SampleModeKey).AsMergingFlag() == MergingFlag.None)
+                header.Remove(Data.Models.Metadata.Header.SampleModeKey);
 
             // Convert subheader values
             if (CanOpenSpecified)
-                header[Models.Metadata.Header.CanOpenKey] = new Models.OfflineList.CanOpen { Extension = GetStringArrayFieldValue(Models.Metadata.Header.CanOpenKey) };
+                header[Data.Models.Metadata.Header.CanOpenKey] = new Data.Models.OfflineList.CanOpen { Extension = GetStringArrayFieldValue(Data.Models.Metadata.Header.CanOpenKey) };
             if (ImagesSpecified)
-                header[Models.Metadata.Header.ImagesKey] = GetFieldValue<Models.OfflineList.Images>(Models.Metadata.Header.ImagesKey);
+                header[Data.Models.Metadata.Header.ImagesKey] = GetFieldValue<Data.Models.OfflineList.Images>(Data.Models.Metadata.Header.ImagesKey);
             if (InfosSpecified)
-                header[Models.Metadata.Header.InfosKey] = GetFieldValue<Models.OfflineList.Infos>(Models.Metadata.Header.InfosKey);
+                header[Data.Models.Metadata.Header.InfosKey] = GetFieldValue<Data.Models.OfflineList.Infos>(Data.Models.Metadata.Header.InfosKey);
             if (NewDatSpecified)
-                header[Models.Metadata.Header.NewDatKey] = GetFieldValue<Models.OfflineList.NewDat>(Models.Metadata.Header.NewDatKey);
+                header[Data.Models.Metadata.Header.NewDatKey] = GetFieldValue<Data.Models.OfflineList.NewDat>(Data.Models.Metadata.Header.NewDatKey);
             if (SearchSpecified)
-                header[Models.Metadata.Header.SearchKey] = GetFieldValue<Models.OfflineList.Search>(Models.Metadata.Header.SearchKey);
+                header[Data.Models.Metadata.Header.SearchKey] = GetFieldValue<Data.Models.OfflineList.Search>(Data.Models.Metadata.Header.SearchKey);
 
             return header;
         }
@@ -201,7 +201,7 @@ namespace SabreTools.DatFiles
         }
 
         /// <inheritdoc/>
-        public override bool Equals(ModelBackedItem<Models.Metadata.Header>? other)
+        public override bool Equals(ModelBackedItem<Data.Models.Metadata.Header>? other)
         {
             // If other is null
             if (other == null)

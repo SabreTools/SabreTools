@@ -7,7 +7,7 @@ namespace SabreTools.DatItems.Formats
     /// Represents which SoftwareList(s) is associated with a set
     /// </summary>
     [JsonObject("softwarelist"), XmlRoot("softwarelist")]
-    public sealed class SoftwareList : DatItem<Models.Metadata.SoftwareList>
+    public sealed class SoftwareList : DatItem<Data.Models.Metadata.SoftwareList>
     {
         #region Fields
 
@@ -20,17 +20,17 @@ namespace SabreTools.DatItems.Formats
 
         public SoftwareList() : base() { }
 
-        public SoftwareList(Models.Metadata.SoftwareList item) : base(item)
+        public SoftwareList(Data.Models.Metadata.SoftwareList item) : base(item)
         {
             // Process flag values
-            if (GetStringFieldValue(Models.Metadata.SoftwareList.StatusKey) != null)
-                SetFieldValue<string?>(Models.Metadata.SoftwareList.StatusKey, GetStringFieldValue(Models.Metadata.SoftwareList.StatusKey).AsSoftwareListStatus().AsStringValue());
+            if (GetStringFieldValue(Data.Models.Metadata.SoftwareList.StatusKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.SoftwareList.StatusKey, GetStringFieldValue(Data.Models.Metadata.SoftwareList.StatusKey).AsSoftwareListStatus().AsStringValue());
 
             // Handle subitems
             // TODO: Handle the Software subitem
         }
 
-        public SoftwareList(Models.Metadata.SoftwareList item, Machine machine, Source source) : this(item)
+        public SoftwareList(Data.Models.Metadata.SoftwareList item, Machine machine, Source source) : this(item)
         {
             SetFieldValue<Source?>(DatItem.SourceKey, source);
             CopyMachineInformation(machine);

@@ -7,7 +7,7 @@ namespace SabreTools.DatItems.Formats
     /// Represents a matchable extension
     /// </summary>
     [JsonObject("extension"), XmlRoot("extension")]
-    public sealed class Extension : DatItem<Models.Metadata.Extension>
+    public sealed class Extension : DatItem<Data.Models.Metadata.Extension>
     {
         #region Fields
 
@@ -20,9 +20,9 @@ namespace SabreTools.DatItems.Formats
 
         public Extension() : base() { }
 
-        public Extension(Models.Metadata.Extension item) : base(item) { }
+        public Extension(Data.Models.Metadata.Extension item) : base(item) { }
 
-        public Extension(Models.Metadata.Extension item, Machine machine, Source source) : this(item)
+        public Extension(Data.Models.Metadata.Extension item, Machine machine, Source source) : this(item)
         {
             SetFieldValue<Source?>(DatItem.SourceKey, source);
             CopyMachineInformation(machine);

@@ -53,7 +53,7 @@ namespace SabreTools.DatItems
     [XmlInclude(typeof(SlotOption))]
     [XmlInclude(typeof(SoftwareList))]
     [XmlInclude(typeof(Sound))]
-    public abstract class DatItem : ModelBackedItem<Models.Metadata.DatItem>, IEquatable<DatItem>, IComparable<DatItem>, ICloneable
+    public abstract class DatItem : ModelBackedItem<Data.Models.Metadata.DatItem>, IEquatable<DatItem>, IComparable<DatItem>, ICloneable
     {
         #region Constants
 
@@ -196,7 +196,7 @@ namespace SabreTools.DatItems
         }
 
         /// <inheritdoc/>
-        public override bool Equals(ModelBackedItem<Models.Metadata.DatItem>? other)
+        public override bool Equals(ModelBackedItem<Data.Models.Metadata.DatItem>? other)
         {
             // If other is null
             if (other == null)
@@ -222,8 +222,8 @@ namespace SabreTools.DatItems
                 return false;
 
             // Get the types for comparison
-            ItemType selfType = GetStringFieldValue(Models.Metadata.DatItem.TypeKey).AsItemType();
-            ItemType otherType = other.GetStringFieldValue(Models.Metadata.DatItem.TypeKey).AsItemType();
+            ItemType selfType = GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey).AsItemType();
+            ItemType otherType = other.GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey).AsItemType();
 
             // If we don't have a matched type, return false
             if (selfType != otherType)
@@ -346,7 +346,7 @@ namespace SabreTools.DatItems
     /// <summary>
     /// Base class for all items included in a set that are backed by an internal model
     /// </summary>
-    public abstract class DatItem<T> : DatItem, IEquatable<DatItem<T>>, IComparable<DatItem<T>>, ICloneable where T : Models.Metadata.DatItem
+    public abstract class DatItem<T> : DatItem, IEquatable<DatItem<T>>, IComparable<DatItem<T>>, ICloneable where T : Data.Models.Metadata.DatItem
     {
         #region Constructors
 
@@ -358,7 +358,7 @@ namespace SabreTools.DatItems
             _internal = Activator.CreateInstance<T>();
 
             SetName(string.Empty);
-            SetFieldValue<ItemType>(Models.Metadata.DatItem.TypeKey, ItemType);
+            SetFieldValue<ItemType>(Data.Models.Metadata.DatItem.TypeKey, ItemType);
             SetFieldValue<Machine>(MachineKey, new Machine());
         }
 
@@ -369,7 +369,7 @@ namespace SabreTools.DatItems
         {
             _internal = item;
 
-            SetFieldValue<ItemType>(Models.Metadata.DatItem.TypeKey, ItemType);
+            SetFieldValue<ItemType>(Data.Models.Metadata.DatItem.TypeKey, ItemType);
             SetFieldValue<Machine>(MachineKey, new Machine());
         }
 
@@ -436,8 +436,8 @@ namespace SabreTools.DatItems
                 return false;
 
             // Get the types for comparison
-            ItemType selfType = GetStringFieldValue(Models.Metadata.DatItem.TypeKey).AsItemType();
-            ItemType otherType = other.GetStringFieldValue(Models.Metadata.DatItem.TypeKey).AsItemType();
+            ItemType selfType = GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey).AsItemType();
+            ItemType otherType = other.GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey).AsItemType();
 
             // If we don't have a matched type, return false
             if (selfType != otherType)

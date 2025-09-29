@@ -24,7 +24,7 @@ namespace SabreTools.DatItems.Formats
         /// </summary>
         public Blank()
         {
-            SetFieldValue<ItemType>(Models.Metadata.DatItem.TypeKey, ItemType);
+            SetFieldValue<ItemType>(Data.Models.Metadata.DatItem.TypeKey, ItemType);
         }
 
         #endregion
@@ -38,7 +38,7 @@ namespace SabreTools.DatItems.Formats
             blank.SetFieldValue<Machine>(DatItem.MachineKey, GetMachine());
             blank.SetFieldValue<bool?>(DatItem.RemoveKey, GetBoolFieldValue(DatItem.RemoveKey));
             blank.SetFieldValue<Source?>(DatItem.SourceKey, GetFieldValue<Source?>(DatItem.SourceKey));
-            blank.SetFieldValue<string?>(Models.Metadata.DatItem.TypeKey, GetStringFieldValue(Models.Metadata.DatItem.TypeKey).AsItemType().AsStringValue());
+            blank.SetFieldValue<string?>(Data.Models.Metadata.DatItem.TypeKey, GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey).AsItemType().AsStringValue());
 
             return blank;
         }
@@ -63,7 +63,7 @@ namespace SabreTools.DatItems.Formats
         }
 
         /// <inheritdoc/>
-        public override bool Equals(ModelBackedItem<Models.Metadata.DatItem>? other)
+        public override bool Equals(ModelBackedItem<Data.Models.Metadata.DatItem>? other)
         {
             // If other is null
             if (other == null)
@@ -81,7 +81,7 @@ namespace SabreTools.DatItems.Formats
         public override bool Equals(DatItem? other)
         {
             // If we don't have a blank, return false
-            if (GetStringFieldValue(Models.Metadata.DatItem.TypeKey) != other?.GetStringFieldValue(Models.Metadata.DatItem.TypeKey))
+            if (GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey) != other?.GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey))
                 return false;
 
             // Otherwise, treat it as a Blank

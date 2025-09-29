@@ -110,11 +110,11 @@ namespace SabreTools.DatTools
         {
             switch (key.ItemName)
             {
-                case Models.Metadata.MetadataFile.HeaderKey:
+                case Data.Models.Metadata.MetadataFile.HeaderKey:
                     HeaderFieldMappings[key.FieldName] = value;
                     return true;
 
-                case Models.Metadata.MetadataFile.MachineKey:
+                case Data.Models.Metadata.MetadataFile.MachineKey:
                     MachineFieldMappings[key.FieldName] = value;
                     return true;
 
@@ -179,7 +179,7 @@ namespace SabreTools.DatTools
                 return;
 
             // If there are no field names for this type or generic, return
-            string? itemType = datItem.GetStringFieldValue(Models.Metadata.DatItem.TypeKey).AsItemType().AsStringValue();
+            string? itemType = datItem.GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey).AsItemType().AsStringValue();
             if (itemType == null || (!ItemFieldMappings.Keys.Any(kvp => kvp.ItemName == itemType) && !ItemFieldMappings.Keys.Any(kvp => kvp.ItemName == "item")))
                 return;
 
@@ -195,10 +195,10 @@ namespace SabreTools.DatTools
             }
 
             // If the field specifically contains Name, set it separately
-            if (fieldMappings.Keys.Contains(Models.Metadata.Rom.NameKey))
+            if (fieldMappings.Keys.Contains(Data.Models.Metadata.Rom.NameKey))
             {
-                datItem.SetName(fieldMappings[Models.Metadata.Rom.NameKey]);
-                fieldMappings.Remove(Models.Metadata.Rom.NameKey);
+                datItem.SetName(fieldMappings[Data.Models.Metadata.Rom.NameKey]);
+                fieldMappings.Remove(Data.Models.Metadata.Rom.NameKey);
             }
 
             #endregion
@@ -240,7 +240,7 @@ namespace SabreTools.DatTools
             // Field.DatItem_Conditions does not apply here
             if (adjuster.ConditionsSpecified)
             {
-                foreach (Condition subCondition in adjuster.GetFieldValue<Condition[]?>(Models.Metadata.Adjuster.ConditionKey)!)
+                foreach (Condition subCondition in adjuster.GetFieldValue<Condition[]?>(Data.Models.Metadata.Adjuster.ConditionKey)!)
                 {
                     SetFields(subCondition);
                 }
@@ -255,7 +255,7 @@ namespace SabreTools.DatTools
         {
             if (configuration.ConditionsSpecified)
             {
-                foreach (Condition subCondition in configuration.GetFieldValue<Condition[]?>(Models.Metadata.Configuration.ConditionKey)!)
+                foreach (Condition subCondition in configuration.GetFieldValue<Condition[]?>(Data.Models.Metadata.Configuration.ConditionKey)!)
                 {
                     SetFields(subCondition);
                 }
@@ -263,7 +263,7 @@ namespace SabreTools.DatTools
 
             if (configuration.LocationsSpecified)
             {
-                foreach (ConfLocation subLocation in configuration.GetFieldValue<ConfLocation[]?>(Models.Metadata.Configuration.ConfLocationKey)!)
+                foreach (ConfLocation subLocation in configuration.GetFieldValue<ConfLocation[]?>(Data.Models.Metadata.Configuration.ConfLocationKey)!)
                 {
                     SetFields(subLocation);
                 }
@@ -271,7 +271,7 @@ namespace SabreTools.DatTools
 
             if (configuration.SettingsSpecified)
             {
-                foreach (ConfSetting subSetting in configuration.GetFieldValue<ConfSetting[]?>(Models.Metadata.Configuration.ConfSettingKey)!)
+                foreach (ConfSetting subSetting in configuration.GetFieldValue<ConfSetting[]?>(Data.Models.Metadata.Configuration.ConfSettingKey)!)
                 {
                     SetFields(subSetting as DatItem);
                 }
@@ -286,7 +286,7 @@ namespace SabreTools.DatTools
         {
             if (confSetting.ConditionsSpecified)
             {
-                foreach (Condition subCondition in confSetting.GetFieldValue<Condition[]?>(Models.Metadata.ConfSetting.ConditionKey)!)
+                foreach (Condition subCondition in confSetting.GetFieldValue<Condition[]?>(Data.Models.Metadata.ConfSetting.ConditionKey)!)
                 {
                     SetFields(subCondition);
                 }
@@ -301,7 +301,7 @@ namespace SabreTools.DatTools
         {
             if (device.ExtensionsSpecified)
             {
-                foreach (Extension subExtension in device.GetFieldValue<Extension[]?>(Models.Metadata.Device.ExtensionKey)!)
+                foreach (Extension subExtension in device.GetFieldValue<Extension[]?>(Data.Models.Metadata.Device.ExtensionKey)!)
                 {
                     SetFields(subExtension);
                 }
@@ -309,7 +309,7 @@ namespace SabreTools.DatTools
 
             if (device.InstancesSpecified)
             {
-                foreach (Instance subInstance in device.GetFieldValue<Instance[]?>(Models.Metadata.Device.InstanceKey)!)
+                foreach (Instance subInstance in device.GetFieldValue<Instance[]?>(Data.Models.Metadata.Device.InstanceKey)!)
                 {
                     SetFields(subInstance);
                 }
@@ -324,7 +324,7 @@ namespace SabreTools.DatTools
         {
             if (dipSwitch.ConditionsSpecified)
             {
-                foreach (Condition subCondition in dipSwitch.GetFieldValue<Condition[]?>(Models.Metadata.DipSwitch.ConditionKey)!)
+                foreach (Condition subCondition in dipSwitch.GetFieldValue<Condition[]?>(Data.Models.Metadata.DipSwitch.ConditionKey)!)
                 {
                     SetFields(subCondition);
                 }
@@ -332,7 +332,7 @@ namespace SabreTools.DatTools
 
             if (dipSwitch.LocationsSpecified)
             {
-                foreach (DipLocation subLocation in dipSwitch.GetFieldValue<DipLocation[]?>(Models.Metadata.DipSwitch.DipLocationKey)!)
+                foreach (DipLocation subLocation in dipSwitch.GetFieldValue<DipLocation[]?>(Data.Models.Metadata.DipSwitch.DipLocationKey)!)
                 {
                     SetFields(subLocation);
                 }
@@ -340,7 +340,7 @@ namespace SabreTools.DatTools
 
             if (dipSwitch.ValuesSpecified)
             {
-                foreach (DipValue subValue in dipSwitch.GetFieldValue<DipValue[]?>(Models.Metadata.DipSwitch.DipValueKey)!)
+                foreach (DipValue subValue in dipSwitch.GetFieldValue<DipValue[]?>(Data.Models.Metadata.DipSwitch.DipValueKey)!)
                 {
                     SetFields(subValue as DatItem);
                 }
@@ -360,7 +360,7 @@ namespace SabreTools.DatTools
         {
             if (dipValue.ConditionsSpecified)
             {
-                foreach (Condition subCondition in dipValue.GetFieldValue<Condition[]?>(Models.Metadata.DipValue.ConditionKey)!)
+                foreach (Condition subCondition in dipValue.GetFieldValue<Condition[]?>(Data.Models.Metadata.DipValue.ConditionKey)!)
                 {
                     SetFields(subCondition);
                 }
@@ -392,7 +392,7 @@ namespace SabreTools.DatTools
         {
             if (input.ControlsSpecified)
             {
-                foreach (Control subControl in input.GetFieldValue<Control[]?>(Models.Metadata.Input.ControlKey)!)
+                foreach (Control subControl in input.GetFieldValue<Control[]?>(Data.Models.Metadata.Input.ControlKey)!)
                 {
                     SetFields(subControl);
                 }
@@ -407,7 +407,7 @@ namespace SabreTools.DatTools
         {
             if (part.FeaturesSpecified)
             {
-                foreach (PartFeature subPartFeature in part.GetFieldValue<PartFeature[]?>(Models.Metadata.Part.FeatureKey)!)
+                foreach (PartFeature subPartFeature in part.GetFieldValue<PartFeature[]?>(Data.Models.Metadata.Part.FeatureKey)!)
                 {
                     SetFields(subPartFeature);
                 }
@@ -422,7 +422,7 @@ namespace SabreTools.DatTools
         {
             if (port.AnalogsSpecified)
             {
-                foreach (Analog subAnalog in port.GetFieldValue<Analog[]?>(Models.Metadata.Port.AnalogKey)!)
+                foreach (Analog subAnalog in port.GetFieldValue<Analog[]?>(Data.Models.Metadata.Port.AnalogKey)!)
                 {
                     SetFields(subAnalog);
                 }
@@ -454,7 +454,7 @@ namespace SabreTools.DatTools
         {
             if (slot.SlotOptionsSpecified)
             {
-                foreach (SlotOption subSlotOption in slot.GetFieldValue<SlotOption[]?>(Models.Metadata.Slot.SlotOptionKey)!)
+                foreach (SlotOption subSlotOption in slot.GetFieldValue<SlotOption[]?>(Data.Models.Metadata.Slot.SlotOptionKey)!)
                 {
                     SetFields(subSlotOption);
                 }

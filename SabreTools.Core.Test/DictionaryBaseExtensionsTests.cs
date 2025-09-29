@@ -1,5 +1,5 @@
+using SabreTools.Data.Models.Metadata;
 using SabreTools.Hashing;
-using SabreTools.Models.Metadata;
 using Xunit;
 
 namespace SabreTools.Core.Test

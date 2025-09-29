@@ -7,7 +7,7 @@ namespace SabreTools.DatFiles.Formats
     /// <summary>
     /// Represents parsing and writing of a DosCenter DAT
     /// </summary>
-    public sealed class DosCenter : SerializableDatFile<Models.DosCenter.MetadataFile, Serialization.Deserializers.DosCenter, Serialization.Serializers.DosCenter, Serialization.CrossModel.DosCenter>
+    public sealed class DosCenter : SerializableDatFile<Data.Models.DosCenter.MetadataFile, Serialization.Readers.DosCenter, Serialization.Writers.DosCenter, Serialization.CrossModel.DosCenter>
     {
         /// <inheritdoc/>
         public override ItemType[] SupportedTypes
@@ -31,19 +31,19 @@ namespace SabreTools.DatFiles.Formats
 
             // Check item name
             if (string.IsNullOrEmpty(datItem.GetName()))
-                missingFields.Add(Models.Metadata.Rom.NameKey);
+                missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
             switch (datItem)
             {
                 case Rom rom:
-                    if (rom.GetInt64FieldValue(Models.Metadata.Rom.SizeKey) == null || rom.GetInt64FieldValue(Models.Metadata.Rom.SizeKey) < 0)
-                        missingFields.Add(Models.Metadata.Rom.SizeKey);
+                    if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) == null || rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) < 0)
+                        missingFields.Add(Data.Models.Metadata.Rom.SizeKey);
                     // if (string.IsNullOrEmpty(rom.Date))
-                    //     missingFields.Add(Models.Metadata.Rom.DateKey);
-                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.CRCKey)))
-                        missingFields.Add(Models.Metadata.Rom.CRCKey);
-                    // if (string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.SHA1Key)))
-                    //     missingFields.Add(Models.Metadata.Rom.SHA1Key);
+                    //     missingFields.Add(Data.Models.Metadata.Rom.DateKey);
+                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.CRCKey)))
+                        missingFields.Add(Data.Models.Metadata.Rom.CRCKey);
+                    // if (string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA1Key)))
+                    //     missingFields.Add(Data.Models.Metadata.Rom.SHA1Key);
                     break;
             }
 

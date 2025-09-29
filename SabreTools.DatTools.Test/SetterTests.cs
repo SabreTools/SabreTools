@@ -29,7 +29,7 @@ namespace SabreTools.DatTools.Test
         {
             var machine = new Machine();
             machine.SetName("bar");
-            machine.SetFieldValue<string?>(Models.Metadata.Machine.DescriptionKey, "bar");
+            machine.SetFieldValue<string?>(Data.Models.Metadata.Machine.DescriptionKey, "bar");
 
             var setter = new Setter();
             setter.PopulateSetters(new FilterKey("machine", "name"), "foo");

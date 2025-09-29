@@ -101,7 +101,7 @@ namespace SabreTools.DatItems.Formats
         /// </summary>
         public File()
         {
-            SetFieldValue<ItemType>(Models.Metadata.DatItem.TypeKey, ItemType);
+            SetFieldValue<ItemType>(Data.Models.Metadata.DatItem.TypeKey, ItemType);
         }
 
         #endregion
@@ -139,11 +139,11 @@ namespace SabreTools.DatItems.Formats
             var rom = new Rom();
 
             rom.SetName($"{Id}.{Extension}");
-            rom.SetFieldValue<long?>(Models.Metadata.Rom.SizeKey, Size);
-            rom.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, CRC);
-            rom.SetFieldValue<string?>(Models.Metadata.Rom.MD5Key, MD5);
-            rom.SetFieldValue<string?>(Models.Metadata.Rom.SHA1Key, SHA1);
-            rom.SetFieldValue<string?>(Models.Metadata.Rom.SHA256Key, SHA256);
+            rom.SetFieldValue<long?>(Data.Models.Metadata.Rom.SizeKey, Size);
+            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, CRC);
+            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.MD5Key, MD5);
+            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA1Key, SHA1);
+            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA256Key, SHA256);
 
             rom.SetFieldValue<DupeType>(DatItem.DupeTypeKey, GetFieldValue<DupeType>(DatItem.DupeTypeKey));
             rom.SetFieldValue<Machine>(DatItem.MachineKey, GetMachine()?.Clone() as Machine);
@@ -163,7 +163,7 @@ namespace SabreTools.DatItems.Formats
             bool dupefound = false;
 
             // If we don't have a file, return false
-            if (GetStringFieldValue(Models.Metadata.DatItem.TypeKey) != other?.GetStringFieldValue(Models.Metadata.DatItem.TypeKey))
+            if (GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey) != other?.GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey))
                 return dupefound;
 
             // Otherwise, treat it as a File

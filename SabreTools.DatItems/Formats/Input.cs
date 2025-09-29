@@ -10,7 +10,7 @@ namespace SabreTools.DatItems.Formats
     /// Represents one ListXML input
     /// </summary>
     [JsonObject("input"), XmlRoot("input")]
-    public sealed class Input : DatItem<Models.Metadata.Input>
+    public sealed class Input : DatItem<Data.Models.Metadata.Input>
     {
         #region Fields
 
@@ -22,7 +22,7 @@ namespace SabreTools.DatItems.Formats
         {
             get
             {
-                var controls = GetFieldValue<Control[]?>(Models.Metadata.Input.ControlKey);
+                var controls = GetFieldValue<Control[]?>(Data.Models.Metadata.Input.ControlKey);
                 return controls != null && controls.Length > 0;
             }
         }
@@ -33,30 +33,30 @@ namespace SabreTools.DatItems.Formats
 
         public Input() : base() { }
 
-        public Input(Models.Metadata.Input item) : base(item)
+        public Input(Data.Models.Metadata.Input item) : base(item)
         {
             // Process flag values
-            if (GetInt64FieldValue(Models.Metadata.Input.ButtonsKey) != null)
-                SetFieldValue<string?>(Models.Metadata.Input.ButtonsKey, GetInt64FieldValue(Models.Metadata.Input.ButtonsKey).ToString());
-            if (GetInt64FieldValue(Models.Metadata.Input.CoinsKey) != null)
-                SetFieldValue<string?>(Models.Metadata.Input.CoinsKey, GetInt64FieldValue(Models.Metadata.Input.CoinsKey).ToString());
-            if (GetInt64FieldValue(Models.Metadata.Input.PlayersKey) != null)
-                SetFieldValue<string?>(Models.Metadata.Input.PlayersKey, GetInt64FieldValue(Models.Metadata.Input.PlayersKey).ToString());
-            if (GetBoolFieldValue(Models.Metadata.Input.ServiceKey) != null)
-                SetFieldValue<string?>(Models.Metadata.Input.ServiceKey, GetBoolFieldValue(Models.Metadata.Input.ServiceKey).FromYesNo());
-            if (GetBoolFieldValue(Models.Metadata.Input.TiltKey) != null)
-                SetFieldValue<string?>(Models.Metadata.Input.TiltKey, GetBoolFieldValue(Models.Metadata.Input.TiltKey).FromYesNo());
+            if (GetInt64FieldValue(Data.Models.Metadata.Input.ButtonsKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.Input.ButtonsKey, GetInt64FieldValue(Data.Models.Metadata.Input.ButtonsKey).ToString());
+            if (GetInt64FieldValue(Data.Models.Metadata.Input.CoinsKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.Input.CoinsKey, GetInt64FieldValue(Data.Models.Metadata.Input.CoinsKey).ToString());
+            if (GetInt64FieldValue(Data.Models.Metadata.Input.PlayersKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.Input.PlayersKey, GetInt64FieldValue(Data.Models.Metadata.Input.PlayersKey).ToString());
+            if (GetBoolFieldValue(Data.Models.Metadata.Input.ServiceKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.Input.ServiceKey, GetBoolFieldValue(Data.Models.Metadata.Input.ServiceKey).FromYesNo());
+            if (GetBoolFieldValue(Data.Models.Metadata.Input.TiltKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.Input.TiltKey, GetBoolFieldValue(Data.Models.Metadata.Input.TiltKey).FromYesNo());
 
             // Handle subitems
-            var controls = item.ReadItemArray<Models.Metadata.Control>(Models.Metadata.Input.ControlKey);
+            var controls = item.ReadItemArray<Data.Models.Metadata.Control>(Data.Models.Metadata.Input.ControlKey);
             if (controls != null)
             {
                 Control[] controlItems = Array.ConvertAll(controls, control => new Control(control));
-                SetFieldValue<Control[]?>(Models.Metadata.Input.ControlKey, controlItems);
+                SetFieldValue<Control[]?>(Data.Models.Metadata.Input.ControlKey, controlItems);
             }
         }
 
-        public Input(Models.Metadata.Input item, Machine machine, Source source) : this(item)
+        public Input(Data.Models.Metadata.Input item, Machine machine, Source source) : this(item)
         {
             SetFieldValue<Source?>(DatItem.SourceKey, source);
             CopyMachineInformation(machine);
@@ -67,15 +67,15 @@ namespace SabreTools.DatItems.Formats
         #region Cloning Methods
 
         /// <inheritdoc/>
-        public override Models.Metadata.Input GetInternalClone()
+        public override Data.Models.Metadata.Input GetInternalClone()
         {
             var inputItem = base.GetInternalClone();
 
-            var controls = GetFieldValue<Control[]?>(Models.Metadata.Input.ControlKey);
+            var controls = GetFieldValue<Control[]?>(Data.Models.Metadata.Input.ControlKey);
             if (controls != null)
             {
-                Models.Metadata.Control[] controlItems = Array.ConvertAll(controls, control => control.GetInternalClone());
-                inputItem[Models.Metadata.Input.ControlKey] = controlItems;
+                Data.Models.Metadata.Control[] controlItems = Array.ConvertAll(controls, control => control.GetInternalClone());
+                inputItem[Data.Models.Metadata.Input.ControlKey] = controlItems;
             }
 
             return inputItem;

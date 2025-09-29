@@ -7,7 +7,7 @@ namespace SabreTools.DatFiles.Formats
     /// <summary>
     /// Represents an OfflineList XML DAT
     /// </summary>
-    public sealed class OfflineList : SerializableDatFile<Models.OfflineList.Dat, Serialization.Deserializers.OfflineList, Serialization.Serializers.OfflineList, Serialization.CrossModel.OfflineList>
+    public sealed class OfflineList : SerializableDatFile<Data.Models.OfflineList.Dat, Serialization.Readers.OfflineList, Serialization.Writers.OfflineList, Serialization.CrossModel.OfflineList>
     {
         /// <inheritdoc/>
         public override ItemType[] SupportedTypes
@@ -32,10 +32,10 @@ namespace SabreTools.DatFiles.Formats
             switch (datItem)
             {
                 case Rom rom:
-                    if (rom.GetInt64FieldValue(Models.Metadata.Rom.SizeKey) == null || rom.GetInt64FieldValue(Models.Metadata.Rom.SizeKey) < 0)
-                        missingFields.Add(Models.Metadata.Rom.SizeKey);
-                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.CRCKey)))
-                        missingFields.Add(Models.Metadata.Rom.CRCKey);
+                    if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) == null || rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) < 0)
+                        missingFields.Add(Data.Models.Metadata.Rom.SizeKey);
+                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.CRCKey)))
+                        missingFields.Add(Data.Models.Metadata.Rom.CRCKey);
                     break;
             }
 

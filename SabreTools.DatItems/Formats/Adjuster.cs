@@ -8,7 +8,7 @@ namespace SabreTools.DatItems.Formats
     /// Represents which Adjuster(s) is associated with a set
     /// </summary>
     [JsonObject("adjuster"), XmlRoot("adjuster")]
-    public sealed class Adjuster : DatItem<Models.Metadata.Adjuster>
+    public sealed class Adjuster : DatItem<Data.Models.Metadata.Adjuster>
     {
         #region Fields
 
@@ -20,7 +20,7 @@ namespace SabreTools.DatItems.Formats
         {
             get
             {
-                var conditions = GetFieldValue<Condition[]?>(Models.Metadata.Adjuster.ConditionKey);
+                var conditions = GetFieldValue<Condition[]?>(Data.Models.Metadata.Adjuster.ConditionKey);
                 return conditions != null && conditions.Length > 0;
             }
         }
@@ -31,19 +31,19 @@ namespace SabreTools.DatItems.Formats
 
         public Adjuster() : base() { }
 
-        public Adjuster(Models.Metadata.Adjuster item) : base(item)
+        public Adjuster(Data.Models.Metadata.Adjuster item) : base(item)
         {
             // Process flag values
-            if (GetBoolFieldValue(Models.Metadata.Adjuster.DefaultKey) != null)
-                SetFieldValue<string?>(Models.Metadata.Adjuster.DefaultKey, GetBoolFieldValue(Models.Metadata.Adjuster.DefaultKey).FromYesNo());
+            if (GetBoolFieldValue(Data.Models.Metadata.Adjuster.DefaultKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.Adjuster.DefaultKey, GetBoolFieldValue(Data.Models.Metadata.Adjuster.DefaultKey).FromYesNo());
 
             // Handle subitems
-            var condition = item.Read<Models.Metadata.Condition>(Models.Metadata.Adjuster.ConditionKey);
+            var condition = item.Read<Data.Models.Metadata.Condition>(Data.Models.Metadata.Adjuster.ConditionKey);
             if (condition != null)
-                SetFieldValue(Models.Metadata.Adjuster.ConditionKey, new Condition(condition));
+                SetFieldValue(Data.Models.Metadata.Adjuster.ConditionKey, new Condition(condition));
         }
 
-        public Adjuster(Models.Metadata.Adjuster item, Machine machine, Source source) : this(item)
+        public Adjuster(Data.Models.Metadata.Adjuster item, Machine machine, Source source) : this(item)
         {
             SetFieldValue<Source?>(DatItem.SourceKey, source);
             CopyMachineInformation(machine);
@@ -54,13 +54,13 @@ namespace SabreTools.DatItems.Formats
         #region Cloning Methods
 
         /// <inheritdoc/>
-        public override Models.Metadata.Adjuster GetInternalClone()
+        public override Data.Models.Metadata.Adjuster GetInternalClone()
         {
             var adjusterItem = base.GetInternalClone();
 
-            var condition = GetFieldValue<Condition?>(Models.Metadata.Adjuster.ConditionKey);
+            var condition = GetFieldValue<Condition?>(Data.Models.Metadata.Adjuster.ConditionKey);
             if (condition != null)
-                adjusterItem[Models.Metadata.Adjuster.ConditionKey] = condition.GetInternalClone();
+                adjusterItem[Data.Models.Metadata.Adjuster.ConditionKey] = condition.GetInternalClone();
 
             return adjusterItem;
         }

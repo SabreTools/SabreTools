@@ -8,7 +8,7 @@ namespace SabreTools.DatItems.Formats
     /// Represents which RAM option(s) is associated with a set
     /// </summary>
     [JsonObject("ramoption"), XmlRoot("ramoption")]
-    public sealed class RamOption : DatItem<Models.Metadata.RamOption>
+    public sealed class RamOption : DatItem<Data.Models.Metadata.RamOption>
     {
         #region Fields
 
@@ -21,14 +21,14 @@ namespace SabreTools.DatItems.Formats
 
         public RamOption() : base() { }
 
-        public RamOption(Models.Metadata.RamOption item) : base(item)
+        public RamOption(Data.Models.Metadata.RamOption item) : base(item)
         {
             // Process flag values
-            if (GetBoolFieldValue(Models.Metadata.RamOption.DefaultKey) != null)
-                SetFieldValue<string?>(Models.Metadata.RamOption.DefaultKey, GetBoolFieldValue(Models.Metadata.RamOption.DefaultKey).FromYesNo());
+            if (GetBoolFieldValue(Data.Models.Metadata.RamOption.DefaultKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.RamOption.DefaultKey, GetBoolFieldValue(Data.Models.Metadata.RamOption.DefaultKey).FromYesNo());
         }
 
-        public RamOption(Models.Metadata.RamOption item, Machine machine, Source source) : this(item)
+        public RamOption(Data.Models.Metadata.RamOption item, Machine machine, Source source) : this(item)
         {
             SetFieldValue<Source?>(DatItem.SourceKey, source);
             CopyMachineInformation(machine);

@@ -8,7 +8,7 @@ namespace SabreTools.DatItems.Formats
     /// Represents which BIOS(es) is associated with a set
     /// </summary>
     [JsonObject("biosset"), XmlRoot("biosset")]
-    public sealed class BiosSet : DatItem<Models.Metadata.BiosSet>
+    public sealed class BiosSet : DatItem<Data.Models.Metadata.BiosSet>
     {
         #region Fields
 
@@ -21,14 +21,14 @@ namespace SabreTools.DatItems.Formats
 
         public BiosSet() : base() { }
 
-        public BiosSet(Models.Metadata.BiosSet item) : base(item)
+        public BiosSet(Data.Models.Metadata.BiosSet item) : base(item)
         {
             // Process flag values
-            if (GetBoolFieldValue(Models.Metadata.BiosSet.DefaultKey) != null)
-                SetFieldValue<string?>(Models.Metadata.BiosSet.DefaultKey, GetBoolFieldValue(Models.Metadata.BiosSet.DefaultKey).FromYesNo());
+            if (GetBoolFieldValue(Data.Models.Metadata.BiosSet.DefaultKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.BiosSet.DefaultKey, GetBoolFieldValue(Data.Models.Metadata.BiosSet.DefaultKey).FromYesNo());
         }
 
-        public BiosSet(Models.Metadata.BiosSet item, Machine machine, Source source) : this(item)
+        public BiosSet(Data.Models.Metadata.BiosSet item, Machine machine, Source source) : this(item)
         {
             SetFieldValue<Source?>(DatItem.SourceKey, source);
             CopyMachineInformation(machine);

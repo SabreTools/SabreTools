@@ -7,7 +7,7 @@ namespace SabreTools.DatItems.Formats
     /// Represents the a feature of the machine
     /// </summary>
     [JsonObject("feature"), XmlRoot("feature")]
-    public sealed class Feature : DatItem<Models.Metadata.Feature>
+    public sealed class Feature : DatItem<Data.Models.Metadata.Feature>
     {
         #region Fields
 
@@ -20,18 +20,18 @@ namespace SabreTools.DatItems.Formats
 
         public Feature() : base() { }
 
-        public Feature(Models.Metadata.Feature item) : base(item)
+        public Feature(Data.Models.Metadata.Feature item) : base(item)
         {
             // Process flag values
-            if (GetStringFieldValue(Models.Metadata.Feature.OverallKey) != null)
-                SetFieldValue<string?>(Models.Metadata.Feature.OverallKey, GetStringFieldValue(Models.Metadata.Feature.OverallKey).AsFeatureStatus().AsStringValue());
-            if (GetStringFieldValue(Models.Metadata.Feature.StatusKey) != null)
-                SetFieldValue<string?>(Models.Metadata.Feature.StatusKey, GetStringFieldValue(Models.Metadata.Feature.StatusKey).AsFeatureStatus().AsStringValue());
-            if (GetStringFieldValue(Models.Metadata.Feature.FeatureTypeKey) != null)
-                SetFieldValue<string?>(Models.Metadata.Feature.FeatureTypeKey, GetStringFieldValue(Models.Metadata.Feature.FeatureTypeKey).AsFeatureType().AsStringValue());
+            if (GetStringFieldValue(Data.Models.Metadata.Feature.OverallKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.Feature.OverallKey, GetStringFieldValue(Data.Models.Metadata.Feature.OverallKey).AsFeatureStatus().AsStringValue());
+            if (GetStringFieldValue(Data.Models.Metadata.Feature.StatusKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.Feature.StatusKey, GetStringFieldValue(Data.Models.Metadata.Feature.StatusKey).AsFeatureStatus().AsStringValue());
+            if (GetStringFieldValue(Data.Models.Metadata.Feature.FeatureTypeKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.Feature.FeatureTypeKey, GetStringFieldValue(Data.Models.Metadata.Feature.FeatureTypeKey).AsFeatureType().AsStringValue());
         }
 
-        public Feature(Models.Metadata.Feature item, Machine machine, Source source) : this(item)
+        public Feature(Data.Models.Metadata.Feature item, Machine machine, Source source) : this(item)
         {
             SetFieldValue<Source?>(DatItem.SourceKey, source);
             CopyMachineInformation(machine);

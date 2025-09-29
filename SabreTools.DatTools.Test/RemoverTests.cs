@@ -122,7 +122,7 @@ namespace SabreTools.DatTools.Test
         {
             var machine = new Machine();
             machine.SetName("bar");
-            machine.SetFieldValue<string?>(Models.Metadata.Machine.DescriptionKey, "bar");
+            machine.SetFieldValue<string?>(Data.Models.Metadata.Machine.DescriptionKey, "bar");
 
             var remover = new Remover();
             remover.PopulateExclusions("Machine.Name");

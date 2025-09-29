@@ -8,7 +8,7 @@ namespace SabreTools.DatItems.Formats
     /// </summary>
     /// <remarks>One Part can contain multiple PartFeature, DataArea, DiskArea, and DipSwitch items</remarks>
     [JsonObject("part"), XmlRoot("part")]
-    public sealed class Part : DatItem<Models.Metadata.Part>
+    public sealed class Part : DatItem<Data.Models.Metadata.Part>
     {
         #region Fields
 
@@ -20,7 +20,7 @@ namespace SabreTools.DatItems.Formats
         {
             get
             {
-                var features = GetFieldValue<PartFeature[]?>(Models.Metadata.Part.FeatureKey);
+                var features = GetFieldValue<PartFeature[]?>(Data.Models.Metadata.Part.FeatureKey);
                 return features != null && features.Length > 0;
             }
         }
@@ -31,9 +31,9 @@ namespace SabreTools.DatItems.Formats
 
         public Part() : base() { }
 
-        public Part(Models.Metadata.Part item) : base(item) { }
+        public Part(Data.Models.Metadata.Part item) : base(item) { }
 
-        public Part(Models.Metadata.Part item, Machine machine, Source source) : this(item)
+        public Part(Data.Models.Metadata.Part item, Machine machine, Source source) : this(item)
         {
             SetFieldValue<Source?>(DatItem.SourceKey, source);
             CopyMachineInformation(machine);

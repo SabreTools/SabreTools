@@ -254,9 +254,9 @@ namespace SabreTools.DatFiles.Test
         {
             var disk = new Disk();
 
-            disk.SetFieldValue<string?>(Models.Metadata.Disk.StatusKey, ItemStatus.Good.AsStringValue());
-            disk.SetFieldValue<string?>(Models.Metadata.Disk.MD5Key, ZeroHash.MD5Str);
-            disk.SetFieldValue<string?>(Models.Metadata.Disk.SHA1Key, ZeroHash.SHA1Str);
+            disk.SetFieldValue<string?>(Data.Models.Metadata.Disk.StatusKey, ItemStatus.Good.AsStringValue());
+            disk.SetFieldValue<string?>(Data.Models.Metadata.Disk.MD5Key, ZeroHash.MD5Str);
+            disk.SetFieldValue<string?>(Data.Models.Metadata.Disk.SHA1Key, ZeroHash.SHA1Str);
 
             return disk;
         }
@@ -284,10 +284,10 @@ namespace SabreTools.DatFiles.Test
         {
             var media = new Media();
 
-            media.SetFieldValue<string?>(Models.Metadata.Media.MD5Key, ZeroHash.MD5Str);
-            media.SetFieldValue<string?>(Models.Metadata.Media.SHA1Key, ZeroHash.SHA1Str);
-            media.SetFieldValue<string?>(Models.Metadata.Media.SHA256Key, ZeroHash.SHA256Str);
-            media.SetFieldValue<string?>(Models.Metadata.Media.SpamSumKey, ZeroHash.SpamSumStr);
+            media.SetFieldValue<string?>(Data.Models.Metadata.Media.MD5Key, ZeroHash.MD5Str);
+            media.SetFieldValue<string?>(Data.Models.Metadata.Media.SHA1Key, ZeroHash.SHA1Str);
+            media.SetFieldValue<string?>(Data.Models.Metadata.Media.SHA256Key, ZeroHash.SHA256Str);
+            media.SetFieldValue<string?>(Data.Models.Metadata.Media.SpamSumKey, ZeroHash.SpamSumStr);
 
             return media;
         }
@@ -299,19 +299,19 @@ namespace SabreTools.DatFiles.Test
         {
             var rom = new Rom();
 
-            rom.SetFieldValue<string?>(Models.Metadata.Rom.StatusKey, ItemStatus.Good.AsStringValue());
-            rom.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 1);
-            rom.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, ZeroHash.CRC32Str);
-            rom.SetFieldValue<string?>(Models.Metadata.Rom.MD2Key, ZeroHash.GetString(HashType.MD2));
-            rom.SetFieldValue<string?>(Models.Metadata.Rom.MD4Key, ZeroHash.GetString(HashType.MD4));
-            rom.SetFieldValue<string?>(Models.Metadata.Rom.MD5Key, ZeroHash.MD5Str);
-            rom.SetFieldValue<string?>(Models.Metadata.Rom.RIPEMD128Key, ZeroHash.GetString(HashType.RIPEMD128));
-            rom.SetFieldValue<string?>(Models.Metadata.Rom.RIPEMD160Key, ZeroHash.GetString(HashType.RIPEMD160));
-            rom.SetFieldValue<string?>(Models.Metadata.Rom.SHA1Key, ZeroHash.SHA1Str);
-            rom.SetFieldValue<string?>(Models.Metadata.Rom.SHA256Key, ZeroHash.SHA256Str);
-            rom.SetFieldValue<string?>(Models.Metadata.Rom.SHA384Key, ZeroHash.SHA384Str);
-            rom.SetFieldValue<string?>(Models.Metadata.Rom.SHA512Key, ZeroHash.SHA512Str);
-            rom.SetFieldValue<string?>(Models.Metadata.Rom.SpamSumKey, ZeroHash.SpamSumStr);
+            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.StatusKey, ItemStatus.Good.AsStringValue());
+            rom.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 1);
+            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, ZeroHash.CRC32Str);
+            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.MD2Key, ZeroHash.GetString(HashType.MD2));
+            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.MD4Key, ZeroHash.GetString(HashType.MD4));
+            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.MD5Key, ZeroHash.MD5Str);
+            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.RIPEMD128Key, ZeroHash.GetString(HashType.RIPEMD128));
+            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.RIPEMD160Key, ZeroHash.GetString(HashType.RIPEMD160));
+            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA1Key, ZeroHash.SHA1Str);
+            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA256Key, ZeroHash.SHA256Str);
+            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA384Key, ZeroHash.SHA384Str);
+            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA512Key, ZeroHash.SHA512Str);
+            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SpamSumKey, ZeroHash.SpamSumStr);
 
             return rom;
         }

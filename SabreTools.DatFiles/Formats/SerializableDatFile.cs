@@ -1,6 +1,6 @@
 ﻿using System;
 using SabreTools.Core.Filter;
-using SabreTools.Models.Metadata;
+using SabreTools.Data.Models.Metadata;
 using SabreTools.Serialization.Interfaces;
 
 namespace SabreTools.DatFiles.Formats
@@ -9,30 +9,30 @@ namespace SabreTools.DatFiles.Formats
     /// Represents a DAT that can be serialized
     /// </summary>
     /// <typeparam name="TModel">Base internal model for the DAT type</typeparam>
-    /// <typeparam name="TFileDeserializer">IFileDeserializer type to use for conversion</typeparam>
-    /// <typeparam name="TFileSerializer">IFileSerializer type to use for conversion</typeparam>
-    /// <typeparam name="TModelSerializer">IModelSerializer for cross-model serialization</typeparam>
-    public abstract class SerializableDatFile<TModel, TFileDeserializer, TFileSerializer, TModelSerializer> : DatFile
-        where TFileDeserializer : IFileDeserializer<TModel>
-        where TFileSerializer : IFileSerializer<TModel>
-        where TModelSerializer : IModelSerializer<TModel, MetadataFile>
+    /// <typeparam name="TFileReader">IFileReader type to use for conversion</typeparam>
+    /// <typeparam name="TFileWriter">IFileWriter type to use for conversion</typeparam>
+    /// <typeparam name="TCrossModel">ICrossModel for cross-model serialization</typeparam>
+    public abstract class SerializableDatFile<TModel, TFileReader, TFileWriter, TCrossModel> : DatFile
+        where TFileReader : IFileReader<TModel>
+        where TFileWriter : IFileWriter<TModel>
+        where TCrossModel : ICrossModel<TModel, MetadataFile>
     {
         #region Static Serialization Instances
         
         /// <summary>
         /// File deserializer instance
         /// </summary>
-        private static readonly TFileDeserializer FileDeserializer = Activator.CreateInstance<TFileDeserializer>();
+        private static readonly TFileReader FileDeserializer = Activator.CreateInstance<TFileReader>();
 
         /// <summary>
         /// File serializer instance
         /// </summary>
-        private static readonly TFileSerializer FileSerializer = Activator.CreateInstance<TFileSerializer>();
+        private static readonly TFileWriter FileSerializer = Activator.CreateInstance<TFileWriter>();
 
         /// <summary>
         /// Cross-model serializer instance
         /// </summary>
-        private static readonly TModelSerializer CrossModelSerializer = Activator.CreateInstance<TModelSerializer>();
+        private static readonly TCrossModel CrossModelSerializer = Activator.CreateInstance<TCrossModel>();
 
         #endregion
 
@@ -73,7 +73,7 @@ namespace SabreTools.DatFiles.Formats
                 // Serialize the input file in two steps
                 var internalFormat = ConvertToMetadata(ignoreblanks);
                 var specificFormat = CrossModelSerializer.Deserialize(internalFormat);
-                if (!FileSerializer.Serialize(specificFormat, outfile))
+                if (!FileSerializer.SerializeFile(specificFormat, outfile))
                 {
                     _logger.Warning($"File '{outfile}' could not be written! See the log for more details.");
                     return false;
@@ -98,8 +98,8 @@ namespace SabreTools.DatFiles.Formats
 
                 // Serialize the input file in two steps
                 var internalFormat = ConvertToMetadataDB(ignoreblanks);
-                var specificFormat = Activator.CreateInstance<TModelSerializer>().Deserialize(internalFormat);
-                if (!Activator.CreateInstance<TFileSerializer>().Serialize(specificFormat, outfile))
+                var specificFormat = CrossModelSerializer.Deserialize(internalFormat);
+                if (!FileSerializer.SerializeFile(specificFormat, outfile))
                 {
                     _logger.Warning($"File '{outfile}' could not be written! See the log for more details.");
                     return false;

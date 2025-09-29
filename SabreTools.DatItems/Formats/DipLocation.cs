@@ -8,7 +8,7 @@ namespace SabreTools.DatItems.Formats
     /// Represents one diplocation
     /// </summary>
     [JsonObject("diplocation"), XmlRoot("diplocation")]
-    public sealed class DipLocation : DatItem<Models.Metadata.DipLocation>
+    public sealed class DipLocation : DatItem<Data.Models.Metadata.DipLocation>
     {
         #region Fields
 
@@ -21,14 +21,14 @@ namespace SabreTools.DatItems.Formats
 
         public DipLocation() : base() { }
 
-        public DipLocation(Models.Metadata.DipLocation item) : base(item)
+        public DipLocation(Data.Models.Metadata.DipLocation item) : base(item)
         {
             // Process flag values
-            if (GetBoolFieldValue(Models.Metadata.DipLocation.InvertedKey) != null)
-                SetFieldValue<string?>(Models.Metadata.DipLocation.InvertedKey, GetBoolFieldValue(Models.Metadata.DipLocation.InvertedKey).FromYesNo());
+            if (GetBoolFieldValue(Data.Models.Metadata.DipLocation.InvertedKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.DipLocation.InvertedKey, GetBoolFieldValue(Data.Models.Metadata.DipLocation.InvertedKey).FromYesNo());
         }
 
-        public DipLocation(Models.Metadata.DipLocation item, Machine machine, Source source) : this(item)
+        public DipLocation(Data.Models.Metadata.DipLocation item, Machine machine, Source source) : this(item)
         {
             SetFieldValue<Source?>(DatItem.SourceKey, source);
             CopyMachineInformation(machine);

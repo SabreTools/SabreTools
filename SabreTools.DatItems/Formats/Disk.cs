@@ -9,7 +9,7 @@ namespace SabreTools.DatItems.Formats
     /// Represents Compressed Hunks of Data (CHD) formatted disks which use internal hashes
     /// </summary>
     [JsonObject("disk"), XmlRoot("disk")]
-    public sealed class Disk : DatItem<Models.Metadata.Disk>
+    public sealed class Disk : DatItem<Data.Models.Metadata.Disk>
     {
         #region Constants
 
@@ -48,7 +48,7 @@ namespace SabreTools.DatItems.Formats
                 var part = GetFieldValue<Part?>(Disk.PartKey);
                 return part != null
                     && (!string.IsNullOrEmpty(part.GetName())
-                        || !string.IsNullOrEmpty(part.GetStringFieldValue(Models.Metadata.Part.InterfaceKey)));
+                        || !string.IsNullOrEmpty(part.GetStringFieldValue(Data.Models.Metadata.Part.InterfaceKey)));
             }
         }
 
@@ -59,29 +59,29 @@ namespace SabreTools.DatItems.Formats
         public Disk() : base()
         {
             SetFieldValue<DupeType>(DatItem.DupeTypeKey, 0x00);
-            SetFieldValue<string?>(Models.Metadata.Disk.StatusKey, ItemStatus.None.AsStringValue());
+            SetFieldValue<string?>(Data.Models.Metadata.Disk.StatusKey, ItemStatus.None.AsStringValue());
         }
 
-        public Disk(Models.Metadata.Disk item) : base(item)
+        public Disk(Data.Models.Metadata.Disk item) : base(item)
         {
             SetFieldValue<DupeType>(DatItem.DupeTypeKey, 0x00);
 
             // Process flag values
-            if (GetBoolFieldValue(Models.Metadata.Disk.OptionalKey) != null)
-                SetFieldValue<string?>(Models.Metadata.Disk.OptionalKey, GetBoolFieldValue(Models.Metadata.Disk.OptionalKey).FromYesNo());
-            if (GetStringFieldValue(Models.Metadata.Disk.StatusKey) != null)
-                SetFieldValue<string?>(Models.Metadata.Disk.StatusKey, GetStringFieldValue(Models.Metadata.Disk.StatusKey).AsItemStatus().AsStringValue());
-            if (GetBoolFieldValue(Models.Metadata.Disk.WritableKey) != null)
-                SetFieldValue<string?>(Models.Metadata.Disk.WritableKey, GetBoolFieldValue(Models.Metadata.Disk.WritableKey).FromYesNo());
+            if (GetBoolFieldValue(Data.Models.Metadata.Disk.OptionalKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.Disk.OptionalKey, GetBoolFieldValue(Data.Models.Metadata.Disk.OptionalKey).FromYesNo());
+            if (GetStringFieldValue(Data.Models.Metadata.Disk.StatusKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.Disk.StatusKey, GetStringFieldValue(Data.Models.Metadata.Disk.StatusKey).AsItemStatus().AsStringValue());
+            if (GetBoolFieldValue(Data.Models.Metadata.Disk.WritableKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.Disk.WritableKey, GetBoolFieldValue(Data.Models.Metadata.Disk.WritableKey).FromYesNo());
 
             // Process hash values
-            if (GetStringFieldValue(Models.Metadata.Disk.MD5Key) != null)
-                SetFieldValue<string?>(Models.Metadata.Disk.MD5Key, TextHelper.NormalizeMD5(GetStringFieldValue(Models.Metadata.Disk.MD5Key)));
-            if (GetStringFieldValue(Models.Metadata.Disk.SHA1Key) != null)
-                SetFieldValue<string?>(Models.Metadata.Disk.SHA1Key, TextHelper.NormalizeSHA1(GetStringFieldValue(Models.Metadata.Disk.SHA1Key)));
+            if (GetStringFieldValue(Data.Models.Metadata.Disk.MD5Key) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.Disk.MD5Key, TextHelper.NormalizeMD5(GetStringFieldValue(Data.Models.Metadata.Disk.MD5Key)));
+            if (GetStringFieldValue(Data.Models.Metadata.Disk.SHA1Key) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.Disk.SHA1Key, TextHelper.NormalizeSHA1(GetStringFieldValue(Data.Models.Metadata.Disk.SHA1Key)));
         }
 
-        public Disk(Models.Metadata.Disk item, Machine machine, Source source) : this(item)
+        public Disk(Data.Models.Metadata.Disk item, Machine machine, Source source) : this(item)
         {
             SetFieldValue<Source?>(DatItem.SourceKey, source);
             CopyMachineInformation(machine);
@@ -105,8 +105,8 @@ namespace SabreTools.DatItems.Formats
             {
                 var dataArea = new DataArea();
 
-                string? diskAreaName = diskArea.GetStringFieldValue(Models.Metadata.DiskArea.NameKey);
-                dataArea.SetFieldValue(Models.Metadata.DataArea.NameKey, diskAreaName);
+                string? diskAreaName = diskArea.GetStringFieldValue(Data.Models.Metadata.DiskArea.NameKey);
+                dataArea.SetFieldValue(Data.Models.Metadata.DataArea.NameKey, diskAreaName);
 
                 rom.SetFieldValue<DataArea?>(Rom.DataAreaKey, dataArea);
             }
@@ -157,11 +157,11 @@ namespace SabreTools.DatItems.Formats
             switch (bucketedBy)
             {
                 case ItemKey.MD5:
-                    key = GetStringFieldValue(Models.Metadata.Disk.MD5Key);
+                    key = GetStringFieldValue(Data.Models.Metadata.Disk.MD5Key);
                     break;
 
                 case ItemKey.SHA1:
-                    key = GetStringFieldValue(Models.Metadata.Disk.SHA1Key);
+                    key = GetStringFieldValue(Data.Models.Metadata.Disk.SHA1Key);
                     break;
 
                 // Let the base handle generic stuff

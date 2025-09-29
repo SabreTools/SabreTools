@@ -7,7 +7,7 @@ namespace SabreTools.DatFiles.Formats
     /// <summary>
     /// Represents a RomCenter INI file
     /// </summary>
-    public sealed class RomCenter : SerializableDatFile<Models.RomCenter.MetadataFile, Serialization.Deserializers.RomCenter, Serialization.Serializers.RomCenter, Serialization.CrossModel.RomCenter>
+    public sealed class RomCenter : SerializableDatFile<Data.Models.RomCenter.MetadataFile, Serialization.Readers.RomCenter, Serialization.Writers.RomCenter, Serialization.CrossModel.RomCenter>
     {
         /// <inheritdoc/>
         public override ItemType[] SupportedTypes
@@ -31,15 +31,15 @@ namespace SabreTools.DatFiles.Formats
 
             // Check item name
             if (string.IsNullOrEmpty(datItem.GetName()))
-                missingFields.Add(Models.Metadata.Rom.NameKey);
+                missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
             switch (datItem)
             {
                 case Rom rom:
-                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.CRCKey)))
-                        missingFields.Add(Models.Metadata.Rom.CRCKey);
-                    if (rom.GetInt64FieldValue(Models.Metadata.Rom.SizeKey) == null || rom.GetInt64FieldValue(Models.Metadata.Rom.SizeKey) < 0)
-                        missingFields.Add(Models.Metadata.Rom.SizeKey);
+                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.CRCKey)))
+                        missingFields.Add(Data.Models.Metadata.Rom.CRCKey);
+                    if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) == null || rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) < 0)
+                        missingFields.Add(Data.Models.Metadata.Rom.SizeKey);
                     break;
             }
 

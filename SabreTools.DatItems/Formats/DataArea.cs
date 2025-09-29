@@ -8,7 +8,7 @@ namespace SabreTools.DatItems.Formats
     /// </summary>
     /// <remarks>One DataArea can contain multiple Rom items</remarks>
     [JsonObject("dataarea"), XmlRoot("dataarea")]
-    public sealed class DataArea : DatItem<Models.Metadata.DataArea>
+    public sealed class DataArea : DatItem<Data.Models.Metadata.DataArea>
     {
         #region Fields
 
@@ -21,18 +21,18 @@ namespace SabreTools.DatItems.Formats
 
         public DataArea() : base() { }
 
-        public DataArea(Models.Metadata.DataArea item) : base(item)
+        public DataArea(Data.Models.Metadata.DataArea item) : base(item)
         {
             // Process flag values
-            if (GetStringFieldValue(Models.Metadata.DataArea.EndiannessKey) != null)
-                SetFieldValue<string?>(Models.Metadata.DataArea.EndiannessKey, GetStringFieldValue(Models.Metadata.DataArea.EndiannessKey).AsEndianness().AsStringValue());
-            if (GetInt64FieldValue(Models.Metadata.DataArea.SizeKey) != null)
-                SetFieldValue<string?>(Models.Metadata.DataArea.SizeKey, GetInt64FieldValue(Models.Metadata.DataArea.SizeKey).ToString());
-            if (GetInt64FieldValue(Models.Metadata.DataArea.WidthKey) != null)
-                SetFieldValue<string?>(Models.Metadata.DataArea.WidthKey, GetInt64FieldValue(Models.Metadata.DataArea.WidthKey).ToString());
+            if (GetStringFieldValue(Data.Models.Metadata.DataArea.EndiannessKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.DataArea.EndiannessKey, GetStringFieldValue(Data.Models.Metadata.DataArea.EndiannessKey).AsEndianness().AsStringValue());
+            if (GetInt64FieldValue(Data.Models.Metadata.DataArea.SizeKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.DataArea.SizeKey, GetInt64FieldValue(Data.Models.Metadata.DataArea.SizeKey).ToString());
+            if (GetInt64FieldValue(Data.Models.Metadata.DataArea.WidthKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.DataArea.WidthKey, GetInt64FieldValue(Data.Models.Metadata.DataArea.WidthKey).ToString());
         }
 
-        public DataArea(Models.Metadata.DataArea item, Machine machine, Source source) : this(item)
+        public DataArea(Data.Models.Metadata.DataArea item, Machine machine, Source source) : this(item)
         {
             SetFieldValue<Source?>(DatItem.SourceKey, source);
             CopyMachineInformation(machine);

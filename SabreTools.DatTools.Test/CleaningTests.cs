@@ -14,14 +14,14 @@ namespace SabreTools.DatTools.Test
 
             var machine = new Machine();
             machine.SetName("\"ÁБ\"");
-            machine.SetFieldValue<string?>(Models.Metadata.Machine.DescriptionKey, "ä|/Ж");
+            machine.SetFieldValue<string?>(Data.Models.Metadata.Machine.DescriptionKey, "ä|/Ж");
 
             var cleaner = new Cleaner { Normalize = true };
             cleaner.CleanDatItem(datItem, machine);
 
             Assert.Equal("name", datItem.GetName());
             Assert.Equal("'AB'", machine.GetName());
-            Assert.Equal("ae-Zh", machine.GetStringFieldValue(Models.Metadata.Machine.DescriptionKey));
+            Assert.Equal("ae-Zh", machine.GetStringFieldValue(Data.Models.Metadata.Machine.DescriptionKey));
         }
 
         [Fact]
@@ -32,14 +32,14 @@ namespace SabreTools.DatTools.Test
 
             var machine = new Machine();
             machine.SetName("nam诶-2");
-            machine.SetFieldValue<string?>(Models.Metadata.Machine.DescriptionKey, "nam诶-3");
+            machine.SetFieldValue<string?>(Data.Models.Metadata.Machine.DescriptionKey, "nam诶-3");
 
             var cleaner = new Cleaner { RemoveUnicode = true };
             cleaner.CleanDatItem(datItem, machine);
 
             Assert.Equal("nam", datItem.GetName());
             Assert.Equal("nam-2", machine.GetName());
-            Assert.Equal("nam-3", machine.GetStringFieldValue(Models.Metadata.Machine.DescriptionKey));
+            Assert.Equal("nam-3", machine.GetStringFieldValue(Data.Models.Metadata.Machine.DescriptionKey));
         }
 
         [Fact]
@@ -50,14 +50,14 @@ namespace SabreTools.DatTools.Test
 
             var machine = new Machine();
             machine.SetName("name-2");
-            machine.SetFieldValue<string?>(Models.Metadata.Machine.DescriptionKey, "name-3");
+            machine.SetFieldValue<string?>(Data.Models.Metadata.Machine.DescriptionKey, "name-3");
 
             var cleaner = new Cleaner { Single = true };
             cleaner.CleanDatItem(datItem, machine);
 
             Assert.Equal("name", datItem.GetName());
             Assert.Equal("!", machine.GetName());
-            Assert.Equal("!", machine.GetStringFieldValue(Models.Metadata.Machine.DescriptionKey));
+            Assert.Equal("!", machine.GetStringFieldValue(Data.Models.Metadata.Machine.DescriptionKey));
         }
 
         [Theory]
@@ -72,7 +72,7 @@ namespace SabreTools.DatTools.Test
 
             var machine = new Machine();
             machine.SetName("name-2");
-            machine.SetFieldValue<string?>(Models.Metadata.Machine.DescriptionKey, "name-3");
+            machine.SetFieldValue<string?>(Data.Models.Metadata.Machine.DescriptionKey, "name-3");
 
             var cleaner = new Cleaner
             {
@@ -83,7 +83,7 @@ namespace SabreTools.DatTools.Test
 
             Assert.Equal(expected, datItem.GetName());
             Assert.Equal("name-2", machine.GetName());
-            Assert.Equal("name-3", machine.GetStringFieldValue(Models.Metadata.Machine.DescriptionKey));
+            Assert.Equal("name-3", machine.GetStringFieldValue(Data.Models.Metadata.Machine.DescriptionKey));
         }
     }
 }

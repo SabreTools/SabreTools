@@ -88,9 +88,9 @@ namespace SabreTools.Features
                     datdata.Modifiers.InputDepot = inputDepot?.Clone() as DepotInformation;
 
                     // If we have overridden the header skipper, set it now
-                    string? headerSkipper = Header!.GetStringFieldValue(Models.Metadata.Header.HeaderKey);
+                    string? headerSkipper = Header!.GetStringFieldValue(Data.Models.Metadata.Header.HeaderKey);
                     if (!string.IsNullOrEmpty(headerSkipper))
-                        datdata.Header.SetFieldValue<string?>(Models.Metadata.Header.HeaderKey, headerSkipper);
+                        datdata.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.HeaderKey, headerSkipper);
 
                     // If we have the depot flag, respect it
                     if (inputDepot?.IsActive ?? false)
@@ -145,9 +145,9 @@ namespace SabreTools.Features
                 datdata.Modifiers.InputDepot = inputDepot?.Clone() as DepotInformation;
 
                 // If we have overridden the header skipper, set it now
-                string? headerSkipper = Header!.GetStringFieldValue(Models.Metadata.Header.HeaderKey);
+                string? headerSkipper = Header!.GetStringFieldValue(Data.Models.Metadata.Header.HeaderKey);
                 if (!string.IsNullOrEmpty(headerSkipper))
-                    datdata.Header.SetFieldValue<string?>(Models.Metadata.Header.HeaderKey, headerSkipper);
+                    datdata.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.HeaderKey, headerSkipper);
 
                 watch.Stop();
 

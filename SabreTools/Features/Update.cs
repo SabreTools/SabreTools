@@ -107,7 +107,7 @@ namespace SabreTools.Features
             if (updateItemFieldNames == null || updateItemFieldNames.Count == 0)
             {
                 updateItemFieldNames = [];
-                updateItemFieldNames["item"] = [Models.Metadata.Rom.NameKey];
+                updateItemFieldNames["item"] = [Data.Models.Metadata.Rom.NameKey];
             }
 
             // Ensure we only have files in the inputs
@@ -246,8 +246,8 @@ namespace SabreTools.Features
                     string innerpost = $" ({j} - {inputPaths[j].GetNormalizedFileName(true)} Only)";
                     datHeaders[j] = userInputDat.Header;
                     datHeaders[j].SetFieldValue<string?>(DatHeader.FileNameKey, datHeaders[j].GetStringFieldValue(DatHeader.FileNameKey) + innerpost);
-                    datHeaders[j].SetFieldValue<string?>(Models.Metadata.Header.NameKey, datHeaders[j].GetStringFieldValue(Models.Metadata.Header.NameKey) + innerpost);
-                    datHeaders[j].SetFieldValue<string?>(Models.Metadata.Header.DescriptionKey, datHeaders[j].GetStringFieldValue(Models.Metadata.Header.DescriptionKey) + innerpost);
+                    datHeaders[j].SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, datHeaders[j].GetStringFieldValue(Data.Models.Metadata.Header.NameKey) + innerpost);
+                    datHeaders[j].SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, datHeaders[j].GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey) + innerpost);
 #if NET40_OR_GREATER || NETCOREAPP
                 });
 #else
@@ -376,7 +376,7 @@ namespace SabreTools.Features
 #endif
             {
                 // If we're in SuperDAT mode, prefix all games with their respective DATs
-                if (string.Equals(userInputDat.Header.GetStringFieldValue(Models.Metadata.Header.TypeKey), "SuperDAT", StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(userInputDat.Header.GetStringFieldValue(Data.Models.Metadata.Header.TypeKey), "SuperDAT", StringComparison.OrdinalIgnoreCase))
                 {
                     MergeSplit.ApplySuperDAT(userInputDat, inputPaths);
                     MergeSplit.ApplySuperDATDB(userInputDat, inputPaths);
@@ -414,39 +414,39 @@ namespace SabreTools.Features
 #endif
 
             // Date
-            if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Models.Metadata.Header.DateKey)))
-                datFile.Header.SetFieldValue<string?>(Models.Metadata.Header.DateKey, DateTime.Now.ToString("yyyy-MM-dd"));
+            if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DateKey)))
+                datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DateKey, DateTime.Now.ToString("yyyy-MM-dd"));
 
             // Name
-            if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Models.Metadata.Header.NameKey)))
+            if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey)))
             {
-                datFile.Header.SetFieldValue<string?>(Models.Metadata.Header.NameKey, (updateMode != 0 ? "DiffDAT" : "MergeDAT")
-                    + (datFile.Header.GetStringFieldValue(Models.Metadata.Header.TypeKey) == "SuperDAT" ? "-SuperDAT" : string.Empty)
+                datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, (updateMode != 0 ? "DiffDAT" : "MergeDAT")
+                    + (datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.TypeKey) == "SuperDAT" ? "-SuperDAT" : string.Empty)
                     + (Cleaner.DedupeRoms != DedupeType.None ? "-deduped" : string.Empty));
             }
 
             // Description
-            if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Models.Metadata.Header.DescriptionKey)))
+            if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)))
             {
-                datFile.Header.SetFieldValue<string?>(Models.Metadata.Header.DescriptionKey, (updateMode != 0 ? "DiffDAT" : "MergeDAT")
-                    + (datFile.Header.GetStringFieldValue(Models.Metadata.Header.TypeKey) == "SuperDAT" ? "-SuperDAT" : string.Empty)
+                datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, (updateMode != 0 ? "DiffDAT" : "MergeDAT")
+                    + (datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.TypeKey) == "SuperDAT" ? "-SuperDAT" : string.Empty)
                     + (Cleaner!.DedupeRoms != DedupeType.None ? " - deduped" : string.Empty));
 
                 if (!noAutomaticDate)
-                    datFile.Header.SetFieldValue<string?>(Models.Metadata.Header.DescriptionKey, $"{datFile.Header.GetStringFieldValue(Models.Metadata.Header.DescriptionKey)} ({datFile.Header.GetStringFieldValue(Models.Metadata.Header.DateKey)})");
+                    datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, $"{datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)} ({datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DateKey)})");
             }
 
             // Category
-            if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Models.Metadata.Header.CategoryKey)) && updateMode != 0)
-                datFile.Header.SetFieldValue<string?>(Models.Metadata.Header.CategoryKey, "DiffDAT");
+            if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.CategoryKey)) && updateMode != 0)
+                datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.CategoryKey, "DiffDAT");
 
             // Author
-            if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Models.Metadata.Header.AuthorKey)))
-                datFile.Header.SetFieldValue<string?>(Models.Metadata.Header.AuthorKey, $"SabreTools {Globals.Version}");
+            if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.AuthorKey)))
+                datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.AuthorKey, $"SabreTools {Globals.Version}");
 
             // Comment
-            if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Models.Metadata.Header.CommentKey)))
-                datFile.Header.SetFieldValue<string?>(Models.Metadata.Header.CommentKey, $"Generated by SabreTools {Globals.Version}");
+            if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.CommentKey)))
+                datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.CommentKey, $"Generated by SabreTools {Globals.Version}");
         }
 
         /// <summary>

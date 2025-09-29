@@ -9,7 +9,7 @@ namespace SabreTools.DatItems.Formats
     /// Represents Aaruformat images which use internal hashes
     /// </summary>
     [JsonObject("media"), XmlRoot("media")]
-    public sealed class Media : DatItem<Models.Metadata.Media>
+    public sealed class Media : DatItem<Data.Models.Metadata.Media>
     {
         #region Fields
 
@@ -25,20 +25,20 @@ namespace SabreTools.DatItems.Formats
             SetFieldValue<DupeType>(DatItem.DupeTypeKey, 0x00);
         }
 
-        public Media(Models.Metadata.Media item) : base(item)
+        public Media(Data.Models.Metadata.Media item) : base(item)
         {
             SetFieldValue<DupeType>(DatItem.DupeTypeKey, 0x00);
 
             // Process hash values
-            if (GetStringFieldValue(Models.Metadata.Media.MD5Key) != null)
-                SetFieldValue<string?>(Models.Metadata.Media.MD5Key, TextHelper.NormalizeMD5(GetStringFieldValue(Models.Metadata.Media.MD5Key)));
-            if (GetStringFieldValue(Models.Metadata.Media.SHA1Key) != null)
-                SetFieldValue<string?>(Models.Metadata.Media.SHA1Key, TextHelper.NormalizeSHA1(GetStringFieldValue(Models.Metadata.Media.SHA1Key)));
-            if (GetStringFieldValue(Models.Metadata.Media.SHA256Key) != null)
-                SetFieldValue<string?>(Models.Metadata.Media.SHA256Key, TextHelper.NormalizeSHA256(GetStringFieldValue(Models.Metadata.Media.SHA256Key)));
+            if (GetStringFieldValue(Data.Models.Metadata.Media.MD5Key) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.Media.MD5Key, TextHelper.NormalizeMD5(GetStringFieldValue(Data.Models.Metadata.Media.MD5Key)));
+            if (GetStringFieldValue(Data.Models.Metadata.Media.SHA1Key) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.Media.SHA1Key, TextHelper.NormalizeSHA1(GetStringFieldValue(Data.Models.Metadata.Media.SHA1Key)));
+            if (GetStringFieldValue(Data.Models.Metadata.Media.SHA256Key) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.Media.SHA256Key, TextHelper.NormalizeSHA256(GetStringFieldValue(Data.Models.Metadata.Media.SHA256Key)));
         }
 
-        public Media(Models.Metadata.Media item, Machine machine, Source source) : this(item)
+        public Media(Data.Models.Metadata.Media item, Machine machine, Source source) : this(item)
         {
             SetFieldValue<Source?>(DatItem.SourceKey, source);
             CopyMachineInformation(machine);
@@ -101,19 +101,19 @@ namespace SabreTools.DatItems.Formats
             switch (bucketedBy)
             {
                 case ItemKey.MD5:
-                    key = GetStringFieldValue(Models.Metadata.Media.MD5Key);
+                    key = GetStringFieldValue(Data.Models.Metadata.Media.MD5Key);
                     break;
 
                 case ItemKey.SHA1:
-                    key = GetStringFieldValue(Models.Metadata.Media.SHA1Key);
+                    key = GetStringFieldValue(Data.Models.Metadata.Media.SHA1Key);
                     break;
 
                 case ItemKey.SHA256:
-                    key = GetStringFieldValue(Models.Metadata.Media.SHA256Key);
+                    key = GetStringFieldValue(Data.Models.Metadata.Media.SHA256Key);
                     break;
 
                 case ItemKey.SpamSum:
-                    key = GetStringFieldValue(Models.Metadata.Media.SpamSumKey);
+                    key = GetStringFieldValue(Data.Models.Metadata.Media.SpamSumKey);
                     break;
 
                 // Let the base handle generic stuff

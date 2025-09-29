@@ -7,7 +7,7 @@ namespace SabreTools.DatItems.Formats
     /// Represents one shared feature object
     /// </summary>
     [JsonObject("sharedfeat"), XmlRoot("sharedfeat")]
-    public sealed class SharedFeat : DatItem<Models.Metadata.SharedFeat>
+    public sealed class SharedFeat : DatItem<Data.Models.Metadata.SharedFeat>
     {
         #region Fields
 
@@ -20,9 +20,9 @@ namespace SabreTools.DatItems.Formats
 
         public SharedFeat() : base() { }
 
-        public SharedFeat(Models.Metadata.SharedFeat item) : base(item) { }
+        public SharedFeat(Data.Models.Metadata.SharedFeat item) : base(item) { }
 
-        public SharedFeat(Models.Metadata.SharedFeat item, Machine machine, Source source) : this(item)
+        public SharedFeat(Data.Models.Metadata.SharedFeat item, Machine machine, Source source) : this(item)
         {
             SetFieldValue<Source?>(DatItem.SourceKey, source);
             CopyMachineInformation(machine);

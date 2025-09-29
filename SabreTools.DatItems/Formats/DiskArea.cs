@@ -8,7 +8,7 @@ namespace SabreTools.DatItems.Formats
     /// </summary>
     /// <remarks>One DiskArea can contain multiple Disk items</remarks>
     [JsonObject("diskarea"), XmlRoot("diskarea")]
-    public sealed class DiskArea : DatItem<Models.Metadata.DiskArea>
+    public sealed class DiskArea : DatItem<Data.Models.Metadata.DiskArea>
     {
         #region Fields
 
@@ -21,9 +21,9 @@ namespace SabreTools.DatItems.Formats
 
         public DiskArea() : base() { }
 
-        public DiskArea(Models.Metadata.DiskArea item) : base(item) { }
+        public DiskArea(Data.Models.Metadata.DiskArea item) : base(item) { }
 
-        public DiskArea(Models.Metadata.DiskArea item, Machine machine, Source source) : this(item)
+        public DiskArea(Data.Models.Metadata.DiskArea item, Machine machine, Source source) : this(item)
         {
             SetFieldValue<Source?>(DatItem.SourceKey, source);
             CopyMachineInformation(machine);

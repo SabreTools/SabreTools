@@ -10,7 +10,7 @@ namespace SabreTools.DatFiles.Formats
     /// <summary>
     /// Represents a hashfile such as an SFV, MD5, or SHA-1 file
     /// </summary>
-    public abstract class Hashfile : SerializableDatFile<Models.Hashfile.Hashfile, Serialization.Deserializers.Hashfile, Serialization.Serializers.Hashfile, Serialization.CrossModel.Hashfile>
+    public abstract class Hashfile : SerializableDatFile<Data.Models.Hashfile.Hashfile, Serialization.Readers.Hashfile, Serialization.Writers.Hashfile, Serialization.CrossModel.Hashfile>
     {
         #region Fields
 
@@ -38,7 +38,7 @@ namespace SabreTools.DatFiles.Formats
             try
             {
                 // Deserialize the input file
-                var hashfile = new Serialization.Deserializers.Hashfile().Deserialize(filename, _hash);
+                var hashfile = new Serialization.Readers.Hashfile().Deserialize(filename, _hash);
                 var metadata = new Serialization.CrossModel.Hashfile().Serialize(hashfile);
 
                 // Convert to the internal format
@@ -61,7 +61,7 @@ namespace SabreTools.DatFiles.Formats
                 // Serialize the input file
                 var metadata = ConvertToMetadata(ignoreblanks);
                 var hashfile = new Serialization.CrossModel.Hashfile().Deserialize(metadata, _hash);
-                if (!Serialization.Serializers.Hashfile.SerializeFile(hashfile, outfile, _hash))
+                if (!new Serialization.Writers.Hashfile().SerializeFile(hashfile, outfile, _hash))
                 {
                     _logger.Warning($"File '{outfile}' could not be written! See the log for more details.");
                     return false;
@@ -106,13 +106,13 @@ namespace SabreTools.DatFiles.Formats
 
             // Check item name
             if (string.IsNullOrEmpty(datItem.GetName()))
-                missingFields.Add(Models.Metadata.Rom.NameKey);
+                missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
             switch (datItem)
             {
                 case Rom rom:
-                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.CRCKey)))
-                        missingFields.Add(Models.Metadata.Rom.CRCKey);
+                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.CRCKey)))
+                        missingFields.Add(Data.Models.Metadata.Rom.CRCKey);
                     break;
             }
 
@@ -148,13 +148,13 @@ namespace SabreTools.DatFiles.Formats
 
             // Check item name
             if (string.IsNullOrEmpty(datItem.GetName()))
-                missingFields.Add(Models.Metadata.Rom.NameKey);
+                missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
             switch (datItem)
             {
                 case Rom rom:
-                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.MD2Key)))
-                        missingFields.Add(Models.Metadata.Rom.MD2Key);
+                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.MD2Key)))
+                        missingFields.Add(Data.Models.Metadata.Rom.MD2Key);
                     break;
             }
 
@@ -190,13 +190,13 @@ namespace SabreTools.DatFiles.Formats
 
             // Check item name
             if (string.IsNullOrEmpty(datItem.GetName()))
-                missingFields.Add(Models.Metadata.Rom.NameKey);
+                missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
             switch (datItem)
             {
                 case Rom rom:
-                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.MD4Key)))
-                        missingFields.Add(Models.Metadata.Rom.MD4Key);
+                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.MD4Key)))
+                        missingFields.Add(Data.Models.Metadata.Rom.MD4Key);
                     break;
             }
 
@@ -234,23 +234,23 @@ namespace SabreTools.DatFiles.Formats
 
             // Check item name
             if (string.IsNullOrEmpty(datItem.GetName()))
-                missingFields.Add(Models.Metadata.Rom.NameKey);
+                missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
             switch (datItem)
             {
                 case Disk disk:
-                    if (string.IsNullOrEmpty(disk.GetStringFieldValue(Models.Metadata.Disk.MD5Key)))
-                        missingFields.Add(Models.Metadata.Disk.MD5Key);
+                    if (string.IsNullOrEmpty(disk.GetStringFieldValue(Data.Models.Metadata.Disk.MD5Key)))
+                        missingFields.Add(Data.Models.Metadata.Disk.MD5Key);
                     break;
 
                 case Media medium:
-                    if (string.IsNullOrEmpty(medium.GetStringFieldValue(Models.Metadata.Media.MD5Key)))
-                        missingFields.Add(Models.Metadata.Media.MD5Key);
+                    if (string.IsNullOrEmpty(medium.GetStringFieldValue(Data.Models.Metadata.Media.MD5Key)))
+                        missingFields.Add(Data.Models.Metadata.Media.MD5Key);
                     break;
 
                 case Rom rom:
-                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.MD5Key)))
-                        missingFields.Add(Models.Metadata.Rom.MD5Key);
+                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.MD5Key)))
+                        missingFields.Add(Data.Models.Metadata.Rom.MD5Key);
                     break;
             }
 
@@ -286,13 +286,13 @@ namespace SabreTools.DatFiles.Formats
 
             // Check item name
             if (string.IsNullOrEmpty(datItem.GetName()))
-                missingFields.Add(Models.Metadata.Rom.NameKey);
+                missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
             switch (datItem)
             {
                 case Rom rom:
-                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.RIPEMD128Key)))
-                        missingFields.Add(Models.Metadata.Rom.RIPEMD128Key);
+                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.RIPEMD128Key)))
+                        missingFields.Add(Data.Models.Metadata.Rom.RIPEMD128Key);
                     break;
             }
 
@@ -328,13 +328,13 @@ namespace SabreTools.DatFiles.Formats
 
             // Check item name
             if (string.IsNullOrEmpty(datItem.GetName()))
-                missingFields.Add(Models.Metadata.Rom.NameKey);
+                missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
             switch (datItem)
             {
                 case Rom rom:
-                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.RIPEMD160Key)))
-                        missingFields.Add(Models.Metadata.Rom.RIPEMD160Key);
+                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.RIPEMD160Key)))
+                        missingFields.Add(Data.Models.Metadata.Rom.RIPEMD160Key);
                     break;
             }
 
@@ -372,23 +372,23 @@ namespace SabreTools.DatFiles.Formats
 
             // Check item name
             if (string.IsNullOrEmpty(datItem.GetName()))
-                missingFields.Add(Models.Metadata.Rom.NameKey);
+                missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
             switch (datItem)
             {
                 case Disk disk:
-                    if (string.IsNullOrEmpty(disk.GetStringFieldValue(Models.Metadata.Disk.SHA1Key)))
-                        missingFields.Add(Models.Metadata.Disk.SHA1Key);
+                    if (string.IsNullOrEmpty(disk.GetStringFieldValue(Data.Models.Metadata.Disk.SHA1Key)))
+                        missingFields.Add(Data.Models.Metadata.Disk.SHA1Key);
                     break;
 
                 case Media medium:
-                    if (string.IsNullOrEmpty(medium.GetStringFieldValue(Models.Metadata.Media.SHA1Key)))
-                        missingFields.Add(Models.Metadata.Media.SHA1Key);
+                    if (string.IsNullOrEmpty(medium.GetStringFieldValue(Data.Models.Metadata.Media.SHA1Key)))
+                        missingFields.Add(Data.Models.Metadata.Media.SHA1Key);
                     break;
 
                 case Rom rom:
-                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.SHA1Key)))
-                        missingFields.Add(Models.Metadata.Rom.SHA1Key);
+                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA1Key)))
+                        missingFields.Add(Data.Models.Metadata.Rom.SHA1Key);
                     break;
             }
 
@@ -425,18 +425,18 @@ namespace SabreTools.DatFiles.Formats
 
             // Check item name
             if (string.IsNullOrEmpty(datItem.GetName()))
-                missingFields.Add(Models.Metadata.Rom.NameKey);
+                missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
             switch (datItem)
             {
                 case Media medium:
-                    if (string.IsNullOrEmpty(medium.GetStringFieldValue(Models.Metadata.Media.SHA256Key)))
-                        missingFields.Add(Models.Metadata.Media.SHA256Key);
+                    if (string.IsNullOrEmpty(medium.GetStringFieldValue(Data.Models.Metadata.Media.SHA256Key)))
+                        missingFields.Add(Data.Models.Metadata.Media.SHA256Key);
                     break;
 
                 case Rom rom:
-                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.SHA256Key)))
-                        missingFields.Add(Models.Metadata.Rom.SHA256Key);
+                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA256Key)))
+                        missingFields.Add(Data.Models.Metadata.Rom.SHA256Key);
                     break;
             }
 
@@ -472,13 +472,13 @@ namespace SabreTools.DatFiles.Formats
 
             // Check item name
             if (string.IsNullOrEmpty(datItem.GetName()))
-                missingFields.Add(Models.Metadata.Rom.NameKey);
+                missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
             switch (datItem)
             {
                 case Rom rom:
-                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.SHA384Key)))
-                        missingFields.Add(Models.Metadata.Rom.SHA384Key);
+                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA384Key)))
+                        missingFields.Add(Data.Models.Metadata.Rom.SHA384Key);
                     break;
             }
 
@@ -514,13 +514,13 @@ namespace SabreTools.DatFiles.Formats
 
             // Check item name
             if (string.IsNullOrEmpty(datItem.GetName()))
-                missingFields.Add(Models.Metadata.Rom.NameKey);
+                missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
             switch (datItem)
             {
                 case Rom rom:
-                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.SHA512Key)))
-                        missingFields.Add(Models.Metadata.Rom.SHA512Key);
+                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA512Key)))
+                        missingFields.Add(Data.Models.Metadata.Rom.SHA512Key);
                     break;
             }
 
@@ -557,18 +557,18 @@ namespace SabreTools.DatFiles.Formats
 
             // Check item name
             if (string.IsNullOrEmpty(datItem.GetName()))
-                missingFields.Add(Models.Metadata.Rom.NameKey);
+                missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
             switch (datItem)
             {
                 case Media medium:
-                    if (string.IsNullOrEmpty(medium.GetStringFieldValue(Models.Metadata.Media.SpamSumKey)))
-                        missingFields.Add(Models.Metadata.Media.SpamSumKey);
+                    if (string.IsNullOrEmpty(medium.GetStringFieldValue(Data.Models.Metadata.Media.SpamSumKey)))
+                        missingFields.Add(Data.Models.Metadata.Media.SpamSumKey);
                     break;
 
                 case Rom rom:
-                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.SpamSumKey)))
-                        missingFields.Add(Models.Metadata.Rom.SpamSumKey);
+                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.SpamSumKey)))
+                        missingFields.Add(Data.Models.Metadata.Rom.SpamSumKey);
                     break;
             }
 

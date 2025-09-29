@@ -8,7 +8,7 @@ namespace SabreTools.DatItems.Formats
     /// Represents which Chip(s) is associated with a set
     /// </summary>
     [JsonObject("chip"), XmlRoot("chip")]
-    public sealed class Chip : DatItem<Models.Metadata.Chip>
+    public sealed class Chip : DatItem<Data.Models.Metadata.Chip>
     {
         #region Fields
 
@@ -21,16 +21,16 @@ namespace SabreTools.DatItems.Formats
 
         public Chip() : base() { }
 
-        public Chip(Models.Metadata.Chip item) : base(item)
+        public Chip(Data.Models.Metadata.Chip item) : base(item)
         {
             // Process flag values
-            if (GetBoolFieldValue(Models.Metadata.Chip.SoundOnlyKey) != null)
-                SetFieldValue<string?>(Models.Metadata.Chip.SoundOnlyKey, GetBoolFieldValue(Models.Metadata.Chip.SoundOnlyKey).FromYesNo());
-            if (GetStringFieldValue(Models.Metadata.Chip.ChipTypeKey) != null)
-                SetFieldValue<string?>(Models.Metadata.Chip.ChipTypeKey, GetStringFieldValue(Models.Metadata.Chip.ChipTypeKey).AsChipType().AsStringValue());
+            if (GetBoolFieldValue(Data.Models.Metadata.Chip.SoundOnlyKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.Chip.SoundOnlyKey, GetBoolFieldValue(Data.Models.Metadata.Chip.SoundOnlyKey).FromYesNo());
+            if (GetStringFieldValue(Data.Models.Metadata.Chip.ChipTypeKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.Chip.ChipTypeKey, GetStringFieldValue(Data.Models.Metadata.Chip.ChipTypeKey).AsChipType().AsStringValue());
         }
 
-        public Chip(Models.Metadata.Chip item, Machine machine, Source source) : this(item)
+        public Chip(Data.Models.Metadata.Chip item, Machine machine, Source source) : this(item)
         {
             SetFieldValue<Source?>(DatItem.SourceKey, source);
             CopyMachineInformation(machine);

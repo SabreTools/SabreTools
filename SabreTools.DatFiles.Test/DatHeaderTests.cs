@@ -10,7 +10,7 @@ namespace SabreTools.DatFiles.Test
         public void CanOpenSpecified_Missing()
         {
             DatHeader header = new DatHeader();
-            header.SetFieldValue<string[]>(Models.Metadata.Header.CanOpenKey, null);
+            header.SetFieldValue<string[]>(Data.Models.Metadata.Header.CanOpenKey, null);
             Assert.False(header.CanOpenSpecified);
         }
 
@@ -18,7 +18,7 @@ namespace SabreTools.DatFiles.Test
         public void CanOpenSpecified_Empty()
         {
             DatHeader header = new DatHeader();
-            header.SetFieldValue<string[]>(Models.Metadata.Header.CanOpenKey, []);
+            header.SetFieldValue<string[]>(Data.Models.Metadata.Header.CanOpenKey, []);
             Assert.False(header.CanOpenSpecified);
         }
 
@@ -26,7 +26,7 @@ namespace SabreTools.DatFiles.Test
         public void CanOpenSpecified_Exists()
         {
             DatHeader header = new DatHeader();
-            header.SetFieldValue<string[]>(Models.Metadata.Header.CanOpenKey, ["value"]);
+            header.SetFieldValue<string[]>(Data.Models.Metadata.Header.CanOpenKey, ["value"]);
             Assert.True(header.CanOpenSpecified);
         }
 
@@ -38,7 +38,7 @@ namespace SabreTools.DatFiles.Test
         public void ImagesSpecified_Missing()
         {
             DatHeader header = new DatHeader();
-            header.SetFieldValue<Models.OfflineList.Images>(Models.Metadata.Header.ImagesKey, null);
+            header.SetFieldValue<Data.Models.OfflineList.Images>(Data.Models.Metadata.Header.ImagesKey, null);
             Assert.False(header.ImagesSpecified);
         }
 
@@ -46,7 +46,7 @@ namespace SabreTools.DatFiles.Test
         public void ImagesSpecified_Exists()
         {
             DatHeader header = new DatHeader();
-            header.SetFieldValue<Models.OfflineList.Images>(Models.Metadata.Header.ImagesKey, new());
+            header.SetFieldValue<Data.Models.OfflineList.Images>(Data.Models.Metadata.Header.ImagesKey, new());
             Assert.True(header.ImagesSpecified);
         }
 
@@ -58,7 +58,7 @@ namespace SabreTools.DatFiles.Test
         public void InfosSpecified_Missing()
         {
             DatHeader header = new DatHeader();
-            header.SetFieldValue<Models.OfflineList.Infos>(Models.Metadata.Header.InfosKey, null);
+            header.SetFieldValue<Data.Models.OfflineList.Infos>(Data.Models.Metadata.Header.InfosKey, null);
             Assert.False(header.InfosSpecified);
         }
 
@@ -66,7 +66,7 @@ namespace SabreTools.DatFiles.Test
         public void InfosSpecified_Exists()
         {
             DatHeader header = new DatHeader();
-            header.SetFieldValue<Models.OfflineList.Infos>(Models.Metadata.Header.InfosKey, new());
+            header.SetFieldValue<Data.Models.OfflineList.Infos>(Data.Models.Metadata.Header.InfosKey, new());
             Assert.True(header.InfosSpecified);
         }
 
@@ -78,7 +78,7 @@ namespace SabreTools.DatFiles.Test
         public void NewDatSpecified_Missing()
         {
             DatHeader header = new DatHeader();
-            header.SetFieldValue<Models.OfflineList.NewDat>(Models.Metadata.Header.NewDatKey, null);
+            header.SetFieldValue<Data.Models.OfflineList.NewDat>(Data.Models.Metadata.Header.NewDatKey, null);
             Assert.False(header.NewDatSpecified);
         }
 
@@ -86,7 +86,7 @@ namespace SabreTools.DatFiles.Test
         public void NewDatSpecified_Exists()
         {
             DatHeader header = new DatHeader();
-            header.SetFieldValue<Models.OfflineList.NewDat>(Models.Metadata.Header.NewDatKey, new());
+            header.SetFieldValue<Data.Models.OfflineList.NewDat>(Data.Models.Metadata.Header.NewDatKey, new());
             Assert.True(header.NewDatSpecified);
         }
 
@@ -98,7 +98,7 @@ namespace SabreTools.DatFiles.Test
         public void SearchSpecified_Missing()
         {
             DatHeader header = new DatHeader();
-            header.SetFieldValue<Models.OfflineList.Search>(Models.Metadata.Header.SearchKey, null);
+            header.SetFieldValue<Data.Models.OfflineList.Search>(Data.Models.Metadata.Header.SearchKey, null);
             Assert.False(header.SearchSpecified);
         }
 
@@ -106,7 +106,7 @@ namespace SabreTools.DatFiles.Test
         public void SearchSpecified_Exists()
         {
             DatHeader header = new DatHeader();
-            header.SetFieldValue<Models.OfflineList.Search>(Models.Metadata.Header.SearchKey, new());
+            header.SetFieldValue<Data.Models.OfflineList.Search>(Data.Models.Metadata.Header.SearchKey, new());
             Assert.True(header.SearchSpecified);
         }
 
@@ -118,12 +118,12 @@ namespace SabreTools.DatFiles.Test
         public void CloneTest()
         {
             DatHeader header = new DatHeader();
-            header.SetFieldValue(Models.Metadata.Header.NameKey, "name");
+            header.SetFieldValue(Data.Models.Metadata.Header.NameKey, "name");
 
             object clone = header.Clone();
             DatHeader? actual = clone as DatHeader;
             Assert.NotNull(actual);
-            Assert.Equal("name", actual.GetStringFieldValue(Models.Metadata.Header.NameKey));
+            Assert.Equal("name", actual.GetStringFieldValue(Data.Models.Metadata.Header.NameKey));
         }
 
         #endregion
@@ -150,10 +150,10 @@ namespace SabreTools.DatFiles.Test
         public void GetInternalCloneTest()
         {
             DatHeader header = new DatHeader();
-            header.SetFieldValue(Models.Metadata.Header.NameKey, "name");
+            header.SetFieldValue(Data.Models.Metadata.Header.NameKey, "name");
 
-            Models.Metadata.Header actual = header.GetInternalClone();
-            Assert.Equal("name", actual[Models.Metadata.Header.NameKey]);
+            Data.Models.Metadata.Header actual = header.GetInternalClone();
+            Assert.Equal("name", actual[Data.Models.Metadata.Header.NameKey]);
         }
 
         #endregion
@@ -184,10 +184,10 @@ namespace SabreTools.DatFiles.Test
         public void Equals_MismatchedInternal_False()
         {
             DatHeader self = new DatHeader();
-            self.SetFieldValue(Models.Metadata.Header.NameKey, "self");
+            self.SetFieldValue(Data.Models.Metadata.Header.NameKey, "self");
 
             DatHeader? other = new DatHeader();
-            other.SetFieldValue(Models.Metadata.Header.NameKey, "other");
+            other.SetFieldValue(Data.Models.Metadata.Header.NameKey, "other");
 
             bool actual = self.Equals(other);
             Assert.False(actual);
@@ -197,10 +197,10 @@ namespace SabreTools.DatFiles.Test
         public void Equals_EqualInternal_True()
         {
             DatHeader self = new DatHeader();
-            self.SetFieldValue(Models.Metadata.Header.NameKey, "name");
+            self.SetFieldValue(Data.Models.Metadata.Header.NameKey, "name");
 
             DatHeader? other = new DatHeader();
-            other.SetFieldValue(Models.Metadata.Header.NameKey, "name");
+            other.SetFieldValue(Data.Models.Metadata.Header.NameKey, "name");
 
             bool actual = self.Equals(other);
             Assert.True(actual);

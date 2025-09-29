@@ -1,4 +1,4 @@
-using SabreTools.Models.Metadata;
+using SabreTools.Data.Models.Metadata;
 using Xunit;
 
 namespace SabreTools.Core.Test

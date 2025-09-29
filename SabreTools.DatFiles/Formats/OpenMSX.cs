@@ -7,7 +7,7 @@ namespace SabreTools.DatFiles.Formats
     /// <summary>
     /// Represents an openMSX softawre list XML DAT
     /// </summary>
-    public sealed class OpenMSX : SerializableDatFile<Models.OpenMSX.SoftwareDb, Serialization.Deserializers.OpenMSX, Serialization.Serializers.OpenMSX, Serialization.CrossModel.OpenMSX>
+    public sealed class OpenMSX : SerializableDatFile<Data.Models.OpenMSX.SoftwareDb, Serialization.Readers.OpenMSX, Serialization.Writers.OpenMSX, Serialization.CrossModel.OpenMSX>
     {
         #region Constants
 
@@ -70,13 +70,13 @@ The softwaredb.xml file contains information about rom mapper types
 
             // Check item name
             if (string.IsNullOrEmpty(datItem.GetName()))
-                missingFields.Add(Models.Metadata.Rom.NameKey);
+                missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
             switch (datItem)
             {
                 case Rom rom:
-                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.SHA1Key)))
-                        missingFields.Add(Models.Metadata.Rom.SHA1Key);
+                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA1Key)))
+                        missingFields.Add(Data.Models.Metadata.Rom.SHA1Key);
                     break;
             }
 

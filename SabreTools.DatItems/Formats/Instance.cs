@@ -7,7 +7,7 @@ namespace SabreTools.DatItems.Formats
     /// Represents a single instance of another item
     /// </summary>
     [JsonObject("instance"), XmlRoot("instance")]
-    public sealed class Instance : DatItem<Models.Metadata.Instance>
+    public sealed class Instance : DatItem<Data.Models.Metadata.Instance>
     {
         #region Fields
 
@@ -20,9 +20,9 @@ namespace SabreTools.DatItems.Formats
 
         public Instance() : base() { }
 
-        public Instance(Models.Metadata.Instance item) : base(item) { }
+        public Instance(Data.Models.Metadata.Instance item) : base(item) { }
 
-        public Instance(Models.Metadata.Instance item, Machine machine, Source source) : this(item)
+        public Instance(Data.Models.Metadata.Instance item, Machine machine, Source source) : this(item)
         {
             SetFieldValue<Source?>(DatItem.SourceKey, source);
             CopyMachineInformation(machine);

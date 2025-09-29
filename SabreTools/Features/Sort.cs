@@ -115,8 +115,8 @@ namespace SabreTools.Features
                     datdata.Modifiers.OutputDepot = outputDepot?.Clone() as DepotInformation;
 
                     // If we have overridden the header skipper, set it now
-                    if (!string.IsNullOrEmpty(Header!.GetStringFieldValue(Models.Metadata.Header.HeaderKey)))
-                        datdata.Header.SetFieldValue<string?>(Models.Metadata.Header.HeaderKey, Header.GetStringFieldValue(Models.Metadata.Header.HeaderKey));
+                    if (!string.IsNullOrEmpty(Header!.GetStringFieldValue(Data.Models.Metadata.Header.HeaderKey)))
+                        datdata.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.HeaderKey, Header.GetStringFieldValue(Data.Models.Metadata.Header.HeaderKey));
 
                     // If we have the depot flag, respect it
                     bool success;
@@ -147,8 +147,8 @@ namespace SabreTools.Features
                     if (success && updateDat)
                     {
                         datdata.Header.SetFieldValue<string?>(DatHeader.FileNameKey, $"fixDAT_{Header.GetStringFieldValue(DatHeader.FileNameKey)}");
-                        datdata.Header.SetFieldValue<string?>(Models.Metadata.Header.NameKey, $"fixDAT_{Header.GetStringFieldValue(Models.Metadata.Header.NameKey)}");
-                        datdata.Header.SetFieldValue<string?>(Models.Metadata.Header.DescriptionKey, $"fixDAT_{Header.GetStringFieldValue(Models.Metadata.Header.DescriptionKey)}");
+                        datdata.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, $"fixDAT_{Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey)}");
+                        datdata.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, $"fixDAT_{Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)}");
                         datdata.ClearMarked();
                         Writer.Write(datdata, OutputDir);
                     }
@@ -177,9 +177,9 @@ namespace SabreTools.Features
                 datdata.Modifiers.OutputDepot = outputDepot?.Clone() as DepotInformation;
 
                 // If we have overridden the header skipper, set it now
-                string? headerSkpper = Header!.GetStringFieldValue(Models.Metadata.Header.HeaderKey);
+                string? headerSkpper = Header!.GetStringFieldValue(Data.Models.Metadata.Header.HeaderKey);
                 if (!string.IsNullOrEmpty(headerSkpper))
-                    datdata.Header.SetFieldValue<string?>(Models.Metadata.Header.HeaderKey, headerSkpper);
+                    datdata.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.HeaderKey, headerSkpper);
 
                 watch.Stop();
 
@@ -213,10 +213,10 @@ namespace SabreTools.Features
                 {
                     datdata.Header.SetFieldValue<string?>(DatHeader.FileNameKey,
                         $"fixDAT_{Header.GetStringFieldValue(DatHeader.FileNameKey)}");
-                    datdata.Header.SetFieldValue<string?>(Models.Metadata.Header.NameKey,
-                        $"fixDAT_{Header.GetStringFieldValue(Models.Metadata.Header.NameKey)}");
-                    datdata.Header.SetFieldValue<string?>(Models.Metadata.Header.DescriptionKey,
-                        $"fixDAT_{Header.GetStringFieldValue(Models.Metadata.Header.DescriptionKey)}");
+                    datdata.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey,
+                        $"fixDAT_{Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey)}");
+                    datdata.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey,
+                        $"fixDAT_{Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)}");
 
                     datdata.ClearMarked();
                     Writer.Write(datdata, OutputDir);

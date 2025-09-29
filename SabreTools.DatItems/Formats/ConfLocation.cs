@@ -8,7 +8,7 @@ namespace SabreTools.DatItems.Formats
     /// Represents one conflocation
     /// </summary>
     [JsonObject("conflocation"), XmlRoot("conflocation")]
-    public sealed class ConfLocation : DatItem<Models.Metadata.ConfLocation>
+    public sealed class ConfLocation : DatItem<Data.Models.Metadata.ConfLocation>
     {
         #region Fields
 
@@ -21,14 +21,14 @@ namespace SabreTools.DatItems.Formats
 
         public ConfLocation() : base() { }
 
-        public ConfLocation(Models.Metadata.ConfLocation item) : base(item)
+        public ConfLocation(Data.Models.Metadata.ConfLocation item) : base(item)
         {
             // Process flag values
-            if (GetBoolFieldValue(Models.Metadata.ConfLocation.InvertedKey) != null)
-                SetFieldValue<string?>(Models.Metadata.ConfLocation.InvertedKey, GetBoolFieldValue(Models.Metadata.ConfLocation.InvertedKey).FromYesNo());
+            if (GetBoolFieldValue(Data.Models.Metadata.ConfLocation.InvertedKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.ConfLocation.InvertedKey, GetBoolFieldValue(Data.Models.Metadata.ConfLocation.InvertedKey).FromYesNo());
         }
 
-        public ConfLocation(Models.Metadata.ConfLocation item, Machine machine, Source source) : this(item)
+        public ConfLocation(Data.Models.Metadata.ConfLocation item, Machine machine, Source source) : this(item)
         {
             SetFieldValue<Source?>(DatItem.SourceKey, source);
             CopyMachineInformation(machine);

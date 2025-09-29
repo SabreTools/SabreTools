@@ -20,11 +20,11 @@ namespace SabreTools.DatFiles.Test
             Source source = new Source(0, source: null);
 
             Machine machine = new Machine();
-            machine.SetFieldValue(Models.Metadata.Machine.NameKey, "machine");
+            machine.SetFieldValue(Data.Models.Metadata.Machine.NameKey, "machine");
 
             DatItem datItem = new Rom();
             datItem.SetName("rom.bin");
-            datItem.SetFieldValue(Models.Metadata.Rom.CRCKey, "deadbeef");
+            datItem.SetFieldValue(Data.Models.Metadata.Rom.CRCKey, "deadbeef");
             datItem.SetFieldValue(DatItem.MachineKey, machine);
             datItem.SetFieldValue(DatItem.SourceKey, source);
 
@@ -48,11 +48,11 @@ namespace SabreTools.DatFiles.Test
             Source source = new Source(0, source: null);
 
             Machine machine = new Machine();
-            machine.SetFieldValue(Models.Metadata.Machine.NameKey, "machine");
+            machine.SetFieldValue(Data.Models.Metadata.Machine.NameKey, "machine");
 
             DatItem datItem = new Rom();
             datItem.SetName("rom.bin");
-            datItem.SetFieldValue(Models.Metadata.Rom.CRCKey, "deadbeef");
+            datItem.SetFieldValue(Data.Models.Metadata.Rom.CRCKey, "deadbeef");
             datItem.SetFieldValue(DatItem.MachineKey, machine);
             datItem.SetFieldValue(DatItem.SourceKey, source);
 
@@ -79,8 +79,8 @@ namespace SabreTools.DatFiles.Test
             Source source = new Source(0, source: null);
 
             Machine machine = new Machine();
-            machine.SetFieldValue(Models.Metadata.Machine.NameKey, "machine");
-            machine.SetFieldValue(Models.Metadata.Machine.DescriptionKey, "description");
+            machine.SetFieldValue(Data.Models.Metadata.Machine.NameKey, "machine");
+            machine.SetFieldValue(Data.Models.Metadata.Machine.DescriptionKey, "description");
 
             DatItem datItem = new Rom();
             datItem.SetFieldValue(DatItem.MachineKey, machine);
@@ -96,15 +96,15 @@ namespace SabreTools.DatFiles.Test
             Machine? actualMachine = actual.GetMachine();
             Assert.NotNull(actualMachine);
             Assert.Equal("description", actualMachine.GetName());
-            Assert.Equal("description", actualMachine.GetStringFieldValue(Models.Metadata.Machine.DescriptionKey));
+            Assert.Equal("description", actualMachine.GetStringFieldValue(Data.Models.Metadata.Machine.DescriptionKey));
         }
 
         [Fact]
         public void MachineDescriptionToName_ItemsDB()
         {
             Machine machine = new Machine();
-            machine.SetFieldValue(Models.Metadata.Machine.NameKey, "machine");
-            machine.SetFieldValue(Models.Metadata.Machine.DescriptionKey, "description");
+            machine.SetFieldValue(Data.Models.Metadata.Machine.NameKey, "machine");
+            machine.SetFieldValue(Data.Models.Metadata.Machine.DescriptionKey, "description");
 
             DatFile datFile = new Logiqx(datFile: null, useGame: false);
             _ = datFile.AddMachineDB(machine);
@@ -113,7 +113,7 @@ namespace SabreTools.DatFiles.Test
 
             Machine actualMachine = Assert.Single(datFile.GetMachinesDB()).Value;
             Assert.Equal("description", actualMachine.GetName());
-            Assert.Equal("description", actualMachine.GetStringFieldValue(Models.Metadata.Machine.DescriptionKey));
+            Assert.Equal("description", actualMachine.GetStringFieldValue(Data.Models.Metadata.Machine.DescriptionKey));
         }
 
         #endregion
@@ -126,7 +126,7 @@ namespace SabreTools.DatFiles.Test
             Source source = new Source(0, source: null);
 
             Machine machine = new Machine();
-            machine.SetFieldValue(Models.Metadata.Machine.NameKey, "machine");
+            machine.SetFieldValue(Data.Models.Metadata.Machine.NameKey, "machine");
 
             DatItem rom = new Rom();
             rom.SetName("rom.bin");
@@ -165,7 +165,7 @@ namespace SabreTools.DatFiles.Test
             Source source = new Source(0, source: null);
 
             Machine machine = new Machine();
-            machine.SetFieldValue(Models.Metadata.Machine.NameKey, "machine");
+            machine.SetFieldValue(Data.Models.Metadata.Machine.NameKey, "machine");
 
             DatItem rom = new Rom();
             rom.SetName("rom.bin");
@@ -204,11 +204,11 @@ namespace SabreTools.DatFiles.Test
         public void SetOneGamePerRegion_Items()
         {
             Machine nowhereMachine = new Machine();
-            nowhereMachine.SetFieldValue(Models.Metadata.Machine.NameKey, "machine (Nowhere)");
+            nowhereMachine.SetFieldValue(Data.Models.Metadata.Machine.NameKey, "machine (Nowhere)");
 
             Machine worldMachine = new Machine();
-            worldMachine.SetFieldValue(Models.Metadata.Machine.NameKey, "machine (World)");
-            worldMachine.SetFieldValue(Models.Metadata.Machine.CloneOfKey, "machine (Nowhere)");
+            worldMachine.SetFieldValue(Data.Models.Metadata.Machine.NameKey, "machine (World)");
+            worldMachine.SetFieldValue(Data.Models.Metadata.Machine.CloneOfKey, "machine (Nowhere)");
 
             DatItem nowhereRom = new Rom();
             nowhereRom.SetName("rom.bin");
@@ -238,11 +238,11 @@ namespace SabreTools.DatFiles.Test
         public void SetOneGamePerRegion_ItemsDB()
         {
             Machine nowhereMachine = new Machine();
-            nowhereMachine.SetFieldValue(Models.Metadata.Machine.NameKey, "machine (Nowhere)");
+            nowhereMachine.SetFieldValue(Data.Models.Metadata.Machine.NameKey, "machine (Nowhere)");
 
             Machine worldMachine = new Machine();
-            worldMachine.SetFieldValue(Models.Metadata.Machine.NameKey, "machine (World)");
-            worldMachine.SetFieldValue(Models.Metadata.Machine.CloneOfKey, "machine (Nowhere)");
+            worldMachine.SetFieldValue(Data.Models.Metadata.Machine.NameKey, "machine (World)");
+            worldMachine.SetFieldValue(Data.Models.Metadata.Machine.CloneOfKey, "machine (Nowhere)");
 
             DatFile datFile = new Logiqx(datFile: null, useGame: false);
             _ = datFile.AddMachineDB(nowhereMachine);
@@ -266,7 +266,7 @@ namespace SabreTools.DatFiles.Test
             Source source = new Source(0, source: null);
 
             Machine machine = new Machine();
-            machine.SetFieldValue(Models.Metadata.Machine.NameKey, "10.10.10-machine-name");
+            machine.SetFieldValue(Data.Models.Metadata.Machine.NameKey, "10.10.10-machine-name");
 
             DatItem datItem = new Rom();
             datItem.SetFieldValue(DatItem.MachineKey, machine);
@@ -288,7 +288,7 @@ namespace SabreTools.DatFiles.Test
         public void StripSceneDatesFromItems_ItemsDB()
         {
             Machine machine = new Machine();
-            machine.SetFieldValue(Models.Metadata.Machine.NameKey, "10.10.10-machine-name");
+            machine.SetFieldValue(Data.Models.Metadata.Machine.NameKey, "10.10.10-machine-name");
 
             DatFile datFile = new Logiqx(datFile: null, useGame: false);
             _ = datFile.AddMachineDB(machine);

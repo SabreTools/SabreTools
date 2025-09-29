@@ -297,10 +297,10 @@ namespace SabreTools.DatTools
             foreach (string fieldName in machineFieldNames)
             {
                 // Special case for description
-                if (machineFieldNames.Contains(Models.Metadata.Machine.DescriptionKey))
+                if (machineFieldNames.Contains(Data.Models.Metadata.Machine.DescriptionKey))
                 {
-                    if (!onlySame || (onlySame && machine.GetName() == machine.GetStringFieldValue(Models.Metadata.Machine.DescriptionKey)))
-                        machine.SetFieldValue<string?>(Models.Metadata.Machine.DescriptionKey, repMachine.GetStringFieldValue(Models.Metadata.Machine.DescriptionKey));
+                    if (!onlySame || (onlySame && machine.GetName() == machine.GetStringFieldValue(Data.Models.Metadata.Machine.DescriptionKey)))
+                        machine.SetFieldValue<string?>(Data.Models.Metadata.Machine.DescriptionKey, repMachine.GetStringFieldValue(Data.Models.Metadata.Machine.DescriptionKey));
 
                     continue;
                 }
@@ -323,11 +323,11 @@ namespace SabreTools.DatTools
 
             #region Common
 
-            if (datItem.GetStringFieldValue(Models.Metadata.DatItem.TypeKey) != repDatItem.GetStringFieldValue(Models.Metadata.DatItem.TypeKey))
+            if (datItem.GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey) != repDatItem.GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey))
                 return;
 
             // If there are no field names for this type or generic, return
-            string? itemType = datItem.GetStringFieldValue(Models.Metadata.DatItem.TypeKey).AsItemType().AsStringValue();
+            string? itemType = datItem.GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey).AsItemType().AsStringValue();
             if (itemType == null || (!itemFieldNames.ContainsKey(itemType) && !itemFieldNames.ContainsKey("item")))
                 return;
 
@@ -339,7 +339,7 @@ namespace SabreTools.DatTools
                 fieldNames.UnionWith(itemFieldNames["item"]);
 
             // If the field specifically contains Name, set it separately
-            if (fieldNames.Contains(Models.Metadata.Rom.NameKey))
+            if (fieldNames.Contains(Data.Models.Metadata.Rom.NameKey))
                 datItem.SetName(repDatItem.GetName());
 
             #endregion
@@ -373,16 +373,16 @@ namespace SabreTools.DatTools
         /// <param name="datItemFields">List of fields representing what should be updated</param>
         private static void ReplaceFields(Disk disk, Disk newItem, List<string> datItemFields)
         {
-            if (datItemFields.Contains(Models.Metadata.Disk.MD5Key))
+            if (datItemFields.Contains(Data.Models.Metadata.Disk.MD5Key))
             {
-                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Models.Metadata.Disk.MD5Key)))
-                    disk.SetFieldValue<string?>(Models.Metadata.Disk.MD5Key, newItem.GetStringFieldValue(Models.Metadata.Disk.MD5Key));
+                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Data.Models.Metadata.Disk.MD5Key)))
+                    disk.SetFieldValue<string?>(Data.Models.Metadata.Disk.MD5Key, newItem.GetStringFieldValue(Data.Models.Metadata.Disk.MD5Key));
             }
 
-            if (datItemFields.Contains(Models.Metadata.Disk.SHA1Key))
+            if (datItemFields.Contains(Data.Models.Metadata.Disk.SHA1Key))
             {
-                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Models.Metadata.Disk.SHA1Key)))
-                    disk.SetFieldValue<string?>(Models.Metadata.Disk.SHA1Key, newItem.GetStringFieldValue(Models.Metadata.Disk.SHA1Key));
+                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Data.Models.Metadata.Disk.SHA1Key)))
+                    disk.SetFieldValue<string?>(Data.Models.Metadata.Disk.SHA1Key, newItem.GetStringFieldValue(Data.Models.Metadata.Disk.SHA1Key));
             }
         }
 
@@ -394,25 +394,25 @@ namespace SabreTools.DatTools
         /// <param name="datItemFields">List of fields representing what should be updated</param>
         private static void ReplaceFields(DatItems.Formats.File file, DatItems.Formats.File newItem, List<string> datItemFields)
         {
-            if (datItemFields.Contains(Models.Metadata.Rom.CRCKey))
+            if (datItemFields.Contains(Data.Models.Metadata.Rom.CRCKey))
             {
                 if (!string.IsNullOrEmpty(newItem.CRC))
                     file.CRC = newItem.CRC;
             }
 
-            if (datItemFields.Contains(Models.Metadata.Rom.MD5Key))
+            if (datItemFields.Contains(Data.Models.Metadata.Rom.MD5Key))
             {
                 if (!string.IsNullOrEmpty(newItem.MD5))
                     file.MD5 = newItem.MD5;
             }
 
-            if (datItemFields.Contains(Models.Metadata.Rom.SHA1Key))
+            if (datItemFields.Contains(Data.Models.Metadata.Rom.SHA1Key))
             {
                 if (!string.IsNullOrEmpty(newItem.SHA1))
                     file.SHA1 = newItem.SHA1;
             }
 
-            if (datItemFields.Contains(Models.Metadata.Rom.SHA256Key))
+            if (datItemFields.Contains(Data.Models.Metadata.Rom.SHA256Key))
             {
                 if (!string.IsNullOrEmpty(newItem.SHA256))
                     file.SHA256 = newItem.SHA256;
@@ -427,28 +427,28 @@ namespace SabreTools.DatTools
         /// <param name="datItemFields">List of fields representing what should be updated</param>
         private static void ReplaceFields(Media media, Media newItem, List<string> datItemFields)
         {
-            if (datItemFields.Contains(Models.Metadata.Media.MD5Key))
+            if (datItemFields.Contains(Data.Models.Metadata.Media.MD5Key))
             {
-                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Models.Metadata.Media.MD5Key)))
-                    media.SetFieldValue<string?>(Models.Metadata.Media.MD5Key, newItem.GetStringFieldValue(Models.Metadata.Media.MD5Key));
+                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Data.Models.Metadata.Media.MD5Key)))
+                    media.SetFieldValue<string?>(Data.Models.Metadata.Media.MD5Key, newItem.GetStringFieldValue(Data.Models.Metadata.Media.MD5Key));
             }
 
-            if (datItemFields.Contains(Models.Metadata.Media.SHA1Key))
+            if (datItemFields.Contains(Data.Models.Metadata.Media.SHA1Key))
             {
-                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Models.Metadata.Media.SHA1Key)))
-                    media.SetFieldValue<string?>(Models.Metadata.Media.SHA1Key, newItem.GetStringFieldValue(Models.Metadata.Media.SHA1Key));
+                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Data.Models.Metadata.Media.SHA1Key)))
+                    media.SetFieldValue<string?>(Data.Models.Metadata.Media.SHA1Key, newItem.GetStringFieldValue(Data.Models.Metadata.Media.SHA1Key));
             }
 
-            if (datItemFields.Contains(Models.Metadata.Media.SHA256Key))
+            if (datItemFields.Contains(Data.Models.Metadata.Media.SHA256Key))
             {
-                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Models.Metadata.Media.SHA256Key)))
-                    media.SetFieldValue<string?>(Models.Metadata.Media.SHA256Key, newItem.GetStringFieldValue(Models.Metadata.Media.SHA256Key));
+                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Data.Models.Metadata.Media.SHA256Key)))
+                    media.SetFieldValue<string?>(Data.Models.Metadata.Media.SHA256Key, newItem.GetStringFieldValue(Data.Models.Metadata.Media.SHA256Key));
             }
 
-            if (datItemFields.Contains(Models.Metadata.Media.SpamSumKey))
+            if (datItemFields.Contains(Data.Models.Metadata.Media.SpamSumKey))
             {
-                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Models.Metadata.Media.SpamSumKey)))
-                    media.SetFieldValue<string?>(Models.Metadata.Media.SpamSumKey, newItem.GetStringFieldValue(Models.Metadata.Media.SpamSumKey));
+                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Data.Models.Metadata.Media.SpamSumKey)))
+                    media.SetFieldValue<string?>(Data.Models.Metadata.Media.SpamSumKey, newItem.GetStringFieldValue(Data.Models.Metadata.Media.SpamSumKey));
             }
         }
 
@@ -460,70 +460,70 @@ namespace SabreTools.DatTools
         /// <param name="datItemFields">List of fields representing what should be updated</param>
         private static void ReplaceFields(Rom rom, Rom newItem, List<string> datItemFields)
         {
-            if (datItemFields.Contains(Models.Metadata.Rom.CRCKey))
+            if (datItemFields.Contains(Data.Models.Metadata.Rom.CRCKey))
             {
-                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Models.Metadata.Rom.CRCKey)))
-                    rom.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, newItem.GetStringFieldValue(Models.Metadata.Rom.CRCKey));
+                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Data.Models.Metadata.Rom.CRCKey)))
+                    rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, newItem.GetStringFieldValue(Data.Models.Metadata.Rom.CRCKey));
             }
 
-            if (datItemFields.Contains(Models.Metadata.Rom.MD2Key))
+            if (datItemFields.Contains(Data.Models.Metadata.Rom.MD2Key))
             {
-                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Models.Metadata.Rom.MD2Key)))
-                    rom.SetFieldValue<string?>(Models.Metadata.Rom.MD2Key, newItem.GetStringFieldValue(Models.Metadata.Rom.MD2Key));
+                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Data.Models.Metadata.Rom.MD2Key)))
+                    rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.MD2Key, newItem.GetStringFieldValue(Data.Models.Metadata.Rom.MD2Key));
             }
 
-            if (datItemFields.Contains(Models.Metadata.Rom.MD4Key))
+            if (datItemFields.Contains(Data.Models.Metadata.Rom.MD4Key))
             {
-                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Models.Metadata.Rom.MD4Key)))
-                    rom.SetFieldValue<string?>(Models.Metadata.Rom.MD4Key, newItem.GetStringFieldValue(Models.Metadata.Rom.MD4Key));
+                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Data.Models.Metadata.Rom.MD4Key)))
+                    rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.MD4Key, newItem.GetStringFieldValue(Data.Models.Metadata.Rom.MD4Key));
             }
 
-            if (datItemFields.Contains(Models.Metadata.Rom.MD5Key))
+            if (datItemFields.Contains(Data.Models.Metadata.Rom.MD5Key))
             {
-                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Models.Metadata.Rom.MD5Key)))
-                    rom.SetFieldValue<string?>(Models.Metadata.Rom.MD5Key, newItem.GetStringFieldValue(Models.Metadata.Rom.MD5Key));
+                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Data.Models.Metadata.Rom.MD5Key)))
+                    rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.MD5Key, newItem.GetStringFieldValue(Data.Models.Metadata.Rom.MD5Key));
             }
 
-            if (datItemFields.Contains(Models.Metadata.Rom.RIPEMD128Key))
+            if (datItemFields.Contains(Data.Models.Metadata.Rom.RIPEMD128Key))
             {
-                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Models.Metadata.Rom.RIPEMD128Key)))
-                    rom.SetFieldValue<string?>(Models.Metadata.Rom.RIPEMD128Key, newItem.GetStringFieldValue(Models.Metadata.Rom.RIPEMD128Key));
+                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Data.Models.Metadata.Rom.RIPEMD128Key)))
+                    rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.RIPEMD128Key, newItem.GetStringFieldValue(Data.Models.Metadata.Rom.RIPEMD128Key));
             }
 
-            if (datItemFields.Contains(Models.Metadata.Rom.RIPEMD160Key))
+            if (datItemFields.Contains(Data.Models.Metadata.Rom.RIPEMD160Key))
             {
-                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Models.Metadata.Rom.RIPEMD160Key)))
-                    rom.SetFieldValue<string?>(Models.Metadata.Rom.RIPEMD160Key, newItem.GetStringFieldValue(Models.Metadata.Rom.RIPEMD160Key));
+                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Data.Models.Metadata.Rom.RIPEMD160Key)))
+                    rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.RIPEMD160Key, newItem.GetStringFieldValue(Data.Models.Metadata.Rom.RIPEMD160Key));
             }
 
-            if (datItemFields.Contains(Models.Metadata.Rom.SHA1Key))
+            if (datItemFields.Contains(Data.Models.Metadata.Rom.SHA1Key))
             {
-                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Models.Metadata.Rom.SHA1Key)))
-                    rom.SetFieldValue<string?>(Models.Metadata.Rom.SHA1Key, newItem.GetStringFieldValue(Models.Metadata.Rom.SHA1Key));
+                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Data.Models.Metadata.Rom.SHA1Key)))
+                    rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA1Key, newItem.GetStringFieldValue(Data.Models.Metadata.Rom.SHA1Key));
             }
 
-            if (datItemFields.Contains(Models.Metadata.Rom.SHA256Key))
+            if (datItemFields.Contains(Data.Models.Metadata.Rom.SHA256Key))
             {
-                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Models.Metadata.Rom.SHA256Key)))
-                    rom.SetFieldValue<string?>(Models.Metadata.Rom.SHA256Key, newItem.GetStringFieldValue(Models.Metadata.Rom.SHA256Key));
+                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Data.Models.Metadata.Rom.SHA256Key)))
+                    rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA256Key, newItem.GetStringFieldValue(Data.Models.Metadata.Rom.SHA256Key));
             }
 
-            if (datItemFields.Contains(Models.Metadata.Rom.SHA384Key))
+            if (datItemFields.Contains(Data.Models.Metadata.Rom.SHA384Key))
             {
-                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Models.Metadata.Rom.SHA384Key)))
-                    rom.SetFieldValue<string?>(Models.Metadata.Rom.SHA384Key, newItem.GetStringFieldValue(Models.Metadata.Rom.SHA384Key));
+                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Data.Models.Metadata.Rom.SHA384Key)))
+                    rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA384Key, newItem.GetStringFieldValue(Data.Models.Metadata.Rom.SHA384Key));
             }
 
-            if (datItemFields.Contains(Models.Metadata.Rom.SHA512Key))
+            if (datItemFields.Contains(Data.Models.Metadata.Rom.SHA512Key))
             {
-                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Models.Metadata.Rom.SHA512Key)))
-                    rom.SetFieldValue<string?>(Models.Metadata.Rom.SHA512Key, newItem.GetStringFieldValue(Models.Metadata.Rom.SHA512Key));
+                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Data.Models.Metadata.Rom.SHA512Key)))
+                    rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA512Key, newItem.GetStringFieldValue(Data.Models.Metadata.Rom.SHA512Key));
             }
 
-            if (datItemFields.Contains(Models.Metadata.Rom.SpamSumKey))
+            if (datItemFields.Contains(Data.Models.Metadata.Rom.SpamSumKey))
             {
-                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Models.Metadata.Rom.SpamSumKey)))
-                    rom.SetFieldValue<string?>(Models.Metadata.Rom.SpamSumKey, newItem.GetStringFieldValue(Models.Metadata.Rom.SpamSumKey));
+                if (!string.IsNullOrEmpty(newItem.GetStringFieldValue(Data.Models.Metadata.Rom.SpamSumKey)))
+                    rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SpamSumKey, newItem.GetStringFieldValue(Data.Models.Metadata.Rom.SpamSumKey));
             }
         }
 

@@ -811,7 +811,7 @@ Reset the internal state:           reset();";
                 try
                 {
                     var key = new FilterKey(itemFieldString);
-                    if (!string.Equals(key.ItemName, Models.Metadata.MetadataFile.HeaderKey, StringComparison.OrdinalIgnoreCase))
+                    if (!string.Equals(key.ItemName, Data.Models.Metadata.MetadataFile.HeaderKey, StringComparison.OrdinalIgnoreCase))
                         throw new Exception();
                 }
                 catch

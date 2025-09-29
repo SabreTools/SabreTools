@@ -300,9 +300,9 @@ namespace SabreTools.FileTypes
             {
                 return FileType.XZArchive;
             }
-            else if (magic.StartsWith(Models.PKZIP.Constants.LocalFileHeaderSignatureBytes)
-                || magic.StartsWith(Models.PKZIP.Constants.EndOfCentralDirectoryRecordSignatureBytes)
-                || magic.StartsWith(Models.PKZIP.Constants.DataDescriptorSignatureBytes))
+            else if (magic.StartsWith(Data.Models.PKZIP.Constants.LocalFileHeaderSignatureBytes)
+                || magic.StartsWith(Data.Models.PKZIP.Constants.EndOfCentralDirectoryRecordSignatureBytes)
+                || magic.StartsWith(Data.Models.PKZIP.Constants.DataDescriptorSignatureBytes))
             {
                 return FileType.ZipArchive;
             }

@@ -85,7 +85,7 @@ namespace SabreTools.DatItems
 
         public Trurip() { }
 
-        public Trurip(Models.Logiqx.Trurip trurip)
+        public Trurip(Data.Models.Logiqx.Trurip trurip)
         {
             TitleID = trurip.TitleID;
             Developer = trurip.Developer;
@@ -125,9 +125,9 @@ namespace SabreTools.DatItems
         /// <summary>
         /// Convert to the internal Logiqx model
         /// </summary>
-        public Models.Logiqx.Trurip ConvertToLogiqx()
+        public Data.Models.Logiqx.Trurip ConvertToLogiqx()
         {
-            return new Models.Logiqx.Trurip()
+            return new Data.Models.Logiqx.Trurip()
             {
                 TitleID = this.TitleID,
                 Developer = this.Developer,

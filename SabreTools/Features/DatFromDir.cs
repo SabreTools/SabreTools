@@ -76,7 +76,7 @@ namespace SabreTools.Features
 
             // Create a new DATFromDir object and process the inputs
             DatFile basedat = Parser.CreateDatFile(Header!, Modifiers!);
-            basedat.Header.SetFieldValue<string?>(Models.Metadata.Header.DateKey, DateTime.Now.ToString("yyyy-MM-dd"));
+            basedat.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DateKey, DateTime.Now.ToString("yyyy-MM-dd"));
 
             // Update the cleaner based on certain flags
             if (addBlankFiles)

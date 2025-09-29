@@ -11,24 +11,24 @@ namespace SabreTools.DatItems
     /// Represents the information specific to a set/game/machine
     /// </summary>
     [JsonObject("machine"), XmlRoot("machine")]
-    public sealed class Machine : ModelBackedItem<Models.Metadata.Machine>, ICloneable, IEquatable<Machine>
+    public sealed class Machine : ModelBackedItem<Data.Models.Metadata.Machine>, ICloneable, IEquatable<Machine>
     {
         #region Constructors
 
         public Machine()
         {
-            _internal = new Models.Metadata.Machine();
+            _internal = new Data.Models.Metadata.Machine();
         }
 
-        public Machine(Models.Metadata.Machine machine)
+        public Machine(Data.Models.Metadata.Machine machine)
         {
             // Get all fields to automatically copy without processing
-            var nonItemFields = TypeHelper.GetConstants(typeof(Models.Metadata.Machine));
+            var nonItemFields = TypeHelper.GetConstants(typeof(Data.Models.Metadata.Machine));
             if (nonItemFields == null)
                 return;
 
             // Populate the internal machine from non-filter fields
-            _internal = new Models.Metadata.Machine();
+            _internal = new Data.Models.Metadata.Machine();
             foreach (string fieldName in nonItemFields)
             {
                 if (machine.ContainsKey(fieldName))
@@ -36,25 +36,25 @@ namespace SabreTools.DatItems
             }
 
             // Process flag values
-            if (GetStringFieldValue(Models.Metadata.Machine.Im1CRCKey) != null)
-                SetFieldValue<string?>(Models.Metadata.Machine.Im1CRCKey, TextHelper.NormalizeCRC32(GetStringFieldValue(Models.Metadata.Machine.Im1CRCKey)));
-            if (GetStringFieldValue(Models.Metadata.Machine.Im2CRCKey) != null)
-                SetFieldValue<string?>(Models.Metadata.Machine.Im2CRCKey, TextHelper.NormalizeCRC32(GetStringFieldValue(Models.Metadata.Machine.Im2CRCKey)));
-            if (GetBoolFieldValue(Models.Metadata.Machine.IsBiosKey) != null)
-                SetFieldValue<string?>(Models.Metadata.Machine.IsBiosKey, GetBoolFieldValue(Models.Metadata.Machine.IsBiosKey).FromYesNo());
-            if (GetBoolFieldValue(Models.Metadata.Machine.IsDeviceKey) != null)
-                SetFieldValue<string?>(Models.Metadata.Machine.IsDeviceKey, GetBoolFieldValue(Models.Metadata.Machine.IsDeviceKey).FromYesNo());
-            if (GetBoolFieldValue(Models.Metadata.Machine.IsMechanicalKey) != null)
-                SetFieldValue<string?>(Models.Metadata.Machine.IsMechanicalKey, GetBoolFieldValue(Models.Metadata.Machine.IsMechanicalKey).FromYesNo());
-            if (GetStringFieldValue(Models.Metadata.Machine.SupportedKey) != null)
-                SetFieldValue<string?>(Models.Metadata.Machine.SupportedKey, GetStringFieldValue(Models.Metadata.Machine.SupportedKey).AsSupported().AsStringValue());
+            if (GetStringFieldValue(Data.Models.Metadata.Machine.Im1CRCKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.Machine.Im1CRCKey, TextHelper.NormalizeCRC32(GetStringFieldValue(Data.Models.Metadata.Machine.Im1CRCKey)));
+            if (GetStringFieldValue(Data.Models.Metadata.Machine.Im2CRCKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.Machine.Im2CRCKey, TextHelper.NormalizeCRC32(GetStringFieldValue(Data.Models.Metadata.Machine.Im2CRCKey)));
+            if (GetBoolFieldValue(Data.Models.Metadata.Machine.IsBiosKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.Machine.IsBiosKey, GetBoolFieldValue(Data.Models.Metadata.Machine.IsBiosKey).FromYesNo());
+            if (GetBoolFieldValue(Data.Models.Metadata.Machine.IsDeviceKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.Machine.IsDeviceKey, GetBoolFieldValue(Data.Models.Metadata.Machine.IsDeviceKey).FromYesNo());
+            if (GetBoolFieldValue(Data.Models.Metadata.Machine.IsMechanicalKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.Machine.IsMechanicalKey, GetBoolFieldValue(Data.Models.Metadata.Machine.IsMechanicalKey).FromYesNo());
+            if (GetStringFieldValue(Data.Models.Metadata.Machine.SupportedKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.Machine.SupportedKey, GetStringFieldValue(Data.Models.Metadata.Machine.SupportedKey).AsSupported().AsStringValue());
 
             // Handle Trurip object, if it exists
-            if (machine.ContainsKey(Models.Metadata.Machine.TruripKey))
+            if (machine.ContainsKey(Data.Models.Metadata.Machine.TruripKey))
             {
-                var truripItem = machine.Read<Models.Logiqx.Trurip>(Models.Metadata.Machine.TruripKey);
+                var truripItem = machine.Read<Data.Models.Logiqx.Trurip>(Data.Models.Metadata.Machine.TruripKey);
                 if (truripItem != null)
-                    SetFieldValue<Trurip>(Models.Metadata.Machine.TruripKey, new Trurip(truripItem));
+                    SetFieldValue<Trurip>(Data.Models.Metadata.Machine.TruripKey, new Trurip(truripItem));
             }
         }
 
@@ -86,14 +86,14 @@ namespace SabreTools.DatItems
         {
             return new Machine()
             {
-                _internal = _internal.Clone() as Models.Metadata.Machine ?? [],
+                _internal = _internal.Clone() as Data.Models.Metadata.Machine ?? [],
             };
         }
 
         /// <summary>
         /// Get a clone of the current internal model
         /// </summary>
-        public Models.Metadata.Machine GetInternalClone() => (_internal.Clone() as Models.Metadata.Machine)!;
+        public Data.Models.Metadata.Machine GetInternalClone() => (_internal.Clone() as Data.Models.Metadata.Machine)!;
 
         #endregion
 
@@ -115,7 +115,7 @@ namespace SabreTools.DatItems
         }
 
         /// <inheritdoc/>
-        public override bool Equals(ModelBackedItem<Models.Metadata.Machine>? other)
+        public override bool Equals(ModelBackedItem<Data.Models.Metadata.Machine>? other)
         {
             // If other is null
             if (other == null)

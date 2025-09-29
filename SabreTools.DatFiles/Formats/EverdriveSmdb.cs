@@ -7,7 +7,7 @@ namespace SabreTools.DatFiles.Formats
     /// <summary>
     /// Represents parsing and writing of an Everdrive SMDB file
     /// </summary>
-    public sealed class EverdriveSMDB : SerializableDatFile<Models.EverdriveSMDB.MetadataFile, Serialization.Deserializers.EverdriveSMDB, Serialization.Serializers.EverdriveSMDB, Serialization.CrossModel.EverdriveSMDB>
+    public sealed class EverdriveSMDB : SerializableDatFile<Data.Models.EverdriveSMDB.MetadataFile, Serialization.Readers.EverdriveSMDB, Serialization.Writers.EverdriveSMDB, Serialization.CrossModel.EverdriveSMDB>
     {
         /// <inheritdoc/>
         public override ItemType[] SupportedTypes
@@ -31,19 +31,19 @@ namespace SabreTools.DatFiles.Formats
 
             // Check item name
             if (string.IsNullOrEmpty(datItem.GetName()))
-                missingFields.Add(Models.Metadata.Rom.NameKey);
+                missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
             switch (datItem)
             {
                 case Rom rom:
-                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.SHA256Key)))
-                        missingFields.Add(Models.Metadata.Rom.SHA256Key);
-                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.SHA1Key)))
-                        missingFields.Add(Models.Metadata.Rom.SHA1Key);
-                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.MD5Key)))
-                        missingFields.Add(Models.Metadata.Rom.MD5Key);
-                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.CRCKey)))
-                        missingFields.Add(Models.Metadata.Rom.CRCKey);
+                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA256Key)))
+                        missingFields.Add(Data.Models.Metadata.Rom.SHA256Key);
+                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA1Key)))
+                        missingFields.Add(Data.Models.Metadata.Rom.SHA1Key);
+                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.MD5Key)))
+                        missingFields.Add(Data.Models.Metadata.Rom.MD5Key);
+                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.CRCKey)))
+                        missingFields.Add(Data.Models.Metadata.Rom.CRCKey);
                     break;
             }
 

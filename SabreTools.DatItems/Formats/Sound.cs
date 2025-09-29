@@ -7,7 +7,7 @@ namespace SabreTools.DatItems.Formats
     /// Represents the sound output for a machine
     /// </summary>
     [JsonObject("sound"), XmlRoot("sound")]
-    public sealed class Sound : DatItem<Models.Metadata.Sound>
+    public sealed class Sound : DatItem<Data.Models.Metadata.Sound>
     {
         #region Fields
 
@@ -20,14 +20,14 @@ namespace SabreTools.DatItems.Formats
 
         public Sound() : base() { }
 
-        public Sound(Models.Metadata.Sound item) : base(item)
+        public Sound(Data.Models.Metadata.Sound item) : base(item)
         {
             // Process flag values
-            if (GetInt64FieldValue(Models.Metadata.Sound.ChannelsKey) != null)
-                SetFieldValue<string?>(Models.Metadata.Sound.ChannelsKey, GetInt64FieldValue(Models.Metadata.Sound.ChannelsKey).ToString());
+            if (GetInt64FieldValue(Data.Models.Metadata.Sound.ChannelsKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.Sound.ChannelsKey, GetInt64FieldValue(Data.Models.Metadata.Sound.ChannelsKey).ToString());
         }
 
-        public Sound(Models.Metadata.Sound item, Machine machine, Source source) : this(item)
+        public Sound(Data.Models.Metadata.Sound item, Machine machine, Source source) : this(item)
         {
             SetFieldValue<Source?>(DatItem.SourceKey, source);
             CopyMachineInformation(machine);

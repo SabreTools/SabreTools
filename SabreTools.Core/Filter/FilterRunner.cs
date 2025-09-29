@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using SabreTools.Core.Tools;
-using SabreTools.Models.Metadata;
+using SabreTools.Data.Models.Metadata;
 
 namespace SabreTools.Core.Filter
 {

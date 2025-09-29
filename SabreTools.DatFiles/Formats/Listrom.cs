@@ -7,7 +7,7 @@ namespace SabreTools.DatFiles.Formats
     /// <summary>
     /// Represents a MAME Listrom file
     /// </summary>
-    public sealed class Listrom : SerializableDatFile<Models.Listrom.MetadataFile, Serialization.Deserializers.Listrom, Serialization.Serializers.Listrom, Serialization.CrossModel.Listrom>
+    public sealed class Listrom : SerializableDatFile<Data.Models.Listrom.MetadataFile, Serialization.Readers.Listrom, Serialization.Writers.Listrom, Serialization.CrossModel.Listrom>
     {
         /// <inheritdoc/>
         public override ItemType[] SupportedTypes
@@ -32,25 +32,25 @@ namespace SabreTools.DatFiles.Formats
 
             // Check item name
             if (string.IsNullOrEmpty(datItem.GetName()))
-                missingFields.Add(Models.Metadata.Rom.NameKey);
+                missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
             switch (datItem)
             {
                 case Disk disk:
-                    if (string.IsNullOrEmpty(disk.GetStringFieldValue(Models.Metadata.Disk.MD5Key))
-                        && string.IsNullOrEmpty(disk.GetStringFieldValue(Models.Metadata.Disk.SHA1Key)))
+                    if (string.IsNullOrEmpty(disk.GetStringFieldValue(Data.Models.Metadata.Disk.MD5Key))
+                        && string.IsNullOrEmpty(disk.GetStringFieldValue(Data.Models.Metadata.Disk.SHA1Key)))
                     {
-                        missingFields.Add(Models.Metadata.Disk.SHA1Key);
+                        missingFields.Add(Data.Models.Metadata.Disk.SHA1Key);
                     }
                     break;
 
                 case Rom rom:
-                    if (rom.GetInt64FieldValue(Models.Metadata.Rom.SizeKey) == null || rom.GetInt64FieldValue(Models.Metadata.Rom.SizeKey) < 0)
-                        missingFields.Add(Models.Metadata.Rom.SizeKey);
-                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.CRCKey)))
-                        missingFields.Add(Models.Metadata.Rom.CRCKey);
-                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.SHA1Key)))
-                        missingFields.Add(Models.Metadata.Rom.SHA1Key);
+                    if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) == null || rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) < 0)
+                        missingFields.Add(Data.Models.Metadata.Rom.SizeKey);
+                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.CRCKey)))
+                        missingFields.Add(Data.Models.Metadata.Rom.CRCKey);
+                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA1Key)))
+                        missingFields.Add(Data.Models.Metadata.Rom.SHA1Key);
                     break;
             }
 

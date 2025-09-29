@@ -12,21 +12,21 @@ namespace SabreTools.DatItems.Formats
         [JsonProperty("value"), XmlElement("value")]
         public bool? Value
         {
-            get => _internal.ReadBool(Models.Metadata.Original.ValueKey);
-            set => _internal[Models.Metadata.Original.ValueKey] = value;
+            get => _internal.ReadBool(Data.Models.Metadata.Original.ValueKey);
+            set => _internal[Data.Models.Metadata.Original.ValueKey] = value;
         }
 
         [JsonProperty("content"), XmlElement("content")]
         public string? Content
         {
-            get => _internal.ReadString(Models.Metadata.Original.ContentKey);
-            set => _internal[Models.Metadata.Original.ContentKey] = value;
+            get => _internal.ReadString(Data.Models.Metadata.Original.ContentKey);
+            set => _internal[Data.Models.Metadata.Original.ContentKey] = value;
         }
 
         /// <summary>
         /// Internal Original model
         /// </summary>
         [JsonIgnore]
-        private readonly Models.Metadata.Original _internal = [];
+        private readonly Data.Models.Metadata.Original _internal = [];
     }
 }

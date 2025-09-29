@@ -343,7 +343,7 @@ namespace SabreTools.DatTools
                 string romname = string.Empty;
 
                 // If we have a SuperDAT, we want anything that's not the base path as the game, and the file as the rom
-                if (datFile.Header.GetStringFieldValue(Models.Metadata.Header.TypeKey) == "SuperDAT")
+                if (datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.TypeKey) == "SuperDAT")
                 {
                     if (basePath != null)
                         gamename = fulldir.Remove(0, basePath.Length + 1);
@@ -399,7 +399,7 @@ namespace SabreTools.DatTools
         private void ProcessFile(DatFile datFile, string item, string? basePath)
         {
             _staticLogger.Verbose($"'{Path.GetFileName(item)}' treated like a file");
-            var header = datFile.Header.GetStringFieldValue(Models.Metadata.Header.HeaderKey);
+            var header = datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.HeaderKey);
             BaseFile? baseFile = FileTypeTool.GetInfo(item, _hashes, header);
             DatItem? datItem = DatItemTool.CreateDatItem(baseFile, _treatAsFile);
             if (datItem != null)
@@ -418,7 +418,7 @@ namespace SabreTools.DatTools
         {
             // If we didn't get an accepted parsed type somehow, cancel out
             List<ItemType> parsed = [ItemType.Disk, ItemType.File, ItemType.Media, ItemType.Rom];
-            if (!parsed.Contains(datItem.GetStringFieldValue(Models.Metadata.DatItem.TypeKey).AsItemType()))
+            if (!parsed.Contains(datItem.GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey).AsItemType()))
                 return;
 
             try
@@ -462,7 +462,7 @@ namespace SabreTools.DatTools
             if (string.IsNullOrEmpty(parent))
             {
                 // If we have a SuperDAT, we want anything that's not the base path as the game, and the file as the rom
-                if (datFile.Header.GetStringFieldValue(Models.Metadata.Header.TypeKey) == "SuperDAT")
+                if (datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.TypeKey) == "SuperDAT")
                 {
                     machineName = Path.GetDirectoryName(item.Remove(0, basepath?.Length ?? 0));
                     itemName = Path.GetFileName(item);
@@ -483,7 +483,7 @@ namespace SabreTools.DatTools
             else
             {
                 // If we have a SuperDAT, we want the archive name as the game, and the file as everything else (?)
-                if (datFile.Header.GetStringFieldValue(Models.Metadata.Header.TypeKey) == "SuperDAT")
+                if (datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.TypeKey) == "SuperDAT")
                 {
                     machineName = parent;
                     itemName = datItem.GetName();
@@ -508,7 +508,7 @@ namespace SabreTools.DatTools
             }
 
             // Update machine information
-            datItem.GetMachine()!.SetFieldValue<string?>(Models.Metadata.Machine.DescriptionKey, machineName);
+            datItem.GetMachine()!.SetFieldValue<string?>(Data.Models.Metadata.Machine.DescriptionKey, machineName);
             datItem.GetMachine()!.SetName(machineName);
 
             // If we have a Disk, then the ".chd" extension needs to be removed

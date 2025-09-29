@@ -8,7 +8,7 @@ namespace SabreTools.DatItems.Formats
     /// Represents one ListXML dipvalue
     /// </summary>
     [JsonObject("dipvalue"), XmlRoot("dipvalue")]
-    public sealed class DipValue : DatItem<Models.Metadata.DipValue>
+    public sealed class DipValue : DatItem<Data.Models.Metadata.DipValue>
     {
         #region Fields
 
@@ -20,7 +20,7 @@ namespace SabreTools.DatItems.Formats
         {
             get
             {
-                var conditions = GetFieldValue<Condition[]?>(Models.Metadata.DipValue.ConditionKey);
+                var conditions = GetFieldValue<Condition[]?>(Data.Models.Metadata.DipValue.ConditionKey);
                 return conditions != null && conditions.Length > 0;
             }
         }
@@ -31,19 +31,19 @@ namespace SabreTools.DatItems.Formats
 
         public DipValue() : base() { }
 
-        public DipValue(Models.Metadata.DipValue item) : base(item)
+        public DipValue(Data.Models.Metadata.DipValue item) : base(item)
         {
             // Process flag values
-            if (GetBoolFieldValue(Models.Metadata.DipValue.DefaultKey) != null)
-                SetFieldValue<string?>(Models.Metadata.DipValue.DefaultKey, GetBoolFieldValue(Models.Metadata.DipValue.DefaultKey).FromYesNo());
+            if (GetBoolFieldValue(Data.Models.Metadata.DipValue.DefaultKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.DipValue.DefaultKey, GetBoolFieldValue(Data.Models.Metadata.DipValue.DefaultKey).FromYesNo());
 
             // Handle subitems
-            var condition = GetFieldValue<Models.Metadata.Condition>(Models.Metadata.DipValue.ConditionKey);
+            var condition = GetFieldValue<Data.Models.Metadata.Condition>(Data.Models.Metadata.DipValue.ConditionKey);
             if (condition != null)
-                SetFieldValue<Condition?>(Models.Metadata.DipValue.ConditionKey, new Condition(condition));
+                SetFieldValue<Condition?>(Data.Models.Metadata.DipValue.ConditionKey, new Condition(condition));
         }
 
-        public DipValue(Models.Metadata.DipValue item, Machine machine, Source source) : this(item)
+        public DipValue(Data.Models.Metadata.DipValue item, Machine machine, Source source) : this(item)
         {
             SetFieldValue<Source?>(DatItem.SourceKey, source);
             CopyMachineInformation(machine);
@@ -54,14 +54,14 @@ namespace SabreTools.DatItems.Formats
         #region Cloning Methods
 
         /// <inheritdoc/>
-        public override Models.Metadata.DipValue GetInternalClone()
+        public override Data.Models.Metadata.DipValue GetInternalClone()
         {
             var dipValueItem = base.GetInternalClone();
 
             // Handle subitems
-            var subCondition = GetFieldValue<Condition>(Models.Metadata.DipValue.ConditionKey);
+            var subCondition = GetFieldValue<Condition>(Data.Models.Metadata.DipValue.ConditionKey);
             if (subCondition != null)
-                dipValueItem[Models.Metadata.DipValue.ConditionKey] = subCondition.GetInternalClone();
+                dipValueItem[Data.Models.Metadata.DipValue.ConditionKey] = subCondition.GetInternalClone();
 
             return dipValueItem;
         }

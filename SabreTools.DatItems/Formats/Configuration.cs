@@ -9,7 +9,7 @@ namespace SabreTools.DatItems.Formats
     /// Represents which Configuration(s) is associated with a set
     /// </summary>
     [JsonObject("configuration"), XmlRoot("configuration")]
-    public sealed class Configuration : DatItem<Models.Metadata.Configuration>
+    public sealed class Configuration : DatItem<Data.Models.Metadata.Configuration>
     {
         #region Fields
 
@@ -21,7 +21,7 @@ namespace SabreTools.DatItems.Formats
         {
             get
             {
-                var conditions = GetFieldValue<Condition[]?>(Models.Metadata.Configuration.ConditionKey);
+                var conditions = GetFieldValue<Condition[]?>(Data.Models.Metadata.Configuration.ConditionKey);
                 return conditions != null && conditions.Length > 0;
             }
         }
@@ -31,7 +31,7 @@ namespace SabreTools.DatItems.Formats
         {
             get
             {
-                var locations = GetFieldValue<ConfLocation[]?>(Models.Metadata.Configuration.ConfLocationKey);
+                var locations = GetFieldValue<ConfLocation[]?>(Data.Models.Metadata.Configuration.ConfLocationKey);
                 return locations != null && locations.Length > 0;
             }
         }
@@ -41,7 +41,7 @@ namespace SabreTools.DatItems.Formats
         {
             get
             {
-                var settings = GetFieldValue<ConfSetting[]?>(Models.Metadata.Configuration.ConfSettingKey);
+                var settings = GetFieldValue<ConfSetting[]?>(Data.Models.Metadata.Configuration.ConfSettingKey);
                 return settings != null && settings.Length > 0;
             }
         }
@@ -52,29 +52,29 @@ namespace SabreTools.DatItems.Formats
 
         public Configuration() : base() { }
 
-        public Configuration(Models.Metadata.Configuration item) : base(item)
+        public Configuration(Data.Models.Metadata.Configuration item) : base(item)
         {
             // Handle subitems
-            var condition = item.Read<Models.Metadata.Condition>(Models.Metadata.Configuration.ConditionKey);
+            var condition = item.Read<Data.Models.Metadata.Condition>(Data.Models.Metadata.Configuration.ConditionKey);
             if (condition != null)
-                SetFieldValue<Condition?>(Models.Metadata.Configuration.ConditionKey, new Condition(condition));
+                SetFieldValue<Condition?>(Data.Models.Metadata.Configuration.ConditionKey, new Condition(condition));
 
-            var confLocations = item.ReadItemArray<Models.Metadata.ConfLocation>(Models.Metadata.Configuration.ConfLocationKey);
+            var confLocations = item.ReadItemArray<Data.Models.Metadata.ConfLocation>(Data.Models.Metadata.Configuration.ConfLocationKey);
             if (confLocations != null)
             {
                 ConfLocation[] confLocationItems = Array.ConvertAll(confLocations, confLocation => new ConfLocation(confLocation));
-                SetFieldValue<ConfLocation[]?>(Models.Metadata.Configuration.ConfLocationKey, confLocationItems);
+                SetFieldValue<ConfLocation[]?>(Data.Models.Metadata.Configuration.ConfLocationKey, confLocationItems);
             }
 
-            var confSettings = item.ReadItemArray<Models.Metadata.ConfSetting>(Models.Metadata.Configuration.ConfSettingKey);
+            var confSettings = item.ReadItemArray<Data.Models.Metadata.ConfSetting>(Data.Models.Metadata.Configuration.ConfSettingKey);
             if (confSettings != null)
             {
                 ConfSetting[] confSettingItems = Array.ConvertAll(confSettings, confSetting => new ConfSetting(confSetting));
-                SetFieldValue<ConfSetting[]?>(Models.Metadata.Configuration.ConfSettingKey, confSettingItems);
+                SetFieldValue<ConfSetting[]?>(Data.Models.Metadata.Configuration.ConfSettingKey, confSettingItems);
             }
         }
 
-        public Configuration(Models.Metadata.Configuration item, Machine machine, Source source) : this(item)
+        public Configuration(Data.Models.Metadata.Configuration item, Machine machine, Source source) : this(item)
         {
             SetFieldValue<Source?>(DatItem.SourceKey, source);
             CopyMachineInformation(machine);
@@ -85,26 +85,26 @@ namespace SabreTools.DatItems.Formats
         #region Cloning Methods
 
         /// <inheritdoc/>
-        public override Models.Metadata.Configuration GetInternalClone()
+        public override Data.Models.Metadata.Configuration GetInternalClone()
         {
             var configurationItem = base.GetInternalClone();
 
-            var condition = GetFieldValue<Condition?>(Models.Metadata.Configuration.ConditionKey);
+            var condition = GetFieldValue<Condition?>(Data.Models.Metadata.Configuration.ConditionKey);
             if (condition != null)
-                configurationItem[Models.Metadata.Configuration.ConditionKey] = condition.GetInternalClone();
+                configurationItem[Data.Models.Metadata.Configuration.ConditionKey] = condition.GetInternalClone();
 
-            var confLocations = GetFieldValue<ConfLocation[]?>(Models.Metadata.Configuration.ConfLocationKey);
+            var confLocations = GetFieldValue<ConfLocation[]?>(Data.Models.Metadata.Configuration.ConfLocationKey);
             if (confLocations != null)
             {
-                Models.Metadata.ConfLocation[] confLocationItems = Array.ConvertAll(confLocations, confLocation => confLocation.GetInternalClone());
-                configurationItem[Models.Metadata.Configuration.ConfLocationKey] = confLocationItems;
+                Data.Models.Metadata.ConfLocation[] confLocationItems = Array.ConvertAll(confLocations, confLocation => confLocation.GetInternalClone());
+                configurationItem[Data.Models.Metadata.Configuration.ConfLocationKey] = confLocationItems;
             }
 
-            var confSettings = GetFieldValue<ConfSetting[]?>(Models.Metadata.Configuration.ConfSettingKey);
+            var confSettings = GetFieldValue<ConfSetting[]?>(Data.Models.Metadata.Configuration.ConfSettingKey);
             if (confSettings != null)
             {
-                Models.Metadata.ConfSetting[] confSettingItems = Array.ConvertAll(confSettings, confSetting => confSetting.GetInternalClone());
-                configurationItem[Models.Metadata.Configuration.ConfSettingKey] = confSettingItems;
+                Data.Models.Metadata.ConfSetting[] confSettingItems = Array.ConvertAll(confSettings, confSetting => confSetting.GetInternalClone());
+                configurationItem[Data.Models.Metadata.Configuration.ConfSettingKey] = confSettingItems;
             }
 
             return configurationItem;

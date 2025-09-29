@@ -12,24 +12,24 @@ namespace SabreTools.DatFiles
         /// <summary>
         /// Convert metadata information
         /// </summary>
-        internal Models.Metadata.MetadataFile? ConvertToMetadata(bool ignoreblanks = false)
+        internal Data.Models.Metadata.MetadataFile? ConvertToMetadata(bool ignoreblanks = false)
         {
             // If we don't have items, we can't do anything
             if (DatStatistics.TotalCount == 0)
                 return null;
 
             // Create an object to hold the data
-            var metadataFile = new Models.Metadata.MetadataFile();
+            var metadataFile = new Data.Models.Metadata.MetadataFile();
 
             // Convert and assign the header
             var header = Header.GetInternalClone();
             if (header != null)
-                metadataFile[Models.Metadata.MetadataFile.HeaderKey] = header;
+                metadataFile[Data.Models.Metadata.MetadataFile.HeaderKey] = header;
 
             // Convert and assign the machines
             var machines = ConvertMachines(ignoreblanks);
             if (machines != null)
-                metadataFile[Models.Metadata.MetadataFile.MachineKey] = machines;
+                metadataFile[Data.Models.Metadata.MetadataFile.MachineKey] = machines;
 
             return metadataFile;
         }
@@ -37,24 +37,24 @@ namespace SabreTools.DatFiles
         /// <summary>
         /// Convert metadata information
         /// </summary>
-        internal Models.Metadata.MetadataFile? ConvertToMetadataDB(bool ignoreblanks = false)
+        internal Data.Models.Metadata.MetadataFile? ConvertToMetadataDB(bool ignoreblanks = false)
         {
             // If we don't have items, we can't do anything
             if (ItemsDB.DatStatistics.TotalCount == 0)
                 return null;
 
             // Create an object to hold the data
-            var metadataFile = new Models.Metadata.MetadataFile();
+            var metadataFile = new Data.Models.Metadata.MetadataFile();
 
             // Convert and assign the header
             var header = Header.GetInternalClone();
             if (header != null)
-                metadataFile[Models.Metadata.MetadataFile.HeaderKey] = header;
+                metadataFile[Data.Models.Metadata.MetadataFile.HeaderKey] = header;
 
             // Convert and assign the machines
             var machines = ConvertMachinesDB(ignoreblanks);
             if (machines != null)
-                metadataFile[Models.Metadata.MetadataFile.MachineKey] = machines;
+                metadataFile[Data.Models.Metadata.MetadataFile.MachineKey] = machines;
 
             return metadataFile;
         }
@@ -62,10 +62,10 @@ namespace SabreTools.DatFiles
         /// <summary>
         /// Convert machines information
         /// </summary>
-        private Models.Metadata.Machine[]? ConvertMachines(bool ignoreblanks = false)
+        private Data.Models.Metadata.Machine[]? ConvertMachines(bool ignoreblanks = false)
         {
             // Create a machine list to hold all outputs
-            List<Models.Metadata.Machine> machines = [];
+            List<Data.Models.Metadata.Machine> machines = [];
 
             // Loop through the sorted items and create games for them
             foreach (string key in Items.SortedKeys)
@@ -78,25 +78,25 @@ namespace SabreTools.DatFiles
                 var machine = items[0].GetMachine()!.GetInternalClone();
 
                 // Handle Trurip object, if it exists
-                if (machine.ContainsKey(Models.Metadata.Machine.TruripKey))
+                if (machine.ContainsKey(Data.Models.Metadata.Machine.TruripKey))
                 {
-                    var trurip = machine.Read<DatItems.Trurip>(Models.Metadata.Machine.TruripKey);
+                    var trurip = machine.Read<DatItems.Trurip>(Data.Models.Metadata.Machine.TruripKey);
                     if (trurip != null)
                     {
                         var truripItem = trurip.ConvertToLogiqx();
-                        truripItem.Publisher = machine.ReadString(Models.Metadata.Machine.PublisherKey);
-                        truripItem.Year = machine.ReadString(Models.Metadata.Machine.YearKey);
-                        truripItem.Players = machine.ReadString(Models.Metadata.Machine.PlayersKey);
-                        truripItem.Source = machine.ReadString(Models.Metadata.Machine.SourceFileKey);
-                        truripItem.CloneOf = machine.ReadString(Models.Metadata.Machine.CloneOfKey);
-                        machine[Models.Metadata.Machine.TruripKey] = truripItem;
+                        truripItem.Publisher = machine.ReadString(Data.Models.Metadata.Machine.PublisherKey);
+                        truripItem.Year = machine.ReadString(Data.Models.Metadata.Machine.YearKey);
+                        truripItem.Players = machine.ReadString(Data.Models.Metadata.Machine.PlayersKey);
+                        truripItem.Source = machine.ReadString(Data.Models.Metadata.Machine.SourceFileKey);
+                        truripItem.CloneOf = machine.ReadString(Data.Models.Metadata.Machine.CloneOfKey);
+                        machine[Data.Models.Metadata.Machine.TruripKey] = truripItem;
                     }
                 }
 
                 // Create mapping dictionaries for the Parts, DataAreas, and DiskAreas associated with this machine
-                Dictionary<Models.Metadata.Part, Models.Metadata.DatItem> partMappings = [];
-                Dictionary<Models.Metadata.Part, (Models.Metadata.DataArea, Models.Metadata.Rom)> dataAreaMappings = [];
-                Dictionary<Models.Metadata.Part, (Models.Metadata.DiskArea, Models.Metadata.Disk)> diskAreaMappings = [];
+                Dictionary<Data.Models.Metadata.Part, Data.Models.Metadata.DatItem> partMappings = [];
+                Dictionary<Data.Models.Metadata.Part, (Data.Models.Metadata.DataArea, Data.Models.Metadata.Rom)> dataAreaMappings = [];
+                Dictionary<Data.Models.Metadata.Part, (Data.Models.Metadata.DiskArea, Data.Models.Metadata.Disk)> diskAreaMappings = [];
 
                 // Loop through and convert the items to respective lists
                 for (int index = 0; index < items.Count; index++)
@@ -115,43 +115,43 @@ namespace SabreTools.DatFiles
                     {
                         case DatItems.Formats.Adjuster adjuster:
                             var adjusterItem = adjuster.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Adjuster?>(machine, Models.Metadata.Machine.AdjusterKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.AdjusterKey, adjusterItem);
+                            EnsureMachineKey<Data.Models.Metadata.Adjuster?>(machine, Data.Models.Metadata.Machine.AdjusterKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.AdjusterKey, adjusterItem);
                             break;
                         case DatItems.Formats.Archive archive:
                             var archiveItem = archive.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Archive?>(machine, Models.Metadata.Machine.ArchiveKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.ArchiveKey, archiveItem);
+                            EnsureMachineKey<Data.Models.Metadata.Archive?>(machine, Data.Models.Metadata.Machine.ArchiveKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.ArchiveKey, archiveItem);
                             break;
                         case DatItems.Formats.BiosSet biosSet:
                             var biosSetItem = biosSet.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.BiosSet?>(machine, Models.Metadata.Machine.BiosSetKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.BiosSetKey, biosSetItem);
+                            EnsureMachineKey<Data.Models.Metadata.BiosSet?>(machine, Data.Models.Metadata.Machine.BiosSetKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.BiosSetKey, biosSetItem);
                             break;
                         case DatItems.Formats.Chip chip:
                             var chipItem = chip.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Chip?>(machine, Models.Metadata.Machine.ChipKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.ChipKey, chipItem);
+                            EnsureMachineKey<Data.Models.Metadata.Chip?>(machine, Data.Models.Metadata.Machine.ChipKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.ChipKey, chipItem);
                             break;
                         case DatItems.Formats.Configuration configuration:
                             var configurationItem = configuration.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Configuration?>(machine, Models.Metadata.Machine.ConfigurationKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.ConfigurationKey, configurationItem);
+                            EnsureMachineKey<Data.Models.Metadata.Configuration?>(machine, Data.Models.Metadata.Machine.ConfigurationKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.ConfigurationKey, configurationItem);
                             break;
                         case DatItems.Formats.Device device:
                             var deviceItem = device.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Device?>(machine, Models.Metadata.Machine.DeviceKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.DeviceKey, deviceItem);
+                            EnsureMachineKey<Data.Models.Metadata.Device?>(machine, Data.Models.Metadata.Machine.DeviceKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.DeviceKey, deviceItem);
                             break;
                         case DatItems.Formats.DeviceRef deviceRef:
                             var deviceRefItem = deviceRef.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.DeviceRef?>(machine, Models.Metadata.Machine.DeviceRefKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.DeviceRefKey, deviceRefItem);
+                            EnsureMachineKey<Data.Models.Metadata.DeviceRef?>(machine, Data.Models.Metadata.Machine.DeviceRefKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.DeviceRefKey, deviceRefItem);
                             break;
                         case DatItems.Formats.DipSwitch dipSwitch:
                             var dipSwitchItem = dipSwitch.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.DipSwitch?>(machine, Models.Metadata.Machine.DipSwitchKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.DipSwitchKey, dipSwitchItem);
+                            EnsureMachineKey<Data.Models.Metadata.DipSwitch?>(machine, Data.Models.Metadata.Machine.DipSwitchKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.DipSwitchKey, dipSwitchItem);
 
                             // Add Part mapping
                             bool dipSwitchContainsPart = dipSwitchItem.ContainsKey(DatItems.Formats.DipSwitch.PartKey);
@@ -165,8 +165,8 @@ namespace SabreTools.DatFiles
                             break;
                         case DatItems.Formats.Disk disk:
                             var diskItem = disk.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Disk?>(machine, Models.Metadata.Machine.DiskKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.DiskKey, diskItem);
+                            EnsureMachineKey<Data.Models.Metadata.Disk?>(machine, Data.Models.Metadata.Machine.DiskKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.DiskKey, diskItem);
 
                             // Add Part and DiskArea mappings
                             bool diskContainsPart = diskItem.ContainsKey(DatItems.Formats.Disk.PartKey);
@@ -187,38 +187,38 @@ namespace SabreTools.DatFiles
                             break;
                         case DatItems.Formats.Display display:
                             var displayItem = ProcessItem(display, machine);
-                            EnsureMachineKey<Models.Metadata.Display?>(machine, Models.Metadata.Machine.DisplayKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.DisplayKey, displayItem);
+                            EnsureMachineKey<Data.Models.Metadata.Display?>(machine, Data.Models.Metadata.Machine.DisplayKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.DisplayKey, displayItem);
                             break;
                         case DatItems.Formats.Driver driver:
                             var driverItem = driver.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Driver?>(machine, Models.Metadata.Machine.DriverKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.DriverKey, driverItem);
+                            EnsureMachineKey<Data.Models.Metadata.Driver?>(machine, Data.Models.Metadata.Machine.DriverKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.DriverKey, driverItem);
                             break;
                         case DatItems.Formats.Feature feature:
                             var featureItem = feature.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Feature?>(machine, Models.Metadata.Machine.FeatureKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.FeatureKey, featureItem);
+                            EnsureMachineKey<Data.Models.Metadata.Feature?>(machine, Data.Models.Metadata.Machine.FeatureKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.FeatureKey, featureItem);
                             break;
                         case DatItems.Formats.Info info:
                             var infoItem = info.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Info?>(machine, Models.Metadata.Machine.InfoKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.InfoKey, infoItem);
+                            EnsureMachineKey<Data.Models.Metadata.Info?>(machine, Data.Models.Metadata.Machine.InfoKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.InfoKey, infoItem);
                             break;
                         case DatItems.Formats.Input input:
                             var inputItem = input.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Input?>(machine, Models.Metadata.Machine.InputKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.InputKey, inputItem);
+                            EnsureMachineKey<Data.Models.Metadata.Input?>(machine, Data.Models.Metadata.Machine.InputKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.InputKey, inputItem);
                             break;
                         case DatItems.Formats.Media media:
                             var mediaItem = media.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Media?>(machine, Models.Metadata.Machine.MediaKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.MediaKey, mediaItem);
+                            EnsureMachineKey<Data.Models.Metadata.Media?>(machine, Data.Models.Metadata.Machine.MediaKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.MediaKey, mediaItem);
                             break;
                         case DatItems.Formats.PartFeature partFeature:
                             var partFeatureItem = partFeature.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Feature?>(machine, Models.Metadata.Machine.FeatureKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.FeatureKey, partFeatureItem);
+                            EnsureMachineKey<Data.Models.Metadata.Feature?>(machine, Data.Models.Metadata.Machine.FeatureKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.FeatureKey, partFeatureItem);
 
                             // Add Part mapping
                             bool partFeatureContainsPart = partFeatureItem.ContainsKey(DatItems.Formats.PartFeature.PartKey);
@@ -231,23 +231,23 @@ namespace SabreTools.DatFiles
                             break;
                         case DatItems.Formats.Port port:
                             var portItem = port.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Port?>(machine, Models.Metadata.Machine.PortKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.PortKey, portItem);
+                            EnsureMachineKey<Data.Models.Metadata.Port?>(machine, Data.Models.Metadata.Machine.PortKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.PortKey, portItem);
                             break;
                         case DatItems.Formats.RamOption ramOption:
                             var ramOptionItem = ramOption.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.RamOption?>(machine, Models.Metadata.Machine.RamOptionKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.RamOptionKey, ramOptionItem);
+                            EnsureMachineKey<Data.Models.Metadata.RamOption?>(machine, Data.Models.Metadata.Machine.RamOptionKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.RamOptionKey, ramOptionItem);
                             break;
                         case DatItems.Formats.Release release:
                             var releaseItem = release.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Release?>(machine, Models.Metadata.Machine.ReleaseKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.ReleaseKey, releaseItem);
+                            EnsureMachineKey<Data.Models.Metadata.Release?>(machine, Data.Models.Metadata.Machine.ReleaseKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.ReleaseKey, releaseItem);
                             break;
                         case DatItems.Formats.Rom rom:
                             var romItem = ProcessItem(rom, machine);
-                            EnsureMachineKey<Models.Metadata.Rom?>(machine, Models.Metadata.Machine.RomKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.RomKey, romItem);
+                            EnsureMachineKey<Data.Models.Metadata.Rom?>(machine, Data.Models.Metadata.Machine.RomKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.RomKey, romItem);
 
                             // Add Part and DataArea mappings
                             bool romContainsPart = romItem.ContainsKey(DatItems.Formats.Rom.PartKey);
@@ -268,28 +268,28 @@ namespace SabreTools.DatFiles
                             break;
                         case DatItems.Formats.Sample sample:
                             var sampleItem = sample.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Sample?>(machine, Models.Metadata.Machine.SampleKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.SampleKey, sampleItem);
+                            EnsureMachineKey<Data.Models.Metadata.Sample?>(machine, Data.Models.Metadata.Machine.SampleKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.SampleKey, sampleItem);
                             break;
                         case DatItems.Formats.SharedFeat sharedFeat:
                             var sharedFeatItem = sharedFeat.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.SharedFeat?>(machine, Models.Metadata.Machine.SharedFeatKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.SharedFeatKey, sharedFeatItem);
+                            EnsureMachineKey<Data.Models.Metadata.SharedFeat?>(machine, Data.Models.Metadata.Machine.SharedFeatKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.SharedFeatKey, sharedFeatItem);
                             break;
                         case DatItems.Formats.Slot slot:
                             var slotItem = slot.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Slot?>(machine, Models.Metadata.Machine.SlotKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.SlotKey, slotItem);
+                            EnsureMachineKey<Data.Models.Metadata.Slot?>(machine, Data.Models.Metadata.Machine.SlotKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.SlotKey, slotItem);
                             break;
                         case DatItems.Formats.SoftwareList softwareList:
                             var softwareListItem = softwareList.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.SoftwareList?>(machine, Models.Metadata.Machine.SoftwareListKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.SoftwareListKey, softwareListItem);
+                            EnsureMachineKey<Data.Models.Metadata.SoftwareList?>(machine, Data.Models.Metadata.Machine.SoftwareListKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.SoftwareListKey, softwareListItem);
                             break;
                         case DatItems.Formats.Sound sound:
                             var soundItem = sound.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Sound?>(machine, Models.Metadata.Machine.SoundKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.SoundKey, soundItem);
+                            EnsureMachineKey<Data.Models.Metadata.Sound?>(machine, Data.Models.Metadata.Machine.SoundKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.SoundKey, soundItem);
                             break;
                     }
                 }
@@ -298,7 +298,7 @@ namespace SabreTools.DatFiles
                 if (partMappings.Count != 0)
                 {
                     // Create a collection to hold the inverted Parts
-                    Dictionary<string, Models.Metadata.Part> partItems = [];
+                    Dictionary<string, Data.Models.Metadata.Part> partItems = [];
 
                     // Loop through the Part mappings
                     foreach (var partMapping in partMappings)
@@ -308,7 +308,7 @@ namespace SabreTools.DatFiles
                         var datItem = partMapping.Value;
 
                         // Get the part name and skip if there's none
-                        string? partName = partItem.ReadString(Models.Metadata.Part.NameKey);
+                        string? partName = partItem.ReadString(Data.Models.Metadata.Part.NameKey);
                         if (partName == null)
                             continue;
 
@@ -317,9 +317,9 @@ namespace SabreTools.DatFiles
                             partItems[partName] = [];
 
                         // Copy over string values
-                        partItems[partName][Models.Metadata.Part.NameKey] = partName;
-                        if (!partItems[partName].ContainsKey(Models.Metadata.Part.InterfaceKey))
-                            partItems[partName][Models.Metadata.Part.InterfaceKey] = partItem.ReadString(Models.Metadata.Part.InterfaceKey);
+                        partItems[partName][Data.Models.Metadata.Part.NameKey] = partName;
+                        if (!partItems[partName].ContainsKey(Data.Models.Metadata.Part.InterfaceKey))
+                            partItems[partName][Data.Models.Metadata.Part.InterfaceKey] = partItem.ReadString(Data.Models.Metadata.Part.InterfaceKey);
 
                         // Clear any empty fields
                         ClearEmptyKeys(partItems[partName]);
@@ -334,16 +334,16 @@ namespace SabreTools.DatFiles
                             ClearEmptyKeys(romItem);
 
                             // Get the data area name and skip if there's none
-                            string? dataAreaName = dataArea.ReadString(Models.Metadata.DataArea.NameKey);
+                            string? dataAreaName = dataArea.ReadString(Data.Models.Metadata.DataArea.NameKey);
                             if (dataAreaName != null)
                             {
                                 // Get existing data areas as a list
-                                var dataAreasArr = partItems[partName].Read<Models.Metadata.DataArea[]>(Models.Metadata.Part.DataAreaKey) ?? [];
-                                List<Models.Metadata.DataArea> dataAreas = [.. dataAreasArr];
+                                var dataAreasArr = partItems[partName].Read<Data.Models.Metadata.DataArea[]>(Data.Models.Metadata.Part.DataAreaKey) ?? [];
+                                List<Data.Models.Metadata.DataArea> dataAreas = [.. dataAreasArr];
 
                                 // Find the existing disk area to append to, otherwise create a new disk area
-                                int dataAreaIndex = dataAreas.FindIndex(da => da.ReadString(Models.Metadata.DataArea.NameKey) == dataAreaName);
-                                Models.Metadata.DataArea aggregateDataArea;
+                                int dataAreaIndex = dataAreas.FindIndex(da => da.ReadString(Data.Models.Metadata.DataArea.NameKey) == dataAreaName);
+                                Data.Models.Metadata.DataArea aggregateDataArea;
                                 if (dataAreaIndex > -1)
                                 {
                                     aggregateDataArea = dataAreas[dataAreaIndex];
@@ -351,24 +351,24 @@ namespace SabreTools.DatFiles
                                 else
                                 {
                                     aggregateDataArea = [];
-                                    aggregateDataArea[Models.Metadata.DataArea.EndiannessKey] = dataArea.ReadString(Models.Metadata.DataArea.EndiannessKey);
-                                    aggregateDataArea[Models.Metadata.DataArea.NameKey] = dataArea.ReadString(Models.Metadata.DataArea.NameKey);
-                                    aggregateDataArea[Models.Metadata.DataArea.SizeKey] = dataArea.ReadString(Models.Metadata.DataArea.SizeKey);
-                                    aggregateDataArea[Models.Metadata.DataArea.WidthKey] = dataArea.ReadString(Models.Metadata.DataArea.WidthKey);
+                                    aggregateDataArea[Data.Models.Metadata.DataArea.EndiannessKey] = dataArea.ReadString(Data.Models.Metadata.DataArea.EndiannessKey);
+                                    aggregateDataArea[Data.Models.Metadata.DataArea.NameKey] = dataArea.ReadString(Data.Models.Metadata.DataArea.NameKey);
+                                    aggregateDataArea[Data.Models.Metadata.DataArea.SizeKey] = dataArea.ReadString(Data.Models.Metadata.DataArea.SizeKey);
+                                    aggregateDataArea[Data.Models.Metadata.DataArea.WidthKey] = dataArea.ReadString(Data.Models.Metadata.DataArea.WidthKey);
                                 }
 
                                 // Clear any empty fields
                                 ClearEmptyKeys(aggregateDataArea);
 
                                 // Get existing roms as a list
-                                var romsArr = aggregateDataArea.Read<Models.Metadata.Rom[]>(Models.Metadata.DataArea.RomKey) ?? [];
-                                List<Models.Metadata.Rom> roms = [.. romsArr];
+                                var romsArr = aggregateDataArea.Read<Data.Models.Metadata.Rom[]>(Data.Models.Metadata.DataArea.RomKey) ?? [];
+                                List<Data.Models.Metadata.Rom> roms = [.. romsArr];
 
                                 // Add the rom to the data area
                                 roms.Add(romItem);
 
                                 // Assign back the roms
-                                aggregateDataArea[Models.Metadata.DataArea.RomKey] = roms.ToArray();
+                                aggregateDataArea[Data.Models.Metadata.DataArea.RomKey] = roms.ToArray();
 
                                 // Assign back the data area
                                 if (dataAreaIndex > -1)
@@ -377,7 +377,7 @@ namespace SabreTools.DatFiles
                                     dataAreas.Add(aggregateDataArea);
 
                                 // Assign back the data areas array
-                                partItems[partName][Models.Metadata.Part.DataAreaKey] = dataAreas.ToArray();
+                                partItems[partName][Data.Models.Metadata.Part.DataAreaKey] = dataAreas.ToArray();
                             }
                         }
 
@@ -391,16 +391,16 @@ namespace SabreTools.DatFiles
                             ClearEmptyKeys(diskItem);
 
                             // Get the disk area name and skip if there's none
-                            string? diskAreaName = diskArea.ReadString(Models.Metadata.DiskArea.NameKey);
+                            string? diskAreaName = diskArea.ReadString(Data.Models.Metadata.DiskArea.NameKey);
                             if (diskAreaName != null)
                             {
                                 // Get existing disk areas as a list
-                                var diskAreasArr = partItems[partName].Read<Models.Metadata.DiskArea[]>(Models.Metadata.Part.DiskAreaKey) ?? [];
-                                List<Models.Metadata.DiskArea> diskAreas = [.. diskAreasArr];
+                                var diskAreasArr = partItems[partName].Read<Data.Models.Metadata.DiskArea[]>(Data.Models.Metadata.Part.DiskAreaKey) ?? [];
+                                List<Data.Models.Metadata.DiskArea> diskAreas = [.. diskAreasArr];
 
                                 // Find the existing disk area to append to, otherwise create a new disk area
-                                int diskAreaIndex = diskAreas.FindIndex(da => da.ReadString(Models.Metadata.DiskArea.NameKey) == diskAreaName);
-                                Models.Metadata.DiskArea aggregateDiskArea;
+                                int diskAreaIndex = diskAreas.FindIndex(da => da.ReadString(Data.Models.Metadata.DiskArea.NameKey) == diskAreaName);
+                                Data.Models.Metadata.DiskArea aggregateDiskArea;
                                 if (diskAreaIndex > -1)
                                 {
                                     aggregateDiskArea = diskAreas[diskAreaIndex];
@@ -408,21 +408,21 @@ namespace SabreTools.DatFiles
                                 else
                                 {
                                     aggregateDiskArea = [];
-                                    aggregateDiskArea[Models.Metadata.DiskArea.NameKey] = diskArea.ReadString(Models.Metadata.DiskArea.NameKey);
+                                    aggregateDiskArea[Data.Models.Metadata.DiskArea.NameKey] = diskArea.ReadString(Data.Models.Metadata.DiskArea.NameKey);
                                 }
 
                                 // Clear any empty fields
                                 ClearEmptyKeys(aggregateDiskArea);
 
                                 // Get existing disks as a list
-                                var disksArr = aggregateDiskArea.Read<Models.Metadata.Disk[]>(Models.Metadata.DiskArea.DiskKey) ?? [];
-                                List<Models.Metadata.Disk> disks = [.. disksArr];
+                                var disksArr = aggregateDiskArea.Read<Data.Models.Metadata.Disk[]>(Data.Models.Metadata.DiskArea.DiskKey) ?? [];
+                                List<Data.Models.Metadata.Disk> disks = [.. disksArr];
 
                                 // Add the disk to the data area
                                 disks.Add(diskItem);
 
                                 // Assign back the disks
-                                aggregateDiskArea[Models.Metadata.DiskArea.DiskKey] = disks.ToArray();
+                                aggregateDiskArea[Data.Models.Metadata.DiskArea.DiskKey] = disks.ToArray();
 
                                 // Assign back the disk area
                                 if (diskAreaIndex > -1)
@@ -431,16 +431,16 @@ namespace SabreTools.DatFiles
                                     diskAreas.Add(aggregateDiskArea);
 
                                 // Assign back the disk areas array
-                                partItems[partName][Models.Metadata.Part.DiskAreaKey] = diskAreas.ToArray();
+                                partItems[partName][Data.Models.Metadata.Part.DiskAreaKey] = diskAreas.ToArray();
                             }
                         }
 
                         // If the item is a DipSwitch
-                        if (datItem is Models.Metadata.DipSwitch dipSwitchItem)
+                        if (datItem is Data.Models.Metadata.DipSwitch dipSwitchItem)
                         {
                             // Get existing dipswitches as a list
-                            var dipSwitchesArr = partItems[partName].Read<Models.Metadata.DipSwitch[]>(Models.Metadata.Part.DipSwitchKey) ?? [];
-                            List<Models.Metadata.DipSwitch> dipSwitches = [.. dipSwitchesArr];
+                            var dipSwitchesArr = partItems[partName].Read<Data.Models.Metadata.DipSwitch[]>(Data.Models.Metadata.Part.DipSwitchKey) ?? [];
+                            List<Data.Models.Metadata.DipSwitch> dipSwitches = [.. dipSwitchesArr];
 
                             // Clear any empty fields
                             ClearEmptyKeys(dipSwitchItem);
@@ -449,15 +449,15 @@ namespace SabreTools.DatFiles
                             dipSwitches.Add(dipSwitchItem);
 
                             // Assign back the dipswitches
-                            partItems[partName][Models.Metadata.Part.DipSwitchKey] = dipSwitches.ToArray();
+                            partItems[partName][Data.Models.Metadata.Part.DipSwitchKey] = dipSwitches.ToArray();
                         }
 
                         // If the item is a Feature
-                        else if (datItem is Models.Metadata.Feature featureItem)
+                        else if (datItem is Data.Models.Metadata.Feature featureItem)
                         {
                             // Get existing features as a list
-                            var featuresArr = partItems[partName].Read<Models.Metadata.Feature[]>(Models.Metadata.Part.FeatureKey) ?? [];
-                            List<Models.Metadata.Feature> features = [.. featuresArr];
+                            var featuresArr = partItems[partName].Read<Data.Models.Metadata.Feature[]>(Data.Models.Metadata.Part.FeatureKey) ?? [];
+                            List<Data.Models.Metadata.Feature> features = [.. featuresArr];
 
                             // Clear any empty fields
                             ClearEmptyKeys(featureItem);
@@ -466,12 +466,12 @@ namespace SabreTools.DatFiles
                             features.Add(featureItem);
 
                             // Assign back the features
-                            partItems[partName][Models.Metadata.Part.FeatureKey] = features.ToArray();
+                            partItems[partName][Data.Models.Metadata.Part.FeatureKey] = features.ToArray();
                         }
                     }
 
                     // Assign the part array to the machine
-                    machine[Models.Metadata.Machine.PartKey] = partItems.Values.ToArray();
+                    machine[Data.Models.Metadata.Machine.PartKey] = partItems.Values.ToArray();
                 }
 
                 // Add the machine to the list
@@ -485,10 +485,10 @@ namespace SabreTools.DatFiles
         /// <summary>
         /// Convert machines information
         /// </summary>
-        private Models.Metadata.Machine[]? ConvertMachinesDB(bool ignoreblanks = false)
+        private Data.Models.Metadata.Machine[]? ConvertMachinesDB(bool ignoreblanks = false)
         {
             // Create a machine list to hold all outputs
-            List<Models.Metadata.Machine> machines = [];
+            List<Data.Models.Metadata.Machine> machines = [];
 
             // Loop through the sorted items and create games for them
             foreach (string key in ItemsDB.SortedKeys)
@@ -501,25 +501,25 @@ namespace SabreTools.DatFiles
                 var machine = GetMachineForItemDB(items.First().Key).Value!.GetInternalClone();
 
                 // Handle Trurip object, if it exists
-                if (machine.ContainsKey(Models.Metadata.Machine.TruripKey))
+                if (machine.ContainsKey(Data.Models.Metadata.Machine.TruripKey))
                 {
-                    var trurip = machine.Read<DatItems.Trurip>(Models.Metadata.Machine.TruripKey);
+                    var trurip = machine.Read<DatItems.Trurip>(Data.Models.Metadata.Machine.TruripKey);
                     if (trurip != null)
                     {
                         var truripItem = trurip.ConvertToLogiqx();
-                        truripItem.Publisher = machine.ReadString(Models.Metadata.Machine.PublisherKey);
-                        truripItem.Year = machine.ReadString(Models.Metadata.Machine.YearKey);
-                        truripItem.Players = machine.ReadString(Models.Metadata.Machine.PlayersKey);
-                        truripItem.Source = machine.ReadString(Models.Metadata.Machine.SourceFileKey);
-                        truripItem.CloneOf = machine.ReadString(Models.Metadata.Machine.CloneOfKey);
-                        machine[Models.Metadata.Machine.TruripKey] = truripItem;
+                        truripItem.Publisher = machine.ReadString(Data.Models.Metadata.Machine.PublisherKey);
+                        truripItem.Year = machine.ReadString(Data.Models.Metadata.Machine.YearKey);
+                        truripItem.Players = machine.ReadString(Data.Models.Metadata.Machine.PlayersKey);
+                        truripItem.Source = machine.ReadString(Data.Models.Metadata.Machine.SourceFileKey);
+                        truripItem.CloneOf = machine.ReadString(Data.Models.Metadata.Machine.CloneOfKey);
+                        machine[Data.Models.Metadata.Machine.TruripKey] = truripItem;
                     }
                 }
 
                 // Create mapping dictionaries for the Parts, DataAreas, and DiskAreas associated with this machine
-                Dictionary<Models.Metadata.Part, Models.Metadata.DatItem> partMappings = [];
-                Dictionary<Models.Metadata.Part, (Models.Metadata.DataArea, Models.Metadata.Rom)> dataAreaMappings = [];
-                Dictionary<Models.Metadata.Part, (Models.Metadata.DiskArea, Models.Metadata.Disk)> diskAreaMappings = [];
+                Dictionary<Data.Models.Metadata.Part, Data.Models.Metadata.DatItem> partMappings = [];
+                Dictionary<Data.Models.Metadata.Part, (Data.Models.Metadata.DataArea, Data.Models.Metadata.Rom)> dataAreaMappings = [];
+                Dictionary<Data.Models.Metadata.Part, (Data.Models.Metadata.DiskArea, Data.Models.Metadata.Disk)> diskAreaMappings = [];
 
                 // Loop through and convert the items to respective lists
                 foreach (var kvp in items)
@@ -535,43 +535,43 @@ namespace SabreTools.DatFiles
                     {
                         case DatItems.Formats.Adjuster adjuster:
                             var adjusterItem = adjuster.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Adjuster?>(machine, Models.Metadata.Machine.AdjusterKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.AdjusterKey, adjusterItem);
+                            EnsureMachineKey<Data.Models.Metadata.Adjuster?>(machine, Data.Models.Metadata.Machine.AdjusterKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.AdjusterKey, adjusterItem);
                             break;
                         case DatItems.Formats.Archive archive:
                             var archiveItem = archive.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Archive?>(machine, Models.Metadata.Machine.ArchiveKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.ArchiveKey, archiveItem);
+                            EnsureMachineKey<Data.Models.Metadata.Archive?>(machine, Data.Models.Metadata.Machine.ArchiveKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.ArchiveKey, archiveItem);
                             break;
                         case DatItems.Formats.BiosSet biosSet:
                             var biosSetItem = biosSet.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.BiosSet?>(machine, Models.Metadata.Machine.BiosSetKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.BiosSetKey, biosSetItem);
+                            EnsureMachineKey<Data.Models.Metadata.BiosSet?>(machine, Data.Models.Metadata.Machine.BiosSetKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.BiosSetKey, biosSetItem);
                             break;
                         case DatItems.Formats.Chip chip:
                             var chipItem = chip.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Chip?>(machine, Models.Metadata.Machine.ChipKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.ChipKey, chipItem);
+                            EnsureMachineKey<Data.Models.Metadata.Chip?>(machine, Data.Models.Metadata.Machine.ChipKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.ChipKey, chipItem);
                             break;
                         case DatItems.Formats.Configuration configuration:
                             var configurationItem = configuration.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Configuration?>(machine, Models.Metadata.Machine.ConfigurationKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.ConfigurationKey, configurationItem);
+                            EnsureMachineKey<Data.Models.Metadata.Configuration?>(machine, Data.Models.Metadata.Machine.ConfigurationKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.ConfigurationKey, configurationItem);
                             break;
                         case DatItems.Formats.Device device:
                             var deviceItem = device.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Device?>(machine, Models.Metadata.Machine.DeviceKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.DeviceKey, deviceItem);
+                            EnsureMachineKey<Data.Models.Metadata.Device?>(machine, Data.Models.Metadata.Machine.DeviceKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.DeviceKey, deviceItem);
                             break;
                         case DatItems.Formats.DeviceRef deviceRef:
                             var deviceRefItem = deviceRef.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.DeviceRef?>(machine, Models.Metadata.Machine.DeviceRefKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.DeviceRefKey, deviceRefItem);
+                            EnsureMachineKey<Data.Models.Metadata.DeviceRef?>(machine, Data.Models.Metadata.Machine.DeviceRefKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.DeviceRefKey, deviceRefItem);
                             break;
                         case DatItems.Formats.DipSwitch dipSwitch:
                             var dipSwitchItem = dipSwitch.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.DipSwitch?>(machine, Models.Metadata.Machine.DipSwitchKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.DipSwitchKey, dipSwitchItem);
+                            EnsureMachineKey<Data.Models.Metadata.DipSwitch?>(machine, Data.Models.Metadata.Machine.DipSwitchKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.DipSwitchKey, dipSwitchItem);
 
                             // Add Part mapping
                             bool dipSwitchContainsPart = dipSwitchItem.ContainsKey(DatItems.Formats.DipSwitch.PartKey);
@@ -585,8 +585,8 @@ namespace SabreTools.DatFiles
                             break;
                         case DatItems.Formats.Disk disk:
                             var diskItem = disk.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Disk?>(machine, Models.Metadata.Machine.DiskKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.DiskKey, diskItem);
+                            EnsureMachineKey<Data.Models.Metadata.Disk?>(machine, Data.Models.Metadata.Machine.DiskKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.DiskKey, diskItem);
 
                             // Add Part and DiskArea mappings
                             bool diskContainsPart = diskItem.ContainsKey(DatItems.Formats.Disk.PartKey);
@@ -607,38 +607,38 @@ namespace SabreTools.DatFiles
                             break;
                         case DatItems.Formats.Display display:
                             var displayItem = ProcessItem(display, machine);
-                            EnsureMachineKey<Models.Metadata.Display?>(machine, Models.Metadata.Machine.DisplayKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.DisplayKey, displayItem);
+                            EnsureMachineKey<Data.Models.Metadata.Display?>(machine, Data.Models.Metadata.Machine.DisplayKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.DisplayKey, displayItem);
                             break;
                         case DatItems.Formats.Driver driver:
                             var driverItem = driver.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Driver?>(machine, Models.Metadata.Machine.DriverKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.DriverKey, driverItem);
+                            EnsureMachineKey<Data.Models.Metadata.Driver?>(machine, Data.Models.Metadata.Machine.DriverKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.DriverKey, driverItem);
                             break;
                         case DatItems.Formats.Feature feature:
                             var featureItem = feature.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Feature?>(machine, Models.Metadata.Machine.FeatureKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.FeatureKey, featureItem);
+                            EnsureMachineKey<Data.Models.Metadata.Feature?>(machine, Data.Models.Metadata.Machine.FeatureKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.FeatureKey, featureItem);
                             break;
                         case DatItems.Formats.Info info:
                             var infoItem = info.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Info?>(machine, Models.Metadata.Machine.InfoKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.InfoKey, infoItem);
+                            EnsureMachineKey<Data.Models.Metadata.Info?>(machine, Data.Models.Metadata.Machine.InfoKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.InfoKey, infoItem);
                             break;
                         case DatItems.Formats.Input input:
                             var inputItem = input.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Input?>(machine, Models.Metadata.Machine.InputKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.InputKey, inputItem);
+                            EnsureMachineKey<Data.Models.Metadata.Input?>(machine, Data.Models.Metadata.Machine.InputKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.InputKey, inputItem);
                             break;
                         case DatItems.Formats.Media media:
                             var mediaItem = media.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Media?>(machine, Models.Metadata.Machine.MediaKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.MediaKey, mediaItem);
+                            EnsureMachineKey<Data.Models.Metadata.Media?>(machine, Data.Models.Metadata.Machine.MediaKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.MediaKey, mediaItem);
                             break;
                         case DatItems.Formats.PartFeature partFeature:
                             var partFeatureItem = partFeature.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Feature?>(machine, Models.Metadata.Machine.FeatureKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.FeatureKey, partFeatureItem);
+                            EnsureMachineKey<Data.Models.Metadata.Feature?>(machine, Data.Models.Metadata.Machine.FeatureKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.FeatureKey, partFeatureItem);
 
                             // Add Part mapping
                             bool partFeatureContainsPart = partFeatureItem.ContainsKey(DatItems.Formats.PartFeature.PartKey);
@@ -651,23 +651,23 @@ namespace SabreTools.DatFiles
                             break;
                         case DatItems.Formats.Port port:
                             var portItem = port.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Port?>(machine, Models.Metadata.Machine.PortKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.PortKey, portItem);
+                            EnsureMachineKey<Data.Models.Metadata.Port?>(machine, Data.Models.Metadata.Machine.PortKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.PortKey, portItem);
                             break;
                         case DatItems.Formats.RamOption ramOption:
                             var ramOptionItem = ramOption.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.RamOption?>(machine, Models.Metadata.Machine.RamOptionKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.RamOptionKey, ramOptionItem);
+                            EnsureMachineKey<Data.Models.Metadata.RamOption?>(machine, Data.Models.Metadata.Machine.RamOptionKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.RamOptionKey, ramOptionItem);
                             break;
                         case DatItems.Formats.Release release:
                             var releaseItem = release.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Release?>(machine, Models.Metadata.Machine.ReleaseKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.ReleaseKey, releaseItem);
+                            EnsureMachineKey<Data.Models.Metadata.Release?>(machine, Data.Models.Metadata.Machine.ReleaseKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.ReleaseKey, releaseItem);
                             break;
                         case DatItems.Formats.Rom rom:
                             var romItem = ProcessItem(rom, machine);
-                            EnsureMachineKey<Models.Metadata.Rom?>(machine, Models.Metadata.Machine.RomKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.RomKey, romItem);
+                            EnsureMachineKey<Data.Models.Metadata.Rom?>(machine, Data.Models.Metadata.Machine.RomKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.RomKey, romItem);
 
                             // Add Part and DataArea mappings
                             bool romContainsPart = romItem.ContainsKey(DatItems.Formats.Rom.PartKey);
@@ -688,28 +688,28 @@ namespace SabreTools.DatFiles
                             break;
                         case DatItems.Formats.Sample sample:
                             var sampleItem = sample.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Sample?>(machine, Models.Metadata.Machine.SampleKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.SampleKey, sampleItem);
+                            EnsureMachineKey<Data.Models.Metadata.Sample?>(machine, Data.Models.Metadata.Machine.SampleKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.SampleKey, sampleItem);
                             break;
                         case DatItems.Formats.SharedFeat sharedFeat:
                             var sharedFeatItem = sharedFeat.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.SharedFeat?>(machine, Models.Metadata.Machine.SharedFeatKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.SharedFeatKey, sharedFeatItem);
+                            EnsureMachineKey<Data.Models.Metadata.SharedFeat?>(machine, Data.Models.Metadata.Machine.SharedFeatKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.SharedFeatKey, sharedFeatItem);
                             break;
                         case DatItems.Formats.Slot slot:
                             var slotItem = slot.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Slot?>(machine, Models.Metadata.Machine.SlotKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.SlotKey, slotItem);
+                            EnsureMachineKey<Data.Models.Metadata.Slot?>(machine, Data.Models.Metadata.Machine.SlotKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.SlotKey, slotItem);
                             break;
                         case DatItems.Formats.SoftwareList softwareList:
                             var softwareListItem = softwareList.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.SoftwareList?>(machine, Models.Metadata.Machine.SoftwareListKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.SoftwareListKey, softwareListItem);
+                            EnsureMachineKey<Data.Models.Metadata.SoftwareList?>(machine, Data.Models.Metadata.Machine.SoftwareListKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.SoftwareListKey, softwareListItem);
                             break;
                         case DatItems.Formats.Sound sound:
                             var soundItem = sound.GetInternalClone();
-                            EnsureMachineKey<Models.Metadata.Sound?>(machine, Models.Metadata.Machine.SoundKey);
-                            AppendToMachineKey(machine, Models.Metadata.Machine.SoundKey, soundItem);
+                            EnsureMachineKey<Data.Models.Metadata.Sound?>(machine, Data.Models.Metadata.Machine.SoundKey);
+                            AppendToMachineKey(machine, Data.Models.Metadata.Machine.SoundKey, soundItem);
                             break;
                     }
                 }
@@ -718,7 +718,7 @@ namespace SabreTools.DatFiles
                 if (partMappings.Count != 0)
                 {
                     // Create a collection to hold the inverted Parts
-                    Dictionary<string, Models.Metadata.Part> partItems = [];
+                    Dictionary<string, Data.Models.Metadata.Part> partItems = [];
 
                     // Loop through the Part mappings
                     foreach (var partMapping in partMappings)
@@ -728,7 +728,7 @@ namespace SabreTools.DatFiles
                         var datItem = partMapping.Value;
 
                         // Get the part name and skip if there's none
-                        string? partName = partItem.ReadString(Models.Metadata.Part.NameKey);
+                        string? partName = partItem.ReadString(Data.Models.Metadata.Part.NameKey);
                         if (partName == null)
                             continue;
 
@@ -737,9 +737,9 @@ namespace SabreTools.DatFiles
                             partItems[partName] = [];
 
                         // Copy over string values
-                        partItems[partName][Models.Metadata.Part.NameKey] = partName;
-                        if (!partItems[partName].ContainsKey(Models.Metadata.Part.InterfaceKey))
-                            partItems[partName][Models.Metadata.Part.InterfaceKey] = partItem.ReadString(Models.Metadata.Part.InterfaceKey);
+                        partItems[partName][Data.Models.Metadata.Part.NameKey] = partName;
+                        if (!partItems[partName].ContainsKey(Data.Models.Metadata.Part.InterfaceKey))
+                            partItems[partName][Data.Models.Metadata.Part.InterfaceKey] = partItem.ReadString(Data.Models.Metadata.Part.InterfaceKey);
 
                         // Clear any empty fields
                         ClearEmptyKeys(partItems[partName]);
@@ -754,16 +754,16 @@ namespace SabreTools.DatFiles
                             ClearEmptyKeys(romItem);
 
                             // Get the data area name and skip if there's none
-                            string? dataAreaName = dataArea.ReadString(Models.Metadata.DataArea.NameKey);
+                            string? dataAreaName = dataArea.ReadString(Data.Models.Metadata.DataArea.NameKey);
                             if (dataAreaName != null)
                             {
                                 // Get existing data areas as a list
-                                var dataAreasArr = partItems[partName].Read<Models.Metadata.DataArea[]>(Models.Metadata.Part.DataAreaKey) ?? [];
-                                List<Models.Metadata.DataArea> dataAreas = [.. dataAreasArr];
+                                var dataAreasArr = partItems[partName].Read<Data.Models.Metadata.DataArea[]>(Data.Models.Metadata.Part.DataAreaKey) ?? [];
+                                List<Data.Models.Metadata.DataArea> dataAreas = [.. dataAreasArr];
 
                                 // Find the existing disk area to append to, otherwise create a new disk area
-                                int dataAreaIndex = dataAreas.FindIndex(da => da.ReadString(Models.Metadata.DataArea.NameKey) == dataAreaName);
-                                Models.Metadata.DataArea aggregateDataArea;
+                                int dataAreaIndex = dataAreas.FindIndex(da => da.ReadString(Data.Models.Metadata.DataArea.NameKey) == dataAreaName);
+                                Data.Models.Metadata.DataArea aggregateDataArea;
                                 if (dataAreaIndex > -1)
                                 {
                                     aggregateDataArea = dataAreas[dataAreaIndex];
@@ -771,24 +771,24 @@ namespace SabreTools.DatFiles
                                 else
                                 {
                                     aggregateDataArea = [];
-                                    aggregateDataArea[Models.Metadata.DataArea.EndiannessKey] = dataArea.ReadString(Models.Metadata.DataArea.EndiannessKey);
-                                    aggregateDataArea[Models.Metadata.DataArea.NameKey] = dataArea.ReadString(Models.Metadata.DataArea.NameKey);
-                                    aggregateDataArea[Models.Metadata.DataArea.SizeKey] = dataArea.ReadString(Models.Metadata.DataArea.SizeKey);
-                                    aggregateDataArea[Models.Metadata.DataArea.WidthKey] = dataArea.ReadString(Models.Metadata.DataArea.WidthKey);
+                                    aggregateDataArea[Data.Models.Metadata.DataArea.EndiannessKey] = dataArea.ReadString(Data.Models.Metadata.DataArea.EndiannessKey);
+                                    aggregateDataArea[Data.Models.Metadata.DataArea.NameKey] = dataArea.ReadString(Data.Models.Metadata.DataArea.NameKey);
+                                    aggregateDataArea[Data.Models.Metadata.DataArea.SizeKey] = dataArea.ReadString(Data.Models.Metadata.DataArea.SizeKey);
+                                    aggregateDataArea[Data.Models.Metadata.DataArea.WidthKey] = dataArea.ReadString(Data.Models.Metadata.DataArea.WidthKey);
                                 }
 
                                 // Clear any empty fields
                                 ClearEmptyKeys(aggregateDataArea);
 
                                 // Get existing roms as a list
-                                var romsArr = aggregateDataArea.Read<Models.Metadata.Rom[]>(Models.Metadata.DataArea.RomKey) ?? [];
-                                List<Models.Metadata.Rom> roms = [.. romsArr];
+                                var romsArr = aggregateDataArea.Read<Data.Models.Metadata.Rom[]>(Data.Models.Metadata.DataArea.RomKey) ?? [];
+                                List<Data.Models.Metadata.Rom> roms = [.. romsArr];
 
                                 // Add the rom to the data area
                                 roms.Add(romItem);
 
                                 // Assign back the roms
-                                aggregateDataArea[Models.Metadata.DataArea.RomKey] = roms.ToArray();
+                                aggregateDataArea[Data.Models.Metadata.DataArea.RomKey] = roms.ToArray();
 
                                 // Assign back the data area
                                 if (dataAreaIndex > -1)
@@ -797,7 +797,7 @@ namespace SabreTools.DatFiles
                                     dataAreas.Add(aggregateDataArea);
 
                                 // Assign back the data areas array
-                                partItems[partName][Models.Metadata.Part.DataAreaKey] = dataAreas.ToArray();
+                                partItems[partName][Data.Models.Metadata.Part.DataAreaKey] = dataAreas.ToArray();
                             }
                         }
 
@@ -811,16 +811,16 @@ namespace SabreTools.DatFiles
                             ClearEmptyKeys(diskItem);
 
                             // Get the disk area name and skip if there's none
-                            string? diskAreaName = diskArea.ReadString(Models.Metadata.DiskArea.NameKey);
+                            string? diskAreaName = diskArea.ReadString(Data.Models.Metadata.DiskArea.NameKey);
                             if (diskAreaName != null)
                             {
                                 // Get existing disk areas as a list
-                                var diskAreasArr = partItems[partName].Read<Models.Metadata.DiskArea[]>(Models.Metadata.Part.DiskAreaKey) ?? [];
-                                List<Models.Metadata.DiskArea> diskAreas = [.. diskAreasArr];
+                                var diskAreasArr = partItems[partName].Read<Data.Models.Metadata.DiskArea[]>(Data.Models.Metadata.Part.DiskAreaKey) ?? [];
+                                List<Data.Models.Metadata.DiskArea> diskAreas = [.. diskAreasArr];
 
                                 // Find the existing disk area to append to, otherwise create a new disk area
-                                int diskAreaIndex = diskAreas.FindIndex(da => da.ReadString(Models.Metadata.DiskArea.NameKey) == diskAreaName);
-                                Models.Metadata.DiskArea aggregateDiskArea;
+                                int diskAreaIndex = diskAreas.FindIndex(da => da.ReadString(Data.Models.Metadata.DiskArea.NameKey) == diskAreaName);
+                                Data.Models.Metadata.DiskArea aggregateDiskArea;
                                 if (diskAreaIndex > -1)
                                 {
                                     aggregateDiskArea = diskAreas[diskAreaIndex];
@@ -828,21 +828,21 @@ namespace SabreTools.DatFiles
                                 else
                                 {
                                     aggregateDiskArea = [];
-                                    aggregateDiskArea[Models.Metadata.DiskArea.NameKey] = diskArea.ReadString(Models.Metadata.DiskArea.NameKey);
+                                    aggregateDiskArea[Data.Models.Metadata.DiskArea.NameKey] = diskArea.ReadString(Data.Models.Metadata.DiskArea.NameKey);
                                 }
 
                                 // Clear any empty fields
                                 ClearEmptyKeys(aggregateDiskArea);
 
                                 // Get existing disks as a list
-                                var disksArr = aggregateDiskArea.Read<Models.Metadata.Disk[]>(Models.Metadata.DiskArea.DiskKey) ?? [];
-                                List<Models.Metadata.Disk> disks = [.. disksArr];
+                                var disksArr = aggregateDiskArea.Read<Data.Models.Metadata.Disk[]>(Data.Models.Metadata.DiskArea.DiskKey) ?? [];
+                                List<Data.Models.Metadata.Disk> disks = [.. disksArr];
 
                                 // Add the disk to the data area
                                 disks.Add(diskItem);
 
                                 // Assign back the disks
-                                aggregateDiskArea[Models.Metadata.DiskArea.DiskKey] = disks.ToArray();
+                                aggregateDiskArea[Data.Models.Metadata.DiskArea.DiskKey] = disks.ToArray();
 
                                 // Assign back the disk area
                                 if (diskAreaIndex > -1)
@@ -851,16 +851,16 @@ namespace SabreTools.DatFiles
                                     diskAreas.Add(aggregateDiskArea);
 
                                 // Assign back the disk areas array
-                                partItems[partName][Models.Metadata.Part.DiskAreaKey] = diskAreas.ToArray();
+                                partItems[partName][Data.Models.Metadata.Part.DiskAreaKey] = diskAreas.ToArray();
                             }
                         }
 
                         // If the item is a DipSwitch
-                        if (datItem is Models.Metadata.DipSwitch dipSwitchItem)
+                        if (datItem is Data.Models.Metadata.DipSwitch dipSwitchItem)
                         {
                             // Get existing dipswitches as a list
-                            var dipSwitchesArr = partItems[partName].Read<Models.Metadata.DipSwitch[]>(Models.Metadata.Part.DipSwitchKey) ?? [];
-                            List<Models.Metadata.DipSwitch> dipSwitches = [.. dipSwitchesArr];
+                            var dipSwitchesArr = partItems[partName].Read<Data.Models.Metadata.DipSwitch[]>(Data.Models.Metadata.Part.DipSwitchKey) ?? [];
+                            List<Data.Models.Metadata.DipSwitch> dipSwitches = [.. dipSwitchesArr];
 
                             // Clear any empty fields
                             ClearEmptyKeys(dipSwitchItem);
@@ -869,15 +869,15 @@ namespace SabreTools.DatFiles
                             dipSwitches.Add(dipSwitchItem);
 
                             // Assign back the dipswitches
-                            partItems[partName][Models.Metadata.Part.DipSwitchKey] = dipSwitches.ToArray();
+                            partItems[partName][Data.Models.Metadata.Part.DipSwitchKey] = dipSwitches.ToArray();
                         }
 
                         // If the item is a Feature
-                        else if (datItem is Models.Metadata.Feature featureItem)
+                        else if (datItem is Data.Models.Metadata.Feature featureItem)
                         {
                             // Get existing features as a list
-                            var featuresArr = partItems[partName].Read<Models.Metadata.Feature[]>(Models.Metadata.Part.FeatureKey) ?? [];
-                            List<Models.Metadata.Feature> features = [.. featuresArr];
+                            var featuresArr = partItems[partName].Read<Data.Models.Metadata.Feature[]>(Data.Models.Metadata.Part.FeatureKey) ?? [];
+                            List<Data.Models.Metadata.Feature> features = [.. featuresArr];
 
                             // Clear any empty fields
                             ClearEmptyKeys(featureItem);
@@ -886,12 +886,12 @@ namespace SabreTools.DatFiles
                             features.Add(featureItem);
 
                             // Assign back the features
-                            partItems[partName][Models.Metadata.Part.FeatureKey] = features.ToArray();
+                            partItems[partName][Data.Models.Metadata.Part.FeatureKey] = features.ToArray();
                         }
                     }
 
                     // Assign the part array to the machine
-                    machine[Models.Metadata.Machine.PartKey] = partItems.Values.ToArray();
+                    machine[Data.Models.Metadata.Machine.PartKey] = partItems.Values.ToArray();
                 }
 
                 // Add the machine to the list
@@ -911,35 +911,35 @@ namespace SabreTools.DatFiles
         /// This method is required because both a Display and a Video
         /// item might be created and added for a given Display input.
         /// </remarks>
-        private static Models.Metadata.Display ProcessItem(DatItems.Formats.Display item, Models.Metadata.Machine machine)
+        private static Data.Models.Metadata.Display ProcessItem(DatItems.Formats.Display item, Data.Models.Metadata.Machine machine)
         {
             var displayItem = item.GetInternalClone();
 
             // Create a Video for any item that has specific fields
-            if (displayItem.ContainsKey(Models.Metadata.Video.AspectXKey))
+            if (displayItem.ContainsKey(Data.Models.Metadata.Video.AspectXKey))
             {
-                var videoItem = new Models.Metadata.Video();
-                videoItem[Models.Metadata.Video.AspectXKey] = displayItem.ReadLong(Models.Metadata.Video.AspectXKey).ToString();
-                videoItem[Models.Metadata.Video.AspectYKey] = displayItem.ReadLong(Models.Metadata.Video.AspectYKey).ToString();
-                videoItem[Models.Metadata.Video.HeightKey] = displayItem.ReadLong(Models.Metadata.Display.HeightKey).ToString();
-                videoItem[Models.Metadata.Video.RefreshKey] = displayItem.ReadDouble(Models.Metadata.Display.RefreshKey).ToString();
-                videoItem[Models.Metadata.Video.ScreenKey] = displayItem.ReadString(Models.Metadata.Display.DisplayTypeKey).AsDisplayType().AsStringValue();
-                videoItem[Models.Metadata.Video.WidthKey] = displayItem.ReadLong(Models.Metadata.Display.WidthKey).ToString();
+                var videoItem = new Data.Models.Metadata.Video();
+                videoItem[Data.Models.Metadata.Video.AspectXKey] = displayItem.ReadLong(Data.Models.Metadata.Video.AspectXKey).ToString();
+                videoItem[Data.Models.Metadata.Video.AspectYKey] = displayItem.ReadLong(Data.Models.Metadata.Video.AspectYKey).ToString();
+                videoItem[Data.Models.Metadata.Video.HeightKey] = displayItem.ReadLong(Data.Models.Metadata.Display.HeightKey).ToString();
+                videoItem[Data.Models.Metadata.Video.RefreshKey] = displayItem.ReadDouble(Data.Models.Metadata.Display.RefreshKey).ToString();
+                videoItem[Data.Models.Metadata.Video.ScreenKey] = displayItem.ReadString(Data.Models.Metadata.Display.DisplayTypeKey).AsDisplayType().AsStringValue();
+                videoItem[Data.Models.Metadata.Video.WidthKey] = displayItem.ReadLong(Data.Models.Metadata.Display.WidthKey).ToString();
 
-                switch (displayItem.ReadLong(Models.Metadata.Display.RotateKey))
+                switch (displayItem.ReadLong(Data.Models.Metadata.Display.RotateKey))
                 {
                     case 0:
                     case 180:
-                        videoItem[Models.Metadata.Video.OrientationKey] = "horizontal";
+                        videoItem[Data.Models.Metadata.Video.OrientationKey] = "horizontal";
                         break;
                     case 90:
                     case 270:
-                        videoItem[Models.Metadata.Video.OrientationKey] = "vertical";
+                        videoItem[Data.Models.Metadata.Video.OrientationKey] = "vertical";
                         break;
                 }
 
-                EnsureMachineKey<Models.Metadata.Video?>(machine, Models.Metadata.Machine.VideoKey);
-                AppendToMachineKey(machine, Models.Metadata.Machine.VideoKey, videoItem);
+                EnsureMachineKey<Data.Models.Metadata.Video?>(machine, Data.Models.Metadata.Machine.VideoKey);
+                AppendToMachineKey(machine, Data.Models.Metadata.Machine.VideoKey, videoItem);
             }
 
             return displayItem;
@@ -954,95 +954,95 @@ namespace SabreTools.DatFiles
         /// This method is required because both a Rom and a Dump
         /// item might be created and added for a given Rom input.
         /// </remarks>
-        private static Models.Metadata.Rom ProcessItem(DatItems.Formats.Rom item, Models.Metadata.Machine machine)
+        private static Data.Models.Metadata.Rom ProcessItem(DatItems.Formats.Rom item, Data.Models.Metadata.Machine machine)
         {
             var romItem = item.GetInternalClone();
 
             // Create a Dump for every Rom that has a subtype
-            switch (romItem.ReadString(Models.Metadata.Rom.OpenMSXMediaType).AsOpenMSXSubType())
+            switch (romItem.ReadString(Data.Models.Metadata.Rom.OpenMSXMediaType).AsOpenMSXSubType())
             {
                 case OpenMSXSubType.Rom:
-                    var dumpRom = new Models.Metadata.Dump();
-                    var rom = new Models.Metadata.Rom();
+                    var dumpRom = new Data.Models.Metadata.Dump();
+                    var rom = new Data.Models.Metadata.Rom();
 
-                    rom[Models.Metadata.Rom.NameKey] = romItem.ReadString(Models.Metadata.Rom.NameKey);
-                    rom[Models.Metadata.Rom.OffsetKey] = romItem.ReadString(Models.Metadata.Rom.StartKey) ?? romItem.ReadString(Models.Metadata.Rom.OffsetKey);
-                    rom[Models.Metadata.Rom.OpenMSXType] = romItem.ReadString(Models.Metadata.Rom.OpenMSXType);
-                    rom[Models.Metadata.Rom.RemarkKey] = romItem.ReadString(Models.Metadata.Rom.RemarkKey);
-                    rom[Models.Metadata.Rom.SHA1Key] = romItem.ReadString(Models.Metadata.Rom.SHA1Key);
-                    rom[Models.Metadata.Rom.StartKey] = romItem.ReadString(Models.Metadata.Rom.StartKey) ?? romItem.ReadString(Models.Metadata.Rom.OffsetKey);
+                    rom[Data.Models.Metadata.Rom.NameKey] = romItem.ReadString(Data.Models.Metadata.Rom.NameKey);
+                    rom[Data.Models.Metadata.Rom.OffsetKey] = romItem.ReadString(Data.Models.Metadata.Rom.StartKey) ?? romItem.ReadString(Data.Models.Metadata.Rom.OffsetKey);
+                    rom[Data.Models.Metadata.Rom.OpenMSXType] = romItem.ReadString(Data.Models.Metadata.Rom.OpenMSXType);
+                    rom[Data.Models.Metadata.Rom.RemarkKey] = romItem.ReadString(Data.Models.Metadata.Rom.RemarkKey);
+                    rom[Data.Models.Metadata.Rom.SHA1Key] = romItem.ReadString(Data.Models.Metadata.Rom.SHA1Key);
+                    rom[Data.Models.Metadata.Rom.StartKey] = romItem.ReadString(Data.Models.Metadata.Rom.StartKey) ?? romItem.ReadString(Data.Models.Metadata.Rom.OffsetKey);
 
-                    dumpRom[Models.Metadata.Dump.RomKey] = rom;
+                    dumpRom[Data.Models.Metadata.Dump.RomKey] = rom;
 
                     var romOriginal = romItem.Read<DatItems.Formats.Original>("ORIGINAL");
                     if (romOriginal != null)
                     {
-                        var newOriginal = new Models.Metadata.Original
+                        var newOriginal = new Data.Models.Metadata.Original
                         {
-                            [Models.Metadata.Original.ValueKey] = romOriginal.Value.FromYesNo(),
-                            [Models.Metadata.Original.ContentKey] = romOriginal.Content,
+                            [Data.Models.Metadata.Original.ValueKey] = romOriginal.Value.FromYesNo(),
+                            [Data.Models.Metadata.Original.ContentKey] = romOriginal.Content,
                         };
-                        dumpRom[Models.Metadata.Dump.OriginalKey] = newOriginal;
+                        dumpRom[Data.Models.Metadata.Dump.OriginalKey] = newOriginal;
                     }
 
-                    EnsureMachineKey<Models.Metadata.Dump?>(machine, Models.Metadata.Machine.DumpKey);
-                    AppendToMachineKey(machine, Models.Metadata.Machine.DumpKey, dumpRom);
+                    EnsureMachineKey<Data.Models.Metadata.Dump?>(machine, Data.Models.Metadata.Machine.DumpKey);
+                    AppendToMachineKey(machine, Data.Models.Metadata.Machine.DumpKey, dumpRom);
                     break;
 
                 case OpenMSXSubType.MegaRom:
-                    var dumpMegaRom = new Models.Metadata.Dump();
-                    var megaRom = new Models.Metadata.Rom();
+                    var dumpMegaRom = new Data.Models.Metadata.Dump();
+                    var megaRom = new Data.Models.Metadata.Rom();
 
-                    megaRom[Models.Metadata.Rom.NameKey] = romItem.ReadString(Models.Metadata.Rom.NameKey);
-                    megaRom[Models.Metadata.Rom.OffsetKey] = romItem.ReadString(Models.Metadata.Rom.StartKey) ?? romItem.ReadString(Models.Metadata.Rom.OffsetKey);
-                    megaRom[Models.Metadata.Rom.OpenMSXType] = romItem.ReadString(Models.Metadata.Rom.OpenMSXType);
-                    megaRom[Models.Metadata.Rom.RemarkKey] = romItem.ReadString(Models.Metadata.Rom.RemarkKey);
-                    megaRom[Models.Metadata.Rom.SHA1Key] = romItem.ReadString(Models.Metadata.Rom.SHA1Key);
-                    megaRom[Models.Metadata.Rom.StartKey] = romItem.ReadString(Models.Metadata.Rom.StartKey) ?? romItem.ReadString(Models.Metadata.Rom.OffsetKey);
+                    megaRom[Data.Models.Metadata.Rom.NameKey] = romItem.ReadString(Data.Models.Metadata.Rom.NameKey);
+                    megaRom[Data.Models.Metadata.Rom.OffsetKey] = romItem.ReadString(Data.Models.Metadata.Rom.StartKey) ?? romItem.ReadString(Data.Models.Metadata.Rom.OffsetKey);
+                    megaRom[Data.Models.Metadata.Rom.OpenMSXType] = romItem.ReadString(Data.Models.Metadata.Rom.OpenMSXType);
+                    megaRom[Data.Models.Metadata.Rom.RemarkKey] = romItem.ReadString(Data.Models.Metadata.Rom.RemarkKey);
+                    megaRom[Data.Models.Metadata.Rom.SHA1Key] = romItem.ReadString(Data.Models.Metadata.Rom.SHA1Key);
+                    megaRom[Data.Models.Metadata.Rom.StartKey] = romItem.ReadString(Data.Models.Metadata.Rom.StartKey) ?? romItem.ReadString(Data.Models.Metadata.Rom.OffsetKey);
 
-                    dumpMegaRom[Models.Metadata.Dump.MegaRomKey] = megaRom;
+                    dumpMegaRom[Data.Models.Metadata.Dump.MegaRomKey] = megaRom;
 
                     var megaRomOriginal = romItem.Read<DatItems.Formats.Original>("ORIGINAL");
                     if (megaRomOriginal != null)
                     {
-                        var newOriginal = new Models.Metadata.Original
+                        var newOriginal = new Data.Models.Metadata.Original
                         {
-                            [Models.Metadata.Original.ValueKey] = megaRomOriginal.Value.FromYesNo(),
-                            [Models.Metadata.Original.ContentKey] = megaRomOriginal.Content,
+                            [Data.Models.Metadata.Original.ValueKey] = megaRomOriginal.Value.FromYesNo(),
+                            [Data.Models.Metadata.Original.ContentKey] = megaRomOriginal.Content,
                         };
-                        dumpMegaRom[Models.Metadata.Dump.OriginalKey] = newOriginal;
+                        dumpMegaRom[Data.Models.Metadata.Dump.OriginalKey] = newOriginal;
                     }
 
-                    EnsureMachineKey<Models.Metadata.Dump?>(machine, Models.Metadata.Machine.DumpKey);
-                    AppendToMachineKey(machine, Models.Metadata.Machine.DumpKey, dumpMegaRom);
+                    EnsureMachineKey<Data.Models.Metadata.Dump?>(machine, Data.Models.Metadata.Machine.DumpKey);
+                    AppendToMachineKey(machine, Data.Models.Metadata.Machine.DumpKey, dumpMegaRom);
                     break;
 
                 case OpenMSXSubType.SCCPlusCart:
-                    var dumpSccPlusCart = new Models.Metadata.Dump();
-                    var sccPlusCart = new Models.Metadata.Rom();
+                    var dumpSccPlusCart = new Data.Models.Metadata.Dump();
+                    var sccPlusCart = new Data.Models.Metadata.Rom();
 
-                    sccPlusCart[Models.Metadata.Rom.NameKey] = romItem.ReadString(Models.Metadata.Rom.NameKey);
-                    sccPlusCart[Models.Metadata.Rom.OffsetKey] = romItem.ReadString(Models.Metadata.Rom.StartKey) ?? romItem.ReadString(Models.Metadata.Rom.OffsetKey);
-                    sccPlusCart[Models.Metadata.Rom.OpenMSXType] = romItem.ReadString(Models.Metadata.Rom.OpenMSXType);
-                    sccPlusCart[Models.Metadata.Rom.RemarkKey] = romItem.ReadString(Models.Metadata.Rom.RemarkKey);
-                    sccPlusCart[Models.Metadata.Rom.SHA1Key] = romItem.ReadString(Models.Metadata.Rom.SHA1Key);
-                    sccPlusCart[Models.Metadata.Rom.StartKey] = romItem.ReadString(Models.Metadata.Rom.StartKey) ?? romItem.ReadString(Models.Metadata.Rom.OffsetKey);
+                    sccPlusCart[Data.Models.Metadata.Rom.NameKey] = romItem.ReadString(Data.Models.Metadata.Rom.NameKey);
+                    sccPlusCart[Data.Models.Metadata.Rom.OffsetKey] = romItem.ReadString(Data.Models.Metadata.Rom.StartKey) ?? romItem.ReadString(Data.Models.Metadata.Rom.OffsetKey);
+                    sccPlusCart[Data.Models.Metadata.Rom.OpenMSXType] = romItem.ReadString(Data.Models.Metadata.Rom.OpenMSXType);
+                    sccPlusCart[Data.Models.Metadata.Rom.RemarkKey] = romItem.ReadString(Data.Models.Metadata.Rom.RemarkKey);
+                    sccPlusCart[Data.Models.Metadata.Rom.SHA1Key] = romItem.ReadString(Data.Models.Metadata.Rom.SHA1Key);
+                    sccPlusCart[Data.Models.Metadata.Rom.StartKey] = romItem.ReadString(Data.Models.Metadata.Rom.StartKey) ?? romItem.ReadString(Data.Models.Metadata.Rom.OffsetKey);
 
-                    dumpSccPlusCart[Models.Metadata.Dump.RomKey] = sccPlusCart;
+                    dumpSccPlusCart[Data.Models.Metadata.Dump.RomKey] = sccPlusCart;
 
                     var sccPlusCartOriginal = romItem.Read<DatItems.Formats.Original>("ORIGINAL");
                     if (sccPlusCartOriginal != null)
                     {
-                        var newOriginal = new Models.Metadata.Original
+                        var newOriginal = new Data.Models.Metadata.Original
                         {
-                            [Models.Metadata.Original.ValueKey] = sccPlusCartOriginal.Value.FromYesNo(),
-                            [Models.Metadata.Original.ContentKey] = sccPlusCartOriginal.Content,
+                            [Data.Models.Metadata.Original.ValueKey] = sccPlusCartOriginal.Value.FromYesNo(),
+                            [Data.Models.Metadata.Original.ContentKey] = sccPlusCartOriginal.Content,
                         };
-                        dumpSccPlusCart[Models.Metadata.Dump.OriginalKey] = newOriginal;
+                        dumpSccPlusCart[Data.Models.Metadata.Dump.OriginalKey] = newOriginal;
                     }
 
-                    EnsureMachineKey<Models.Metadata.Dump?>(machine, Models.Metadata.Machine.DumpKey);
-                    AppendToMachineKey(machine, Models.Metadata.Machine.DumpKey, dumpSccPlusCart);
+                    EnsureMachineKey<Data.Models.Metadata.Dump?>(machine, Data.Models.Metadata.Machine.DumpKey);
+                    AppendToMachineKey(machine, Data.Models.Metadata.Machine.DumpKey, dumpSccPlusCart);
                     break;
             }
 
@@ -1052,7 +1052,7 @@ namespace SabreTools.DatFiles
         /// <summary>
         /// Ensure a key in a machine
         /// </summary>
-        private static void EnsureMachineKey<T>(Models.Metadata.Machine machine, string key)
+        private static void EnsureMachineKey<T>(Data.Models.Metadata.Machine machine, string key)
         {
             if (machine.Read<T[]?>(key) == null)
 #if NET20 || NET35 || NET40 || NET452
@@ -1065,7 +1065,7 @@ namespace SabreTools.DatFiles
         /// <summary>
         /// Append to a machine key as if its an array
         /// </summary>
-        private static void AppendToMachineKey<T>(Models.Metadata.Machine machine, string key, T value) where T : Models.Metadata.DatItem
+        private static void AppendToMachineKey<T>(Data.Models.Metadata.Machine machine, string key, T value) where T : Data.Models.Metadata.DatItem
         {
             // Get the existing array
             var arr = machine.Read<T[]>(key);
@@ -1084,7 +1084,7 @@ namespace SabreTools.DatFiles
         /// <summary>
         /// Clear empty keys from a DictionaryBase object
         /// </summary>
-        private static void ClearEmptyKeys(Models.Metadata.DictionaryBase obj)
+        private static void ClearEmptyKeys(Data.Models.Metadata.DictionaryBase obj)
         {
             string[] fieldNames = [.. obj.Keys];
             foreach (string fieldName in fieldNames)

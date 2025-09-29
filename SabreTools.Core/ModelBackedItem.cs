@@ -21,7 +21,7 @@ namespace SabreTools.Core
     /// <summary>
     /// Represents an item that's backed by a DictionaryBase item
     /// </summary>
-    public abstract class ModelBackedItem<T> : ModelBackedItem, IEquatable<ModelBackedItem<T>> where T : Models.Metadata.DictionaryBase
+    public abstract class ModelBackedItem<T> : ModelBackedItem, IEquatable<ModelBackedItem<T>> where T : Data.Models.Metadata.DictionaryBase
     {
         /// <summary>
         /// Internal model wrapped by this DatItem

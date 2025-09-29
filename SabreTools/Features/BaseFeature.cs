@@ -1310,7 +1310,7 @@ Some special strings that can be used:
                 try
                 {
                     var key = new FilterKey(fieldName);
-                    if (key.ItemName != Models.Metadata.MetadataFile.MachineKey)
+                    if (key.ItemName != Data.Models.Metadata.MetadataFile.MachineKey)
                         continue;
 
                     updateFields.Add(key.FieldName);
@@ -1333,7 +1333,7 @@ Some special strings that can be used:
                 try
                 {
                     var key = new FilterKey(fieldName);
-                    if (key.ItemName == Models.Metadata.MetadataFile.HeaderKey || key.ItemName == Models.Metadata.MetadataFile.MachineKey)
+                    if (key.ItemName == Data.Models.Metadata.MetadataFile.HeaderKey || key.ItemName == Data.Models.Metadata.MetadataFile.MachineKey)
                         continue;
 
                     if (!updateFields.ContainsKey(key.ItemName))
@@ -1421,23 +1421,23 @@ Some special strings that can be used:
         private DatHeader? GetDatHeader(Dictionary<string, Feature?> features)
         {
             var datHeader = new DatHeader();
-            datHeader.SetFieldValue<string?>(Models.Metadata.Header.AuthorKey, GetString(features, AuthorStringValue));
-            datHeader.SetFieldValue<string?>(Models.Metadata.Header.CategoryKey, GetString(features, CategoryStringValue));
-            datHeader.SetFieldValue<string?>(Models.Metadata.Header.CommentKey, GetString(features, CommentStringValue));
-            datHeader.SetFieldValue<string?>(Models.Metadata.Header.DateKey, GetString(features, DateStringValue));
-            datHeader.SetFieldValue<string?>(Models.Metadata.Header.DescriptionKey, GetString(features, DescriptionStringValue));
-            datHeader.SetFieldValue<string?>(Models.Metadata.Header.EmailKey, GetString(features, EmailStringValue));
+            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.AuthorKey, GetString(features, AuthorStringValue));
+            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.CategoryKey, GetString(features, CategoryStringValue));
+            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.CommentKey, GetString(features, CommentStringValue));
+            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.DateKey, GetString(features, DateStringValue));
+            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, GetString(features, DescriptionStringValue));
+            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.EmailKey, GetString(features, EmailStringValue));
             datHeader.SetFieldValue<string?>(DatHeader.FileNameKey, GetString(features, FilenameStringValue));
-            datHeader.SetFieldValue<MergingFlag>(Models.Metadata.Header.ForceMergingKey, GetString(features, ForceMergingStringValue).AsMergingFlag());
-            datHeader.SetFieldValue<NodumpFlag>(Models.Metadata.Header.ForceNodumpKey, GetString(features, ForceNodumpStringValue).AsNodumpFlag());
-            datHeader.SetFieldValue<PackingFlag>(Models.Metadata.Header.ForceNodumpKey, GetString(features, ForcePackingStringValue).AsPackingFlag());
-            datHeader.SetFieldValue<string?>(Models.Metadata.Header.HeaderKey, GetString(features, HeaderStringValue));
-            datHeader.SetFieldValue<string?>(Models.Metadata.Header.HomepageKey, GetString(features, HomepageStringValue));
-            datHeader.SetFieldValue<string?>(Models.Metadata.Header.NameKey, GetString(features, NameStringValue));
-            datHeader.SetFieldValue<string?>(Models.Metadata.Header.RootDirKey, GetString(features, RootStringValue));
-            datHeader.SetFieldValue<string?>(Models.Metadata.Header.TypeKey, GetBoolean(features, SuperdatValue) ? "SuperDAT" : null);
-            datHeader.SetFieldValue<string?>(Models.Metadata.Header.UrlKey, GetString(features, UrlStringValue));
-            datHeader.SetFieldValue<string?>(Models.Metadata.Header.VersionKey, GetString(features, VersionStringValue));
+            datHeader.SetFieldValue<MergingFlag>(Data.Models.Metadata.Header.ForceMergingKey, GetString(features, ForceMergingStringValue).AsMergingFlag());
+            datHeader.SetFieldValue<NodumpFlag>(Data.Models.Metadata.Header.ForceNodumpKey, GetString(features, ForceNodumpStringValue).AsNodumpFlag());
+            datHeader.SetFieldValue<PackingFlag>(Data.Models.Metadata.Header.ForceNodumpKey, GetString(features, ForcePackingStringValue).AsPackingFlag());
+            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.HeaderKey, GetString(features, HeaderStringValue));
+            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.HomepageKey, GetString(features, HomepageStringValue));
+            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, GetString(features, NameStringValue));
+            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.RootDirKey, GetString(features, RootStringValue));
+            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.TypeKey, GetBoolean(features, SuperdatValue) ? "SuperDAT" : null);
+            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.UrlKey, GetString(features, UrlStringValue));
+            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.VersionKey, GetString(features, VersionStringValue));
 
             bool deprecated = GetBoolean(features, DeprecatedValue);
             foreach (string ot in GetList(features, OutputTypeListValue))

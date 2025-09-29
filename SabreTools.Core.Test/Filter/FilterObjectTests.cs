@@ -1,6 +1,6 @@
 using System;
 using SabreTools.Core.Filter;
-using SabreTools.Models.Metadata;
+using SabreTools.Data.Models.Metadata;
 using Xunit;
 
 namespace SabreTools.Core.Test.Filter

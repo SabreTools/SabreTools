@@ -7,7 +7,7 @@ namespace SabreTools.DatItems.Formats
     /// Represents generic archive files to be included in a set
     /// </summary>
     [JsonObject("archive"), XmlRoot("archive")]
-    public sealed class Archive : DatItem<Models.Metadata.Archive>
+    public sealed class Archive : DatItem<Data.Models.Metadata.Archive>
     {
         #region Fields
 
@@ -87,9 +87,9 @@ namespace SabreTools.DatItems.Formats
 
         public Archive() : base() { }
 
-        public Archive(Models.Metadata.Archive item) : base(item) { }
+        public Archive(Data.Models.Metadata.Archive item) : base(item) { }
 
-        public Archive(Models.Metadata.Archive item, Machine machine, Source source) : this(item)
+        public Archive(Data.Models.Metadata.Archive item, Machine machine, Source source) : this(item)
         {
             SetFieldValue<Source?>(DatItem.SourceKey, source);
             CopyMachineInformation(machine);

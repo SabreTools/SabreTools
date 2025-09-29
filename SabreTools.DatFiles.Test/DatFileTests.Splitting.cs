@@ -19,27 +19,27 @@ namespace SabreTools.DatFiles.Test
 
             Machine childMachine = new Machine();
             childMachine.SetName("child");
-            childMachine.SetFieldValue<string?>(Models.Metadata.Machine.CloneOfKey, "parent");
-            childMachine.SetFieldValue<bool>(Models.Metadata.Machine.IsBiosKey, true);
+            childMachine.SetFieldValue<string?>(Data.Models.Metadata.Machine.CloneOfKey, "parent");
+            childMachine.SetFieldValue<bool>(Data.Models.Metadata.Machine.IsBiosKey, true);
 
             DatItem parentItem = new Rom();
             parentItem.SetName("parent_rom");
-            parentItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            parentItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "deadbeef");
+            parentItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            parentItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "deadbeef");
             parentItem.SetFieldValue<Machine>(DatItem.MachineKey, parentMachine);
             parentItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
             DatItem matchChildItem = new Rom();
             matchChildItem.SetName("match_child_rom");
-            matchChildItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            matchChildItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "deadbeef");
+            matchChildItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            matchChildItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "deadbeef");
             matchChildItem.SetFieldValue<Machine>(DatItem.MachineKey, childMachine);
             matchChildItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
             DatItem noMatchChildItem = new Rom();
             noMatchChildItem.SetName("no_match_child_rom");
-            noMatchChildItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            noMatchChildItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "beefdead");
+            noMatchChildItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            noMatchChildItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "beefdead");
             noMatchChildItem.SetFieldValue<Machine>(DatItem.MachineKey, childMachine);
             noMatchChildItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
@@ -64,27 +64,27 @@ namespace SabreTools.DatFiles.Test
 
             Machine childMachine = new Machine();
             childMachine.SetName("child");
-            childMachine.SetFieldValue<string?>(Models.Metadata.Machine.CloneOfKey, "parent");
-            childMachine.SetFieldValue<bool>(Models.Metadata.Machine.IsBiosKey, true);
+            childMachine.SetFieldValue<string?>(Data.Models.Metadata.Machine.CloneOfKey, "parent");
+            childMachine.SetFieldValue<bool>(Data.Models.Metadata.Machine.IsBiosKey, true);
 
             DatItem parentItem = new Rom();
             parentItem.SetName("parent_rom");
-            parentItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            parentItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "deadbeef");
+            parentItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            parentItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "deadbeef");
             parentItem.SetFieldValue<Machine>(DatItem.MachineKey, parentMachine);
             parentItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
             DatItem matchChildItem = new Rom();
             matchChildItem.SetName("match_child_rom");
-            matchChildItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            matchChildItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "deadbeef");
+            matchChildItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            matchChildItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "deadbeef");
             matchChildItem.SetFieldValue<Machine>(DatItem.MachineKey, childMachine);
             matchChildItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
             DatItem noMatchChildItem = new Rom();
             noMatchChildItem.SetName("no_match_child_rom");
-            noMatchChildItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            noMatchChildItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "beefdead");
+            noMatchChildItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            noMatchChildItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "beefdead");
             noMatchChildItem.SetFieldValue<Machine>(DatItem.MachineKey, childMachine);
             noMatchChildItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
@@ -109,27 +109,27 @@ namespace SabreTools.DatFiles.Test
 
             Machine childMachine = new Machine();
             childMachine.SetName("child");
-            childMachine.SetFieldValue<string?>(Models.Metadata.Machine.CloneOfKey, "parent");
-            childMachine.SetFieldValue<bool>(Models.Metadata.Machine.IsBiosKey, true);
+            childMachine.SetFieldValue<string?>(Data.Models.Metadata.Machine.CloneOfKey, "parent");
+            childMachine.SetFieldValue<bool>(Data.Models.Metadata.Machine.IsBiosKey, true);
 
             DatItem parentItem = new Rom();
             parentItem.SetName("parent_rom");
-            parentItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            parentItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "deadbeef");
+            parentItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            parentItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "deadbeef");
             parentItem.SetFieldValue<Machine>(DatItem.MachineKey, parentMachine);
             parentItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
             DatItem matchChildItem = new Rom();
             matchChildItem.SetName("match_child_rom");
-            matchChildItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            matchChildItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "deadbeef");
+            matchChildItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            matchChildItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "deadbeef");
             matchChildItem.SetFieldValue<Machine>(DatItem.MachineKey, childMachine);
             matchChildItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
             DatItem noMatchChildItem = new Rom();
             noMatchChildItem.SetName("no_match_child_rom");
-            noMatchChildItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            noMatchChildItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "beefdead");
+            noMatchChildItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            noMatchChildItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "beefdead");
             noMatchChildItem.SetFieldValue<Machine>(DatItem.MachineKey, childMachine);
             noMatchChildItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
@@ -157,27 +157,27 @@ namespace SabreTools.DatFiles.Test
 
             Machine childMachine = new Machine();
             childMachine.SetName("child");
-            childMachine.SetFieldValue<string?>(Models.Metadata.Machine.CloneOfKey, "parent");
-            childMachine.SetFieldValue<bool>(Models.Metadata.Machine.IsBiosKey, true);
+            childMachine.SetFieldValue<string?>(Data.Models.Metadata.Machine.CloneOfKey, "parent");
+            childMachine.SetFieldValue<bool>(Data.Models.Metadata.Machine.IsBiosKey, true);
 
             DatItem parentItem = new Rom();
             parentItem.SetName("parent_rom");
-            parentItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            parentItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "deadbeef");
+            parentItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            parentItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "deadbeef");
             parentItem.SetFieldValue<Machine>(DatItem.MachineKey, parentMachine);
             parentItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
             DatItem matchChildItem = new Rom();
             matchChildItem.SetName("match_child_rom");
-            matchChildItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            matchChildItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "deadbeef");
+            matchChildItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            matchChildItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "deadbeef");
             matchChildItem.SetFieldValue<Machine>(DatItem.MachineKey, childMachine);
             matchChildItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
             DatItem noMatchChildItem = new Rom();
             noMatchChildItem.SetName("no_match_child_rom");
-            noMatchChildItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            noMatchChildItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "beefdead");
+            noMatchChildItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            noMatchChildItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "beefdead");
             noMatchChildItem.SetFieldValue<Machine>(DatItem.MachineKey, childMachine);
             noMatchChildItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
@@ -209,27 +209,27 @@ namespace SabreTools.DatFiles.Test
 
             Machine childMachine = new Machine();
             childMachine.SetName("child");
-            childMachine.SetFieldValue<string?>(Models.Metadata.Machine.CloneOfKey, "parent");
-            childMachine.SetFieldValue<bool>(Models.Metadata.Machine.IsBiosKey, true);
+            childMachine.SetFieldValue<string?>(Data.Models.Metadata.Machine.CloneOfKey, "parent");
+            childMachine.SetFieldValue<bool>(Data.Models.Metadata.Machine.IsBiosKey, true);
 
             DatItem parentItem = new Rom();
             parentItem.SetName("parent_rom");
-            parentItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            parentItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "deadbeef");
+            parentItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            parentItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "deadbeef");
             parentItem.SetFieldValue<Machine>(DatItem.MachineKey, parentMachine);
             parentItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
             DatItem matchChildItem = new Rom();
             matchChildItem.SetName("match_child_rom");
-            matchChildItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            matchChildItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "deadbeef");
+            matchChildItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            matchChildItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "deadbeef");
             matchChildItem.SetFieldValue<Machine>(DatItem.MachineKey, childMachine);
             matchChildItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
             DatItem noMatchChildItem = new Rom();
             noMatchChildItem.SetName("no_match_child_rom");
-            noMatchChildItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            noMatchChildItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "beefdead");
+            noMatchChildItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            noMatchChildItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "beefdead");
             noMatchChildItem.SetFieldValue<Machine>(DatItem.MachineKey, childMachine);
             noMatchChildItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
@@ -254,27 +254,27 @@ namespace SabreTools.DatFiles.Test
 
             Machine childMachine = new Machine();
             childMachine.SetName("child");
-            childMachine.SetFieldValue<string?>(Models.Metadata.Machine.CloneOfKey, "parent");
-            childMachine.SetFieldValue<bool>(Models.Metadata.Machine.IsBiosKey, true);
+            childMachine.SetFieldValue<string?>(Data.Models.Metadata.Machine.CloneOfKey, "parent");
+            childMachine.SetFieldValue<bool>(Data.Models.Metadata.Machine.IsBiosKey, true);
 
             DatItem parentItem = new Rom();
             parentItem.SetName("parent_rom");
-            parentItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            parentItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "deadbeef");
+            parentItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            parentItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "deadbeef");
             parentItem.SetFieldValue<Machine>(DatItem.MachineKey, parentMachine);
             parentItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
             DatItem matchChildItem = new Rom();
             matchChildItem.SetName("match_child_rom");
-            matchChildItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            matchChildItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "deadbeef");
+            matchChildItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            matchChildItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "deadbeef");
             matchChildItem.SetFieldValue<Machine>(DatItem.MachineKey, childMachine);
             matchChildItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
             DatItem noMatchChildItem = new Rom();
             noMatchChildItem.SetName("no_match_child_rom");
-            noMatchChildItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            noMatchChildItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "beefdead");
+            noMatchChildItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            noMatchChildItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "beefdead");
             noMatchChildItem.SetFieldValue<Machine>(DatItem.MachineKey, childMachine);
             noMatchChildItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
@@ -307,7 +307,7 @@ namespace SabreTools.DatFiles.Test
 
             Machine deviceMachine = new Machine();
             deviceMachine.SetName("device");
-            deviceMachine.SetFieldValue<bool>(Models.Metadata.Machine.IsDeviceKey, true);
+            deviceMachine.SetFieldValue<bool>(Data.Models.Metadata.Machine.IsDeviceKey, true);
 
             Machine slotOptionMachine = new Machine();
             slotOptionMachine.SetName("slotoption");
@@ -327,8 +327,8 @@ namespace SabreTools.DatFiles.Test
 
             DatItem datItem = new Rom();
             datItem.SetName("rom");
-            datItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            datItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "deadbeef");
+            datItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            datItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "deadbeef");
             datItem.SetFieldValue<Machine>(DatItem.MachineKey, itemMachine);
             datItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
@@ -366,7 +366,7 @@ namespace SabreTools.DatFiles.Test
 
             Machine deviceMachine = new Machine();
             deviceMachine.SetName("device");
-            deviceMachine.SetFieldValue<bool>(Models.Metadata.Machine.IsDeviceKey, true);
+            deviceMachine.SetFieldValue<bool>(Data.Models.Metadata.Machine.IsDeviceKey, true);
 
             Machine slotOptionMachine = new Machine();
             slotOptionMachine.SetName("slotoption");
@@ -382,8 +382,8 @@ namespace SabreTools.DatFiles.Test
 
             DatItem datItem = new Rom();
             datItem.SetName("rom");
-            datItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            datItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "deadbeef");
+            datItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            datItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "deadbeef");
 
             DatItem deviceRef = new DeviceRef();
             deviceRef.SetName("device");
@@ -422,27 +422,27 @@ namespace SabreTools.DatFiles.Test
 
             Machine childMachine = new Machine();
             childMachine.SetName("child");
-            childMachine.SetFieldValue<string?>(Models.Metadata.Machine.RomOfKey, "parent");
-            childMachine.SetFieldValue<bool>(Models.Metadata.Machine.IsBiosKey, true);
+            childMachine.SetFieldValue<string?>(Data.Models.Metadata.Machine.RomOfKey, "parent");
+            childMachine.SetFieldValue<bool>(Data.Models.Metadata.Machine.IsBiosKey, true);
 
             DatItem parentItem = new Rom();
             parentItem.SetName("parent_rom");
-            parentItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            parentItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "deadbeef");
+            parentItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            parentItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "deadbeef");
             parentItem.SetFieldValue<Machine>(DatItem.MachineKey, parentMachine);
             parentItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
             DatItem matchChildItem = new Rom();
             matchChildItem.SetName("match_child_rom");
-            matchChildItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            matchChildItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "deadbeef");
+            matchChildItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            matchChildItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "deadbeef");
             matchChildItem.SetFieldValue<Machine>(DatItem.MachineKey, childMachine);
             matchChildItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
             DatItem noMatchChildItem = new Rom();
             noMatchChildItem.SetName("no_match_child_rom");
-            noMatchChildItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            noMatchChildItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "beefdead");
+            noMatchChildItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            noMatchChildItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "beefdead");
             noMatchChildItem.SetFieldValue<Machine>(DatItem.MachineKey, childMachine);
             noMatchChildItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
@@ -467,27 +467,27 @@ namespace SabreTools.DatFiles.Test
 
             Machine childMachine = new Machine();
             childMachine.SetName("child");
-            childMachine.SetFieldValue<string?>(Models.Metadata.Machine.RomOfKey, "parent");
-            childMachine.SetFieldValue<bool>(Models.Metadata.Machine.IsBiosKey, true);
+            childMachine.SetFieldValue<string?>(Data.Models.Metadata.Machine.RomOfKey, "parent");
+            childMachine.SetFieldValue<bool>(Data.Models.Metadata.Machine.IsBiosKey, true);
 
             DatItem parentItem = new Rom();
             parentItem.SetName("parent_rom");
-            parentItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            parentItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "deadbeef");
+            parentItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            parentItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "deadbeef");
             parentItem.SetFieldValue<Machine>(DatItem.MachineKey, parentMachine);
             parentItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
             DatItem matchChildItem = new Rom();
             matchChildItem.SetName("match_child_rom");
-            matchChildItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            matchChildItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "deadbeef");
+            matchChildItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            matchChildItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "deadbeef");
             matchChildItem.SetFieldValue<Machine>(DatItem.MachineKey, childMachine);
             matchChildItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
             DatItem noMatchChildItem = new Rom();
             noMatchChildItem.SetName("no_match_child_rom");
-            noMatchChildItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            noMatchChildItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "beefdead");
+            noMatchChildItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            noMatchChildItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "beefdead");
             noMatchChildItem.SetFieldValue<Machine>(DatItem.MachineKey, childMachine);
             noMatchChildItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
@@ -516,11 +516,11 @@ namespace SabreTools.DatFiles.Test
 
             Machine biosMachine = new Machine();
             biosMachine.SetName("bios");
-            biosMachine.SetFieldValue<bool>(Models.Metadata.Machine.IsBiosKey, true);
+            biosMachine.SetFieldValue<bool>(Data.Models.Metadata.Machine.IsBiosKey, true);
 
             Machine deviceMachine = new Machine();
             deviceMachine.SetName("device");
-            deviceMachine.SetFieldValue<bool>(Models.Metadata.Machine.IsDeviceKey, true);
+            deviceMachine.SetFieldValue<bool>(Data.Models.Metadata.Machine.IsDeviceKey, true);
 
             DatItem biosItem = new Rom();
             biosItem.SetFieldValue<Machine>(DatItem.MachineKey, biosMachine);
@@ -548,11 +548,11 @@ namespace SabreTools.DatFiles.Test
 
             Machine biosMachine = new Machine();
             biosMachine.SetName("bios");
-            biosMachine.SetFieldValue<bool>(Models.Metadata.Machine.IsBiosKey, true);
+            biosMachine.SetFieldValue<bool>(Data.Models.Metadata.Machine.IsBiosKey, true);
 
             Machine deviceMachine = new Machine();
             deviceMachine.SetName("device");
-            deviceMachine.SetFieldValue<bool>(Models.Metadata.Machine.IsDeviceKey, true);
+            deviceMachine.SetFieldValue<bool>(Data.Models.Metadata.Machine.IsDeviceKey, true);
 
             DatItem biosItem = new Rom();
             DatItem deviceItem = new Rom();
@@ -581,30 +581,30 @@ namespace SabreTools.DatFiles.Test
 
             Machine parentMachine = new Machine();
             parentMachine.SetName("parent");
-            parentMachine.SetFieldValue<string?>(Models.Metadata.Machine.RomOfKey, "romof");
+            parentMachine.SetFieldValue<string?>(Data.Models.Metadata.Machine.RomOfKey, "romof");
 
             Machine childMachine = new Machine();
             childMachine.SetName("child");
-            childMachine.SetFieldValue<string?>(Models.Metadata.Machine.CloneOfKey, "parent");
+            childMachine.SetFieldValue<string?>(Data.Models.Metadata.Machine.CloneOfKey, "parent");
 
             DatItem parentItem = new Rom();
             parentItem.SetName("parent_rom");
-            parentItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            parentItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "deadbeef");
+            parentItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            parentItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "deadbeef");
             parentItem.SetFieldValue<Machine>(DatItem.MachineKey, parentMachine);
             parentItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
             DatItem matchChildItem = new Rom();
             matchChildItem.SetName("match_child_rom");
-            matchChildItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            matchChildItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "deadbeef");
+            matchChildItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            matchChildItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "deadbeef");
             matchChildItem.SetFieldValue<Machine>(DatItem.MachineKey, childMachine);
             matchChildItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
             DatItem noMatchChildItem = new Rom();
             noMatchChildItem.SetName("no_match_child_rom");
-            noMatchChildItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            noMatchChildItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "beefdead");
+            noMatchChildItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            noMatchChildItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "beefdead");
             noMatchChildItem.SetFieldValue<Machine>(DatItem.MachineKey, childMachine);
             noMatchChildItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
@@ -621,7 +621,7 @@ namespace SabreTools.DatFiles.Test
             Machine? actualMachine = actual.GetMachine();
             Assert.NotNull(actualMachine);
             Assert.Equal("child", actualMachine.GetName());
-            Assert.Equal("romof", actualMachine.GetStringFieldValue(Models.Metadata.Machine.RomOfKey));
+            Assert.Equal("romof", actualMachine.GetStringFieldValue(Data.Models.Metadata.Machine.RomOfKey));
         }
 
         [Fact]
@@ -631,30 +631,30 @@ namespace SabreTools.DatFiles.Test
 
             Machine parentMachine = new Machine();
             parentMachine.SetName("parent");
-            parentMachine.SetFieldValue<string?>(Models.Metadata.Machine.RomOfKey, "romof");
+            parentMachine.SetFieldValue<string?>(Data.Models.Metadata.Machine.RomOfKey, "romof");
 
             Machine childMachine = new Machine();
             childMachine.SetName("child");
-            childMachine.SetFieldValue<string?>(Models.Metadata.Machine.CloneOfKey, "parent");
+            childMachine.SetFieldValue<string?>(Data.Models.Metadata.Machine.CloneOfKey, "parent");
 
             DatItem parentItem = new Rom();
             parentItem.SetName("parent_rom");
-            parentItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            parentItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "deadbeef");
+            parentItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            parentItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "deadbeef");
             parentItem.SetFieldValue<Machine>(DatItem.MachineKey, parentMachine);
             parentItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
             DatItem matchChildItem = new Rom();
             matchChildItem.SetName("match_child_rom");
-            matchChildItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            matchChildItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "deadbeef");
+            matchChildItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            matchChildItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "deadbeef");
             matchChildItem.SetFieldValue<Machine>(DatItem.MachineKey, childMachine);
             matchChildItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
             DatItem noMatchChildItem = new Rom();
             noMatchChildItem.SetName("no_match_child_rom");
-            noMatchChildItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            noMatchChildItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "beefdead");
+            noMatchChildItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            noMatchChildItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "beefdead");
             noMatchChildItem.SetFieldValue<Machine>(DatItem.MachineKey, childMachine);
             noMatchChildItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
@@ -674,7 +674,7 @@ namespace SabreTools.DatFiles.Test
             Machine? actualMachine = datFile.GetMachineForItemDB(actual).Value;
             Assert.NotNull(actualMachine);
             Assert.Equal("child", actualMachine.GetName());
-            Assert.Equal("romof", actualMachine.GetStringFieldValue(Models.Metadata.Machine.RomOfKey));
+            Assert.Equal("romof", actualMachine.GetStringFieldValue(Data.Models.Metadata.Machine.RomOfKey));
         }
 
         #endregion
@@ -691,27 +691,27 @@ namespace SabreTools.DatFiles.Test
 
             Machine childMachine = new Machine();
             childMachine.SetName("child");
-            childMachine.SetFieldValue<string?>(Models.Metadata.Machine.RomOfKey, "parent");
-            childMachine.SetFieldValue<bool>(Models.Metadata.Machine.IsBiosKey, true);
+            childMachine.SetFieldValue<string?>(Data.Models.Metadata.Machine.RomOfKey, "parent");
+            childMachine.SetFieldValue<bool>(Data.Models.Metadata.Machine.IsBiosKey, true);
 
             DatItem parentItem = new Rom();
             parentItem.SetName("parent_rom");
-            parentItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            parentItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "deadbeef");
+            parentItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            parentItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "deadbeef");
             parentItem.SetFieldValue<Machine>(DatItem.MachineKey, parentMachine);
             parentItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
             DatItem matchChildItem = new Rom();
             matchChildItem.SetName("match_child_rom");
-            matchChildItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            matchChildItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "deadbeef");
+            matchChildItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            matchChildItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "deadbeef");
             matchChildItem.SetFieldValue<Machine>(DatItem.MachineKey, childMachine);
             matchChildItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
             DatItem noMatchChildItem = new Rom();
             noMatchChildItem.SetName("no_match_child_rom");
-            noMatchChildItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            noMatchChildItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "beefdead");
+            noMatchChildItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            noMatchChildItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "beefdead");
             noMatchChildItem.SetFieldValue<Machine>(DatItem.MachineKey, childMachine);
             noMatchChildItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
@@ -740,27 +740,27 @@ namespace SabreTools.DatFiles.Test
 
             Machine childMachine = new Machine();
             childMachine.SetName("child");
-            childMachine.SetFieldValue<string?>(Models.Metadata.Machine.RomOfKey, "parent");
-            childMachine.SetFieldValue<bool>(Models.Metadata.Machine.IsBiosKey, true);
+            childMachine.SetFieldValue<string?>(Data.Models.Metadata.Machine.RomOfKey, "parent");
+            childMachine.SetFieldValue<bool>(Data.Models.Metadata.Machine.IsBiosKey, true);
 
             DatItem parentItem = new Rom();
             parentItem.SetName("parent_rom");
-            parentItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            parentItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "deadbeef");
+            parentItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            parentItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "deadbeef");
             parentItem.SetFieldValue<Machine>(DatItem.MachineKey, parentMachine);
             parentItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
             DatItem matchChildItem = new Rom();
             matchChildItem.SetName("match_child_rom");
-            matchChildItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            matchChildItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "deadbeef");
+            matchChildItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            matchChildItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "deadbeef");
             matchChildItem.SetFieldValue<Machine>(DatItem.MachineKey, childMachine);
             matchChildItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
             DatItem noMatchChildItem = new Rom();
             noMatchChildItem.SetName("no_match_child_rom");
-            noMatchChildItem.SetFieldValue<long>(Models.Metadata.Rom.SizeKey, 12345);
-            noMatchChildItem.SetFieldValue<string?>(Models.Metadata.Rom.CRCKey, "beefdead");
+            noMatchChildItem.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, 12345);
+            noMatchChildItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "beefdead");
             noMatchChildItem.SetFieldValue<Machine>(DatItem.MachineKey, childMachine);
             noMatchChildItem.SetFieldValue<Source>(DatItem.SourceKey, source);
 
@@ -793,9 +793,9 @@ namespace SabreTools.DatFiles.Test
 
             Machine machine = new Machine();
             machine.SetName("machine");
-            machine.SetFieldValue<string?>(Models.Metadata.Machine.CloneOfKey, "XXXXXX");
-            machine.SetFieldValue<string?>(Models.Metadata.Machine.RomOfKey, "XXXXXX");
-            machine.SetFieldValue<string?>(Models.Metadata.Machine.SampleOfKey, "XXXXXX");
+            machine.SetFieldValue<string?>(Data.Models.Metadata.Machine.CloneOfKey, "XXXXXX");
+            machine.SetFieldValue<string?>(Data.Models.Metadata.Machine.RomOfKey, "XXXXXX");
+            machine.SetFieldValue<string?>(Data.Models.Metadata.Machine.SampleOfKey, "XXXXXX");
 
             DatItem datItem = new Rom();
             datItem.SetFieldValue<Machine>(DatItem.MachineKey, machine);
@@ -810,9 +810,9 @@ namespace SabreTools.DatFiles.Test
             DatItem actualItem = Assert.Single(datFile.GetItemsForBucket("machine"));
             Machine? actual = actualItem.GetMachine();
             Assert.NotNull(actual);
-            Assert.Null(actual.GetStringFieldValue(Models.Metadata.Machine.CloneOfKey));
-            Assert.Null(actual.GetStringFieldValue(Models.Metadata.Machine.RomOfKey));
-            Assert.Null(actual.GetStringFieldValue(Models.Metadata.Machine.SampleOfKey));
+            Assert.Null(actual.GetStringFieldValue(Data.Models.Metadata.Machine.CloneOfKey));
+            Assert.Null(actual.GetStringFieldValue(Data.Models.Metadata.Machine.RomOfKey));
+            Assert.Null(actual.GetStringFieldValue(Data.Models.Metadata.Machine.SampleOfKey));
         }
 
         [Fact]
@@ -822,9 +822,9 @@ namespace SabreTools.DatFiles.Test
 
             Machine machine = new Machine();
             machine.SetName("machine");
-            machine.SetFieldValue<string?>(Models.Metadata.Machine.CloneOfKey, "XXXXXX");
-            machine.SetFieldValue<string?>(Models.Metadata.Machine.RomOfKey, "XXXXXX");
-            machine.SetFieldValue<string?>(Models.Metadata.Machine.SampleOfKey, "XXXXXX");
+            machine.SetFieldValue<string?>(Data.Models.Metadata.Machine.CloneOfKey, "XXXXXX");
+            machine.SetFieldValue<string?>(Data.Models.Metadata.Machine.RomOfKey, "XXXXXX");
+            machine.SetFieldValue<string?>(Data.Models.Metadata.Machine.SampleOfKey, "XXXXXX");
 
             DatItem datItem = new Rom();
 
@@ -837,9 +837,9 @@ namespace SabreTools.DatFiles.Test
             datFile.RemoveMachineRelationshipTags();
 
             Machine actual = Assert.Single(datFile.GetMachinesDB()).Value;
-            Assert.Null(actual.GetStringFieldValue(Models.Metadata.Machine.CloneOfKey));
-            Assert.Null(actual.GetStringFieldValue(Models.Metadata.Machine.RomOfKey));
-            Assert.Null(actual.GetStringFieldValue(Models.Metadata.Machine.SampleOfKey));
+            Assert.Null(actual.GetStringFieldValue(Data.Models.Metadata.Machine.CloneOfKey));
+            Assert.Null(actual.GetStringFieldValue(Data.Models.Metadata.Machine.RomOfKey));
+            Assert.Null(actual.GetStringFieldValue(Data.Models.Metadata.Machine.SampleOfKey));
         }
 
         #endregion

@@ -7,7 +7,7 @@ namespace SabreTools.DatItems.Formats
     /// Represents a (usually WAV-formatted) sample to be included for use in the set
     /// </summary>
     [JsonObject("sample"), XmlRoot("sample")]
-    public class Sample : DatItem<Models.Metadata.Sample>
+    public class Sample : DatItem<Data.Models.Metadata.Sample>
     {
         #region Fields
 
@@ -20,9 +20,9 @@ namespace SabreTools.DatItems.Formats
 
         public Sample() : base() { }
 
-        public Sample(Models.Metadata.Sample item) : base(item) { }
+        public Sample(Data.Models.Metadata.Sample item) : base(item) { }
 
-        public Sample(Models.Metadata.Sample item, Machine machine, Source source) : this(item)
+        public Sample(Data.Models.Metadata.Sample item, Machine machine, Source source) : this(item)
         {
             SetFieldValue<Source?>(DatItem.SourceKey, source);
             CopyMachineInformation(machine);

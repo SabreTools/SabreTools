@@ -7,7 +7,7 @@ namespace SabreTools.DatItems.Formats
     /// Represents a condition on a machine or other item
     /// </summary>
     [JsonObject("condition"), XmlRoot("condition")]
-    public sealed class Condition : DatItem<Models.Metadata.Condition>
+    public sealed class Condition : DatItem<Data.Models.Metadata.Condition>
     {
         #region Fields
 
@@ -20,14 +20,14 @@ namespace SabreTools.DatItems.Formats
 
         public Condition() : base() { }
 
-        public Condition(Models.Metadata.Condition item) : base(item)
+        public Condition(Data.Models.Metadata.Condition item) : base(item)
         {
             // Process flag values
-            if (GetStringFieldValue(Models.Metadata.Condition.RelationKey) != null)
-                SetFieldValue<string?>(Models.Metadata.Condition.RelationKey, GetStringFieldValue(Models.Metadata.Condition.RelationKey).AsRelation().AsStringValue());
+            if (GetStringFieldValue(Data.Models.Metadata.Condition.RelationKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.Condition.RelationKey, GetStringFieldValue(Data.Models.Metadata.Condition.RelationKey).AsRelation().AsStringValue());
         }
 
-        public Condition(Models.Metadata.Condition item, Machine machine, Source source) : this(item)
+        public Condition(Data.Models.Metadata.Condition item, Machine machine, Source source) : this(item)
         {
             SetFieldValue<Source?>(DatItem.SourceKey, source);
             CopyMachineInformation(machine);

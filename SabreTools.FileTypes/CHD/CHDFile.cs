@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using SabreTools.Models.CHD;
+using SabreTools.Data.Models.CHD;
 
 namespace SabreTools.FileTypes.CHD
 {
@@ -48,7 +48,7 @@ namespace SabreTools.FileTypes.CHD
         {
             try
             {
-                var header = new Serialization.Deserializers.CHD().Deserialize(stream);
+                var header = new Serialization.Readers.CHD().Deserialize(stream);
                 return header switch
                 {
                     HeaderV1 v1 => new CHDFile

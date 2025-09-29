@@ -9,7 +9,7 @@ namespace SabreTools.DatFiles.Formats
     /// <summary>
     /// Represents a value-separated DAT
     /// </summary>
-    public abstract class SeparatedValue : SerializableDatFile<Models.SeparatedValue.MetadataFile, Serialization.Deserializers.SeparatedValue, Serialization.Serializers.SeparatedValue, Serialization.CrossModel.SeparatedValue>
+    public abstract class SeparatedValue : SerializableDatFile<Data.Models.SeparatedValue.MetadataFile, Serialization.Readers.SeparatedValue, Serialization.Writers.SeparatedValue, Serialization.CrossModel.SeparatedValue>
     {
         #region Fields
 
@@ -47,7 +47,7 @@ namespace SabreTools.DatFiles.Formats
             try
             {
                 // Deserialize the input file
-                var metadataFile = new Serialization.Deserializers.SeparatedValue().Deserialize(filename, _delim);
+                var metadataFile = new Serialization.Readers.SeparatedValue().Deserialize(filename, _delim);
                 var metadata = new Serialization.CrossModel.SeparatedValue().Serialize(metadataFile);
 
                 // Convert to the internal format
@@ -67,40 +67,40 @@ namespace SabreTools.DatFiles.Formats
 
             // Check item name
             if (string.IsNullOrEmpty(datItem.GetName()))
-                missingFields.Add(Models.Metadata.Rom.NameKey);
+                missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
             switch (datItem)
             {
                 case Disk disk:
-                    if (string.IsNullOrEmpty(disk.GetStringFieldValue(Models.Metadata.Disk.MD5Key))
-                        && string.IsNullOrEmpty(disk.GetStringFieldValue(Models.Metadata.Disk.SHA1Key)))
+                    if (string.IsNullOrEmpty(disk.GetStringFieldValue(Data.Models.Metadata.Disk.MD5Key))
+                        && string.IsNullOrEmpty(disk.GetStringFieldValue(Data.Models.Metadata.Disk.SHA1Key)))
                     {
-                        missingFields.Add(Models.Metadata.Disk.SHA1Key);
+                        missingFields.Add(Data.Models.Metadata.Disk.SHA1Key);
                     }
                     break;
 
                 case Media media:
-                    if (string.IsNullOrEmpty(media.GetStringFieldValue(Models.Metadata.Media.MD5Key))
-                        && string.IsNullOrEmpty(media.GetStringFieldValue(Models.Metadata.Media.SHA1Key))
-                        && string.IsNullOrEmpty(media.GetStringFieldValue(Models.Metadata.Media.SHA256Key))
-                        && string.IsNullOrEmpty(media.GetStringFieldValue(Models.Metadata.Media.SpamSumKey)))
+                    if (string.IsNullOrEmpty(media.GetStringFieldValue(Data.Models.Metadata.Media.MD5Key))
+                        && string.IsNullOrEmpty(media.GetStringFieldValue(Data.Models.Metadata.Media.SHA1Key))
+                        && string.IsNullOrEmpty(media.GetStringFieldValue(Data.Models.Metadata.Media.SHA256Key))
+                        && string.IsNullOrEmpty(media.GetStringFieldValue(Data.Models.Metadata.Media.SpamSumKey)))
                     {
-                        missingFields.Add(Models.Metadata.Media.SHA1Key);
+                        missingFields.Add(Data.Models.Metadata.Media.SHA1Key);
                     }
                     break;
 
                 case Rom rom:
-                    if (rom.GetInt64FieldValue(Models.Metadata.Rom.SizeKey) == null || rom.GetInt64FieldValue(Models.Metadata.Rom.SizeKey) < 0)
-                        missingFields.Add(Models.Metadata.Rom.SizeKey);
-                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.CRCKey))
-                        && string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.MD5Key))
-                        && string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.SHA1Key))
-                        && string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.SHA256Key))
-                        && string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.SHA384Key))
-                        && string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.SHA512Key))
-                        && string.IsNullOrEmpty(rom.GetStringFieldValue(Models.Metadata.Rom.SpamSumKey)))
+                    if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) == null || rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) < 0)
+                        missingFields.Add(Data.Models.Metadata.Rom.SizeKey);
+                    if (string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.CRCKey))
+                        && string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.MD5Key))
+                        && string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA1Key))
+                        && string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA256Key))
+                        && string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA384Key))
+                        && string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA512Key))
+                        && string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.SpamSumKey)))
                     {
-                        missingFields.Add(Models.Metadata.Rom.SHA1Key);
+                        missingFields.Add(Data.Models.Metadata.Rom.SHA1Key);
                     }
                     break;
             }
@@ -118,7 +118,7 @@ namespace SabreTools.DatFiles.Formats
                 // Serialize the input file
                 var metadata = ConvertToMetadata(ignoreblanks);
                 var metadataFile = new Serialization.CrossModel.SeparatedValue().Deserialize(metadata);
-                if (!Serialization.Serializers.SeparatedValue.SerializeFile(metadataFile, outfile, _delim))
+                if (!new Serialization.Writers.SeparatedValue().SerializeFile(metadataFile, outfile, _delim, longHeader: false))
                 {
                     _logger.Warning($"File '{outfile}' could not be written! See the log for more details.");
                     return false;

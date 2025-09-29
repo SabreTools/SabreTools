@@ -101,8 +101,8 @@ namespace SabreTools.DatTools
 
             // Set fixdat headers in case of writing out
             datFile.Header.SetFieldValue<string?>(DatHeader.FileNameKey, $"fixDAT_{datFile.Header.GetStringFieldValue(DatHeader.FileNameKey)}");
-            datFile.Header.SetFieldValue<string?>(Models.Metadata.Header.NameKey, $"fixDAT_{datFile.Header.GetStringFieldValue(Models.Metadata.Header.NameKey)}");
-            datFile.Header.SetFieldValue<string?>(Models.Metadata.Header.DescriptionKey, $"fixDAT_{datFile.Header.GetStringFieldValue(Models.Metadata.Header.DescriptionKey)}");
+            datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, $"fixDAT_{datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey)}");
+            datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, $"fixDAT_{datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)}");
             datFile.ClearMarked();
 
             return success;
@@ -186,8 +186,8 @@ namespace SabreTools.DatTools
 
             // Set fixdat headers in case of writing out
             datFile.Header.SetFieldValue<string?>(DatHeader.FileNameKey, $"fixDAT_{datFile.Header.GetStringFieldValue(DatHeader.FileNameKey)}");
-            datFile.Header.SetFieldValue<string?>(Models.Metadata.Header.NameKey, $"fixDAT_{datFile.Header.GetStringFieldValue(Models.Metadata.Header.NameKey)}");
-            datFile.Header.SetFieldValue<string?>(Models.Metadata.Header.DescriptionKey, $"fixDAT_{datFile.Header.GetStringFieldValue(Models.Metadata.Header.DescriptionKey)}");
+            datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, $"fixDAT_{datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey)}");
+            datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, $"fixDAT_{datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)}");
             datFile.ClearMarked();
 
             return success;
@@ -237,8 +237,8 @@ namespace SabreTools.DatTools
 
             // Set fixdat headers in case of writing out
             datFile.Header.SetFieldValue<string?>(DatHeader.FileNameKey, $"fixDAT_{datFile.Header.GetStringFieldValue(DatHeader.FileNameKey)}");
-            datFile.Header.SetFieldValue<string?>(Models.Metadata.Header.NameKey, $"fixDAT_{datFile.Header.GetStringFieldValue(Models.Metadata.Header.NameKey)}");
-            datFile.Header.SetFieldValue<string?>(Models.Metadata.Header.DescriptionKey, $"fixDAT_{datFile.Header.GetStringFieldValue(Models.Metadata.Header.DescriptionKey)}");
+            datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, $"fixDAT_{datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey)}");
+            datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, $"fixDAT_{datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)}");
             datFile.ClearMarked();
 
             return success;
@@ -291,8 +291,8 @@ namespace SabreTools.DatTools
 
             // Set fixdat headers in case of writing out
             datFile.Header.SetFieldValue<string?>(DatHeader.FileNameKey, $"fixDAT_{datFile.Header.GetStringFieldValue(DatHeader.FileNameKey)}");
-            datFile.Header.SetFieldValue<string?>(Models.Metadata.Header.NameKey, $"fixDAT_{datFile.Header.GetStringFieldValue(Models.Metadata.Header.NameKey)}");
-            datFile.Header.SetFieldValue<string?>(Models.Metadata.Header.DescriptionKey, $"fixDAT_{datFile.Header.GetStringFieldValue(Models.Metadata.Header.DescriptionKey)}");
+            datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, $"fixDAT_{datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey)}");
+            datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, $"fixDAT_{datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)}");
             datFile.ClearMarked();
 
             return success;

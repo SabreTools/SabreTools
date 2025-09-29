@@ -10,7 +10,7 @@ namespace SabreTools.DatItems.Formats
     /// Represents a single device on the machine
     /// </summary>
     [JsonObject("device"), XmlRoot("device")]
-    public sealed class Device : DatItem<Models.Metadata.Device>
+    public sealed class Device : DatItem<Data.Models.Metadata.Device>
     {
         #region Fields
 
@@ -22,7 +22,7 @@ namespace SabreTools.DatItems.Formats
         {
             get
             {
-                var instances = GetFieldValue<Instance[]?>(Models.Metadata.Device.InstanceKey);
+                var instances = GetFieldValue<Instance[]?>(Data.Models.Metadata.Device.InstanceKey);
                 return instances != null && instances.Length > 0;
             }
         }
@@ -32,7 +32,7 @@ namespace SabreTools.DatItems.Formats
         {
             get
             {
-                var extensions = GetFieldValue<Extension[]?>(Models.Metadata.Device.ExtensionKey);
+                var extensions = GetFieldValue<Extension[]?>(Data.Models.Metadata.Device.ExtensionKey);
                 return extensions != null && extensions.Length > 0;
             }
         }
@@ -43,28 +43,28 @@ namespace SabreTools.DatItems.Formats
 
         public Device() : base() { }
 
-        public Device(Models.Metadata.Device item) : base(item)
+        public Device(Data.Models.Metadata.Device item) : base(item)
         {
             // Process flag values
-            if (GetBoolFieldValue(Models.Metadata.Device.MandatoryKey) != null)
-                SetFieldValue<string?>(Models.Metadata.Device.MandatoryKey, GetBoolFieldValue(Models.Metadata.Device.MandatoryKey).FromYesNo());
-            if (GetStringFieldValue(Models.Metadata.Device.DeviceTypeKey) != null)
-                SetFieldValue<string?>(Models.Metadata.Device.DeviceTypeKey, GetStringFieldValue(Models.Metadata.Device.DeviceTypeKey).AsDeviceType().AsStringValue());
+            if (GetBoolFieldValue(Data.Models.Metadata.Device.MandatoryKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.Device.MandatoryKey, GetBoolFieldValue(Data.Models.Metadata.Device.MandatoryKey).FromYesNo());
+            if (GetStringFieldValue(Data.Models.Metadata.Device.DeviceTypeKey) != null)
+                SetFieldValue<string?>(Data.Models.Metadata.Device.DeviceTypeKey, GetStringFieldValue(Data.Models.Metadata.Device.DeviceTypeKey).AsDeviceType().AsStringValue());
 
             // Handle subitems
-            var instance = item.Read<Models.Metadata.Instance>(Models.Metadata.Device.InstanceKey);
+            var instance = item.Read<Data.Models.Metadata.Instance>(Data.Models.Metadata.Device.InstanceKey);
             if (instance != null)
-                SetFieldValue<Instance?>(Models.Metadata.Device.InstanceKey, new Instance(instance));
+                SetFieldValue<Instance?>(Data.Models.Metadata.Device.InstanceKey, new Instance(instance));
 
-            var extensions = item.ReadItemArray<Models.Metadata.Extension>(Models.Metadata.Device.ExtensionKey);
+            var extensions = item.ReadItemArray<Data.Models.Metadata.Extension>(Data.Models.Metadata.Device.ExtensionKey);
             if (extensions != null)
             {
                 Extension[] extensionItems = Array.ConvertAll(extensions, extension => new Extension(extension));
-                SetFieldValue<Extension[]?>(Models.Metadata.Device.ExtensionKey, extensionItems);
+                SetFieldValue<Extension[]?>(Data.Models.Metadata.Device.ExtensionKey, extensionItems);
             }
         }
 
-        public Device(Models.Metadata.Device item, Machine machine, Source source) : this(item)
+        public Device(Data.Models.Metadata.Device item, Machine machine, Source source) : this(item)
         {
             SetFieldValue<Source?>(DatItem.SourceKey, source);
             CopyMachineInformation(machine);
@@ -75,19 +75,19 @@ namespace SabreTools.DatItems.Formats
         #region Cloning Methods
 
         /// <inheritdoc/>
-        public override Models.Metadata.Device GetInternalClone()
+        public override Data.Models.Metadata.Device GetInternalClone()
         {
             var deviceItem = base.GetInternalClone();
 
-            var instance = GetFieldValue<Instance?>(Models.Metadata.Device.InstanceKey);
+            var instance = GetFieldValue<Instance?>(Data.Models.Metadata.Device.InstanceKey);
             if (instance != null)
-                deviceItem[Models.Metadata.Device.InstanceKey] = instance.GetInternalClone();
+                deviceItem[Data.Models.Metadata.Device.InstanceKey] = instance.GetInternalClone();
 
-            var extensions = GetFieldValue<Extension[]?>(Models.Metadata.Device.ExtensionKey);
+            var extensions = GetFieldValue<Extension[]?>(Data.Models.Metadata.Device.ExtensionKey);
             if (extensions != null)
             {
-                Models.Metadata.Extension[] extensionItems = Array.ConvertAll(extensions, extension => extension.GetInternalClone());
-                deviceItem[Models.Metadata.Device.ExtensionKey] = extensionItems;
+                Data.Models.Metadata.Extension[] extensionItems = Array.ConvertAll(extensions, extension => extension.GetInternalClone());
+                deviceItem[Data.Models.Metadata.Device.ExtensionKey] = extensionItems;
             }
 
             return deviceItem;

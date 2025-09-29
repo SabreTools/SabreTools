@@ -15,7 +15,7 @@ namespace SabreTools.DatItems.Test.Formats
             diskArea.SetName("XXXXXX");
 
             Machine machine = new Machine();
-            machine.SetFieldValue(Models.Metadata.Machine.NameKey, "XXXXXX");
+            machine.SetFieldValue(Data.Models.Metadata.Machine.NameKey, "XXXXXX");
 
             Part part = new Part();
             part.SetName("XXXXXX");
@@ -25,12 +25,12 @@ namespace SabreTools.DatItems.Test.Formats
             Disk disk = new Disk();
             disk.SetName("XXXXXX");
             disk.SetFieldValue(Disk.DiskAreaKey, diskArea);
-            disk.SetFieldValue(Models.Metadata.Disk.MergeKey, "XXXXXX");
-            disk.SetFieldValue(Models.Metadata.Disk.RegionKey, "XXXXXX");
-            disk.SetFieldValue(Models.Metadata.Disk.StatusKey, "good");
-            disk.SetFieldValue(Models.Metadata.Disk.OptionalKey, "XXXXXX");
-            disk.SetFieldValue(Models.Metadata.Disk.MD5Key, ZeroHash.MD5Str);
-            disk.SetFieldValue(Models.Metadata.Disk.SHA1Key, ZeroHash.SHA1Str);
+            disk.SetFieldValue(Data.Models.Metadata.Disk.MergeKey, "XXXXXX");
+            disk.SetFieldValue(Data.Models.Metadata.Disk.RegionKey, "XXXXXX");
+            disk.SetFieldValue(Data.Models.Metadata.Disk.StatusKey, "good");
+            disk.SetFieldValue(Data.Models.Metadata.Disk.OptionalKey, "XXXXXX");
+            disk.SetFieldValue(Data.Models.Metadata.Disk.MD5Key, ZeroHash.MD5Str);
+            disk.SetFieldValue(Data.Models.Metadata.Disk.SHA1Key, ZeroHash.SHA1Str);
             disk.SetFieldValue(DatItem.DupeTypeKey, DupeType.All | DupeType.External);
             disk.SetFieldValue(DatItem.MachineKey, machine);
             disk.SetFieldValue(Disk.PartKey, part);
@@ -40,17 +40,17 @@ namespace SabreTools.DatItems.Test.Formats
             Rom actual = disk.ConvertToRom();
 
             Assert.Equal("XXXXXX.chd", actual.GetName());
-            Assert.Equal("XXXXXX", actual.GetStringFieldValue(Models.Metadata.Rom.MergeKey));
-            Assert.Equal("XXXXXX", actual.GetStringFieldValue(Models.Metadata.Rom.RegionKey));
-            Assert.Equal("good", actual.GetStringFieldValue(Models.Metadata.Rom.StatusKey));
-            Assert.Equal("XXXXXX", actual.GetStringFieldValue(Models.Metadata.Rom.OptionalKey));
-            Assert.Equal(ZeroHash.MD5Str, actual.GetStringFieldValue(Models.Metadata.Rom.MD5Key));
-            Assert.Equal(ZeroHash.SHA1Str, actual.GetStringFieldValue(Models.Metadata.Rom.SHA1Key));
+            Assert.Equal("XXXXXX", actual.GetStringFieldValue(Data.Models.Metadata.Rom.MergeKey));
+            Assert.Equal("XXXXXX", actual.GetStringFieldValue(Data.Models.Metadata.Rom.RegionKey));
+            Assert.Equal("good", actual.GetStringFieldValue(Data.Models.Metadata.Rom.StatusKey));
+            Assert.Equal("XXXXXX", actual.GetStringFieldValue(Data.Models.Metadata.Rom.OptionalKey));
+            Assert.Equal(ZeroHash.MD5Str, actual.GetStringFieldValue(Data.Models.Metadata.Rom.MD5Key));
+            Assert.Equal(ZeroHash.SHA1Str, actual.GetStringFieldValue(Data.Models.Metadata.Rom.SHA1Key));
             Assert.Equal(DupeType.All | DupeType.External, actual.GetFieldValue<DupeType>(DatItem.DupeTypeKey));
 
             DataArea? actualDataArea = actual.GetFieldValue<DataArea?>(Rom.DataAreaKey);
             Assert.NotNull(actualDataArea);
-            Assert.Equal("XXXXXX", actualDataArea.GetStringFieldValue(Models.Metadata.DataArea.NameKey));
+            Assert.Equal("XXXXXX", actualDataArea.GetStringFieldValue(Data.Models.Metadata.DataArea.NameKey));
 
             Machine? actualMachine = actual.GetMachine();
             Assert.NotNull(actualMachine);
@@ -60,7 +60,7 @@ namespace SabreTools.DatItems.Test.Formats
 
             Part? actualPart = actual.GetFieldValue<Part?>(Rom.PartKey);
             Assert.NotNull(actualPart);
-            Assert.Equal("XXXXXX", actualPart.GetStringFieldValue(Models.Metadata.Part.NameKey));
+            Assert.Equal("XXXXXX", actualPart.GetStringFieldValue(Data.Models.Metadata.Part.NameKey));
 
             Source? actualSource = actual.GetFieldValue<Source?>(DatItem.SourceKey);
             Assert.NotNull(actualSource);
@@ -80,8 +80,8 @@ namespace SabreTools.DatItems.Test.Formats
 
             self.FillMissingInformation(other);
 
-            Assert.Null(self.GetStringFieldValue(Models.Metadata.Disk.MD5Key));
-            Assert.Null(self.GetStringFieldValue(Models.Metadata.Disk.SHA1Key));
+            Assert.Null(self.GetStringFieldValue(Data.Models.Metadata.Disk.MD5Key));
+            Assert.Null(self.GetStringFieldValue(Data.Models.Metadata.Disk.SHA1Key));
         }
 
         [Fact]
@@ -90,13 +90,13 @@ namespace SabreTools.DatItems.Test.Formats
             Disk self = new Disk();
 
             Disk other = new Disk();
-            other.SetFieldValue(Models.Metadata.Disk.MD5Key, "XXXXXX");
-            other.SetFieldValue(Models.Metadata.Disk.SHA1Key, "XXXXXX");
+            other.SetFieldValue(Data.Models.Metadata.Disk.MD5Key, "XXXXXX");
+            other.SetFieldValue(Data.Models.Metadata.Disk.SHA1Key, "XXXXXX");
 
             self.FillMissingInformation(other);
 
-            Assert.Equal("XXXXXX", self.GetStringFieldValue(Models.Metadata.Disk.MD5Key));
-            Assert.Equal("XXXXXX", self.GetStringFieldValue(Models.Metadata.Disk.SHA1Key));
+            Assert.Equal("XXXXXX", self.GetStringFieldValue(Data.Models.Metadata.Disk.MD5Key));
+            Assert.Equal("XXXXXX", self.GetStringFieldValue(Data.Models.Metadata.Disk.SHA1Key));
         }
 
         #endregion
@@ -115,8 +115,8 @@ namespace SabreTools.DatItems.Test.Formats
         public void HasHashes_MD5_True()
         {
             Disk self = new Disk();
-            self.SetFieldValue(Models.Metadata.Disk.MD5Key, "XXXXXX");
-            self.SetFieldValue(Models.Metadata.Disk.SHA1Key, string.Empty);
+            self.SetFieldValue(Data.Models.Metadata.Disk.MD5Key, "XXXXXX");
+            self.SetFieldValue(Data.Models.Metadata.Disk.SHA1Key, string.Empty);
 
             bool actual = self.HasHashes();
             Assert.True(actual);
@@ -126,8 +126,8 @@ namespace SabreTools.DatItems.Test.Formats
         public void HasHashes_SHA1_True()
         {
             Disk self = new Disk();
-            self.SetFieldValue(Models.Metadata.Disk.MD5Key, string.Empty);
-            self.SetFieldValue(Models.Metadata.Disk.SHA1Key, "XXXXXX");
+            self.SetFieldValue(Data.Models.Metadata.Disk.MD5Key, string.Empty);
+            self.SetFieldValue(Data.Models.Metadata.Disk.SHA1Key, "XXXXXX");
 
             bool actual = self.HasHashes();
             Assert.True(actual);
@@ -137,8 +137,8 @@ namespace SabreTools.DatItems.Test.Formats
         public void HasHashes_All_True()
         {
             Disk self = new Disk();
-            self.SetFieldValue(Models.Metadata.Disk.MD5Key, "XXXXXX");
-            self.SetFieldValue(Models.Metadata.Disk.SHA1Key, "XXXXXX");
+            self.SetFieldValue(Data.Models.Metadata.Disk.MD5Key, "XXXXXX");
+            self.SetFieldValue(Data.Models.Metadata.Disk.SHA1Key, "XXXXXX");
 
             bool actual = self.HasHashes();
             Assert.True(actual);
@@ -160,8 +160,8 @@ namespace SabreTools.DatItems.Test.Formats
         public void HasZeroHash_NonZeroHash_False()
         {
             Disk self = new Disk();
-            self.SetFieldValue(Models.Metadata.Disk.MD5Key, "DEADBEEF");
-            self.SetFieldValue(Models.Metadata.Disk.SHA1Key, "DEADBEEF");
+            self.SetFieldValue(Data.Models.Metadata.Disk.MD5Key, "DEADBEEF");
+            self.SetFieldValue(Data.Models.Metadata.Disk.SHA1Key, "DEADBEEF");
 
             bool actual = self.HasZeroHash();
             Assert.False(actual);
@@ -171,8 +171,8 @@ namespace SabreTools.DatItems.Test.Formats
         public void HasZeroHash_ZeroMD5_True()
         {
             Disk self = new Disk();
-            self.SetFieldValue(Models.Metadata.Disk.MD5Key, ZeroHash.MD5Str);
-            self.SetFieldValue(Models.Metadata.Disk.SHA1Key, string.Empty);
+            self.SetFieldValue(Data.Models.Metadata.Disk.MD5Key, ZeroHash.MD5Str);
+            self.SetFieldValue(Data.Models.Metadata.Disk.SHA1Key, string.Empty);
 
             bool actual = self.HasZeroHash();
             Assert.True(actual);
@@ -182,8 +182,8 @@ namespace SabreTools.DatItems.Test.Formats
         public void HasZeroHash_ZeroSHA1_True()
         {
             Disk self = new Disk();
-            self.SetFieldValue(Models.Metadata.Disk.MD5Key, string.Empty);
-            self.SetFieldValue(Models.Metadata.Disk.SHA1Key, ZeroHash.SHA1Str);
+            self.SetFieldValue(Data.Models.Metadata.Disk.MD5Key, string.Empty);
+            self.SetFieldValue(Data.Models.Metadata.Disk.SHA1Key, ZeroHash.SHA1Str);
 
             bool actual = self.HasZeroHash();
             Assert.True(actual);
@@ -193,8 +193,8 @@ namespace SabreTools.DatItems.Test.Formats
         public void HasZeroHash_ZeroAll_True()
         {
             Disk self = new Disk();
-            self.SetFieldValue(Models.Metadata.Disk.MD5Key, ZeroHash.MD5Str);
-            self.SetFieldValue(Models.Metadata.Disk.SHA1Key, ZeroHash.SHA1Str);
+            self.SetFieldValue(Data.Models.Metadata.Disk.MD5Key, ZeroHash.MD5Str);
+            self.SetFieldValue(Data.Models.Metadata.Disk.SHA1Key, ZeroHash.SHA1Str);
 
             bool actual = self.HasZeroHash();
             Assert.True(actual);
@@ -255,11 +255,11 @@ namespace SabreTools.DatItems.Test.Formats
             Source source = new Source(0);
 
             Machine machine = new Machine();
-            machine.SetFieldValue(Models.Metadata.Machine.NameKey, "Machine");
+            machine.SetFieldValue(Data.Models.Metadata.Machine.NameKey, "Machine");
 
             DatItem datItem = new Disk();
-            datItem.SetFieldValue(Models.Metadata.Disk.MD5Key, "DEADBEEF");
-            datItem.SetFieldValue(Models.Metadata.Disk.SHA1Key, "DEADBEEF");
+            datItem.SetFieldValue(Data.Models.Metadata.Disk.MD5Key, "DEADBEEF");
+            datItem.SetFieldValue(Data.Models.Metadata.Disk.SHA1Key, "DEADBEEF");
 
             string actual = datItem.GetKey(bucketedBy, machine, source, lower, norename);
             Assert.Equal(expected, actual);

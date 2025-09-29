@@ -9,7 +9,7 @@ namespace SabreTools.DatItems.Formats
     /// Represents which Slot(s) is associated with a set
     /// </summary>
     [JsonObject("slot"), XmlRoot("slot")]
-    public sealed class Slot : DatItem<Models.Metadata.Slot>
+    public sealed class Slot : DatItem<Data.Models.Metadata.Slot>
     {
         #region Fields
 
@@ -21,7 +21,7 @@ namespace SabreTools.DatItems.Formats
         {
             get
             {
-                var slotOptions = GetFieldValue<SlotOption[]?>(Models.Metadata.Slot.SlotOptionKey);
+                var slotOptions = GetFieldValue<SlotOption[]?>(Data.Models.Metadata.Slot.SlotOptionKey);
                 return slotOptions != null && slotOptions.Length > 0;
             }
         }
@@ -32,18 +32,18 @@ namespace SabreTools.DatItems.Formats
 
         public Slot() : base() { }
 
-        public Slot(Models.Metadata.Slot item) : base(item)
+        public Slot(Data.Models.Metadata.Slot item) : base(item)
         {
             // Handle subitems
-            var slotOptions = item.ReadItemArray<Models.Metadata.SlotOption>(Models.Metadata.Slot.SlotOptionKey);
+            var slotOptions = item.ReadItemArray<Data.Models.Metadata.SlotOption>(Data.Models.Metadata.Slot.SlotOptionKey);
             if (slotOptions != null)
             {
                 SlotOption[] slotOptionItems = Array.ConvertAll(slotOptions, slotOption => new SlotOption(slotOption));
-                SetFieldValue<SlotOption[]?>(Models.Metadata.Slot.SlotOptionKey, slotOptionItems);
+                SetFieldValue<SlotOption[]?>(Data.Models.Metadata.Slot.SlotOptionKey, slotOptionItems);
             }
         }
 
-        public Slot(Models.Metadata.Slot item, Machine machine, Source source) : this(item)
+        public Slot(Data.Models.Metadata.Slot item, Machine machine, Source source) : this(item)
         {
             SetFieldValue<Source?>(DatItem.SourceKey, source);
             CopyMachineInformation(machine);
@@ -54,15 +54,15 @@ namespace SabreTools.DatItems.Formats
         #region Cloning Methods
 
         /// <inheritdoc/>
-        public override Models.Metadata.Slot GetInternalClone()
+        public override Data.Models.Metadata.Slot GetInternalClone()
         {
             var slotItem = base.GetInternalClone();
 
-            var slotOptions = GetFieldValue<SlotOption[]?>(Models.Metadata.Slot.SlotOptionKey);
+            var slotOptions = GetFieldValue<SlotOption[]?>(Data.Models.Metadata.Slot.SlotOptionKey);
             if (slotOptions != null)
             {
-                Models.Metadata.SlotOption[] slotOptionItems = Array.ConvertAll(slotOptions, slotOption => slotOption.GetInternalClone());
-                slotItem[Models.Metadata.Slot.SlotOptionKey] = slotOptionItems;
+                Data.Models.Metadata.SlotOption[] slotOptionItems = Array.ConvertAll(slotOptions, slotOption => slotOption.GetInternalClone());
+                slotItem[Data.Models.Metadata.Slot.SlotOptionKey] = slotOptionItems;
             }
 
             return slotItem;
