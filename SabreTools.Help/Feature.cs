@@ -38,7 +38,9 @@ namespace SabreTools.Help
         /// <summary>
         /// Process args list based on current feature
         /// </summary>
-        public virtual bool ProcessArgs(string[] args, FeatureSet help)
+        /// <param name="args">Set of arguments to process</param>
+        /// <param name="parentSet">Reference to the enclosing parent set</param>
+        public virtual bool ProcessArgs(string[] args, FeatureSet parentSet)
         {
             for (int i = 1; i < args.Length; i++)
             {
@@ -66,7 +68,7 @@ namespace SabreTools.Help
                 else
                 {
                     Console.Error.WriteLine($"Invalid input detected: {args[i]}");
-                    help.OutputIndividualFeature(Name);
+                    parentSet.OutputIndividualFeature(Name);
                     return false;
                 }
             }

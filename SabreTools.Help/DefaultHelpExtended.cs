@@ -22,19 +22,19 @@ namespace SabreTools.Help
         }
 
         /// <inheritdoc/>
-        public override bool ProcessArgs(string[] args, FeatureSet help)
+        public override bool ProcessArgs(string[] args, FeatureSet parentSet)
         {
             // If we had something else after help
             if (args.Length > 1)
             {
-                help.OutputIndividualFeature(args[1], includeLongDescription: true);
+                parentSet.OutputIndividualFeature(args[1], includeLongDescription: true);
                 return true;
             }
 
             // Otherwise, show generic help
             else
             {
-                help.OutputAllHelp();
+                parentSet.OutputAllHelp();
                 return true;
             }
         }
