@@ -1,5 +1,8 @@
 ﻿namespace SabreTools.Help
 {
+    /// <summary>
+    /// Default extended help feature implementation
+    /// </summary>
     public class DefaultHelpExtended : Feature
     {
         public const string DisplayName = "Help (Detailed)";
