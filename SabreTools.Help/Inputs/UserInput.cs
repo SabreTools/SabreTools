@@ -17,11 +17,6 @@ namespace SabreTools.Help.Inputs
         public string Name { get; protected set; }
 
         /// <summary>
-        /// Set of flags associated with the feature
-        /// </summary>
-        public readonly List<string> Flags = [];
-
-        /// <summary>
         /// Set of children associated with this input
         /// </summary>
         public readonly Dictionary<string, UserInput> Children = [];
@@ -29,6 +24,11 @@ namespace SabreTools.Help.Inputs
         #endregion
 
         #region Fields
+
+        /// <summary>
+        /// Set of flags associated with the feature
+        /// </summary>
+        protected readonly List<string> Flags = [];
 
         /// <summary>
         /// Short description of the feature
