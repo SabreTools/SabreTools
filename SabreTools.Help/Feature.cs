@@ -94,7 +94,12 @@ namespace SabreTools.Help
             if (!features.ContainsKey(key))
                 return false;
 
-            return true;
+            if (features[key] is BooleanInput b)
+                return b.Value;
+            else if (features[key] is FlagInput f)
+                return f.Value;
+
+            throw new ArgumentException("Feature is not a bool");
         }
 
         /// <summary>
