@@ -30,7 +30,7 @@ namespace SabreTools.Help.Inputs
         {
             // Check for space-separated
             string part = args[index];
-            if (Flags.FindIndex(n => n == part) > -1)
+            if (ContainsFlag(part))
             {
                 Value = true;
                 return true;

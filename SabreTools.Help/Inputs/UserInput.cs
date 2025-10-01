@@ -98,7 +98,7 @@ namespace SabreTools.Help.Inputs
         /// <param name="name">Name of the flag to check</param>
         /// <returns>True if the flag was found, false otherwise</returns>
         public bool ContainsFlag(string name)
-            => Flags.Exists(f => f == name);
+            => Flags.Exists(f => f == name || name.StartsWith($"{f}="));
 
         /// <summary>
         /// Returns if the feature contains a flag that starts with the given character

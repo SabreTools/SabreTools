@@ -30,7 +30,7 @@ namespace SabreTools.Help.Inputs
         {
             // Check for space-separated
             string part = args[index];
-            if (Flags.FindIndex(n => n == part) > -1)
+            if (ContainsFlag(part) && !part.Contains("="))
             {
                 // Ensure the value exists
                 if (index + 1 >= args.Length)
@@ -42,7 +42,7 @@ namespace SabreTools.Help.Inputs
             }
 
             // Check for equal separated
-            if (Flags.FindIndex(n => part.StartsWith($"{n}=")) > -1)
+            if (ContainsFlag(part) && part.Contains("="))
             {
                 // Split the string, using the first equal sign as the separator
                 string[] tempSplit = part.Split('=');
