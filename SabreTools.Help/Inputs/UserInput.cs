@@ -367,7 +367,7 @@ namespace SabreTools.Help.Inputs
         /// <param name="args">Set of arguments to parse</param>
         /// <param name="index">Reference index into the argument set</param>
         /// <returns>True if the flag was valid, false otherwise</returns>
-        public abstract bool ValidateInput(string[] args, ref int index);
+        public abstract bool ProcessInput(string[] args, ref int index);
 
         /// <summary>
         /// Returns if this feature has a valid value or not

@@ -50,7 +50,7 @@ namespace SabreTools.Help
             for (int i = 1; i < args.Length; i++)
             {
                 // Verify that the current flag is proper for the feature
-                if (ValidateInput(args, ref i))
+                if (ProcessInput(args, ref i))
                     continue;
 
                 // Special precautions for files and directories

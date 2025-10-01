@@ -26,7 +26,7 @@ namespace SabreTools.Help.Inputs
         #region Instance Methods
 
         /// <inheritdoc/>
-        public override bool ValidateInput(string[] args, ref int index)
+        public override bool ProcessInput(string[] args, ref int index)
         {
             // Check for space-separated
             string part = args[index];
@@ -56,7 +56,7 @@ namespace SabreTools.Help.Inputs
             // If the current flag doesn't match, check to see if any of the subfeatures are valid
             foreach (var kvp in Features)
             {
-                if (kvp.Value.ValidateInput(args, ref index))
+                if (kvp.Value.ProcessInput(args, ref index))
                     return true;
             }
 
