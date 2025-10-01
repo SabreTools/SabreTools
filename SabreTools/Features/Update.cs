@@ -310,7 +310,7 @@ namespace SabreTools.Features
                     AdditionalProcessing(repDat);
 
                     // Now replace the fields from the base DatFile
-                    Diffing.Against(userInputDat, repDat, GetBoolean(Features, ByGameValue));
+                    Diffing.Against(userInputDat, repDat, GetBoolean(features, ByGameValue));
 
                     // Finally output the diffed DatFile
                     string interOutDir = inputPath.GetOutputPath(OutputDir, GetBoolean(features, InplaceValue))!;
