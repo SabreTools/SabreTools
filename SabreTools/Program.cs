@@ -74,12 +74,12 @@ namespace SabreTools
             // If we had the help feature first
             if (featureName == DefaultHelp.DisplayName || featureName == DefaultHelpExtended.DisplayName)
             {
-                feature.ProcessArgs(args, _help);
+                feature.ProcessArgs(args, 0, _help);
                 return;
             }
 
             // Now verify that all other flags are valid
-            if (!feature.ProcessArgs(args, _help))
+            if (!feature.ProcessArgs(args, 1, _help))
                 return;
 
 #if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER

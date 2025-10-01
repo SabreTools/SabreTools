@@ -39,15 +39,12 @@ namespace SabreTools.Help
         /// Process args list based on current feature
         /// </summary>
         /// <param name="args">Set of arguments to process</param>
+        /// <param name="index">Starting index into the arguments</param>
         /// <param name="parentSet">Reference to the enclosing parent set</param>
         /// <returns>True if all arguments were processed correctly, false otherwise</returns>
-        /// <remarks>
-        /// This assumes that the argument representing this feature was
-        /// the first in the set of passed in arguments.
-        /// </remarks>
-        public virtual bool ProcessArgs(string[] args, FeatureSet parentSet)
+        public virtual bool ProcessArgs(string[] args, int index, FeatureSet parentSet)
         {
-            for (int i = 1; i < args.Length; i++)
+            for (int i = index; i < args.Length; i++)
             {
                 // Verify that the current flag is proper for the feature
                 if (ProcessInput(args, ref i))
