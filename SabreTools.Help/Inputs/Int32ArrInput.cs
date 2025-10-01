@@ -7,6 +7,11 @@ namespace SabreTools.Help.Inputs
     /// <summary>
     /// Represents an Int32 flag with an optional trailing value
     /// </summary>
+    /// <remarks>
+    /// Unlike the string array, this represents a set of integer
+    /// values all after the same flag. This does not allow multiple
+    /// inputs across repeated flags.
+    /// </remarks>
     public class Int32ArrInput : Input<int?[]>
     {
         #region Properties
@@ -111,6 +116,14 @@ namespace SabreTools.Help.Inputs
             }
 
             return false;
+        }
+
+        /// <inheritdoc/>
+        protected override string FormatFlags()
+        {
+            var sb = new StringBuilder();
+            Array.ForEach(_flags, flag => sb.Append($"{flag}=, "));
+            return sb.ToString().TrimEnd(' ', ',');
         }
 
         /// <summary>

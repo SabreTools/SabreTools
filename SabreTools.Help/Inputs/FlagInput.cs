@@ -41,6 +41,14 @@ namespace SabreTools.Help.Inputs
         }
 
         /// <inheritdoc/>
+        protected override string FormatFlags()
+        {
+            var sb = new StringBuilder();
+            Array.ForEach(_flags, flag => sb.Append($"{flag}, "));
+            return sb.ToString().TrimEnd(' ', ',');
+        }
+
+        /// <inheritdoc/>
         public override bool Process(string[] parts, ref int index)
         {
             // Check the parts array

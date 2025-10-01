@@ -104,5 +104,13 @@ namespace SabreTools.Help.Inputs
 
             return false;
         }
+
+        /// <inheritdoc/>
+        protected override string FormatFlags()
+        {
+            var sb = new StringBuilder();
+            Array.ForEach(_flags, flag => sb.Append($"{flag}=, "));
+            return sb.ToString().TrimEnd(' ', ',');
+        }
     }
 }

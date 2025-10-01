@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace SabreTools.Help.Inputs
 {
@@ -38,6 +40,11 @@ namespace SabreTools.Help.Inputs
         /// Indicates if a value has been set
         /// </summary>
         public abstract bool ValueSet { get; }
+
+        /// <summary>
+        /// All children inputs that require the parent to exist
+        /// </summary>
+        public readonly Dictionary<string, Input> Children = [];
 
         #endregion
 
@@ -81,7 +88,27 @@ namespace SabreTools.Help.Inputs
 
         #endregion
 
-        #region Functionality
+        #region Accessors
+
+        /// <summary>
+        /// Add a child to the dictionary
+        /// </summary>
+        /// <param name="child">Input to add to the dictionary</param>
+        /// <returns>True if the input could be added, false otherwise</returns>
+        public bool AddChild(Input child)
+        {
+            // Validate there is a key to use
+            if (child.Name.Length == 0)
+                throw new ArgumentNullException($"{nameof(child)} must contain a valid name");
+
+            // Don't allow duplicate children
+            if (Children.ContainsKey(child.Name))
+                return false;
+
+            // Add the child
+            Children.Add(child.Name, child);
+            return true;
+        }
 
         /// <summary>
         /// Clear any accumulated value
@@ -89,10 +116,30 @@ namespace SabreTools.Help.Inputs
         public abstract void ClearValue();
 
         /// <summary>
+        /// Indicates the flag is valid for this input
+        /// </summary>
+        public bool MatchesFlag(string flag)
+            => Array.Exists(_flags, f => f == flag);
+
+        /// <summary>
+        /// Indicates if the input contains a flag that starts with the given character
+        /// </summary>
+        public bool StartsWith(char c)
+            => Array.Exists(_flags, f => f.TrimStart('-').ToLowerInvariant()[0] == c);
+
+        #endregion
+
+        #region Formatting
+
+        /// <summary>
         /// Create a formatted representation of the input and possible value
         /// </summary>
         /// <param name="useEquals">Use an equal sign as a separator on output</param>
         public abstract string Format(bool useEquals);
+
+        #endregion
+
+        #region Processing
 
         /// <summary>
         /// Process the current index, if possible
@@ -104,7 +151,269 @@ namespace SabreTools.Help.Inputs
 
         #endregion
 
+        #region Printing
+
+        /// <summary>
+        /// Output this feature only
+        /// </summary>
+        /// <param name="pre">Positive number representing number of spaces to put in front of the feature</param>
+        /// <param name="midpoint">Positive number representing the column where the description should start</param>
+        /// <param name="includeLongDescription">True if the long description should be formatted and output, false otherwise</param>
+        public List<string> Output(int pre = 0, int midpoint = 0, bool includeLongDescription = false)
+        {
+            // Create the output list
+            List<string> outputList = [];
+
+            // Build the output string first
+            var output = new StringBuilder();
+
+            // Add the pre-space first
+            output.Append(CreatePadding(pre));
+
+            // Preprocess and add the flags
+            output.Append(FormatFlags());
+
+            // If we have a midpoint set, check to see if the string needs padding
+            if (midpoint > 0 && output.ToString().Length < midpoint)
+                output.Append(CreatePadding(midpoint - output.ToString().Length));
+            else
+                output.Append(" ");
+
+            // Append the description
+            output.Append(_description);
+
+            // Now append it to the list
+            outputList.Add(output.ToString());
+
+            // If we are outputting the long description, format it and then add it as well
+            if (includeLongDescription)
+            {
+                // Get the width of the console for wrapping reference
+                int width = (Console.WindowWidth == 0 ? 80 : Console.WindowWidth) - 1;
+
+                // Prepare the output string
+#if NET20 || NET35
+                output = new();
+#else
+                output.Clear();
+#endif
+                output.Append(CreatePadding(pre + 4));
+
+                // Now split the input description and start processing
+                string[]? split = _longDescription?.Split(' ');
+                if (split == null)
+                    return outputList;
+
+                for (int i = 0; i < split.Length; i++)
+                {
+                    // If we have a newline character, reset the line and continue
+                    if (split[i].Contains("\n"))
+                    {
+                        string[] subsplit = split[i].Replace("\r", string.Empty).Split('\n');
+                        for (int j = 0; j < subsplit.Length - 1; j++)
+                        {
+                            // Add the next word only if the total length doesn't go above the width of the screen
+                            if (output.ToString().Length + subsplit[j].Length < width)
+                            {
+                                output.Append((output.ToString().Length == pre + 4 ? string.Empty : " ") + subsplit[j]);
+                            }
+                            // Otherwise, we want to cache the line to output and create a new blank string
+                            else
+                            {
+                                outputList.Add(output.ToString());
+#if NET20 || NET35
+                                output = new();
+#else
+                                output.Clear();
+#endif
+                                output.Append(CreatePadding(pre + 4));
+                                output.Append((output.ToString().Length == pre + 4 ? string.Empty : " ") + subsplit[j]);
+                            }
+
+                            outputList.Add(output.ToString());
+#if NET20 || NET35
+                            output = new();
+#else
+                            output.Clear();
+#endif
+                            output.Append(CreatePadding(pre + 4));
+                        }
+
+                        output.Append(subsplit[subsplit.Length - 1]);
+                        continue;
+                    }
+
+                    // Add the next word only if the total length doesn't go above the width of the screen
+                    if (output.ToString().Length + split[i].Length < width)
+                    {
+                        output.Append((output.ToString().Length == pre + 4 ? string.Empty : " ") + split[i]);
+                    }
+                    // Otherwise, we want to cache the line to output and create a new blank string
+                    else
+                    {
+                        outputList.Add(output.ToString());
+                        output.Append(CreatePadding(pre + 4));
+                        output.Append((output.ToString().Length == pre + 4 ? string.Empty : " ") + split[i]);
+                    }
+                }
+
+                // Add the last created output and a blank line for clarity
+                outputList.Add(output.ToString());
+                outputList.Add(string.Empty);
+            }
+
+            return outputList;
+        }
+
+        /// <summary>
+        /// Output this feature and all subfeatures
+        /// </summary>
+        /// <param name="tabLevel">Level of indentation for this feature</param>
+        /// <param name="pre">Positive number representing number of spaces to put in front of the feature</param>
+        /// <param name="midpoint">Positive number representing the column where the description should start</param>
+        /// <param name="includeLongDescription">True if the long description should be formatted and output, false otherwise</param>
+        public List<string> OutputRecursive(int tabLevel, int pre = 0, int midpoint = 0, bool includeLongDescription = false)
+        {
+            // Create the output list
+            List<string> outputList = [];
+
+            // Build the output string first
+            var output = new StringBuilder();
+
+            // Normalize based on the tab level
+            int preAdjusted = pre;
+            int midpointAdjusted = midpoint;
+            if (tabLevel > 0)
+            {
+                preAdjusted += 4 * tabLevel;
+                midpointAdjusted += 4 * tabLevel;
+            }
+
+            // Add the pre-space first
+            output.Append(CreatePadding(preAdjusted));
+
+            // Preprocess and add the flags
+            output.Append(FormatFlags());
+
+            // If we have a midpoint set, check to see if the string needs padding
+            if (midpoint > 0 && output.ToString().Length < midpointAdjusted)
+                output.Append(CreatePadding(midpointAdjusted - output.ToString().Length));
+            else
+                output.Append(" ");
+
+            // Append the description
+            output.Append(_description);
+
+            // Now append it to the list
+            outputList.Add(output.ToString());
+
+            // If we are outputting the long description, format it and then add it as well
+            if (includeLongDescription)
+            {
+                // Get the width of the console for wrapping reference
+                int width = (Console.WindowWidth == 0 ? 80 : Console.WindowWidth) - 1;
+
+                // Prepare the output string
+#if NET20 || NET35
+                output = new();
+#else
+                output.Clear();
+#endif
+                output.Append(CreatePadding(preAdjusted + 4));
+
+                // Now split the input description and start processing
+                string[]? split = _longDescription?.Split(' ');
+                if (split == null)
+                    return outputList;
+
+                for (int i = 0; i < split.Length; i++)
+                {
+                    // If we have a newline character, reset the line and continue
+                    if (split[i].Contains("\n"))
+                    {
+                        string[] subsplit = split[i].Replace("\r", string.Empty).Split('\n');
+                        for (int j = 0; j < subsplit.Length - 1; j++)
+                        {
+                            // Add the next word only if the total length doesn't go above the width of the screen
+                            if (output.ToString().Length + subsplit[j].Length < width)
+                            {
+                                output.Append((output.ToString().Length == preAdjusted + 4 ? string.Empty : " ") + subsplit[j]);
+                            }
+                            // Otherwise, we want to cache the line to output and create a new blank string
+                            else
+                            {
+                                outputList.Add(output.ToString());
+#if NET20 || NET35
+                                output = new();
+#else
+                                output.Clear();
+#endif
+                                output.Append(CreatePadding(preAdjusted + 4));
+                                output.Append((output.ToString().Length == preAdjusted + 4 ? string.Empty : " ") + subsplit[j]);
+                            }
+
+                            outputList.Add(output.ToString());
+#if NET20 || NET35
+                            output = new();
+#else
+                            output.Clear();
+#endif
+                            output.Append(CreatePadding(preAdjusted + 4));
+                        }
+
+                        output.Append(subsplit[subsplit.Length - 1]);
+                        continue;
+                    }
+
+                    // Add the next word only if the total length doesn't go above the width of the screen
+                    if (output.ToString().Length + split[i].Length < width)
+                    {
+                        output.Append((output.ToString().Length == preAdjusted + 4 ? string.Empty : " ") + split[i]);
+                    }
+                    // Otherwise, we want to cache the line to output and create a new blank string
+                    else
+                    {
+                        outputList.Add(output.ToString());
+#if NET20 || NET35
+                        output = new();
+#else
+                        output.Clear();
+#endif
+                        output.Append(CreatePadding(preAdjusted + 4));
+                        output.Append((output.ToString().Length == preAdjusted + 4 ? string.Empty : " ") + split[i]);
+                    }
+                }
+
+                // Add the last created output and a blank line for clarity
+                outputList.Add(output.ToString());
+                outputList.Add(string.Empty);
+            }
+
+            // Now let's append all subfeatures
+            foreach (string feature in Children.Keys)
+            {
+                outputList.AddRange(Children[feature]!.OutputRecursive(tabLevel + 1, pre, midpoint, includeLongDescription));
+            }
+
+            return outputList;
+        }
+
+        /// <summary>
+        /// Pre-format the flags for output
+        /// </summary>
+        protected abstract string FormatFlags();
+
+        #endregion
+
         #region Helpers
+
+        /// <summary>
+        /// Create a padding space based on the given length
+        /// </summary>
+        /// <param name="spaces">Number of padding spaces to add</param>
+        /// <returns>String with requested number of blank spaces</returns>
+        internal static string CreatePadding(int spaces)
+            => string.Empty.PadRight(spaces);
 
         /// <summary>
         /// Get the trimmed value and multiplication factor from a value
