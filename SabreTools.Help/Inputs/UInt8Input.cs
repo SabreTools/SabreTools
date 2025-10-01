@@ -58,7 +58,7 @@ namespace SabreTools.Help.Inputs
             }
 
             // Check for equal separated
-            if (part.Contains("="))
+            else
             {
                 // Split the string, using the first equal sign as the separator
                 string[] tempSplit = part.Split('=');
@@ -75,8 +75,6 @@ namespace SabreTools.Help.Inputs
                 Value = value;
                 return true;
             }
-
-            return false;
         }
 
         /// <inheritdoc/>
