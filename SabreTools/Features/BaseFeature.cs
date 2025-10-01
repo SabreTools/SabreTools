@@ -1143,7 +1143,11 @@ Some special strings that can be used:
             // Set threading flag, if necessary
 #if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             if (Children.ContainsKey(ThreadsInt32Value))
-                Core.Globals.MaxThreads = GetInt32(ThreadsInt32Value);
+            {
+                int threadCount = GetInt32(ThreadsInt32Value);
+                if (threadCount > 0)
+                    Core.Globals.MaxThreads = threadCount;
+            }
 #endif
 
             // Failure conditions
