@@ -117,6 +117,18 @@ namespace SabreTools.Help.Inputs
         #region Instance Methods
 
         /// <summary>
+        /// Validate whether a flag is valid for this feature or not
+        /// </summary>
+        /// <param name="args">Set of arguments to parse</param>
+        /// <param name="index">Reference index into the argument set</param>
+        /// <returns>True if the flag was valid, false otherwise</returns>
+        public abstract bool ProcessInput(string[] args, ref int index);
+
+        #endregion
+
+        #region Output
+
+        /// <summary>
         /// Output this feature only
         /// </summary>
         /// <param name="pre">Positive number representing number of spaces to put in front of the feature</param>
@@ -360,14 +372,6 @@ namespace SabreTools.Help.Inputs
 
             return outputList;
         }
-
-        /// <summary>
-        /// Validate whether a flag is valid for this feature or not
-        /// </summary>
-        /// <param name="args">Set of arguments to parse</param>
-        /// <param name="index">Reference index into the argument set</param>
-        /// <returns>True if the flag was valid, false otherwise</returns>
-        public abstract bool ProcessInput(string[] args, ref int index);
 
         /// <summary>
         /// Pre-format the flags for output

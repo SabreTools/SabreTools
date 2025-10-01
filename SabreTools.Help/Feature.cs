@@ -105,7 +105,6 @@ namespace SabreTools.Help
                 return f.Value;
 
             throw new ArgumentException("Feature is not a bool");
-
         }
 
         /// <summary>
