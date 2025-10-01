@@ -271,13 +271,9 @@ namespace SabreTools.Help
         /// <param name="key">Name that should be assigned to the feature</param>
         /// <param name="feature">Feature with possible subfeatures to test</param>
         /// <returns>List of Features representing what is enabled</returns>
-        private static Dictionary<string, UserInput> GetEnabledSubfeatures(string key, UserInput? feature)
+        private static Dictionary<string, UserInput> GetEnabledSubfeatures(string key, UserInput feature)
         {
             Dictionary<string, UserInput> enabled = [];
-
-            // If the feature is invalid
-            if (feature == null)
-                return enabled;
 
             // First determine if the current feature is enabled
             if (feature.IsEnabled())
