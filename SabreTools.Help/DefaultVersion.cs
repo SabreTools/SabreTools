@@ -25,10 +25,6 @@ namespace SabreTools.Help
 
         public override bool ProcessFeatures(Dictionary<string, UserInput> features)
         {
-            // If the base fails, just fail out
-            if (!base.ProcessFeatures(features))
-                return false;
-
             Console.WriteLine($"Version: {GetVersion()}");
             return true;
         }

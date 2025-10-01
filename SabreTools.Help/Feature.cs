@@ -78,7 +78,7 @@ namespace SabreTools.Help
         /// Process and extract variables based on current feature
         /// </summary>
         /// <returns>True if execution was successful, false otherwise</returns>
-        public virtual bool ProcessFeatures(Dictionary<string, UserInput> features) => true;
+        public abstract bool ProcessFeatures(Dictionary<string, UserInput> features);
 
         #endregion
 
