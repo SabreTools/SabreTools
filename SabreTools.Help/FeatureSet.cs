@@ -127,7 +127,7 @@ namespace SabreTools.Help
                     continue;
 
                 // Validate the flag is contained
-                if (feature.Flags.Contains(splitInput[0]))
+                if (feature.ContainsFlag(splitInput[0]))
                     return key;
             }
 

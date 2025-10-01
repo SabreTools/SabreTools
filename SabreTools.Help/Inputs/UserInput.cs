@@ -98,9 +98,7 @@ namespace SabreTools.Help.Inputs
         /// <param name="name">Name of the flag to check</param>
         /// <returns>True if the flag was found, false otherwise</returns>
         public bool ContainsFlag(string name)
-        {
-            return Flags.Exists(f => f == name || f.TrimStart('-') == name);
-        }
+            => Flags.Exists(f => f == name);
 
         /// <summary>
         /// Returns if the feature contains a flag that starts with the given character
@@ -108,9 +106,7 @@ namespace SabreTools.Help.Inputs
         /// <param name="c">Character to check against</param>
         /// <returns>True if the flag was found, false otherwise</returns>
         public bool StartsWith(char c)
-        {
-            return Flags.Exists(f => f.TrimStart('-').ToLowerInvariant()[0] == c);
-        }
+            => Flags.Exists(f => f.TrimStart('-').ToLowerInvariant()[0] == c);
 
         #endregion
 
