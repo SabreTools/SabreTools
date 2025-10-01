@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using SabreTools.Help.Inputs;
 
-namespace SabreTools.Help.Inputs
+namespace SabreTools.Help
 {
     /// <summary>
     /// Represents an application-level feature

@@ -76,7 +76,7 @@ namespace SabreTools
             BaseFeature feature = (_help[featureName] as BaseFeature)!;
 
             // If we had the help feature first
-            if (featureName == DisplayHelp.DisplayName || featureName == DisplayHelpDetailed.DisplayName)
+            if (featureName == DefaultHelp.DisplayName || featureName == DefaultHelpExtended.DisplayName)
             {
                 feature.ProcessArgs(args, _help);
                 return;
@@ -101,8 +101,8 @@ namespace SabreTools
             switch (featureName)
             {
                 // No-op as these should be caught
-                case DisplayHelp.DisplayName:
-                case DisplayHelpDetailed.DisplayName:
+                case DefaultHelp.DisplayName:
+                case DefaultHelpExtended.DisplayName:
                     break;
 
                 // Require input verification
@@ -180,8 +180,8 @@ namespace SabreTools
             var help = new FeatureSet(helpHeader);
 
             // Add all of the features
-            help.Add(new DisplayHelp());
-            help.Add(new DisplayHelpDetailed());
+            help.Add(new DefaultHelp());
+            help.Add(new DefaultHelpExtended());
             help.Add(new Batch());
             help.Add(new DatFromDir());
             help.Add(new Sort());

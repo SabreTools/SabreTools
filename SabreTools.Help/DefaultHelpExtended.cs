@@ -1,8 +1,6 @@
-﻿using SabreTools.Help;
-
-namespace SabreTools.Features
+﻿namespace SabreTools.Help
 {
-    internal class DisplayHelpDetailed : BaseFeature
+    public class DefaultHelpExtended : Feature
     {
         public const string DisplayName = "Help (Detailed)";
 
@@ -12,7 +10,7 @@ namespace SabreTools.Features
 
         private const string _longDescription = "Display a detailed help text to the screen.";
 
-        public DisplayHelpDetailed()
+        public DefaultHelpExtended()
             : base(DisplayName, _flags, _description, _longDescription)
         {
         }

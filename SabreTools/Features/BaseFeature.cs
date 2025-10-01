@@ -5,6 +5,7 @@ using SabreTools.DatFiles;
 using SabreTools.DatTools;
 using SabreTools.FileTypes;
 using SabreTools.Hashing;
+using SabreTools.Help;
 using SabreTools.Help.Inputs;
 using SabreTools.IO.Logging;
 using SabreTools.Reports;
