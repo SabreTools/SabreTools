@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using SabreTools.Help.Inputs;
-
-namespace SabreTools.Help
+﻿namespace SabreTools.Help
 {
     /// <summary>
     /// Default help feature implementation
