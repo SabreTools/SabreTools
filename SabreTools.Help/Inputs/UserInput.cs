@@ -9,15 +9,6 @@ namespace SabreTools.Help.Inputs
     /// </summary>
     public abstract class UserInput
     {
-        #region Fields
-
-        // <summary>
-        /// Indicates if the feature has been seen already
-        /// </summary>
-        protected bool _foundOnce = false;
-
-        #endregion
-
         #region Properties
 
         /// <summary>
@@ -31,19 +22,28 @@ namespace SabreTools.Help.Inputs
         public readonly List<string> Flags = [];
 
         /// <summary>
+        /// Set of subfeatures associated with this feature
+        /// </summary>
+        public readonly Dictionary<string, UserInput?> Features = [];
+
+        #endregion
+
+        #region Fields
+
+        // <summary>
+        /// Indicates if the feature has been seen already
+        /// </summary>
+        protected bool _foundOnce = false;
+
+        /// <summary>
         /// Short description of the feature
         /// </summary>
-        public string Description { get; protected set; }
+        private readonly string _description;
 
         /// <summary>
         /// Optional long description of the feature
         /// </summary>
-        public string? LongDescription { get; protected set; }
-
-        /// <summary>
-        /// Set of subfeatures associated with this feature
-        /// </summary>
-        public readonly Dictionary<string, UserInput?> Features = [];
+        private readonly string? _longDescription;
 
         #endregion
 
@@ -53,16 +53,16 @@ namespace SabreTools.Help.Inputs
         {
             Name = name;
             Flags.Add(flag);
-            Description = description;
-            LongDescription = longDescription;
+            _description = description;
+            _longDescription = longDescription;
         }
 
         internal UserInput(string name, string[] flags, string description, string? longDescription = null)
         {
             Name = name;
             Flags.AddRange(flags);
-            Description = description;
-            LongDescription = longDescription;
+            _description = description;
+            _longDescription = longDescription;
         }
 
         #endregion
@@ -150,7 +150,7 @@ namespace SabreTools.Help.Inputs
                 output.Append(" ");
 
             // Append the description
-            output.Append(Description);
+            output.Append(_description);
 
             // Now append it to the list
             outputList.Add(output.ToString());
@@ -170,7 +170,7 @@ namespace SabreTools.Help.Inputs
                 output.Append(CreatePadding(pre + 4));
 
                 // Now split the input description and start processing
-                string[]? split = LongDescription?.Split(' ');
+                string[]? split = _longDescription?.Split(' ');
                 if (split == null)
                     return outputList;
 
@@ -272,7 +272,7 @@ namespace SabreTools.Help.Inputs
                 output.Append(" ");
 
             // Append the description
-            output.Append(Description);
+            output.Append(_description);
 
             // Now append it to the list
             outputList.Add(output.ToString());
@@ -292,7 +292,7 @@ namespace SabreTools.Help.Inputs
                 output.Append(CreatePadding(preAdjusted + 4));
 
                 // Now split the input description and start processing
-                string[]? split = LongDescription?.Split(' ');
+                string[]? split = _longDescription?.Split(' ');
                 if (split == null)
                     return outputList;
 
