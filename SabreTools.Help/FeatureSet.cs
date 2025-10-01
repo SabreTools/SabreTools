@@ -157,7 +157,7 @@ namespace SabreTools.Help
             flat.Add(key, feature);
 
             // Now loop through the subfeatures recursively
-            foreach (KeyValuePair<string, UserInput> sub in feature.Features)
+            foreach (KeyValuePair<string, UserInput> sub in feature.Children)
             {
                 var temp = FlattenRecursive(sub.Key, sub.Value);
                 foreach (var tempfeat in temp)

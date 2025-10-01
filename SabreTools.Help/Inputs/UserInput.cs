@@ -22,9 +22,9 @@ namespace SabreTools.Help.Inputs
         public readonly List<string> Flags = [];
 
         /// <summary>
-        /// Set of subfeatures associated with this feature
+        /// Set of children associated with this input
         /// </summary>
-        public readonly Dictionary<string, UserInput> Features = [];
+        public readonly Dictionary<string, UserInput> Children = [];
 
         #endregion
 
@@ -69,7 +69,7 @@ namespace SabreTools.Help.Inputs
         /// </summary>
         public UserInput? this[string name]
         {
-            get { return Features.ContainsKey(name) ? Features[name] : null; }
+            get { return Children.ContainsKey(name) ? Children[name] : null; }
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace SabreTools.Help.Inputs
         /// </summary>
         public UserInput? this[UserInput subfeature]
         {
-            get { return Features.ContainsKey(subfeature.Name) ? Features[subfeature.Name] : null; }
+            get { return Children.ContainsKey(subfeature.Name) ? Children[subfeature.Name] : null; }
         }
 
         /// <summary>
@@ -86,9 +86,9 @@ namespace SabreTools.Help.Inputs
         /// <param name="feature"></param>
         public void AddFeature(UserInput feature)
         {
-            lock (Features)
+            lock (Children)
             {
-                Features[feature.Name ?? string.Empty] = feature;
+                Children[feature.Name ?? string.Empty] = feature;
             }
         }
 
@@ -353,9 +353,9 @@ namespace SabreTools.Help.Inputs
             }
 
             // Now let's append all subfeatures
-            foreach (string feature in Features.Keys)
+            foreach (string feature in Children.Keys)
             {
-                outputList.AddRange(Features[feature]!.OutputRecursive(tabLevel + 1, pre, midpoint, includeLongDescription));
+                outputList.AddRange(Children[feature]!.OutputRecursive(tabLevel + 1, pre, midpoint, includeLongDescription));
             }
 
             return outputList;

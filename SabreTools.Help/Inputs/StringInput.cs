@@ -54,7 +54,7 @@ namespace SabreTools.Help.Inputs
             }
 
             // If the current flag doesn't match, check to see if any of the subfeatures are valid
-            foreach (var kvp in Features)
+            foreach (var kvp in Children)
             {
                 if (kvp.Value.ProcessInput(args, ref index))
                     return true;
