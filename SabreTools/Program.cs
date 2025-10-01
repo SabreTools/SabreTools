@@ -40,7 +40,7 @@ namespace SabreTools
             // Credits take precidence over all
             if (Array.Exists(args, a => a == "--credits"))
             {
-                FeatureSet.OutputCredits();
+                OutputCredits();
                 return;
             }
 
@@ -137,6 +137,35 @@ namespace SabreTools
 
             LoggerImpl.Close();
             return;
+        }
+
+        /// <summary>
+        /// Output the SabreTools suite credits
+        /// </summary>
+        private static void OutputCredits()
+        {
+            const string _barrier = "-----------------------------------------";
+
+            Console.WriteLine(_barrier);
+            Console.WriteLine("Credits");
+            Console.WriteLine(_barrier);
+            Console.WriteLine();
+            Console.WriteLine("Programmer / Lead:	Matt Nadareski (darksabre76)");
+            Console.WriteLine("Additional code:	emuLOAD, @tractivo, motoschifo");
+            Console.WriteLine("Testing:		emuLOAD, @tractivo, Kludge, Obiwantje, edc");
+            Console.WriteLine("Suggestions:		edc, AcidX, Amiga12, EliUmniCk");
+            Console.WriteLine("Based on work by:	The Wizard of DATz");
+            Console.WriteLine(_barrier);
+            Console.WriteLine(_barrier);
+
+#if NET452_OR_GREATER || NETCOREAPP
+            if (!Console.IsOutputRedirected)
+#endif
+            {
+                Console.WriteLine();
+                Console.WriteLine("Press enter to continue...");
+                Console.ReadLine();
+            }
         }
 
         /// <summary>

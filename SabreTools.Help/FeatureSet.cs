@@ -29,11 +29,6 @@ namespace SabreTools.Help
         /// </remarks>
         private readonly Dictionary<string, UserInput> _features = [];
 
-        /// <summary>
-        /// Custom formatting string for writing to console
-        /// </summary>
-        private const string _barrier = "-----------------------------------------";
-
         #endregion
 
         #region Constructors
@@ -163,26 +158,6 @@ namespace SabreTools.Help
 
             // Now write out everything in a staged manner
             WriteOutWithPauses(output);
-        }
-
-        /// <summary>
-        /// Output the SabreTools suite credits
-        /// </summary>
-        public static void OutputCredits()
-        {
-            List<string> credits =
-            [
-                _barrier,
-                "Credits",
-                _barrier,
-                string.Empty,
-                "Programmer / Lead:	Matt Nadareski (darksabre76)",
-                "Additional code:	emuLOAD, @tractivo, motoschifo",
-                "Testing:		emuLOAD, @tractivo, Kludge, Obiwantje, edc",
-                "Suggestions:		edc, AcidX, Amiga12, EliUmniCk",
-                "Based on work by:	The Wizard of DATz"
-            ];
-            WriteOutWithPauses(credits);
         }
 
         /// <summary>
