@@ -100,7 +100,7 @@ namespace SabreTools.Help
                 var temp = FlattenRecursive(feature.Key, feature.Value);
                 foreach (var tempfeat in temp)
                 {
-                    if (!flat.ContainsKey(tempfeat.Key))
+                    if (flat.ContainsKey(tempfeat.Key))
                         continue;
 
                     flat[tempfeat.Key] = tempfeat.Value;
@@ -162,7 +162,7 @@ namespace SabreTools.Help
                 var temp = FlattenRecursive(sub.Key, sub.Value);
                 foreach (var tempfeat in temp)
                 {
-                    if (!flat.ContainsKey(tempfeat.Key))
+                    if (flat.ContainsKey(tempfeat.Key))
                         continue;
 
                     flat[tempfeat.Key] = tempfeat.Value;
