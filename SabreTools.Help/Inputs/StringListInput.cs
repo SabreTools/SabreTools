@@ -40,6 +40,8 @@ namespace SabreTools.Help.Inputs
                     if (kvp.Value.ProcessInput(args, ref index))
                         return true;
                 }
+
+                return false;
             }
 
             // Check for space-separated
