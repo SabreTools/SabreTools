@@ -48,7 +48,7 @@ namespace SabreTools.Features
                 return false;
 
             // Get a list of files from the input datfiles
-            var datfiles = GetList(features, DatListValue);
+            var datfiles = GetStringList(features, DatListValue);
             var datfilePaths = PathTool.GetFilesOnly(datfiles);
 
             // Get feature flags

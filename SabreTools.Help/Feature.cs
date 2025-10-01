@@ -159,20 +159,6 @@ namespace SabreTools.Help
         }
 
         /// <summary>
-        /// Get list value from nullable feature
-        /// </summary>
-        protected static List<string> GetList(Dictionary<string, UserInput> features, string key)
-        {
-            if (!features.ContainsKey(key))
-                return [];
-
-            if (features[key] is not StringListInput l)
-                throw new ArgumentException("Feature is not a list");
-
-            return l.Value ?? [];
-        }
-
-        /// <summary>
         /// Get string value from nullable feature
         /// </summary>
         protected static string? GetString(Dictionary<string, UserInput> features, string key)
@@ -184,6 +170,20 @@ namespace SabreTools.Help
                 throw new ArgumentException("Feature is not a string");
 
             return s.Value;
+        }
+
+        /// <summary>
+        /// Get list value from nullable feature
+        /// </summary>
+        protected static List<string> GetStringList(Dictionary<string, UserInput> features, string key)
+        {
+            if (!features.ContainsKey(key))
+                return [];
+
+            if (features[key] is not StringListInput l)
+                throw new ArgumentException("Feature is not a list");
+
+            return l.Value ?? [];
         }
 
         /// <summary>

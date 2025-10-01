@@ -113,7 +113,7 @@ namespace SabreTools.Features
 
             // Ensure we only have files in the inputs
             List<ParentablePath> inputPaths = PathTool.GetFilesOnly(Inputs, appendParent: true);
-            List<ParentablePath> basePaths = PathTool.GetFilesOnly(GetList(features, BaseDatListValue));
+            List<ParentablePath> basePaths = PathTool.GetFilesOnly(GetStringList(features, BaseDatListValue));
 
             // Ensure the output directory
             OutputDir = OutputDir.Ensure();

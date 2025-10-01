@@ -1276,7 +1276,7 @@ Some special strings that can be used:
         {
             StatReportFormat statDatFormat = StatReportFormat.None;
 
-            foreach (string rt in GetList(features, ReportTypeListValue))
+            foreach (string rt in GetStringList(features, ReportTypeListValue))
             {
                 statDatFormat |= GetStatReportFormat(rt);
             }
@@ -1306,7 +1306,7 @@ Some special strings that can be used:
         protected static List<string> GetUpdateMachineFields(Dictionary<string, UserInput> features)
         {
             List<string> updateFields = [];
-            foreach (string fieldName in GetList(features, UpdateFieldListValue))
+            foreach (string fieldName in GetStringList(features, UpdateFieldListValue))
             {
                 // Ensure the field is valid
                 try
@@ -1329,7 +1329,7 @@ Some special strings that can be used:
         protected static Dictionary<string, List<string>> GetUpdateDatItemFields(Dictionary<string, UserInput> features)
         {
             Dictionary<string, List<string>> updateFields = [];
-            foreach (string fieldName in GetList(features, UpdateFieldListValue))
+            foreach (string fieldName in GetStringList(features, UpdateFieldListValue))
             {
                 // Ensure the field is valid
                 try
@@ -1405,7 +1405,7 @@ Some special strings that can be used:
                 DescriptionAsName = GetBoolean(features, DescriptionAsNameValue),
                 KeepEmptyGames = GetBoolean(features, KeepEmptyGamesValue),
                 OneGamePerRegion = GetBoolean(features, OneGamePerRegionValue),
-                RegionList = GetList(features, RegionListValue),
+                RegionList = GetStringList(features, RegionListValue),
                 OneRomPerGame = GetBoolean(features, OneRomPerGameValue),
                 RemoveUnicode = GetBoolean(features, RemoveUnicodeValue),
                 Root = GetString(features, RootDirStringValue),
@@ -1442,7 +1442,7 @@ Some special strings that can be used:
             datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.VersionKey, GetString(features, VersionStringValue));
 
             bool deprecated = GetBoolean(features, DeprecatedValue);
-            foreach (string ot in GetList(features, OutputTypeListValue))
+            foreach (string ot in GetStringList(features, OutputTypeListValue))
             {
                 DatFormat dftemp = GetDatFormat(ot);
                 if (dftemp == 0x00)
@@ -1510,7 +1510,7 @@ Some special strings that can be used:
         private static ExtraIni GetExtras(Dictionary<string, UserInput> features)
         {
             ExtraIni extraIni = new();
-            extraIni.PopulateFromList(GetList(features, ExtraIniListValue));
+            extraIni.PopulateFromList(GetStringList(features, ExtraIniListValue));
             return extraIni;
         }
 
@@ -1520,7 +1520,7 @@ Some special strings that can be used:
         private static FilterRunner GetFilterRunner(Dictionary<string, UserInput> features)
         {
             // Populate filters
-            List<string> filterPairs = GetList(features, FilterListValue);
+            List<string> filterPairs = GetStringList(features, FilterListValue);
 
             // Include 'of" in game filters
             bool matchOfTags = GetBoolean(features, MatchOfTagsValue);
@@ -1542,7 +1542,7 @@ Some special strings that can be used:
             Remover remover = new();
 
             // Populate field exclusions
-            List<string> exclusionFields = GetList(features, ExcludeFieldListValue);
+            List<string> exclusionFields = GetStringList(features, ExcludeFieldListValue);
             remover.PopulateExclusionsFromList(exclusionFields);
 
             return remover;
