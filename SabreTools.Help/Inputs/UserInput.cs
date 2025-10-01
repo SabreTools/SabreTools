@@ -121,6 +121,7 @@ namespace SabreTools.Help.Inputs
         /// </summary>
         protected bool GetBoolean(string key)
         {
+            // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
             {
                 if (input is BooleanInput b)
@@ -131,6 +132,13 @@ namespace SabreTools.Help.Inputs
                 throw new ArgumentException("Feature is not a bool");
             }
 
+            // Check all children recursively
+            foreach (var child in Children.Values)
+            {
+                if (child.GetBoolean(key))
+                    return true;
+            }
+
             return false;
         }
 
@@ -139,12 +147,21 @@ namespace SabreTools.Help.Inputs
         /// </summary>
         protected sbyte GetInt8(string key)
         {
+            // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
             {
                 if (input is not Int8Input i)
                     throw new ArgumentException("Feature is not an sbyte");
 
                 return i.Value;
+            }
+
+            // Check all children recursively
+            foreach (var child in Children.Values)
+            {
+                sbyte childValue = child.GetInt8(key);
+                if (childValue != sbyte.MinValue)
+                    return childValue;
             }
 
             return sbyte.MinValue;
@@ -155,12 +172,21 @@ namespace SabreTools.Help.Inputs
         /// </summary>
         protected short GetInt16(string key)
         {
+            // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
             {
                 if (input is not Int16Input i)
                     throw new ArgumentException("Feature is not a short");
 
                 return i.Value;
+            }
+
+            // Check all children recursively
+            foreach (var child in Children.Values)
+            {
+                short childValue = child.GetInt16(key);
+                if (childValue != short.MinValue)
+                    return childValue;
             }
 
             return short.MinValue;
@@ -171,12 +197,21 @@ namespace SabreTools.Help.Inputs
         /// </summary>
         protected int GetInt32(string key)
         {
+            // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
             {
                 if (input is not Int32Input i)
                     throw new ArgumentException("Feature is not an int");
 
                 return i.Value;
+            }
+
+            // Check all children recursively
+            foreach (var child in Children.Values)
+            {
+                int childValue = child.GetInt32(key);
+                if (childValue != int.MinValue)
+                    return childValue;
             }
 
             return int.MinValue;
@@ -187,12 +222,21 @@ namespace SabreTools.Help.Inputs
         /// </summary>
         protected long GetInt64(string key)
         {
+            // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
             {
                 if (input is not Int64Input l)
                     throw new ArgumentException("Feature is not a long");
 
                 return l.Value;
+            }
+
+            // Check all children recursively
+            foreach (var child in Children.Values)
+            {
+                long childValue = child.GetInt64(key);
+                if (childValue != long.MinValue)
+                    return childValue;
             }
 
             return long.MinValue;
@@ -203,12 +247,21 @@ namespace SabreTools.Help.Inputs
         /// </summary>
         protected string? GetString(string key)
         {
+            // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
             {
                 if (input is not StringInput s)
                     throw new ArgumentException("Feature is not a string");
 
                 return s.Value;
+            }
+
+            // Check all children recursively
+            foreach (var child in Children.Values)
+            {
+                string? childValue = child.GetString(key);
+                if (childValue != null)
+                    return childValue;
             }
 
             return null;
@@ -219,12 +272,21 @@ namespace SabreTools.Help.Inputs
         /// </summary>
         protected List<string> GetStringList(string key)
         {
+            // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
             {
                 if (input is not StringListInput l)
                     throw new ArgumentException("Feature is not a list");
 
                 return l.Value ?? [];
+            }
+
+            // Check all children recursively
+            foreach (var child in Children.Values)
+            {
+                List<string> childValue = child.GetStringList(key);
+                if (childValue.Count > 0)
+                    return childValue;
             }
 
             return [];
@@ -235,12 +297,21 @@ namespace SabreTools.Help.Inputs
         /// </summary>
         protected byte GetUInt8(string key)
         {
+            // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
             {
                 if (input is not UInt8Input i)
                     throw new ArgumentException("Feature is not an byte");
 
                 return i.Value;
+            }
+
+            // Check all children recursively
+            foreach (var child in Children.Values)
+            {
+                byte childValue = child.GetUInt8(key);
+                if (childValue != byte.MinValue)
+                    return childValue;
             }
 
             return byte.MinValue;
@@ -251,12 +322,21 @@ namespace SabreTools.Help.Inputs
         /// </summary>
         protected ushort GetUInt16(string key)
         {
+            // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
             {
                 if (input is not UInt16Input i)
                     throw new ArgumentException("Feature is not a ushort");
 
                 return i.Value;
+            }
+
+            // Check all children recursively
+            foreach (var child in Children.Values)
+            {
+                ushort childValue = child.GetUInt16(key);
+                if (childValue != ushort.MinValue)
+                    return childValue;
             }
 
             return ushort.MinValue;
@@ -267,12 +347,21 @@ namespace SabreTools.Help.Inputs
         /// </summary>
         protected uint GetUInt32(string key)
         {
+            // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
             {
                 if (input is not UInt32Input i)
                     throw new ArgumentException("Feature is not an uint");
 
                 return i.Value;
+            }
+
+            // Check all children recursively
+            foreach (var child in Children.Values)
+            {
+                uint childValue = child.GetUInt32(key);
+                if (childValue != uint.MinValue)
+                    return childValue;
             }
 
             return uint.MinValue;
@@ -283,12 +372,21 @@ namespace SabreTools.Help.Inputs
         /// </summary>
         protected ulong GetUInt64(string key)
         {
+            // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
             {
                 if (input is not UInt64Input l)
                     throw new ArgumentException("Feature is not a ulong");
 
                 return l.Value;
+            }
+
+            // Check all children recursively
+            foreach (var child in Children.Values)
+            {
+                ulong childValue = child.GetUInt64(key);
+                if (childValue != ulong.MinValue)
+                    return childValue;
             }
 
             return ulong.MinValue;
