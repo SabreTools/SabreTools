@@ -38,7 +38,7 @@ namespace SabreTools.Help.Inputs
 
                 // If the next value is valid
                 if (!bool.TryParse(args[index + 1], out bool value))
-                    value = false;
+                    return false;
 
                 index++;
                 Value = value;
@@ -59,7 +59,7 @@ namespace SabreTools.Help.Inputs
 
                 // If the next value is valid
                 if (!bool.TryParse(val, out bool value))
-                    value = false;
+                    return false;
 
                 Value = value;
                 return true;

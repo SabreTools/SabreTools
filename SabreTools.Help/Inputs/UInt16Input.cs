@@ -38,7 +38,7 @@ namespace SabreTools.Help.Inputs
 
                 // If the next value is valid
                 if (!ushort.TryParse(args[index + 1], out ushort value))
-                    value = ushort.MinValue;
+                    return false;
 
                 index++;
                 Value = value;
@@ -59,7 +59,7 @@ namespace SabreTools.Help.Inputs
 
                 // If the next value is valid
                 if (!ushort.TryParse(val, out ushort value))
-                    value = ushort.MinValue;
+                    return false;
 
                 Value = value;
                 return true;

@@ -38,7 +38,7 @@ namespace SabreTools.Help.Inputs
 
                 // If the next value is valid
                 if (!sbyte.TryParse(args[index + 1], out sbyte value))
-                    value = sbyte.MinValue;
+                    return false;
 
                 index++;
                 Value = value;
@@ -59,7 +59,7 @@ namespace SabreTools.Help.Inputs
 
                 // If the next value is valid
                 if (!sbyte.TryParse(val, out sbyte value))
-                    value = sbyte.MinValue;
+                    return false;
 
                 Value = value;
                 return true;
