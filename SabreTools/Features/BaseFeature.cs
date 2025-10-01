@@ -615,14 +615,14 @@ namespace SabreTools.Features
         #region Int32 features
 
         internal const string DepotDepthInt32Value = "depot-depth";
-        internal static Int32UserInput DepotDepthInt32Input => new(
+        internal static Int32Input DepotDepthInt32Input => new(
             DepotDepthInt32Value,
             ["-depd", "--depot-depth"],
             "Set depth of depot for inputs",
             longDescription: "Optionally, set the depth of input depots. Defaults to 4 deep otherwise.");
 
         internal const string RombaDepthInt32Value = "romba-depth";
-        internal static Int32UserInput RombaDepthInt32Input => new(
+        internal static Int32Input RombaDepthInt32Input => new(
             RombaDepthInt32Value,
             ["-depr", "--romba-depth"],
             "Set depth of depot for outputs",
@@ -630,7 +630,7 @@ namespace SabreTools.Features
 
 #if NET452_OR_GREATER || NETCOREAPP
         internal const string ThreadsInt32Value = "threads";
-        internal static Int32UserInput ThreadsInt32Input => new(
+        internal static Int32Input ThreadsInt32Input => new(
             ThreadsInt32Value,
             ["-mt", "--threads"],
             "Amount of threads to use (default = # cores)",
@@ -642,14 +642,14 @@ namespace SabreTools.Features
         #region Int64 features
 
         internal const string ChunkSizeInt64Value = "chunk-size";
-        internal static Int64UserInput ChunkSizeInt64Input => new(
+        internal static Int64Input ChunkSizeInt64Input => new(
             ChunkSizeInt64Value,
             ["-cs", "--chunk-size"],
             "Set a chunk size to output",
             longDescription: "Set the total game size to cut off at for each chunked DAT. It is recommended to use a sufficiently large size such as 1GB or else you may run into issues, especially if a single game could be larger than the size provided.");
 
         internal const string RadixInt64Value = "radix";
-        internal static Int64UserInput RadixInt64Input => new(
+        internal static Int64Input RadixInt64Input => new(
             RadixInt64Value,
             ["-rad", "--radix"],
             "Set the midpoint to split at",
@@ -660,56 +660,56 @@ namespace SabreTools.Features
         #region List<string> features
 
         internal const string BaseDatListValue = "base-dat";
-        internal static StringListUserInput BaseDatListInput => new(
+        internal static StringListInput BaseDatListInput => new(
             BaseDatListValue,
             ["-bd", "--base-dat"],
             "Add a base DAT for processing",
             longDescription: "Add a DAT or folder of DATs to the base set to be used for all operations. Multiple instances of this flag are allowed.");
 
         internal const string DatListValue = "dat";
-        internal static StringListUserInput DatListInput => new(
+        internal static StringListInput DatListInput => new(
             DatListValue,
             ["-dat", "--dat"],
             "Input DAT to be used",
             longDescription: "User-supplied DAT for use in all operations. Multiple instances of this flag are allowed.");
 
         internal const string ExcludeFieldListValue = "exclude-field";
-        internal static StringListUserInput ExcludeFieldListInput => new(
+        internal static StringListInput ExcludeFieldListInput => new(
             ExcludeFieldListValue,
             ["-ef", "--exclude-field"],
             "Exclude a game/rom field from outputs",
             longDescription: "Exclude any valid item or machine field from outputs. Examples include: romof, publisher, and offset.");
 
         internal const string ExtAListValue = "exta";
-        internal static StringListUserInput ExtaListInput => new(
+        internal static StringListInput ExtaListInput => new(
             ExtAListValue,
             ["-exta", "--exta"],
             "Set extension to be included in first DAT",
             longDescription: "Set the extension to be used to populate the first DAT. Multiple instances of this flag are allowed.");
 
         internal const string ExtBListValue = "extb";
-        internal static StringListUserInput ExtbListInput => new(
+        internal static StringListInput ExtbListInput => new(
             ExtBListValue,
             ["-extb", "--extb"],
             "Set extension to be included in second DAT",
             longDescription: "Set the extension to be used to populate the second DAT. Multiple instances of this flag are allowed.");
 
         internal const string ExtraIniListValue = "extra-ini";
-        internal static StringListUserInput ExtraIniListInput => new(
+        internal static StringListInput ExtraIniListInput => new(
             ExtraIniListValue,
             ["-ini", "--extra-ini"],
             "Apply a MAME INI for given field(s)",
             longDescription: "Apply any valid MAME INI for any valid field in the DatFile. Inputs are of the form 'Field:path\\to\\ini'. Multiple instances of this flag are allowed.");
 
         internal const string FilterListValue = "filter";
-        internal static StringListUserInput FilterListInput => new(
+        internal static StringListInput FilterListInput => new(
             FilterListValue,
             ["-fi", "--filter"],
             "Filter a game/rom field with the given value(s)",
             longDescription: "Filter any valid item or machine field from inputs. Filters are input in the form 'type.key=value' or 'type.key!=value', where the '!' signifies 'not matching'. Numeric values may also use extra operations, namely '>', '>=', '<', and '<='. Key examples include: item.romof, machine.category, and game.name. Additionally, the user can specify an exact match or full C#-style regex for pattern matching. Multiple instances of this flag are allowed.");
 
         internal const string OutputTypeListValue = "output-type";
-        internal static StringListUserInput OutputTypeListInput => new(
+        internal static StringListInput OutputTypeListInput => new(
             OutputTypeListValue,
             ["-ot", "--output-type"],
             "Output DATs to a specified format",
@@ -748,14 +748,14 @@ Possible values are:
     xml, logiqx                 - Logiqx XML");
 
         internal const string RegionListValue = "region";
-        internal static StringListUserInput RegionListInput => new(
+        internal static StringListInput RegionListInput => new(
             RegionListValue,
             ["-reg", "--region"],
             "Add a region for 1G1R",
             longDescription: "Add a region (in order) for use with 1G1R filtering. If this is not supplied, then by default, only parent sets will be included in the output. Multiple instances of this flag are allowed.");
 
         internal const string ReportTypeListValue = "report-type";
-        internal static StringListUserInput ReportTypeListInput => new(
+        internal static StringListInput ReportTypeListInput => new(
             ReportTypeListValue,
             ["-srt", "--report-type"],
             "Output statistics to a specified format",
@@ -770,7 +770,7 @@ Possible values are:
     tsv              - Standardized Tab-Separated Value");
 
         internal const string UpdateFieldListValue = "update-field";
-        internal static StringListUserInput UpdateFieldListInput => new(
+        internal static StringListInput UpdateFieldListInput => new(
             UpdateFieldListValue,
             ["-uf", "--update-field"],
             "Update a game/rom field from base DATs",
@@ -781,63 +781,63 @@ Possible values are:
         #region String features
 
         internal const string AddExtensionStringValue = "add-extension";
-        internal static StringUserInput AddExtensionStringInput => new(
+        internal static StringInput AddExtensionStringInput => new(
             AddExtensionStringValue,
             ["-ae", "--add-extension"],
             "Add an extension to each item",
             longDescription: "Add a postfix extension to each full item name.");
 
         internal const string AuthorStringValue = "author";
-        internal static StringUserInput AuthorStringInput => new(
+        internal static StringInput AuthorStringInput => new(
             AuthorStringValue,
             ["-au", "--author"],
             "Set the author of the DAT",
             longDescription: "Set the author header field for the output DAT(s)");
 
         internal const string CategoryStringValue = "category";
-        internal static StringUserInput CategoryStringInput => new(
+        internal static StringInput CategoryStringInput => new(
             CategoryStringValue,
             ["-c", "--category"],
             "Set the category of the DAT",
             longDescription: "Set the category header field for the output DAT(s)");
 
         internal const string CommentStringValue = "comment";
-        internal static StringUserInput CommentStringInput => new(
+        internal static StringInput CommentStringInput => new(
             CommentStringValue,
             ["-co", "--comment"],
             "Set a new comment of the DAT",
             longDescription: "Set the comment header field for the output DAT(s)");
 
         internal const string DateStringValue = "date";
-        internal static StringUserInput DateStringInput => new(
+        internal static StringInput DateStringInput => new(
             DateStringValue,
             ["-da", "--date"],
             "Set a new date",
             longDescription: "Set the date header field for the output DAT(s)");
 
         internal const string DescriptionStringValue = "description";
-        internal static StringUserInput DescriptionStringInput => new(
+        internal static StringInput DescriptionStringInput => new(
             DescriptionStringValue,
             ["-de", "--description"],
             "Set the description of the DAT",
             longDescription: "Set the description header field for the output DAT(s)");
 
         internal const string EmailStringValue = "email";
-        internal static StringUserInput EmailStringInput => new(
+        internal static StringInput EmailStringInput => new(
             EmailStringValue,
             ["-em", "--email"],
             "Set a new email of the DAT",
             longDescription: "Set the email header field for the output DAT(s)");
 
         internal const string FilenameStringValue = "filename";
-        internal static StringUserInput FilenameStringInput => new(
+        internal static StringInput FilenameStringInput => new(
             FilenameStringValue,
             ["-f", "--filename"],
             "Set the external name of the DAT",
             longDescription: "Set the external filename for the output DAT(s)");
 
         internal const string ForceMergingStringValue = "forcemerging";
-        internal static StringUserInput ForceMergingStringInput => new(
+        internal static StringInput ForceMergingStringInput => new(
             ForceMergingStringValue,
             ["-fm", "--forcemerging"],
             "Set force merging",
@@ -845,7 +845,7 @@ Possible values are:
 Possible values are: None, Split, Device, Merged, Nonmerged, Full");
 
         internal const string ForceNodumpStringValue = "forcenodump";
-        internal static StringUserInput ForceNodumpStringInput => new(
+        internal static StringInput ForceNodumpStringInput => new(
             ForceNodumpStringValue,
             ["-fn", "--forcenodump"],
             "Set force nodump",
@@ -853,7 +853,7 @@ Possible values are: None, Split, Device, Merged, Nonmerged, Full");
 Possible values are: None, Obsolete, Required, Ignore");
 
         internal const string ForcePackingStringValue = "forcepacking";
-        internal static StringUserInput ForcePackingStringInput => new(
+        internal static StringInput ForcePackingStringInput => new(
             ForcePackingStringValue,
             ["-fp", "--forcepacking"],
             "Set force packing",
@@ -861,21 +861,21 @@ Possible values are: None, Obsolete, Required, Ignore");
 Possible values are: None, Zip, Unzip, Partial, Flat");
 
         internal const string HeaderStringValue = "header";
-        internal static StringUserInput HeaderStringInput => new(
+        internal static StringInput HeaderStringInput => new(
             HeaderStringValue,
             ["-h", "--header"],
             "Set a header skipper to use, blank means all",
             longDescription: "Set the header special field for the output DAT(s). In file rebuilding, this flag allows for either all copier headers (using \"\") or specific copier headers by name (such as \"fds.xml\") to determine if a file matches or not.");
 
         internal const string HomepageStringValue = "homepage";
-        internal static StringUserInput HomepageStringInput => new(
+        internal static StringInput HomepageStringInput => new(
             HomepageStringValue,
             ["-hp", "--homepage"],
             "Set a new homepage of the DAT",
             longDescription: "Set the homepage header field for the output DAT(s)");
 
         internal const string LogLevelStringValue = "log-level";
-        internal static StringUserInput LogLevelStringInput => new(
+        internal static StringInput LogLevelStringInput => new(
             LogLevelStringValue,
             ["-ll", "--log-level"],
             "Set the lowest log level for output",
@@ -883,21 +883,21 @@ Possible values are: None, Zip, Unzip, Partial, Flat");
 Possible values are: None, Verbose, User, Warning, Error");
 
         internal const string NameStringValue = "name";
-        internal static StringUserInput NameStringInput => new(
+        internal static StringInput NameStringInput => new(
             NameStringValue,
             ["-n", "--name"],
             "Set the internal name of the DAT",
             longDescription: "Set the name header field for the output DAT(s)");
 
         internal const string OutputDirStringValue = "output-dir";
-        internal static StringUserInput OutputDirStringInput => new(
+        internal static StringInput OutputDirStringInput => new(
             OutputDirStringValue,
             ["-out", "--output-dir"],
             "Set output directory",
             longDescription: "This sets an output folder to be used when the files are created. If a path is not defined, the runtime directory is used instead.");
 
         internal const string PostfixStringValue = "postfix";
-        internal static StringUserInput PostfixStringInput => new(
+        internal static StringInput PostfixStringInput => new(
             PostfixStringValue,
             ["-post", "--postfix"],
             "Set postfix for all lines",
@@ -922,7 +922,7 @@ Some special strings that can be used:
 - %size% - Replaced with the size");
 
         internal const string PrefixStringValue = "prefix";
-        internal static StringUserInput PrefixStringInput => new(
+        internal static StringInput PrefixStringInput => new(
             PrefixStringValue,
             ["-pre", "--prefix"],
             "Set prefix for all lines",
@@ -947,35 +947,35 @@ Some special strings that can be used:
 - %size% - Replaced with the size");
 
         internal const string ReplaceExtensionStringValue = "replace-extension";
-        internal static StringUserInput ReplaceExtensionStringInput => new(
+        internal static StringInput ReplaceExtensionStringInput => new(
             ReplaceExtensionStringValue,
             ["-rep", "--replace-extension"],
             "Replace all extensions with specified",
             longDescription: "When an extension exists, replace it with the provided instead.");
 
         internal const string RootStringValue = "root";
-        internal static StringUserInput RootStringInput => new(
+        internal static StringInput RootStringInput => new(
             RootStringValue,
             ["-r", "--root"],
             "Set a new rootdir",
             longDescription: "Set the rootdir (as used by SuperDAT mode) for the output DAT(s).");
 
         internal const string RootDirStringValue = "root-dir";
-        internal static StringUserInput RootDirStringInput => new(
+        internal static StringInput RootDirStringInput => new(
             RootDirStringValue,
             ["-rd", "--root-dir"],
             "Set the root directory for calc",
             longDescription: "In the case that the files will not be stored from the root directory, a new root can be set for path length calculations.");
 
         internal const string UrlStringValue = "url";
-        internal static StringUserInput UrlStringInput => new(
+        internal static StringInput UrlStringInput => new(
             UrlStringValue,
             ["-u", "--url"],
             "Set a new URL of the DAT",
             longDescription: "Set the URL header field for the output DAT(s)");
 
         internal const string VersionStringValue = "version";
-        internal static StringUserInput VersionStringInput => new(
+        internal static StringInput VersionStringInput => new(
             VersionStringValue,
             ["-v", "--version"],
             "Set the version of the DAT",

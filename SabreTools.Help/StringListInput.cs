@@ -1,25 +1,26 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace SabreTools.Help
 {
     /// <summary>
-    /// Represents a user input bounded to the range of <see cref="long"/> 
+    /// Represents a string input with multiple instances allowed
     /// </summary>
-    public class Int64UserInput : UserInput<long>
+    public class StringListInput : UserInput<List<string>>
     {
         #region Constructors
 
-        public Int64UserInput(string name, string flag, string description, string? longDescription = null)
+        public StringListInput(string name, string flag, string description, string? longDescription = null)
             : base(name, flag, description, longDescription)
         {
-            Value = long.MinValue;
+            Value = null;
         }
 
-        public Int64UserInput(string name, string[] flags, string description, string? longDescription = null)
+        public StringListInput(string name, string[] flags, string description, string? longDescription = null)
             : base(name, flags, description, longDescription)
         {
-            Value = long.MinValue;
+            Value = null;
         }
 
         #endregion
@@ -35,16 +36,8 @@ namespace SabreTools.Help
             bool valid = input.Contains("=") && Flags.Contains(splitInput[0]);
             if (valid)
             {
-                if (!long.TryParse(splitInput[1], out long value))
-                    value = long.MinValue;
-
-                Value = value;
-
-                // If we've already found this feature before
-                if (_foundOnce && !ignore)
-                    valid = false;
-
-                _foundOnce = true;
+                Value ??= [];
+                Value.Add(string.Join("=", splitInput, 1, splitInput.Length - 1));
             }
 
             // If we haven't found a valid flag and we're not looking for just this feature, check to see if any of the subfeatures are valid
@@ -58,7 +51,7 @@ namespace SabreTools.Help
         }
 
         /// <inheritdoc/>
-        public override bool IsEnabled() => Value != long.MinValue;
+        public override bool IsEnabled() => Value != null;
 
         /// <inheritdoc/>
         protected override string FormatFlags()

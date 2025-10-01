@@ -6,17 +6,17 @@ namespace SabreTools.Help
     /// <summary>
     /// Represents a string input with a single instance allowed
     /// </summary>
-    public class StringUserInput : UserInput<string>
+    public class StringInput : UserInput<string>
     {
         #region Constructors
 
-        public StringUserInput(string name, string flag, string description, string? longDescription = null)
+        public StringInput(string name, string flag, string description, string? longDescription = null)
             : base(name, flag, description, longDescription)
         {
             Value = null;
         }
 
-        public StringUserInput(string name, string[] flags, string description, string? longDescription = null)
+        public StringInput(string name, string[] flags, string description, string? longDescription = null)
             : base(name, flags, description, longDescription)
         {
             Value = null;

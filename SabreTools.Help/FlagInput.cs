@@ -1,26 +1,25 @@
 using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace SabreTools.Help
 {
     /// <summary>
-    /// Represents a string input with multiple instances allowed
+    /// Represents a boolean user input
     /// </summary>
-    public class StringListUserInput : UserInput<List<string>>
+    public class FlagInput : UserInput<bool>
     {
         #region Constructors
 
-        public StringListUserInput(string name, string flag, string description, string? longDescription = null)
+        public FlagInput(string name, string flag, string description, string? longDescription = null)
             : base(name, flag, description, longDescription)
         {
-            Value = null;
+            Value = false;
         }
 
-        public StringListUserInput(string name, string[] flags, string description, string? longDescription = null)
+        public FlagInput(string name, string[] flags, string description, string? longDescription = null)
             : base(name, flags, description, longDescription)
         {
-            Value = null;
+            Value = false;
         }
 
         #endregion
@@ -33,11 +32,16 @@ namespace SabreTools.Help
             // Pre-split the input for efficiency
             string[] splitInput = input.Split('=');
 
-            bool valid = input.Contains("=") && Flags.Contains(splitInput[0]);
+            bool valid = !input.Contains("=") && Flags.Contains(input);
             if (valid)
             {
-                Value ??= [];
-                Value.Add(string.Join("=", splitInput, 1, splitInput.Length - 1));
+                Value = true;
+
+                // If we've already found this feature before
+                if (_foundOnce && !ignore)
+                    valid = false;
+
+                _foundOnce = true;
             }
 
             // If we haven't found a valid flag and we're not looking for just this feature, check to see if any of the subfeatures are valid
@@ -51,13 +55,13 @@ namespace SabreTools.Help
         }
 
         /// <inheritdoc/>
-        public override bool IsEnabled() => Value != null;
+        public override bool IsEnabled() => Value;
 
         /// <inheritdoc/>
         protected override string FormatFlags()
         {
             var sb = new StringBuilder();
-            Flags.ForEach(flag => sb.Append($"{flag}=, "));
+            Flags.ForEach(flag => sb.Append($"{flag}, "));
             return sb.ToString().TrimEnd(' ', ',');
         }
 

@@ -102,7 +102,7 @@ namespace SabreTools.Help
             if (!features.ContainsKey(key))
                 return int.MinValue;
 
-            if (features[key] is not Int32UserInput i)
+            if (features[key] is not Int32Input i)
                 throw new ArgumentException("Feature is not an int");
 
             return i.Value;
@@ -116,7 +116,7 @@ namespace SabreTools.Help
             if (!features.ContainsKey(key))
                 return long.MinValue;
 
-            if (features[key] is not Int64UserInput l)
+            if (features[key] is not Int64Input l)
                 throw new ArgumentException("Feature is not a long");
 
             return l.Value;
@@ -130,7 +130,7 @@ namespace SabreTools.Help
             if (!features.ContainsKey(key))
                 return [];
 
-            if (features[key] is not StringListUserInput l)
+            if (features[key] is not StringListInput l)
                 throw new ArgumentException("Feature is not a list");
 
             return l.Value ?? [];
@@ -144,7 +144,7 @@ namespace SabreTools.Help
             if (!features.ContainsKey(key))
                 return null;
 
-            if (features[key] is not StringUserInput s)
+            if (features[key] is not StringInput s)
                 throw new ArgumentException("Feature is not a string");
 
             return s.Value;
