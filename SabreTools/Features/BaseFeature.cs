@@ -309,7 +309,7 @@ namespace SabreTools.Features
 
         internal const string IncludeRipeMD160Value = "include-ripemd160";
         internal static FlagInput IncludeRipeMD160Flag => new(
-            IncludeRipeMD128Value,
+            IncludeRipeMD160Value,
             ["-ripemd160", "--include-ripemd160"],
             "Include RIPEMD160 in output",
             longDescription: "This enables RIPEMD160 calculation for each of the files. Adding this flag overrides the default hashing behavior of including CRC32, MD5, and SHA-1 hashes.");
