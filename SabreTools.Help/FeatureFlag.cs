@@ -7,7 +7,7 @@ namespace SabreTools.Help
     /// <summary>
     /// Represents an application-level feature
     /// </summary>
-    public abstract class FeatureFlag : FlagUserInput
+    public abstract class FeatureFlag : FlagInput
     {
         #region Fields
 
