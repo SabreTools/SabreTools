@@ -121,15 +121,17 @@ namespace SabreTools.Help.Inputs
         /// </summary>
         protected bool GetBoolean(string key)
         {
-            if (!Children.ContainsKey(key))
-                return false;
+            if (Children.TryGetValue(key, out var input))
+            {
+                if (input is BooleanInput b)
+                    return b.Value;
+                else if (input is FlagInput f)
+                    return f.Value;
 
-            if (Children[key] is BooleanInput b)
-                return b.Value;
-            else if (Children[key] is FlagInput f)
-                return f.Value;
+                throw new ArgumentException("Feature is not a bool");
+            }
 
-            throw new ArgumentException("Feature is not a bool");
+            return false;
         }
 
         /// <summary>
@@ -137,13 +139,15 @@ namespace SabreTools.Help.Inputs
         /// </summary>
         protected sbyte GetInt8(string key)
         {
-            if (!Children.ContainsKey(key))
-                return sbyte.MinValue;
+            if (Children.TryGetValue(key, out var input))
+            {
+                if (input is not Int8Input i)
+                    throw new ArgumentException("Feature is not an sbyte");
 
-            if (Children[key] is not Int8Input i)
-                throw new ArgumentException("Feature is not an sbyte");
+                return i.Value;
+            }
 
-            return i.Value;
+            return sbyte.MinValue;
         }
 
         /// <summary>
@@ -151,13 +155,15 @@ namespace SabreTools.Help.Inputs
         /// </summary>
         protected short GetInt16(string key)
         {
-            if (!Children.ContainsKey(key))
-                return short.MinValue;
+            if (Children.TryGetValue(key, out var input))
+            {
+                if (input is not Int16Input i)
+                    throw new ArgumentException("Feature is not a short");
 
-            if (Children[key] is not Int16Input i)
-                throw new ArgumentException("Feature is not a short");
+                return i.Value;
+            }
 
-            return i.Value;
+            return short.MinValue;
         }
 
         /// <summary>
@@ -165,13 +171,15 @@ namespace SabreTools.Help.Inputs
         /// </summary>
         protected int GetInt32(string key)
         {
-            if (!Children.ContainsKey(key))
-                return int.MinValue;
+            if (Children.TryGetValue(key, out var input))
+            {
+                if (input is not Int32Input i)
+                    throw new ArgumentException("Feature is not an int");
 
-            if (Children[key] is not Int32Input i)
-                throw new ArgumentException("Feature is not an int");
+                return i.Value;
+            }
 
-            return i.Value;
+            return int.MinValue;
         }
 
         /// <summary>
@@ -179,13 +187,15 @@ namespace SabreTools.Help.Inputs
         /// </summary>
         protected long GetInt64(string key)
         {
-            if (!Children.ContainsKey(key))
-                return long.MinValue;
+            if (Children.TryGetValue(key, out var input))
+            {
+                if (input is not Int64Input l)
+                    throw new ArgumentException("Feature is not a long");
 
-            if (Children[key] is not Int64Input l)
-                throw new ArgumentException("Feature is not a long");
+                return l.Value;
+            }
 
-            return l.Value;
+            return long.MinValue;
         }
 
         /// <summary>
@@ -193,13 +203,15 @@ namespace SabreTools.Help.Inputs
         /// </summary>
         protected string? GetString(string key)
         {
-            if (!Children.ContainsKey(key))
-                return null;
+            if (Children.TryGetValue(key, out var input))
+            {
+                if (input is not StringInput s)
+                    throw new ArgumentException("Feature is not a string");
 
-            if (Children[key] is not StringInput s)
-                throw new ArgumentException("Feature is not a string");
+                return s.Value;
+            }
 
-            return s.Value;
+            return null;
         }
 
         /// <summary>
@@ -207,13 +219,15 @@ namespace SabreTools.Help.Inputs
         /// </summary>
         protected List<string> GetStringList(string key)
         {
-            if (!Children.ContainsKey(key))
-                return [];
+            if (Children.TryGetValue(key, out var input))
+            {
+                if (input is not StringListInput l)
+                    throw new ArgumentException("Feature is not a list");
 
-            if (Children[key] is not StringListInput l)
-                throw new ArgumentException("Feature is not a list");
+                return l.Value ?? [];
+            }
 
-            return l.Value ?? [];
+            return [];
         }
 
         /// <summary>
@@ -221,13 +235,15 @@ namespace SabreTools.Help.Inputs
         /// </summary>
         protected byte GetUInt8(string key)
         {
-            if (!Children.ContainsKey(key))
-                return byte.MinValue;
+            if (Children.TryGetValue(key, out var input))
+            {
+                if (input is not UInt8Input i)
+                    throw new ArgumentException("Feature is not an byte");
 
-            if (Children[key] is not UInt8Input i)
-                throw new ArgumentException("Feature is not an byte");
+                return i.Value;
+            }
 
-            return i.Value;
+            return byte.MinValue;
         }
 
         /// <summary>
@@ -235,13 +251,15 @@ namespace SabreTools.Help.Inputs
         /// </summary>
         protected ushort GetUInt16(string key)
         {
-            if (!Children.ContainsKey(key))
-                return ushort.MinValue;
+            if (Children.TryGetValue(key, out var input))
+            {
+                if (input is not UInt16Input i)
+                    throw new ArgumentException("Feature is not a ushort");
 
-            if (Children[key] is not UInt16Input i)
-                throw new ArgumentException("Feature is not a ushort");
+                return i.Value;
+            }
 
-            return i.Value;
+            return ushort.MinValue;
         }
 
         /// <summary>
@@ -249,13 +267,15 @@ namespace SabreTools.Help.Inputs
         /// </summary>
         protected uint GetUInt32(string key)
         {
-            if (!Children.ContainsKey(key))
-                return uint.MinValue;
+            if (Children.TryGetValue(key, out var input))
+            {
+                if (input is not UInt32Input i)
+                    throw new ArgumentException("Feature is not an uint");
 
-            if (Children[key] is not UInt32Input i)
-                throw new ArgumentException("Feature is not an uint");
+                return i.Value;
+            }
 
-            return i.Value;
+            return uint.MinValue;
         }
 
         /// <summary>
@@ -263,13 +283,15 @@ namespace SabreTools.Help.Inputs
         /// </summary>
         protected ulong GetUInt64(string key)
         {
-            if (!Children.ContainsKey(key))
-                return ulong.MinValue;
+            if (Children.TryGetValue(key, out var input))
+            {
+                if (input is not UInt64Input l)
+                    throw new ArgumentException("Feature is not a ulong");
 
-            if (Children[key] is not UInt64Input l)
-                throw new ArgumentException("Feature is not a ulong");
+                return l.Value;
+            }
 
-            return l.Value;
+            return ulong.MinValue;
         }
 
         #endregion
