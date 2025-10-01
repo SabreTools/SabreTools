@@ -74,10 +74,7 @@ namespace SabreTools.Help.Inputs
         /// </summary>
         public UserInput? this[string name]
         {
-            get
-            {
-                return Features.ContainsKey(name) ? Features[name] : null;
-            }
+            get { return Features.ContainsKey(name) ? Features[name] : null; }
         }
 
         /// <summary>
