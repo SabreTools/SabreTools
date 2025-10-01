@@ -21,6 +21,7 @@ namespace SabreTools.Help
         {
         }
 
+        /// <inheritdoc/>
         public override bool ProcessArgs(string[] args, FeatureSet help)
         {
             // If we had something else after help
@@ -38,6 +39,7 @@ namespace SabreTools.Help
             }
         }
     
+        /// <inheritdoc/>
         public override bool ProcessFeatures(Dictionary<string, UserInput> features) => true;
     }
 }

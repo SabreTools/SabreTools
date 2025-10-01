@@ -49,6 +49,7 @@ Reset the internal state:           reset();";
             AddCommonFeatures();
         }
 
+        /// <inheritdoc/>
         public override bool ProcessFeatures(Dictionary<string, UserInput> features)
         {
             // If the base fails, just fail out

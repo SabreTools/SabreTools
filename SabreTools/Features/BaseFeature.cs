@@ -1108,6 +1108,7 @@ Some special strings that can be used:
 
         #endregion
 
+        /// <inheritdoc/>
         public override bool ProcessFeatures(Dictionary<string, UserInput> features)
         {
             // Generic feature flags

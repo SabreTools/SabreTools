@@ -44,6 +44,7 @@ namespace SabreTools.Features
             AddFeature(TypeFlag);
         }
 
+        /// <inheritdoc/>
         public override bool ProcessFeatures(Dictionary<string, UserInput> features)
         {
             // If the base fails, just fail out
