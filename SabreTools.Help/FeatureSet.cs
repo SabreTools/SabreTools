@@ -87,6 +87,30 @@ namespace SabreTools.Help
         #region Instance Methods
 
         /// <summary>
+        /// Flatten the nested structure of inputs
+        /// </summary>
+        /// <returns>Dictionary containing all inputs</returns>
+        public Dictionary<string, UserInput> Flatten()
+        {
+            Dictionary<string, UserInput> flat = [];
+
+            // Loop through the features
+            foreach (var feature in _features)
+            {
+                var temp = FlattenRecursive(feature.Key, feature.Value);
+                foreach (var tempfeat in temp)
+                {
+                    if (flat.ContainsKey(tempfeat.Key))
+                        continue;
+
+                    flat[tempfeat.Key] = tempfeat.Value;
+                }
+            }
+
+            return flat;
+        }
+
+        /// <summary>
         /// Get the feature name for a given flag or short name
         /// </summary>
         /// <returns>Feature name</returns>
@@ -109,30 +133,6 @@ namespace SabreTools.Help
 
             // No feature could be found
             return string.Empty;
-        }
-
-        /// <summary>
-        /// Flatten the nested structure of inputs
-        /// </summary>
-        /// <returns>Dictionary containing all inputs</returns>
-        public Dictionary<string, UserInput> Flatten()
-        {
-            Dictionary<string, UserInput> flat = [];
-
-            // Loop through the features
-            foreach (var feature in _features)
-            {
-                var temp = FlattenRecursive(feature.Key, feature.Value);
-                foreach (var tempfeat in temp)
-                {
-                    if (flat.ContainsKey(tempfeat.Key))
-                        continue;
-
-                    flat[tempfeat.Key] = tempfeat.Value;
-                }
-            }
-
-            return flat;
         }
 
         /// <summary>
