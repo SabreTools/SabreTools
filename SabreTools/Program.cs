@@ -53,15 +53,6 @@ namespace SabreTools
 
             // Get the first argument as a feature flag
             string featureName = args[0];
-
-            // TODO: Remove this block once trimming is no longer needed
-            // TODO: Update wiki documentation ONLY after this reaches stable
-            // TODO: Re-evaluate feature flags with this change in mind
-            featureName = featureName.TrimStart('-');
-            if (args[0].StartsWith("-"))
-                Console.WriteLine($"Feature flags no longer require leading '-' characters");
-
-            // Verify that the flag is valid
             if (!_help.TopLevelFlag(featureName))
             {
                 Console.WriteLine($"'{featureName}' is not valid feature flag");
