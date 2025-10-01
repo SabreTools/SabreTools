@@ -40,6 +40,11 @@ namespace SabreTools.Help
         /// </summary>
         /// <param name="args">Set of arguments to process</param>
         /// <param name="parentSet">Reference to the enclosing parent set</param>
+        /// <returns>True if all arguments were processed correctly, false otherwise</returns>
+        /// <remarks>
+        /// This assumes that the argument representing this feature was
+        /// the first in the set of passed in arguments.
+        /// </remarks>
         public virtual bool ProcessArgs(string[] args, FeatureSet parentSet)
         {
             for (int i = 1; i < args.Length; i++)
