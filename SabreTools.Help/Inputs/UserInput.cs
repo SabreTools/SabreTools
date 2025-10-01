@@ -119,7 +119,7 @@ namespace SabreTools.Help.Inputs
         /// <summary>
         /// Get boolean value from nullable feature
         /// </summary>
-        protected bool GetBoolean(string key)
+        public bool GetBoolean(string key)
         {
             // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
@@ -145,7 +145,7 @@ namespace SabreTools.Help.Inputs
         /// <summary>
         /// Get sbyte value from nullable feature
         /// </summary>
-        protected sbyte GetInt8(string key)
+        public sbyte GetInt8(string key)
         {
             // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
@@ -170,7 +170,7 @@ namespace SabreTools.Help.Inputs
         /// <summary>
         /// Get short value from nullable feature
         /// </summary>
-        protected short GetInt16(string key)
+        public short GetInt16(string key)
         {
             // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
@@ -195,7 +195,7 @@ namespace SabreTools.Help.Inputs
         /// <summary>
         /// Get int value from nullable feature
         /// </summary>
-        protected int GetInt32(string key)
+        public int GetInt32(string key)
         {
             // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
@@ -220,7 +220,7 @@ namespace SabreTools.Help.Inputs
         /// <summary>
         /// Get long value from nullable feature
         /// </summary>
-        protected long GetInt64(string key)
+        public long GetInt64(string key)
         {
             // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
@@ -245,7 +245,7 @@ namespace SabreTools.Help.Inputs
         /// <summary>
         /// Get string value from nullable feature
         /// </summary>
-        protected string? GetString(string key)
+        public string? GetString(string key)
         {
             // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
@@ -270,7 +270,7 @@ namespace SabreTools.Help.Inputs
         /// <summary>
         /// Get list value from nullable feature
         /// </summary>
-        protected List<string> GetStringList(string key)
+        public List<string> GetStringList(string key)
         {
             // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
@@ -295,7 +295,7 @@ namespace SabreTools.Help.Inputs
         /// <summary>
         /// Get byte value from nullable feature
         /// </summary>
-        protected byte GetUInt8(string key)
+        public byte GetUInt8(string key)
         {
             // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
@@ -320,7 +320,7 @@ namespace SabreTools.Help.Inputs
         /// <summary>
         /// Get short value from nullable feature
         /// </summary>
-        protected ushort GetUInt16(string key)
+        public ushort GetUInt16(string key)
         {
             // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
@@ -345,7 +345,7 @@ namespace SabreTools.Help.Inputs
         /// <summary>
         /// Get int value from nullable feature
         /// </summary>
-        protected uint GetUInt32(string key)
+        public uint GetUInt32(string key)
         {
             // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
@@ -370,7 +370,7 @@ namespace SabreTools.Help.Inputs
         /// <summary>
         /// Get long value from nullable feature
         /// </summary>
-        protected ulong GetUInt64(string key)
+        public ulong GetUInt64(string key)
         {
             // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
