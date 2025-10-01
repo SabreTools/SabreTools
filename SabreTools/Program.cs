@@ -60,7 +60,7 @@ namespace SabreTools
             }
 
             // Get the proper name for the feature
-            featureName = _help.GetFeatureName(featureName);
+            featureName = _help.GetInputName(featureName);
 
             // Get the associated feature
             var feature = _help[featureName] as Feature;

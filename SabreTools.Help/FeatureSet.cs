@@ -27,7 +27,7 @@ namespace SabreTools.Help
         /// Only the top level inputs need to be defined. All
         /// children will be included by default.
         /// </remarks>
-        private readonly Dictionary<string, UserInput> _features = [];
+        private readonly Dictionary<string, UserInput> _inputs = [];
 
         #endregion
 
@@ -46,10 +46,10 @@ namespace SabreTools.Help
         {
             get
             {
-                if (!_features.ContainsKey(name))
+                if (!_inputs.ContainsKey(name))
                     return null;
 
-                return _features[name];
+                return _inputs[name];
             }
         }
 
@@ -60,45 +60,41 @@ namespace SabreTools.Help
                 if (subfeature.Name == null)
                     return null;
 
-                if (!_features.ContainsKey(subfeature.Name))
+                if (!_inputs.ContainsKey(subfeature.Name))
                     return null;
 
-                return _features[subfeature.Name];
+                return _inputs[subfeature.Name];
             }
         }
 
         /// <summary>
-        /// Add a new feature to the help
+        /// Add a new input to the set
         /// </summary>
-        /// <param name="feature">Feature object to map to</param>
-        public void Add(UserInput feature)
+        /// <param name="input">UserInput object to map to</param>
+        public void Add(UserInput input)
         {
-            if (feature.Name == null)
+            if (input.Name == null)
                 return;
 
-            lock (_features)
-            {
-                _features.Add(feature.Name, feature);
-            }
+            _inputs.Add(input.Name, input);
         }
 
         #endregion
 
-        #region Instance Methods
+        #region Inputs
 
         /// <summary>
-        /// Get the feature name for a given flag or short name
+        /// Get the input name for a given flag or short name
         /// </summary>
-        /// <returns>Feature name</returns>
-        public string GetFeatureName(string name)
+        public string GetInputName(string name)
         {
             // Pre-split the input for efficiency
             string[] splitInput = name.Split('=');
 
-            foreach (var key in _features.Keys)
+            foreach (var key in _inputs.Keys)
             {
                 // Skip invalid features
-                var feature = _features[key];
+                var feature = _inputs[key];
                 if (feature == null)
                     continue;
 
@@ -121,7 +117,7 @@ namespace SabreTools.Help
         /// <param name="flag">Name of the flag to check</param>
         /// <returns>True if the feature was found, false otherwise</returns>
         public bool TopLevelFlag(string flag)
-            => GetFeatureName(flag).Length > 0;
+            => GetInputName(flag).Length > 0;
 
         #endregion
 
@@ -140,9 +136,9 @@ namespace SabreTools.Help
 
             // Now append all available top-level flags
             output.Add("Available options:");
-            foreach (string feature in _features.Keys)
+            foreach (string feature in _inputs.Keys)
             {
-                var outputs = _features[feature]?.Output(pre: 2, midpoint: 30);
+                var outputs = _inputs[feature]?.Output(pre: 2, midpoint: 30);
                 if (outputs != null)
                     output.AddRange(outputs);
             }
@@ -168,9 +164,9 @@ namespace SabreTools.Help
 
             // Now append all available flags recursively
             output.Add("Available options:");
-            foreach (string feature in _features.Keys)
+            foreach (string feature in _inputs.Keys)
             {
-                var outputs = _features[feature]?.OutputRecursive(0, pre: 2, midpoint: 30, includeLongDescription: true);
+                var outputs = _inputs[feature]?.OutputRecursive(0, pre: 2, midpoint: 30, includeLongDescription: true);
                 if (outputs != null)
                     output.AddRange(outputs);
             }
@@ -199,7 +195,7 @@ namespace SabreTools.Help
             // Now try to find the feature that has the name included
             string? realname = null;
             List<string> startsWith = [];
-            foreach (string feature in _features.Keys)
+            foreach (string feature in _inputs.Keys)
             {
                 // If we have a match to the feature name somehow
                 if (feature == featurename)
@@ -209,20 +205,20 @@ namespace SabreTools.Help
                 }
 
                 // If we have an invalid feature
-                else if (!_features.ContainsKey(feature) || _features[feature] == null)
+                else if (!_inputs.ContainsKey(feature) || _inputs[feature] == null)
                 {
                     startsWith.Add(feature);
                 }
 
                 // If we have a match within the flags
-                else if (_features[feature]!.ContainsFlag(featurename!))
+                else if (_inputs[feature]!.ContainsFlag(featurename!))
                 {
                     realname = feature;
                     break;
                 }
 
                 // Otherwise, we want to get features with the same start
-                else if (_features[feature]!.StartsWith(featurename!.TrimStart('-')[0]))
+                else if (_inputs[feature]!.StartsWith(featurename!.TrimStart('-')[0]))
                 {
                     startsWith.Add(feature);
                 }
@@ -232,7 +228,7 @@ namespace SabreTools.Help
             if (realname != null)
             {
                 output.Add($"Available options for {realname}:");
-                output.AddRange(_features[realname]!.OutputRecursive(0, pre: 2, midpoint: 30, includeLongDescription: includeLongDescription));
+                output.AddRange(_inputs[realname]!.OutputRecursive(0, pre: 2, midpoint: 30, includeLongDescription: includeLongDescription));
             }
 
             // If no name was found but we have possible matches, show them
@@ -241,7 +237,7 @@ namespace SabreTools.Help
                 output.Add($"\"{featurename}\" not found. Did you mean:");
                 foreach (string possible in startsWith)
                 {
-                    output.AddRange(_features[possible]!.Output(pre: 2, midpoint: 30, includeLongDescription: includeLongDescription));
+                    output.AddRange(_inputs[possible]!.Output(pre: 2, midpoint: 30, includeLongDescription: includeLongDescription));
                 }
             }
 
