@@ -370,12 +370,6 @@ namespace SabreTools.Help.Inputs
         public abstract bool ProcessInput(string[] args, ref int index);
 
         /// <summary>
-        /// Returns if this feature has a valid value or not
-        /// </summary>
-        /// <returns>True if the feature is enabled, false otherwise</returns>
-        public abstract bool IsEnabled();
-
-        /// <summary>
         /// Pre-format the flags for output
         /// </summary>
         protected abstract string FormatFlags();

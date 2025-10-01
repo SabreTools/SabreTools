@@ -30,9 +30,6 @@ namespace SabreTools.Help.Inputs
         public override abstract bool ProcessInput(string[] args, ref int index);
 
         /// <inheritdoc/>
-        public override abstract bool IsEnabled();
-
-        /// <inheritdoc/>
         protected override abstract string FormatFlags();
 
         #endregion

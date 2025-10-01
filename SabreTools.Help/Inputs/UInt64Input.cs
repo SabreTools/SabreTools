@@ -76,9 +76,6 @@ namespace SabreTools.Help.Inputs
         }
 
         /// <inheritdoc/>
-        public override bool IsEnabled() => Value != ulong.MinValue;
-
-        /// <inheritdoc/>
         protected override string FormatFlags()
         {
             var sb = new StringBuilder();
