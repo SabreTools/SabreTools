@@ -118,7 +118,7 @@ namespace SabreTools
 
                 // Requires no input verification
                 case Sort.DisplayName:
-                case Features.Version.DisplayName:
+                case DefaultVersion.DisplayName:
                     success = feature.ProcessFeatures(features);
                     break;
 
@@ -189,7 +189,7 @@ namespace SabreTools
             help.Add(new Stats());
             help.Add(new Update());
             help.Add(new Verify());
-            help.Add(new Features.Version());
+            help.Add(new DefaultVersion());
 
             return help;
         }
