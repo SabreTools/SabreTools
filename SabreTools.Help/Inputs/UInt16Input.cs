@@ -27,34 +27,28 @@ namespace SabreTools.Help.Inputs
         #region Instance Methods
 
         /// <inheritdoc/>
-        public override bool ValidateInput(string input, bool exact = false, bool ignore = false)
+        public override bool ValidateInput(string[] args, ref int index)
         {
             // Pre-split the input for efficiency
-            string[] splitInput = input.Split('=');
+            string[] splitInput = args[index].Split('=');
 
-            bool valid = input.Contains("=") && Flags.Contains(splitInput[0]);
-            if (valid)
+            if (args[index].Contains("=") && Flags.Contains(splitInput[0]))
             {
                 if (!ushort.TryParse(splitInput[1], out ushort value))
                     value = ushort.MinValue;
 
                 Value = value;
-
-                // If we've already found this feature before
-                if (_foundOnce && !ignore)
-                    valid = false;
-
-                _foundOnce = true;
+                return true;
             }
 
-            // If we haven't found a valid flag and we're not looking for just this feature, check to see if any of the subfeatures are valid
-            if (!valid && !exact)
+            // If the current flag doesn't match, check to see if any of the subfeatures are valid
+            foreach (var kvp in Features)
             {
-                string[] featureKeys = [.. Features.Keys];
-                valid = Array.Exists(featureKeys, k => Features[k]!.ValidateInput(input));
+                if (kvp.Value.ValidateInput(args, ref index))
+                    return true;
             }
 
-            return valid;
+            return false;
         }
 
         /// <inheritdoc/>

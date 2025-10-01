@@ -27,7 +27,7 @@ namespace SabreTools.Help.Inputs
         #region Instance Methods
 
         /// <inheritdoc/>
-        public override abstract bool ValidateInput(string input, bool exact = false, bool ignore = false);
+        public override abstract bool ValidateInput(string[] args, ref int index);
 
         /// <inheritdoc/>
         public override abstract bool IsEnabled();

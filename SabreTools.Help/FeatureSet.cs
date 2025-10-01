@@ -92,6 +92,9 @@ namespace SabreTools.Help
         /// <returns>Feature name</returns>
         public string GetFeatureName(string name)
         {
+            // Pre-split the input for efficiency
+            string[] splitInput = name.Split('=');
+
             foreach (var key in _features.Keys)
             {
                 // Skip invalid features
@@ -99,8 +102,8 @@ namespace SabreTools.Help
                 if (feature == null)
                     continue;
 
-                // If validation passes
-                if (feature.ValidateInput(name, exact: true, ignore: true))
+                // Validate the flag is contained
+                if (feature.Flags.Contains(splitInput[0]))
                     return key;
             }
 
@@ -236,22 +239,7 @@ namespace SabreTools.Help
         /// <param name="flag">Name of the flag to check</param>
         /// <returns>True if the feature was found, false otherwise</returns>
         public bool TopLevelFlag(string flag)
-        {
-            foreach (var key in _features.Keys)
-            {
-                // Skip invalid features
-                var feature = _features[key];
-                if (feature == null)
-                    continue;
-
-                // If validation passes
-                if (feature.ValidateInput(flag, exact: true))
-                    return true;
-            }
-
-            // No feature could be found
-            return false;
-        }
+            => GetFeatureName(flag).Length > 0;
 
         /// <summary>
         /// Retrieve a list of enabled features

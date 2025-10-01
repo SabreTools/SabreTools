@@ -30,11 +30,6 @@ namespace SabreTools.Help.Inputs
 
         #region Fields
 
-        // <summary>
-        /// Indicates if the feature has been seen already
-        /// </summary>
-        protected bool _foundOnce = false;
-
         /// <summary>
         /// Short description of the feature
         /// </summary>
@@ -369,11 +364,10 @@ namespace SabreTools.Help.Inputs
         /// <summary>
         /// Validate whether a flag is valid for this feature or not
         /// </summary>
-        /// <param name="input">Input to check against</param>
-        /// <param name="exact">True if just this feature should be checked, false if all subfeatures are checked as well</param>
-        /// <param name="ignore">True if the existing flag should be ignored, false otherwise</param>
+        /// <param name="args">Set of arguments to parse</param>
+        /// <param name="index">Reference index into the argument set</param>
         /// <returns>True if the flag was valid, false otherwise</returns>
-        public abstract bool ValidateInput(string input, bool exact = false, bool ignore = false);
+        public abstract bool ValidateInput(string[] args, ref int index);
 
         /// <summary>
         /// Returns if this feature has a valid value or not
