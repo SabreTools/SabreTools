@@ -136,6 +136,47 @@ namespace SabreTools.Help
         }
 
         /// <summary>
+        /// Check if a flag is a top-level (main application) flag
+        /// </summary>
+        /// <param name="flag">Name of the flag to check</param>
+        /// <returns>True if the feature was found, false otherwise</returns>
+        public bool TopLevelFlag(string flag)
+            => GetFeatureName(flag).Length > 0;
+
+        /// <summary>
+        /// Flatten the nested structure of inputs from a key and feature
+        /// </summary>
+        /// <param name="key">Name that should be assigned to the feature</param>
+        /// <param name="feature">Feature with possible subfeatures to test</param>
+        /// <returns>Set of flattened inputs</returns>
+        private static Dictionary<string, UserInput> FlattenRecursive(string key, UserInput feature)
+        {
+            Dictionary<string, UserInput> flat = [];
+
+            // Add the current feature
+            flat.Add(key, feature);
+
+            // Now loop through the subfeatures recursively
+            foreach (KeyValuePair<string, UserInput> sub in feature.Features)
+            {
+                var temp = FlattenRecursive(sub.Key, sub.Value);
+                foreach (var tempfeat in temp)
+                {
+                    if (!flat.ContainsKey(tempfeat.Key))
+                        continue;
+
+                    flat[tempfeat.Key] = tempfeat.Value;
+                }
+            }
+
+            return flat;
+        }
+
+        #endregion
+
+        #region Output
+
+        /// <summary>
         /// Output top-level features only
         /// </summary>
         public void OutputGenericHelp()
@@ -258,40 +299,18 @@ namespace SabreTools.Help
         }
 
         /// <summary>
-        /// Check if a flag is a top-level (main application) flag
+        /// Pause on console output
         /// </summary>
-        /// <param name="flag">Name of the flag to check</param>
-        /// <returns>True if the feature was found, false otherwise</returns>
-        public bool TopLevelFlag(string flag)
-            => GetFeatureName(flag).Length > 0;
-
-        /// <summary>
-        /// Flatten the nested structure of inputs from a key and feature
-        /// </summary>
-        /// <param name="key">Name that should be assigned to the feature</param>
-        /// <param name="feature">Feature with possible subfeatures to test</param>
-        /// <returns>Set of flattened inputs</returns>
-        private static Dictionary<string, UserInput> FlattenRecursive(string key, UserInput feature)
+        private static void Pause()
         {
-            Dictionary<string, UserInput> flat = [];
-
-            // Add the current feature
-            flat.Add(key, feature);
-
-            // Now loop through the subfeatures recursively
-            foreach (KeyValuePair<string, UserInput> sub in feature.Features)
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
+            if (!Console.IsOutputRedirected)
+#endif
             {
-                var temp = FlattenRecursive(sub.Key, sub.Value);
-                foreach (var tempfeat in temp)
-                {
-                    if (!flat.ContainsKey(tempfeat.Key))
-                        continue;
-
-                    flat[tempfeat.Key] = tempfeat.Value;
-                }
+                Console.WriteLine();
+                Console.WriteLine("Press enter to continue...");
+                Console.ReadLine();
             }
-
-            return flat;
         }
 
         /// <summary>
@@ -317,21 +336,6 @@ namespace SabreTools.Help
             }
 
             Pause();
-        }
-
-        /// <summary>
-        /// Pause on console output
-        /// </summary>
-        private static void Pause()
-        {
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            if (!Console.IsOutputRedirected)
-#endif
-            {
-                Console.WriteLine();
-                Console.WriteLine("Press enter to continue...");
-                Console.ReadLine();
-            }
         }
 
         #endregion
