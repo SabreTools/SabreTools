@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace SabreTools.Help
+namespace SabreTools.Help.Inputs
 {
     /// <summary>
     /// Represents a string input with a single instance allowed

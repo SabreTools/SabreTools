@@ -1,25 +1,25 @@
 using System;
 using System.Text;
 
-namespace SabreTools.Help
+namespace SabreTools.Help.Inputs
 {
     /// <summary>
-    /// Represents a user input bounded to the range of <see cref="long"/> 
+    /// Represents a user input bounded to the range of <see cref="short"/> 
     /// </summary>
-    public class Int64Input : UserInput<long>
+    public class Int16Input : UserInput<short>
     {
         #region Constructors
 
-        public Int64Input(string name, string flag, string description, string? longDescription = null)
+        public Int16Input(string name, string flag, string description, string? longDescription = null)
             : base(name, flag, description, longDescription)
         {
-            Value = long.MinValue;
+            Value = short.MinValue;
         }
 
-        public Int64Input(string name, string[] flags, string description, string? longDescription = null)
+        public Int16Input(string name, string[] flags, string description, string? longDescription = null)
             : base(name, flags, description, longDescription)
         {
-            Value = long.MinValue;
+            Value = short.MinValue;
         }
 
         #endregion
@@ -35,8 +35,8 @@ namespace SabreTools.Help
             bool valid = input.Contains("=") && Flags.Contains(splitInput[0]);
             if (valid)
             {
-                if (!long.TryParse(splitInput[1], out long value))
-                    value = long.MinValue;
+                if (!short.TryParse(splitInput[1], out short value))
+                    value = short.MinValue;
 
                 Value = value;
 
@@ -58,7 +58,7 @@ namespace SabreTools.Help
         }
 
         /// <inheritdoc/>
-        public override bool IsEnabled() => Value != long.MinValue;
+        public override bool IsEnabled() => Value != short.MinValue;
 
         /// <inheritdoc/>
         protected override string FormatFlags()

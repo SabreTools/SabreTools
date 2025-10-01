@@ -1,25 +1,25 @@
 using System;
 using System.Text;
 
-namespace SabreTools.Help
+namespace SabreTools.Help.Inputs
 {
     /// <summary>
-    /// Represents a boolean user input
+    /// Represents a user input bounded to the range of <see cref="byte"/> 
     /// </summary>
-    public class FlagInput : UserInput<bool>
+    public class UInt8Input : UserInput<byte>
     {
         #region Constructors
 
-        public FlagInput(string name, string flag, string description, string? longDescription = null)
+        public UInt8Input(string name, string flag, string description, string? longDescription = null)
             : base(name, flag, description, longDescription)
         {
-            Value = false;
+            Value = byte.MinValue;
         }
 
-        public FlagInput(string name, string[] flags, string description, string? longDescription = null)
+        public UInt8Input(string name, string[] flags, string description, string? longDescription = null)
             : base(name, flags, description, longDescription)
         {
-            Value = false;
+            Value = byte.MinValue;
         }
 
         #endregion
@@ -32,10 +32,13 @@ namespace SabreTools.Help
             // Pre-split the input for efficiency
             string[] splitInput = input.Split('=');
 
-            bool valid = !input.Contains("=") && Flags.Contains(input);
+            bool valid = input.Contains("=") && Flags.Contains(splitInput[0]);
             if (valid)
             {
-                Value = true;
+                if (!byte.TryParse(splitInput[1], out byte value))
+                    value = byte.MinValue;
+
+                Value = value;
 
                 // If we've already found this feature before
                 if (_foundOnce && !ignore)
@@ -55,13 +58,13 @@ namespace SabreTools.Help
         }
 
         /// <inheritdoc/>
-        public override bool IsEnabled() => Value;
+        public override bool IsEnabled() => Value != byte.MinValue;
 
         /// <inheritdoc/>
         protected override string FormatFlags()
         {
             var sb = new StringBuilder();
-            Flags.ForEach(flag => sb.Append($"{flag}, "));
+            Flags.ForEach(flag => sb.Append($"{flag}=, "));
             return sb.ToString().TrimEnd(' ', ',');
         }
 

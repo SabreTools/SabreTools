@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace SabreTools.Help
+namespace SabreTools.Help.Inputs
 {
     /// <summary>
     /// Represents an application-level feature
     /// </summary>
-    public abstract class FeatureFlag : FlagInput
+    public abstract class Feature : FlagInput
     {
         #region Fields
 
@@ -20,12 +20,12 @@ namespace SabreTools.Help
 
         #region Constructors
 
-        public FeatureFlag(string name, string flag, string description, string? longDescription = null)
+        public Feature(string name, string flag, string description, string? longDescription = null)
             : base(name, flag, description, longDescription)
         {
         }
 
-        public FeatureFlag(string name, string[] flags, string description, string? longDescription = null)
+        public Feature(string name, string[] flags, string description, string? longDescription = null)
             : base(name, flags, description, longDescription)
         {
         }

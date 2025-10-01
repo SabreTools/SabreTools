@@ -1,25 +1,25 @@
 using System;
 using System.Text;
 
-namespace SabreTools.Help
+namespace SabreTools.Help.Inputs
 {
     /// <summary>
-    /// Represents a user input bounded to the range of <see cref="ulong"/> 
+    /// Represents a user input bounded to the range of <see cref="sbyte"/> 
     /// </summary>
-    public class UInt64Input : UserInput<ulong>
+    public class Int8Input : UserInput<sbyte>
     {
         #region Constructors
 
-        public UInt64Input(string name, string flag, string description, string? longDescription = null)
+        public Int8Input(string name, string flag, string description, string? longDescription = null)
             : base(name, flag, description, longDescription)
         {
-            Value = ulong.MinValue;
+            Value = sbyte.MinValue;
         }
 
-        public UInt64Input(string name, string[] flags, string description, string? longDescription = null)
+        public Int8Input(string name, string[] flags, string description, string? longDescription = null)
             : base(name, flags, description, longDescription)
         {
-            Value = ulong.MinValue;
+            Value = sbyte.MinValue;
         }
 
         #endregion
@@ -35,8 +35,8 @@ namespace SabreTools.Help
             bool valid = input.Contains("=") && Flags.Contains(splitInput[0]);
             if (valid)
             {
-                if (!ulong.TryParse(splitInput[1], out ulong value))
-                    value = ulong.MinValue;
+                if (!sbyte.TryParse(splitInput[1], out sbyte value))
+                    value = sbyte.MinValue;
 
                 Value = value;
 
@@ -58,7 +58,7 @@ namespace SabreTools.Help
         }
 
         /// <inheritdoc/>
-        public override bool IsEnabled() => Value != ulong.MinValue;
+        public override bool IsEnabled() => Value != sbyte.MinValue;
 
         /// <inheritdoc/>
         protected override string FormatFlags()

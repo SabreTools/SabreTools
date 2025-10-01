@@ -1,25 +1,25 @@
 using System;
 using System.Text;
 
-namespace SabreTools.Help
+namespace SabreTools.Help.Inputs
 {
     /// <summary>
-    /// Represents a user input bounded to the range of <see cref="int"/> 
+    /// Represents a boolean user input
     /// </summary>
-    public class Int32Input : UserInput<int>
+    public class FlagInput : UserInput<bool>
     {
         #region Constructors
 
-        public Int32Input(string name, string flag, string description, string? longDescription = null)
+        public FlagInput(string name, string flag, string description, string? longDescription = null)
             : base(name, flag, description, longDescription)
         {
-            Value = int.MinValue;
+            Value = false;
         }
 
-        public Int32Input(string name, string[] flags, string description, string? longDescription = null)
+        public FlagInput(string name, string[] flags, string description, string? longDescription = null)
             : base(name, flags, description, longDescription)
         {
-            Value = int.MinValue;
+            Value = false;
         }
 
         #endregion
@@ -32,13 +32,10 @@ namespace SabreTools.Help
             // Pre-split the input for efficiency
             string[] splitInput = input.Split('=');
 
-            bool valid = input.Contains("=") && Flags.Contains(splitInput[0]);
+            bool valid = !input.Contains("=") && Flags.Contains(input);
             if (valid)
             {
-                if (!int.TryParse(splitInput[1], out int value))
-                    value = int.MinValue;
-
-                Value = value;
+                Value = true;
 
                 // If we've already found this feature before
                 if (_foundOnce && !ignore)
@@ -58,13 +55,13 @@ namespace SabreTools.Help
         }
 
         /// <inheritdoc/>
-        public override bool IsEnabled() => Value != int.MinValue;
+        public override bool IsEnabled() => Value;
 
         /// <inheritdoc/>
         protected override string FormatFlags()
         {
             var sb = new StringBuilder();
-            Flags.ForEach(flag => sb.Append($"{flag}=, "));
+            Flags.ForEach(flag => sb.Append($"{flag}, "));
             return sb.ToString().TrimEnd(' ', ',');
         }
 

@@ -1,4 +1,4 @@
-namespace SabreTools.Help
+namespace SabreTools.Help.Inputs
 {
     /// <summary>
     /// Represents a single user input which may contain children

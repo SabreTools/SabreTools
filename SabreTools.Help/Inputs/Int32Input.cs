@@ -1,25 +1,25 @@
 using System;
 using System.Text;
 
-namespace SabreTools.Help
+namespace SabreTools.Help.Inputs
 {
     /// <summary>
-    /// Represents a user input bounded to the range of <see cref="uint"/> 
+    /// Represents a user input bounded to the range of <see cref="int"/> 
     /// </summary>
-    public class UInt32Input : UserInput<uint>
+    public class Int32Input : UserInput<int>
     {
         #region Constructors
 
-        public UInt32Input(string name, string flag, string description, string? longDescription = null)
+        public Int32Input(string name, string flag, string description, string? longDescription = null)
             : base(name, flag, description, longDescription)
         {
-            Value = uint.MinValue;
+            Value = int.MinValue;
         }
 
-        public UInt32Input(string name, string[] flags, string description, string? longDescription = null)
+        public Int32Input(string name, string[] flags, string description, string? longDescription = null)
             : base(name, flags, description, longDescription)
         {
-            Value = uint.MinValue;
+            Value = int.MinValue;
         }
 
         #endregion
@@ -35,8 +35,8 @@ namespace SabreTools.Help
             bool valid = input.Contains("=") && Flags.Contains(splitInput[0]);
             if (valid)
             {
-                if (!uint.TryParse(splitInput[1], out uint value))
-                    value = uint.MinValue;
+                if (!int.TryParse(splitInput[1], out int value))
+                    value = int.MinValue;
 
                 Value = value;
 
@@ -58,7 +58,7 @@ namespace SabreTools.Help
         }
 
         /// <inheritdoc/>
-        public override bool IsEnabled() => Value != uint.MinValue;
+        public override bool IsEnabled() => Value != int.MinValue;
 
         /// <inheritdoc/>
         protected override string FormatFlags()

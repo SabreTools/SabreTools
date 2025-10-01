@@ -1,25 +1,25 @@
 using System;
 using System.Text;
 
-namespace SabreTools.Help
+namespace SabreTools.Help.Inputs
 {
     /// <summary>
-    /// Represents a user input bounded to the range of <see cref="bool"/> 
+    /// Represents a user input bounded to the range of <see cref="ushort"/> 
     /// </summary>
-    public class BooleanInput : UserInput<bool>
+    public class UInt16Input : UserInput<ushort>
     {
         #region Constructors
 
-        public BooleanInput(string name, string flag, string description, string? longDescription = null)
+        public UInt16Input(string name, string flag, string description, string? longDescription = null)
             : base(name, flag, description, longDescription)
         {
-            Value = false;
+            Value = ushort.MinValue;
         }
 
-        public BooleanInput(string name, string[] flags, string description, string? longDescription = null)
+        public UInt16Input(string name, string[] flags, string description, string? longDescription = null)
             : base(name, flags, description, longDescription)
         {
-            Value = false;
+            Value = ushort.MinValue;
         }
 
         #endregion
@@ -35,8 +35,8 @@ namespace SabreTools.Help
             bool valid = input.Contains("=") && Flags.Contains(splitInput[0]);
             if (valid)
             {
-                if (!bool.TryParse(splitInput[1], out bool value))
-                    value = false;
+                if (!ushort.TryParse(splitInput[1], out ushort value))
+                    value = ushort.MinValue;
 
                 Value = value;
 
@@ -58,7 +58,7 @@ namespace SabreTools.Help
         }
 
         /// <inheritdoc/>
-        public override bool IsEnabled() => Value;
+        public override bool IsEnabled() => Value != ushort.MinValue;
 
         /// <inheritdoc/>
         protected override string FormatFlags()

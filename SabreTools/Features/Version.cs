@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using SabreTools.Core;
-using SabreTools.Help;
+using SabreTools.Help.Inputs;
 
 namespace SabreTools.Features
 {
