@@ -40,7 +40,7 @@ namespace SabreTools.Features
             AddFilteringFeatures();
         }
 
-        public override bool ProcessFeatures(Dictionary<string, UserInput?> features)
+        public override bool ProcessFeatures(Dictionary<string, UserInput> features)
         {
             // If the base fails, just fail out
             if (!base.ProcessFeatures(features))

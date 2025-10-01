@@ -78,7 +78,7 @@ namespace SabreTools.Help
         /// Process and extract variables based on current feature
         /// </summary>
         /// <returns>True if execution was successful, false otherwise</returns>
-        public virtual bool ProcessFeatures(Dictionary<string, UserInput?> features) => true;
+        public virtual bool ProcessFeatures(Dictionary<string, UserInput> features) => true;
 
         #endregion
 
@@ -87,7 +87,7 @@ namespace SabreTools.Help
         /// <summary>
         /// Get boolean value from nullable feature
         /// </summary>
-        protected static bool GetBoolean(Dictionary<string, UserInput?> features, string key)
+        protected static bool GetBoolean(Dictionary<string, UserInput> features, string key)
         {
             if (!features.ContainsKey(key))
                 return false;
@@ -98,7 +98,7 @@ namespace SabreTools.Help
         /// <summary>
         /// Get sbyte value from nullable feature
         /// </summary>
-        protected static sbyte GetInt8(Dictionary<string, UserInput?> features, string key)
+        protected static sbyte GetInt8(Dictionary<string, UserInput> features, string key)
         {
             if (!features.ContainsKey(key))
                 return sbyte.MinValue;
@@ -112,7 +112,7 @@ namespace SabreTools.Help
         /// <summary>
         /// Get short value from nullable feature
         /// </summary>
-        protected static short GetInt16(Dictionary<string, UserInput?> features, string key)
+        protected static short GetInt16(Dictionary<string, UserInput> features, string key)
         {
             if (!features.ContainsKey(key))
                 return short.MinValue;
@@ -126,7 +126,7 @@ namespace SabreTools.Help
         /// <summary>
         /// Get int value from nullable feature
         /// </summary>
-        protected static int GetInt32(Dictionary<string, UserInput?> features, string key)
+        protected static int GetInt32(Dictionary<string, UserInput> features, string key)
         {
             if (!features.ContainsKey(key))
                 return int.MinValue;
@@ -140,7 +140,7 @@ namespace SabreTools.Help
         /// <summary>
         /// Get long value from nullable feature
         /// </summary>
-        protected static long GetInt64(Dictionary<string, UserInput?> features, string key)
+        protected static long GetInt64(Dictionary<string, UserInput> features, string key)
         {
             if (!features.ContainsKey(key))
                 return long.MinValue;
@@ -154,7 +154,7 @@ namespace SabreTools.Help
         /// <summary>
         /// Get list value from nullable feature
         /// </summary>
-        protected static List<string> GetList(Dictionary<string, UserInput?> features, string key)
+        protected static List<string> GetList(Dictionary<string, UserInput> features, string key)
         {
             if (!features.ContainsKey(key))
                 return [];
@@ -168,7 +168,7 @@ namespace SabreTools.Help
         /// <summary>
         /// Get string value from nullable feature
         /// </summary>
-        protected static string? GetString(Dictionary<string, UserInput?> features, string key)
+        protected static string? GetString(Dictionary<string, UserInput> features, string key)
         {
             if (!features.ContainsKey(key))
                 return null;
@@ -182,7 +182,7 @@ namespace SabreTools.Help
         /// <summary>
         /// Get byte value from nullable feature
         /// </summary>
-        protected static byte GetUInt8(Dictionary<string, UserInput?> features, string key)
+        protected static byte GetUInt8(Dictionary<string, UserInput> features, string key)
         {
             if (!features.ContainsKey(key))
                 return byte.MinValue;
@@ -196,7 +196,7 @@ namespace SabreTools.Help
         /// <summary>
         /// Get short value from nullable feature
         /// </summary>
-        protected static ushort GetUInt16(Dictionary<string, UserInput?> features, string key)
+        protected static ushort GetUInt16(Dictionary<string, UserInput> features, string key)
         {
             if (!features.ContainsKey(key))
                 return ushort.MinValue;
@@ -210,7 +210,7 @@ namespace SabreTools.Help
         /// <summary>
         /// Get int value from nullable feature
         /// </summary>
-        protected static uint GetUInt32(Dictionary<string, UserInput?> features, string key)
+        protected static uint GetUInt32(Dictionary<string, UserInput> features, string key)
         {
             if (!features.ContainsKey(key))
                 return uint.MinValue;
@@ -224,7 +224,7 @@ namespace SabreTools.Help
         /// <summary>
         /// Get long value from nullable feature
         /// </summary>
-        protected static ulong GetUInt64(Dictionary<string, UserInput?> features, string key)
+        protected static ulong GetUInt64(Dictionary<string, UserInput> features, string key)
         {
             if (!features.ContainsKey(key))
                 return ulong.MinValue;

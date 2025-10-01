@@ -96,7 +96,7 @@ namespace SabreTools
 #endif
 
             // Now process the current feature
-            Dictionary<string, UserInput?> features = _help.GetEnabledFeatures();
+            Dictionary<string, UserInput> features = _help.GetEnabledFeatures();
             bool success = false;
             switch (featureName)
             {

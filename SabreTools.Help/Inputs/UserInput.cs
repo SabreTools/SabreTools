@@ -24,7 +24,7 @@ namespace SabreTools.Help.Inputs
         /// <summary>
         /// Set of subfeatures associated with this feature
         /// </summary>
-        public readonly Dictionary<string, UserInput?> Features = [];
+        public readonly Dictionary<string, UserInput> Features = [];
 
         #endregion
 
@@ -74,8 +74,10 @@ namespace SabreTools.Help.Inputs
         /// </summary>
         public UserInput? this[string name]
         {
-            get { return Features.ContainsKey(name) ? Features[name] : null; }
-            set { Features[name] = value; }
+            get
+            {
+                return Features.ContainsKey(name) ? Features[name] : null;
+            }
         }
 
         /// <summary>
@@ -84,7 +86,6 @@ namespace SabreTools.Help.Inputs
         public UserInput? this[UserInput subfeature]
         {
             get { return Features.ContainsKey(subfeature.Name) ? Features[subfeature.Name] : null; }
-            set { Features[subfeature?.Name ?? string.Empty] = value; }
         }
 
         /// <summary>

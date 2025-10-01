@@ -282,9 +282,9 @@ namespace SabreTools.Help
         /// Retrieve a list of enabled features
         /// </summary>
         /// <returns>List of Features representing what is enabled</returns>
-        public Dictionary<string, UserInput?> GetEnabledFeatures()
+        public Dictionary<string, UserInput> GetEnabledFeatures()
         {
-            Dictionary<string, UserInput?> enabled = [];
+            Dictionary<string, UserInput> enabled = [];
 
             // Loop through the features
             foreach (var feature in _features)
@@ -293,7 +293,7 @@ namespace SabreTools.Help
                 foreach (var tempfeat in temp)
                 {
                     if (!enabled.ContainsKey(tempfeat.Key))
-                        enabled.Add(tempfeat.Key, null);
+                        continue;
 
                     enabled[tempfeat.Key] = tempfeat.Value;
                 }
@@ -308,9 +308,9 @@ namespace SabreTools.Help
         /// <param name="key">Name that should be assigned to the feature</param>
         /// <param name="feature">Feature with possible subfeatures to test</param>
         /// <returns>List of Features representing what is enabled</returns>
-        private static Dictionary<string, UserInput?> GetEnabledSubfeatures(string key, UserInput? feature)
+        private static Dictionary<string, UserInput> GetEnabledSubfeatures(string key, UserInput? feature)
         {
-            Dictionary<string, UserInput?> enabled = [];
+            Dictionary<string, UserInput> enabled = [];
 
             // If the feature is invalid
             if (feature == null)
@@ -321,13 +321,13 @@ namespace SabreTools.Help
                 enabled.Add(key, feature);
 
             // Now loop through the subfeatures recursively
-            foreach (KeyValuePair<string, UserInput?> sub in feature.Features)
+            foreach (KeyValuePair<string, UserInput> sub in feature.Features)
             {
                 var temp = GetEnabledSubfeatures(sub.Key, sub.Value);
                 foreach (var tempfeat in temp)
                 {
                     if (!enabled.ContainsKey(tempfeat.Key))
-                        enabled.Add(tempfeat.Key, null);
+                        continue;
 
                     enabled[tempfeat.Key] = tempfeat.Value;
                 }
