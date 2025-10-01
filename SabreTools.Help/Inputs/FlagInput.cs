@@ -1,4 +1,3 @@
-using System;
 using System.Text;
 
 namespace SabreTools.Help.Inputs
@@ -29,10 +28,9 @@ namespace SabreTools.Help.Inputs
         /// <inheritdoc/>
         public override bool ValidateInput(string[] args, ref int index)
         {
-            // Pre-split the input for efficiency
-            string[] splitInput = args[index].Split('=');
-
-            if (!args[index].Contains("=") && Flags.Contains(args[index]))
+            // Check for space-separated
+            string part = args[index];
+            if (Flags.FindIndex(n => n == part) > -1)
             {
                 Value = true;
                 return true;

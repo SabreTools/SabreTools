@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -30,13 +29,30 @@ namespace SabreTools.Help.Inputs
         /// <inheritdoc/>
         public override bool ValidateInput(string[] args, ref int index)
         {
-            // Pre-split the input for efficiency
-            string[] splitInput = args[index].Split('=');
-
-            if (args[index].Contains("=") && Flags.Contains(splitInput[0]))
+            // Check for space-separated
+            string part = args[index];
+            if (Flags.FindIndex(n => n == part) > -1)
             {
+                // Ensure the value exists
+                if (index + 1 >= args.Length)
+                    return false;
+
+                index++;
                 Value ??= [];
-                Value.Add(string.Join("=", splitInput, 1, splitInput.Length - 1));
+                Value.Add(args[index]);
+                return true;
+            }
+
+            // Check for equal separated
+            if (Flags.FindIndex(n => part.StartsWith($"{n}=")) > -1)
+            {
+                // Split the string, using the first equal sign as the separator
+                string[] tempSplit = part.Split('=');
+                string key = tempSplit[0];
+                string val = string.Join("=", tempSplit, 1, tempSplit.Length - 1);
+
+                Value ??= [];
+                Value.Add(val);
                 return true;
             }
 

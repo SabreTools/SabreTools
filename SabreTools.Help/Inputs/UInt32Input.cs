@@ -1,4 +1,3 @@
-using System;
 using System.Text;
 
 namespace SabreTools.Help.Inputs
@@ -29,12 +28,37 @@ namespace SabreTools.Help.Inputs
         /// <inheritdoc/>
         public override bool ValidateInput(string[] args, ref int index)
         {
-            // Pre-split the input for efficiency
-            string[] splitInput = args[index].Split('=');
-
-            if (args[index].Contains("=") && Flags.Contains(splitInput[0]))
+            // Check for space-separated
+            string part = args[index];
+            if (Flags.FindIndex(n => n == part) > -1)
             {
-                if (!uint.TryParse(splitInput[1], out uint value))
+                // Ensure the value exists
+                if (index + 1 >= args.Length)
+                    return false;
+
+                // If the next value is valid
+                if (!uint.TryParse(args[index + 1], out uint value))
+                    value = uint.MinValue;
+
+                index++;
+                Value = value;
+                return true;
+            }
+
+            // Check for equal separated
+            if (Flags.FindIndex(n => part.StartsWith($"{n}=")) > -1)
+            {
+                // Split the string, using the first equal sign as the separator
+                string[] tempSplit = part.Split('=');
+                string key = tempSplit[0];
+                string val = string.Join("=", tempSplit, 1, tempSplit.Length - 1);
+
+                // Ensure the value exists
+                if (string.IsNullOrEmpty(val))
+                    return false;
+
+                // If the next value is valid
+                if (!uint.TryParse(val, out uint value))
                     value = uint.MinValue;
 
                 Value = value;
