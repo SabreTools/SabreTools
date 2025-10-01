@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using SabreTools.DatTools;
-using SabreTools.Help.Inputs;
 
 namespace SabreTools.Features
 {
@@ -43,10 +41,10 @@ The stats that are outputted are as follows:
         }
 
         /// <inheritdoc/>
-        public override bool ProcessFeatures(Dictionary<string, UserInput> features)
+        public override bool ProcessFeatures()
         {
             // If the base fails, just fail out
-            if (!base.ProcessFeatures(features))
+            if (!base.ProcessFeatures())
                 return false;
 
             string filename = Header!.GetStringFieldValue(DatFiles.DatHeader.FileNameKey)!;
@@ -67,7 +65,7 @@ The stats that are outputted are as follows:
                 OutputDir,
                 GetBoolean(BaddumpColumnValue),
                 GetBoolean(NodumpColumnValue),
-                GetStatReportFormat(features));
+                GetStatReportFormat());
 
             return true;
         }

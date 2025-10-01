@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using SabreTools.DatFiles;
 using SabreTools.DatItems;
 using SabreTools.DatTools;
-using SabreTools.Help.Inputs;
 using SabreTools.IO;
 using SabreTools.IO.Extensions;
 using SabreTools.IO.Logging;
@@ -45,14 +44,14 @@ namespace SabreTools.Features
         }
 
         /// <inheritdoc/>
-        public override bool ProcessFeatures(Dictionary<string, UserInput> features)
+        public override bool ProcessFeatures()
         {
             // If the base fails, just fail out
-            if (!base.ProcessFeatures(features))
+            if (!base.ProcessFeatures())
                 return false;
 
             // Get the splitting mode
-            SplittingMode splittingMode = GetSplittingMode(features);
+            SplittingMode splittingMode = GetSplittingMode();
             if (splittingMode == SplittingMode.None)
             {
                 _logger.Error("No valid splitting mode found!");

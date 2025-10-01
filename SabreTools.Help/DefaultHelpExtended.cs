@@ -40,6 +40,6 @@ namespace SabreTools.Help
         }
     
         /// <inheritdoc/>
-        public override bool ProcessFeatures(Dictionary<string, UserInput> features) => true;
+        public override bool ProcessFeatures() => true;
     }
 }

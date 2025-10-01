@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using SabreTools.DatFiles;
+﻿using SabreTools.DatFiles;
 using SabreTools.DatTools;
 using SabreTools.Hashing;
-using SabreTools.Help.Inputs;
 using SabreTools.IO;
 using SabreTools.IO.Extensions;
 using SabreTools.IO.Logging;
@@ -41,10 +39,10 @@ namespace SabreTools.Features
         }
 
         /// <inheritdoc/>
-        public override bool ProcessFeatures(Dictionary<string, UserInput> features)
+        public override bool ProcessFeatures()
         {
             // If the base fails, just fail out
-            if (!base.ProcessFeatures(features))
+            if (!base.ProcessFeatures())
                 return false;
 
             // Get a list of files from the input datfiles
@@ -52,7 +50,7 @@ namespace SabreTools.Features
             var datfilePaths = PathTool.GetFilesOnly(datfiles);
 
             // Get feature flags
-            TreatAsFile treatAsFile = GetTreatAsFile(features);
+            TreatAsFile treatAsFile = GetTreatAsFile();
             bool hashOnly = GetBoolean(HashOnlyValue);
             bool quickScan = GetBoolean(QuickValue);
             HashType[] hashes = quickScan ? [HashType.CRC32] : [HashType.CRC32, HashType.MD5, HashType.SHA1];

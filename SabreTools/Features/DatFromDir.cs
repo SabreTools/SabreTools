@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using SabreTools.DatFiles;
 using SabreTools.DatTools;
-using SabreTools.Help.Inputs;
 
 namespace SabreTools.Features
 {
@@ -56,19 +54,19 @@ namespace SabreTools.Features
         }
 
         /// <inheritdoc/>
-        public override bool ProcessFeatures(Dictionary<string, UserInput> features)
+        public override bool ProcessFeatures()
         {
             // If the base fails, just fail out
-            if (!base.ProcessFeatures(features))
+            if (!base.ProcessFeatures())
                 return false;
 
             // Get feature flags
             bool addBlankFiles = GetBoolean(AddBlankFilesValue);
             bool addFileDates = GetBoolean(AddDateValue);
-            TreatAsFile treatAsFile = GetTreatAsFile(features);
+            TreatAsFile treatAsFile = GetTreatAsFile();
             bool noAutomaticDate = GetBoolean(NoAutomaticDateValue);
-            var includeInScan = GetIncludeInScan(features);
-            var skipFileType = GetSkipFileType(features);
+            var includeInScan = GetIncludeInScan();
+            var skipFileType = GetSkipFileType();
             var dfd = new DatTools.DatFromDir(includeInScan, skipFileType, treatAsFile, addBlankFiles);
 
             // Apply the specialized field removals to the cleaner

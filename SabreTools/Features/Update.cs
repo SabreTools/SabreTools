@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using SabreTools.Core;
 using SabreTools.DatFiles;
 using SabreTools.DatTools;
-using SabreTools.Help.Inputs;
 using SabreTools.IO;
 using SabreTools.IO.Extensions;
 using SabreTools.IO.Logging;
@@ -85,16 +84,16 @@ namespace SabreTools.Features
         }
 
         /// <inheritdoc/>
-        public override bool ProcessFeatures(Dictionary<string, UserInput> features)
+        public override bool ProcessFeatures()
         {
             // If the base fails, just fail out
-            if (!base.ProcessFeatures(features))
+            if (!base.ProcessFeatures())
                 return false;
 
             // Get feature flags
-            var updateMachineFieldNames = GetUpdateMachineFields(features);
-            var updateItemFieldNames = GetUpdateDatItemFields(features);
-            var updateMode = GetUpdateMode(features);
+            var updateMachineFieldNames = GetUpdateMachineFields();
+            var updateItemFieldNames = GetUpdateDatItemFields();
+            var updateMode = GetUpdateMode();
 
             // Normalize the extensions
             Modifiers!.AddExtension = string.IsNullOrEmpty(Modifiers.AddExtension) || Modifiers.AddExtension!.StartsWith(".")

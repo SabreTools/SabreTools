@@ -7,7 +7,6 @@ using SabreTools.Core.Tools;
 using SabreTools.DatFiles;
 using SabreTools.DatTools;
 using SabreTools.Hashing;
-using SabreTools.Help.Inputs;
 using SabreTools.IO;
 using SabreTools.IO.Logging;
 
@@ -50,10 +49,10 @@ Reset the internal state:           reset();";
         }
 
         /// <inheritdoc/>
-        public override bool ProcessFeatures(Dictionary<string, UserInput> features)
+        public override bool ProcessFeatures()
         {
             // If the base fails, just fail out
-            if (!base.ProcessFeatures(features))
+            if (!base.ProcessFeatures())
                 return false;
 
             // Try to read each input as a batch run file

@@ -87,30 +87,6 @@ namespace SabreTools.Help
         #region Instance Methods
 
         /// <summary>
-        /// Flatten the nested structure of inputs
-        /// </summary>
-        /// <returns>Dictionary containing all inputs</returns>
-        public Dictionary<string, UserInput> Flatten()
-        {
-            Dictionary<string, UserInput> flat = [];
-
-            // Loop through the features
-            foreach (var feature in _features)
-            {
-                var temp = FlattenRecursive(feature.Key, feature.Value);
-                foreach (var tempfeat in temp)
-                {
-                    if (flat.ContainsKey(tempfeat.Key))
-                        continue;
-
-                    flat[tempfeat.Key] = tempfeat.Value;
-                }
-            }
-
-            return flat;
-        }
-
-        /// <summary>
         /// Get the feature name for a given flag or short name
         /// </summary>
         /// <returns>Feature name</returns>
@@ -142,35 +118,6 @@ namespace SabreTools.Help
         /// <returns>True if the feature was found, false otherwise</returns>
         public bool TopLevelFlag(string flag)
             => GetFeatureName(flag).Length > 0;
-
-        /// <summary>
-        /// Flatten the nested structure of inputs from a key and feature
-        /// </summary>
-        /// <param name="key">Name that should be assigned to the feature</param>
-        /// <param name="feature">Feature with possible subfeatures to test</param>
-        /// <returns>Set of flattened inputs</returns>
-        private static Dictionary<string, UserInput> FlattenRecursive(string key, UserInput feature)
-        {
-            Dictionary<string, UserInput> flat = [];
-
-            // Add the current feature
-            flat.Add(key, feature);
-
-            // Now loop through the subfeatures recursively
-            foreach (KeyValuePair<string, UserInput> sub in feature.Children)
-            {
-                var temp = FlattenRecursive(sub.Key, sub.Value);
-                foreach (var tempfeat in temp)
-                {
-                    if (flat.ContainsKey(tempfeat.Key))
-                        continue;
-
-                    flat[tempfeat.Key] = tempfeat.Value;
-                }
-            }
-
-            return flat;
-        }
 
         #endregion
 

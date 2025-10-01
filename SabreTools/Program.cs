@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using SabreTools.Features;
 using SabreTools.Help;
-using SabreTools.Help.Inputs;
 using SabreTools.IO.Logging;
 
 namespace SabreTools
@@ -87,7 +86,6 @@ namespace SabreTools
 #endif
 
             // Now process the current feature
-            Dictionary<string, UserInput> features = _help.Flatten();
             bool success = false;
             switch (featureName)
             {
@@ -104,13 +102,13 @@ namespace SabreTools
                 case Update.DisplayName:
                 case Verify.DisplayName:
                     VerifyInputs(feature.Inputs, feature);
-                    success = feature.ProcessFeatures(features);
+                    success = feature.ProcessFeatures();
                     break;
 
                 // Requires no input verification
                 case Sort.DisplayName:
                 case DefaultVersion.DisplayName:
-                    success = feature.ProcessFeatures(features);
+                    success = feature.ProcessFeatures();
                     break;
 
                 // If nothing is set, show the help

@@ -24,7 +24,7 @@ namespace SabreTools.Help
         }
 
         /// <inheritdoc/>
-        public override bool ProcessFeatures(Dictionary<string, UserInput> features)
+        public override bool ProcessFeatures()
         {
             Console.WriteLine($"Version: {GetVersion()}");
             return true;

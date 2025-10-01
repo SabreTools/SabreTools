@@ -1109,18 +1109,18 @@ Some special strings that can be used:
         #endregion
 
         /// <inheritdoc/>
-        public override bool ProcessFeatures(Dictionary<string, UserInput> features)
+        public override bool ProcessFeatures()
         {
             // Generic feature flags
-            Cleaner = GetCleaner(features);
-            Extras = GetExtras(features);
-            FilterRunner = GetFilterRunner(features);
-            Header = GetDatHeader(features);
-            Modifiers = GetDatModifiers(features);
+            Cleaner = GetCleaner();
+            Extras = GetExtras();
+            FilterRunner = GetFilterRunner();
+            Header = GetDatHeader();
+            Modifiers = GetDatModifiers();
             OutputDir = GetString(OutputDirStringValue)?.Trim('"');
-            Remover = GetRemover(features);
+            Remover = GetRemover();
             ScriptMode = GetBoolean(ScriptValue);
-            Splitter = GetSplitter(features);
+            Splitter = GetSplitter();
 
             // Handle logging levels
             string? logLevel = GetString(LogLevelStringValue);
@@ -1142,7 +1142,7 @@ Some special strings that can be used:
 
             // Set threading flag, if necessary
 #if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            if (features.ContainsKey(ThreadsInt32Value))
+            if (Children.ContainsKey(ThreadsInt32Value))
                 Core.Globals.MaxThreads = GetInt32(ThreadsInt32Value);
 #endif
 
@@ -1178,7 +1178,7 @@ Some special strings that can be used:
         /// <summary>
         /// Get include from scan from feature list
         /// </summary>
-        protected HashType[] GetIncludeInScan(Dictionary<string, UserInput> features)
+        protected HashType[] GetIncludeInScan()
         {
             List<HashType> includeInScan = [];
 
@@ -1215,7 +1215,7 @@ Some special strings that can be used:
         /// <summary>
         /// Get OutputFormat from feature list
         /// </summary>
-        protected OutputFormat GetOutputFormat(Dictionary<string, UserInput> features)
+        protected OutputFormat GetOutputFormat()
         {
             if (GetBoolean(TarValue))
                 return OutputFormat.TapeArchive;
@@ -1236,7 +1236,7 @@ Some special strings that can be used:
         /// <summary>
         /// Get SkipFileType from feature list
         /// </summary>
-        protected SkipFileType GetSkipFileType(Dictionary<string, UserInput> features)
+        protected SkipFileType GetSkipFileType()
         {
             if (GetBoolean(SkipArchivesValue))
                 return SkipFileType.Archive;
@@ -1249,7 +1249,7 @@ Some special strings that can be used:
         /// <summary>
         /// Get SplittingMode from feature list
         /// </summary>
-        protected SplittingMode GetSplittingMode(Dictionary<string, UserInput> features)
+        protected SplittingMode GetSplittingMode()
         {
             SplittingMode splittingMode = SplittingMode.None;
 
@@ -1272,7 +1272,7 @@ Some special strings that can be used:
         /// <summary>
         /// Get StatReportFormat from feature list
         /// </summary>
-        protected StatReportFormat GetStatReportFormat(Dictionary<string, UserInput> features)
+        protected StatReportFormat GetStatReportFormat()
         {
             StatReportFormat statDatFormat = StatReportFormat.None;
 
@@ -1287,7 +1287,7 @@ Some special strings that can be used:
         /// <summary>
         /// Get TreatAsFile from feature list
         /// </summary>
-        protected TreatAsFile GetTreatAsFile(Dictionary<string, UserInput> features)
+        protected TreatAsFile GetTreatAsFile()
         {
             TreatAsFile asFile = 0x00;
             if (GetBoolean(AaruFormatsAsFilesValue))
@@ -1303,7 +1303,7 @@ Some special strings that can be used:
         /// <summary>
         /// Get update Machine fields from feature list
         /// </summary>
-        protected List<string> GetUpdateMachineFields(Dictionary<string, UserInput> features)
+        protected List<string> GetUpdateMachineFields()
         {
             List<string> updateFields = [];
             foreach (string fieldName in GetStringList(UpdateFieldListValue))
@@ -1326,7 +1326,7 @@ Some special strings that can be used:
         /// <summary>
         /// Get update DatItem fields from feature list
         /// </summary>
-        protected Dictionary<string, List<string>> GetUpdateDatItemFields(Dictionary<string, UserInput> features)
+        protected Dictionary<string, List<string>> GetUpdateDatItemFields()
         {
             Dictionary<string, List<string>> updateFields = [];
             foreach (string fieldName in GetStringList(UpdateFieldListValue))
@@ -1352,7 +1352,7 @@ Some special strings that can be used:
         /// <summary>
         /// Get UpdateMode from feature list
         /// </summary>
-        protected UpdateMode GetUpdateMode(Dictionary<string, UserInput> features)
+        protected UpdateMode GetUpdateMode()
         {
             UpdateMode updateMode = UpdateMode.None;
 
@@ -1396,12 +1396,12 @@ Some special strings that can be used:
         /// <summary>
         /// Get Cleaner from feature list
         /// </summary>
-        private Cleaner GetCleaner(Dictionary<string, UserInput> features)
+        private Cleaner GetCleaner()
         {
             Cleaner cleaner = new()
             {
                 Normalize = GetBoolean(CleanValue),
-                DedupeRoms = GetDedupeType(features),
+                DedupeRoms = GetDedupeType(),
                 DescriptionAsName = GetBoolean(DescriptionAsNameValue),
                 KeepEmptyGames = GetBoolean(KeepEmptyGamesValue),
                 OneGamePerRegion = GetBoolean(OneGamePerRegionValue),
@@ -1420,7 +1420,7 @@ Some special strings that can be used:
         /// <summary>
         /// Get DatHeader from feature list
         /// </summary>
-        private DatHeader? GetDatHeader(Dictionary<string, UserInput> features)
+        private DatHeader? GetDatHeader()
         {
             var datHeader = new DatHeader();
             datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.AuthorKey, GetString(AuthorStringValue));
@@ -1465,7 +1465,7 @@ Some special strings that can be used:
         /// <summary>
         /// Get DatModifiers from feature list
         /// </summary>
-        private DatModifiers? GetDatModifiers(Dictionary<string, UserInput> features)
+        private DatModifiers? GetDatModifiers()
         {
             // Get the depot information
             var inputDepot = new DepotInformation(
@@ -1494,7 +1494,7 @@ Some special strings that can be used:
         /// <summary>
         /// Get DedupeType from feature list
         /// </summary>
-        private DedupeType GetDedupeType(Dictionary<string, UserInput> features)
+        private DedupeType GetDedupeType()
         {
             if (GetBoolean(DedupValue))
                 return DedupeType.Full;
@@ -1507,7 +1507,7 @@ Some special strings that can be used:
         /// <summary>
         /// Get ExtraIni from feature list
         /// </summary>
-        private ExtraIni GetExtras(Dictionary<string, UserInput> features)
+        private ExtraIni GetExtras()
         {
             ExtraIni extraIni = new();
             extraIni.PopulateFromList(GetStringList(ExtraIniListValue));
@@ -1517,7 +1517,7 @@ Some special strings that can be used:
         /// <summary>
         /// Get FilterRunner from feature list
         /// </summary>
-        private FilterRunner GetFilterRunner(Dictionary<string, UserInput> features)
+        private FilterRunner GetFilterRunner()
         {
             // Populate filters
             List<string> filterPairs = GetStringList(FilterListValue);
@@ -1537,7 +1537,7 @@ Some special strings that can be used:
         /// <summary>
         /// Get Remover from feature list
         /// </summary>
-        private Remover GetRemover(Dictionary<string, UserInput> features)
+        private Remover GetRemover()
         {
             Remover remover = new();
 
@@ -1551,11 +1551,11 @@ Some special strings that can be used:
         /// <summary>
         /// Get Splitter from feature list
         /// </summary>
-        private MergeSplit GetSplitter(Dictionary<string, UserInput> features)
+        private MergeSplit GetSplitter()
         {
             MergeSplit splitter = new()
             {
-                SplitType = GetSplitType(features),
+                SplitType = GetSplitType(),
             };
             return splitter;
         }
@@ -1563,7 +1563,7 @@ Some special strings that can be used:
         /// <summary>
         /// Get SplitType from feature list
         /// </summary>
-        private MergingFlag GetSplitType(Dictionary<string, UserInput> features)
+        private MergingFlag GetSplitType()
         {
             MergingFlag splitType = MergingFlag.None;
             if (GetBoolean(DatDeviceNonMergedValue))
