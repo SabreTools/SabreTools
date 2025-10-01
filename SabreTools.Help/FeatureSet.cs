@@ -9,7 +9,10 @@ namespace SabreTools.Help
     /// </summary>
     /// <remarks>
     /// It is recommended to use this class as the primary
-    /// way to address user inputs from the application
+    /// way to address user inputs from the application. It
+    /// is also recommended that all directly-included
+    /// inputs are <see cref="Feature"/> unless the implementing
+    /// program only has a single utility.
     /// </remarks>
     public class FeatureSet
     {
