@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using SabreTools.IO.Logging;
 
 namespace SabreTools.Help
 {
@@ -19,27 +18,16 @@ namespace SabreTools.Help
 
         #endregion
 
-        #region Logging
-
-        /// <summary>
-        /// Logging object
-        /// </summary>
-        private readonly Logger _logger;
-
-        #endregion
-
         #region Constructors
 
         public FeatureFlag(string name, string flag, string description, string? longDescription = null)
             : base(name, flag, description, longDescription)
         {
-            _logger = new Logger(this);
         }
 
         public FeatureFlag(string name, string[] flags, string description, string? longDescription = null)
             : base(name, flags, description, longDescription)
         {
-            _logger = new Logger(this);
         }
 
         #endregion
@@ -76,9 +64,8 @@ namespace SabreTools.Help
                 // Everything else isn't a file
                 else
                 {
-                    _logger.Error($"Invalid input detected: {args[i]}");
+                    Console.Error.WriteLine($"Invalid input detected: {args[i]}");
                     help.OutputIndividualFeature(Name);
-                    LoggerImpl.Close();
                     return false;
                 }
             }

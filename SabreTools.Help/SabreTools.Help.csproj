@@ -21,8 +21,4 @@
         <RepositoryType>git</RepositoryType>
     </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="SabreTools.IO" Version="1.7.5" />
-    </ItemGroup>
-
 </Project>
