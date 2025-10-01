@@ -114,7 +114,167 @@ namespace SabreTools.Help.Inputs
 
         #endregion
 
-        #region Instance Methods
+        #region Children
+
+        /// <summary>
+        /// Get boolean value from nullable feature
+        /// </summary>
+        protected bool GetBoolean(string key)
+        {
+            if (!Children.ContainsKey(key))
+                return false;
+
+            if (Children[key] is BooleanInput b)
+                return b.Value;
+            else if (Children[key] is FlagInput f)
+                return f.Value;
+
+            throw new ArgumentException("Feature is not a bool");
+        }
+
+        /// <summary>
+        /// Get sbyte value from nullable feature
+        /// </summary>
+        protected sbyte GetInt8(string key)
+        {
+            if (!Children.ContainsKey(key))
+                return sbyte.MinValue;
+
+            if (Children[key] is not Int8Input i)
+                throw new ArgumentException("Feature is not an sbyte");
+
+            return i.Value;
+        }
+
+        /// <summary>
+        /// Get short value from nullable feature
+        /// </summary>
+        protected short GetInt16(string key)
+        {
+            if (!Children.ContainsKey(key))
+                return short.MinValue;
+
+            if (Children[key] is not Int16Input i)
+                throw new ArgumentException("Feature is not a short");
+
+            return i.Value;
+        }
+
+        /// <summary>
+        /// Get int value from nullable feature
+        /// </summary>
+        protected int GetInt32(string key)
+        {
+            if (!Children.ContainsKey(key))
+                return int.MinValue;
+
+            if (Children[key] is not Int32Input i)
+                throw new ArgumentException("Feature is not an int");
+
+            return i.Value;
+        }
+
+        /// <summary>
+        /// Get long value from nullable feature
+        /// </summary>
+        protected long GetInt64(string key)
+        {
+            if (!Children.ContainsKey(key))
+                return long.MinValue;
+
+            if (Children[key] is not Int64Input l)
+                throw new ArgumentException("Feature is not a long");
+
+            return l.Value;
+        }
+
+        /// <summary>
+        /// Get string value from nullable feature
+        /// </summary>
+        protected string? GetString(string key)
+        {
+            if (!Children.ContainsKey(key))
+                return null;
+
+            if (Children[key] is not StringInput s)
+                throw new ArgumentException("Feature is not a string");
+
+            return s.Value;
+        }
+
+        /// <summary>
+        /// Get list value from nullable feature
+        /// </summary>
+        protected List<string> GetStringList(string key)
+        {
+            if (!Children.ContainsKey(key))
+                return [];
+
+            if (Children[key] is not StringListInput l)
+                throw new ArgumentException("Feature is not a list");
+
+            return l.Value ?? [];
+        }
+
+        /// <summary>
+        /// Get byte value from nullable feature
+        /// </summary>
+        protected byte GetUInt8(string key)
+        {
+            if (!Children.ContainsKey(key))
+                return byte.MinValue;
+
+            if (Children[key] is not UInt8Input i)
+                throw new ArgumentException("Feature is not an byte");
+
+            return i.Value;
+        }
+
+        /// <summary>
+        /// Get short value from nullable feature
+        /// </summary>
+        protected ushort GetUInt16(string key)
+        {
+            if (!Children.ContainsKey(key))
+                return ushort.MinValue;
+
+            if (Children[key] is not UInt16Input i)
+                throw new ArgumentException("Feature is not a ushort");
+
+            return i.Value;
+        }
+
+        /// <summary>
+        /// Get int value from nullable feature
+        /// </summary>
+        protected uint GetUInt32(string key)
+        {
+            if (!Children.ContainsKey(key))
+                return uint.MinValue;
+
+            if (Children[key] is not UInt32Input i)
+                throw new ArgumentException("Feature is not an uint");
+
+            return i.Value;
+        }
+
+        /// <summary>
+        /// Get long value from nullable feature
+        /// </summary>
+        protected ulong GetUInt64(string key)
+        {
+            if (!Children.ContainsKey(key))
+                return ulong.MinValue;
+
+            if (Children[key] is not UInt64Input l)
+                throw new ArgumentException("Feature is not a ulong");
+
+            return l.Value;
+        }
+
+        #endregion
+
+        #region Processing
 
         /// <summary>
         /// Validate whether a flag is valid for this feature or not
