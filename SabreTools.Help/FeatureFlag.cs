@@ -95,6 +95,34 @@ namespace SabreTools.Help
         }
 
         /// <summary>
+        /// Get sbyte value from nullable feature
+        /// </summary>
+        protected static sbyte GetInt8(Dictionary<string, UserInput?> features, string key)
+        {
+            if (!features.ContainsKey(key))
+                return sbyte.MinValue;
+
+            if (features[key] is not Int8Input i)
+                throw new ArgumentException("Feature is not an sbyte");
+
+            return i.Value;
+        }
+
+        /// <summary>
+        /// Get short value from nullable feature
+        /// </summary>
+        protected static short GetInt16(Dictionary<string, UserInput?> features, string key)
+        {
+            if (!features.ContainsKey(key))
+                return short.MinValue;
+
+            if (features[key] is not Int16Input i)
+                throw new ArgumentException("Feature is not a short");
+
+            return i.Value;
+        }
+
+        /// <summary>
         /// Get int value from nullable feature
         /// </summary>
         protected static int GetInt32(Dictionary<string, UserInput?> features, string key)
@@ -148,6 +176,62 @@ namespace SabreTools.Help
                 throw new ArgumentException("Feature is not a string");
 
             return s.Value;
+        }
+
+        /// <summary>
+        /// Get byte value from nullable feature
+        /// </summary>
+        protected static byte GetUInt8(Dictionary<string, UserInput?> features, string key)
+        {
+            if (!features.ContainsKey(key))
+                return byte.MinValue;
+
+            if (features[key] is not UInt8Input i)
+                throw new ArgumentException("Feature is not an byte");
+
+            return i.Value;
+        }
+
+        /// <summary>
+        /// Get short value from nullable feature
+        /// </summary>
+        protected static ushort GetUInt16(Dictionary<string, UserInput?> features, string key)
+        {
+            if (!features.ContainsKey(key))
+                return ushort.MinValue;
+
+            if (features[key] is not UInt16Input i)
+                throw new ArgumentException("Feature is not a ushort");
+
+            return i.Value;
+        }
+
+        /// <summary>
+        /// Get int value from nullable feature
+        /// </summary>
+        protected static uint GetUInt32(Dictionary<string, UserInput?> features, string key)
+        {
+            if (!features.ContainsKey(key))
+                return uint.MinValue;
+
+            if (features[key] is not UInt32Input i)
+                throw new ArgumentException("Feature is not an uint");
+
+            return i.Value;
+        }
+
+        /// <summary>
+        /// Get long value from nullable feature
+        /// </summary>
+        protected static ulong GetUInt64(Dictionary<string, UserInput?> features, string key)
+        {
+            if (!features.ContainsKey(key))
+                return ulong.MinValue;
+
+            if (features[key] is not UInt64Input l)
+                throw new ArgumentException("Feature is not a ulong");
+
+            return l.Value;
         }
 
         #endregion
