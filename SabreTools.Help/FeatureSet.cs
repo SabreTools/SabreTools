@@ -266,30 +266,6 @@ namespace SabreTools.Help
             => GetFeatureName(flag).Length > 0;
 
         /// <summary>
-        /// Retrieve a list of enabled features
-        /// </summary>
-        /// <returns>List of Features representing what is enabled</returns>
-        public Dictionary<string, UserInput> GetEnabledFeatures()
-        {
-            Dictionary<string, UserInput> enabled = [];
-
-            // Loop through the features
-            foreach (var feature in _features)
-            {
-                var temp = GetEnabledSubfeatures(feature.Key, feature.Value);
-                foreach (var tempfeat in temp)
-                {
-                    if (!enabled.ContainsKey(tempfeat.Key))
-                        continue;
-
-                    enabled[tempfeat.Key] = tempfeat.Value;
-                }
-            }
-
-            return enabled;
-        }
-
-        /// <summary>
         /// Flatten the nested structure of inputs from a key and feature
         /// </summary>
         /// <param name="key">Name that should be assigned to the feature</param>
@@ -316,36 +292,6 @@ namespace SabreTools.Help
             }
 
             return flat;
-        }
-
-        /// <summary>
-        /// Retrieve a nested list of subfeatures from the current feature
-        /// </summary>
-        /// <param name="key">Name that should be assigned to the feature</param>
-        /// <param name="feature">Feature with possible subfeatures to test</param>
-        /// <returns>List of Features representing what is enabled</returns>
-        private static Dictionary<string, UserInput> GetEnabledSubfeatures(string key, UserInput feature)
-        {
-            Dictionary<string, UserInput> enabled = [];
-
-            // First determine if the current feature is enabled
-            if (feature.IsEnabled())
-                enabled.Add(key, feature);
-
-            // Now loop through the subfeatures recursively
-            foreach (KeyValuePair<string, UserInput> sub in feature.Features)
-            {
-                var temp = GetEnabledSubfeatures(sub.Key, sub.Value);
-                foreach (var tempfeat in temp)
-                {
-                    if (!enabled.ContainsKey(tempfeat.Key))
-                        continue;
-
-                    enabled[tempfeat.Key] = tempfeat.Value;
-                }
-            }
-
-            return enabled;
         }
 
         /// <summary>
