@@ -198,7 +198,7 @@ namespace SabreTools.Features
                 // Loop through and output the new DatFiles
                 InternalStopwatch watch = new("Outputting all individual DATs");
 
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 Parallel.For(0, inputPaths.Count, Core.Globals.ParallelOptions, j =>
 #elif NET40_OR_GREATER
                 Parallel.For(0, inputPaths.Count, j =>
@@ -210,7 +210,7 @@ namespace SabreTools.Features
 
                     // Try to output the file
                     Writer.Write(datFiles[j], path, overwrite: GetBoolean(features, InplaceValue));
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 });
 #else
                 }
@@ -227,7 +227,7 @@ namespace SabreTools.Features
 #endif
             {
                 // Preprocess the DatHeaders
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 Parallel.For(0, datHeaders.Count, Core.Globals.ParallelOptions, j =>
 #elif NET40_OR_GREATER
                 Parallel.For(0, datHeaders.Count, j =>
@@ -237,7 +237,7 @@ namespace SabreTools.Features
                 {
                     // Skip renaming if not outputting to the runtime folder
                     if (GetBoolean(features, InplaceValue) || OutputDir != Environment.CurrentDirectory)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                         return;
 #else
                         continue;
@@ -249,7 +249,7 @@ namespace SabreTools.Features
                     datHeaders[j].SetFieldValue<string?>(DatHeader.FileNameKey, datHeaders[j].GetStringFieldValue(DatHeader.FileNameKey) + innerpost);
                     datHeaders[j].SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, datHeaders[j].GetStringFieldValue(Data.Models.Metadata.Header.NameKey) + innerpost);
                     datHeaders[j].SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, datHeaders[j].GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey) + innerpost);
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 });
 #else
                 }
@@ -262,7 +262,7 @@ namespace SabreTools.Features
                 InternalStopwatch watch = new("Outputting all created DATs");
 
                 int startIndex = GetBoolean(features, SkipFirstOutputValue) ? 1 : 0;
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 Parallel.For(startIndex, inputPaths.Count, Core.Globals.ParallelOptions, j =>
 #elif NET40_OR_GREATER
                 Parallel.For(startIndex, inputPaths.Count, j =>
@@ -274,7 +274,7 @@ namespace SabreTools.Features
 
                     // Try to output the file
                     Writer.Write(datFiles[j], path, overwrite: GetBoolean(features, InplaceValue));
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 });
 #else
                 }
@@ -291,7 +291,7 @@ namespace SabreTools.Features
 #endif
             {
                 // Loop through each input and diff against the base
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 Parallel.ForEach(inputPaths, Core.Globals.ParallelOptions, inputPath =>
 #elif NET40_OR_GREATER
                 Parallel.ForEach(inputPaths, inputPath =>
@@ -316,7 +316,7 @@ namespace SabreTools.Features
                     // Finally output the diffed DatFile
                     string interOutDir = inputPath.GetOutputPath(OutputDir, GetBoolean(features, InplaceValue))!;
                     Writer.Write(repDat, interOutDir, overwrite: GetBoolean(features, InplaceValue));
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 });
 #else
                 }
@@ -331,7 +331,7 @@ namespace SabreTools.Features
 #endif
             {
                 // Loop through each input and apply the base DatFile
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 Parallel.ForEach(inputPaths, Core.Globals.ParallelOptions, inputPath =>
 #elif NET40_OR_GREATER
                 Parallel.ForEach(inputPaths, inputPath =>
@@ -361,7 +361,7 @@ namespace SabreTools.Features
                     // Finally output the replaced DatFile
                     string interOutDir = inputPath.GetOutputPath(OutputDir, GetBoolean(features, InplaceValue))!;
                     Writer.Write(repDat, interOutDir, overwrite: GetBoolean(features, InplaceValue));
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 });
 #else
                 }
@@ -459,7 +459,7 @@ namespace SabreTools.Features
         private void StandardUpdate(List<ParentablePath> inputPaths, bool inplace, bool noAutomaticDate)
         {
             // Loop through each input and update
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(inputPaths, Core.Globals.ParallelOptions, inputPath =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(inputPaths, inputPath =>
@@ -503,7 +503,7 @@ namespace SabreTools.Features
 
                 // Try to output the file, overwriting only if it's not in the current directory
                 Writer.Write(datFile, realOutDir, overwrite: inplace);
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }

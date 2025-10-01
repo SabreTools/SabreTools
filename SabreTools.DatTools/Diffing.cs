@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
 using System.Threading.Tasks;
 #endif
 using SabreTools.DatFiles;
@@ -52,7 +52,7 @@ namespace SabreTools.DatTools
         private static void AgainstImpl(DatFile datFile, DatFile intDat, bool useGames)
         {
             // Then we compare against the base DAT
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(intDat.Items.SortedKeys, Core.Globals.ParallelOptions, key =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(intDat.Items.SortedKeys, key =>
@@ -66,7 +66,7 @@ namespace SabreTools.DatTools
                     // If the key is null, keep it
                     var intList = intDat.GetItemsForBucket(key);
                     if (intList.Count == 0)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                         return;
 #else
                         continue;
@@ -75,7 +75,7 @@ namespace SabreTools.DatTools
                     // If the base DAT doesn't contain the key, keep it
                     var list = datFile.GetItemsForBucket(key);
                     if (list.Count == 0)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                         return;
 #else
                         continue;
@@ -83,7 +83,7 @@ namespace SabreTools.DatTools
 
                     // If the number of items is different, then keep it
                     if (list.Count != intList.Count)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                         return;
 #else
                         continue;
@@ -111,7 +111,7 @@ namespace SabreTools.DatTools
                 {
                     List<DatItem> datItems = intDat.GetItemsForBucket(key);
                     if (datItems.Count == 0)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                         return;
 #else
                         continue;
@@ -128,7 +128,7 @@ namespace SabreTools.DatTools
                     intDat.RemoveBucket(key);
                     keepDatItems.ForEach(item => intDat.AddItem(item, statsOnly: false));
                 }
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -144,7 +144,7 @@ namespace SabreTools.DatTools
         private static void AgainstDBImpl(DatFile datFile, DatFile intDat, bool useGames)
         {
             // Then we compare against the base DAT
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(intDat.ItemsDB.SortedKeys, Core.Globals.ParallelOptions, key =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(intDat.ItemsDB.SortedKeys, key =>
@@ -158,7 +158,7 @@ namespace SabreTools.DatTools
                     // If the key is null, keep it
                     var intList = intDat.GetItemsForBucketDB(key);
                     if (intList.Count == 0)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                         return;
 #else
                         continue;
@@ -167,7 +167,7 @@ namespace SabreTools.DatTools
                     // If the base DAT doesn't contain the key, keep it
                     List<DatItem> list = [.. datFile.GetItemsForBucketDB(key).Values];
                     if (list.Count == 0)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                         return;
 #else
                         continue;
@@ -175,7 +175,7 @@ namespace SabreTools.DatTools
 
                     // If the number of items is different, then keep it
                     if (list.Count != intList.Count)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                         return;
 #else
                         continue;
@@ -205,7 +205,7 @@ namespace SabreTools.DatTools
                 {
                     Dictionary<long, DatItem> datItems = intDat.GetItemsForBucketDB(key);
                     if (datItems == null)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                         return;
 #else
                         continue;
@@ -233,7 +233,7 @@ namespace SabreTools.DatTools
                     currentMappings.ForEach(map =>
                         intDat.AddItemDB(map.Item, map.MachineId, map.SourceId, statsOnly: false));
                 }
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -264,7 +264,7 @@ namespace SabreTools.DatTools
 
             // Create the DatFiles from the set of headers
             DatFile[] outDatsArray = new DatFile[datHeaders.Count];
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.For(0, datHeaders.Count, Core.Globals.ParallelOptions, j =>
 #elif NET40_OR_GREATER
             Parallel.For(0, datHeaders.Count, j =>
@@ -277,7 +277,7 @@ namespace SabreTools.DatTools
                 FillWithSourceIndex(datFile, diffData, j);
                 FillWithSourceIndexDB(datFile, diffData, j);
                 outDatsArray[j] = diffData;
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -299,7 +299,7 @@ namespace SabreTools.DatTools
         private static void FillWithSourceIndex(DatFile datFile, DatFile indexDat, int index)
         {
             // Loop through and add the items for this index to the output
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(datFile.Items.SortedKeys, Core.Globals.ParallelOptions, key =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(datFile.Items.SortedKeys, key =>
@@ -311,7 +311,7 @@ namespace SabreTools.DatTools
 
                 // If the rom list is empty or null, just skip it
                 if (items == null || items.Count == 0)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
                     continue;
@@ -323,7 +323,7 @@ namespace SabreTools.DatTools
                     if (source != null && source.Index == index)
                         indexDat.AddItem(item, statsOnly: false);
                 }
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -363,7 +363,7 @@ namespace SabreTools.DatTools
             }
 
             // Loop through and add the items
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(datItems, Core.Globals.ParallelOptions, item =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(datItems, item =>
@@ -380,7 +380,7 @@ namespace SabreTools.DatTools
 
                 if (source != null && source.Index == index)
                     indexDat.AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -458,7 +458,7 @@ namespace SabreTools.DatTools
         /// <param name="dupeData">Duplicate data DatFile</param>
         private static void DuplicatesImpl(DatFile datFile, List<ParentablePath> inputs, DatFile dupeData)
         {
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(datFile.Items.SortedKeys, Core.Globals.ParallelOptions, key =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(datFile.Items.SortedKeys, key =>
@@ -470,7 +470,7 @@ namespace SabreTools.DatTools
 
                 // If the rom list is empty or null, just skip it
                 if (items == null || items.Count == 0)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
                     continue;
@@ -494,7 +494,7 @@ namespace SabreTools.DatTools
                         dupeData.AddItem(newrom, statsOnly: false);
                     }
                 }
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -533,7 +533,7 @@ namespace SabreTools.DatTools
             }
 
             // Loop through and add the items
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(datItems, Core.Globals.ParallelOptions, item =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(datItems, item =>
@@ -551,7 +551,7 @@ namespace SabreTools.DatTools
 #else
                 if (!item.Value.GetFieldValue<DupeType>(DatItem.DupeTypeKey).HasFlag(DupeType.External))
 #endif
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
                     continue;
@@ -562,7 +562,7 @@ namespace SabreTools.DatTools
                 string? currentMachineName = machines[machineIndex].GetName();
                 var currentMachine = datFile.ItemsDB.GetMachine(currentMachineName);
                 if (currentMachine.Value == null)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
                     continue;
@@ -580,7 +580,7 @@ namespace SabreTools.DatTools
                 }
 
                 dupeData.AddItemDB(item.Value, renamedMachine.Key, sourceRemapping[sourceIndex], statsOnly: false);
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -643,7 +643,7 @@ namespace SabreTools.DatTools
             // Loop through each of the inputs and get or create a new DatData object
             DatFile[] outDatsArray = new DatFile[inputs.Count];
 
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.For(0, inputs.Count, Core.Globals.ParallelOptions, j =>
 #elif NET40_OR_GREATER
             Parallel.For(0, inputs.Count, j =>
@@ -658,7 +658,7 @@ namespace SabreTools.DatTools
                 diffData.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, diffData.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey) + innerpost);
                 diffData.ResetDictionary();
                 outDatsArray[j] = diffData;
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -674,7 +674,7 @@ namespace SabreTools.DatTools
         /// <param name="outDats">Individual data DatFiles</param>
         private static void IndividualsImpl(DatFile datFile, DatFile[] outDats)
         {
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(datFile.Items.SortedKeys, Core.Globals.ParallelOptions, key =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(datFile.Items.SortedKeys, key =>
@@ -686,7 +686,7 @@ namespace SabreTools.DatTools
 
                 // If the rom list is empty or null, just skip it
                 if (items == null || items.Count == 0)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
                     continue;
@@ -705,7 +705,7 @@ namespace SabreTools.DatTools
 #endif
                         outDats[item.GetFieldValue<Source?>(DatItem.SourceKey)!.Index].AddItem(item, statsOnly: false);
                 }
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -753,7 +753,7 @@ namespace SabreTools.DatTools
             }
 
             // Loop through and add the items
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(datItems, Core.Globals.ParallelOptions, item =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(datItems, item =>
@@ -768,7 +768,7 @@ namespace SabreTools.DatTools
                 // Get the source associated with the item
                 var source = datFile.ItemsDB.GetSource(sourceIndex);
                 if (source == null)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
                     continue;
@@ -780,7 +780,7 @@ namespace SabreTools.DatTools
                 if (item.Value.GetFieldValue<DupeType>(DatItem.DupeTypeKey).HasFlag(DupeType.Internal) || item.Value.GetFieldValue<DupeType>(DatItem.DupeTypeKey) == 0x00)
 #endif
                     outDats[source.Index].AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -858,7 +858,7 @@ namespace SabreTools.DatTools
         /// <param name="outerDiffData">No duplicate data DatFile</param>
         private static void NoDuplicatesImpl(DatFile datFile, List<ParentablePath> inputs, DatFile outerDiffData)
         {
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(datFile.Items.SortedKeys, Core.Globals.ParallelOptions, key =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(datFile.Items.SortedKeys, key =>
@@ -870,7 +870,7 @@ namespace SabreTools.DatTools
 
                 // If the rom list is empty or null, just skip it
                 if (items == null || items.Count == 0)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
                     continue;
@@ -892,7 +892,7 @@ namespace SabreTools.DatTools
                         outerDiffData.AddItem(newrom, statsOnly: false);
                     }
                 }
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -931,7 +931,7 @@ namespace SabreTools.DatTools
             }
 
             // Loop through and add the items
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(datItems, Core.Globals.ParallelOptions, item =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(datItems, item =>
@@ -949,7 +949,7 @@ namespace SabreTools.DatTools
 #else
                 if (!item.Value.GetFieldValue<DupeType>(DatItem.DupeTypeKey).HasFlag(DupeType.Internal) && item.Value.GetFieldValue<DupeType>(DatItem.DupeTypeKey) != 0x00)
 #endif
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
                     continue;
@@ -960,7 +960,7 @@ namespace SabreTools.DatTools
                 string? currentMachineName = machines[machineIndex].GetName();
                 var currentMachine = datFile.ItemsDB.GetMachine(currentMachineName);
                 if (currentMachine.Value == null)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
                     continue;
@@ -978,7 +978,7 @@ namespace SabreTools.DatTools
                 }
 
                 outerDiffData.AddItemDB(item.Value, renamedMachine.Key, sourceRemapping[sourceIndex], statsOnly: false);
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }

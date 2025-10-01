@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
 using System.Threading.Tasks;
 using SabreTools.Core;
 #endif
@@ -1055,7 +1055,7 @@ namespace SabreTools.DatFiles
         {
             string[] buckets = [.. Items.SortedKeys];
 
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(buckets, Globals.ParallelOptions, bucket =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(buckets, bucket =>
@@ -1066,7 +1066,7 @@ namespace SabreTools.DatFiles
                 // If the bucket has no items in it
                 List<DatItem> items = GetItemsForBucket(bucket);
                 if (items.Count == 0)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
                     continue;
@@ -1075,7 +1075,7 @@ namespace SabreTools.DatFiles
                 // Get the machine
                 var machine = items[0].GetMachine();
                 if (machine == null)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
                     continue;
@@ -1087,7 +1087,7 @@ namespace SabreTools.DatFiles
                 {
                     RemoveBucket(bucket);
                 }
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -1105,7 +1105,7 @@ namespace SabreTools.DatFiles
         {
             string[] buckets = [.. ItemsDB.SortedKeys];
 
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(buckets, Globals.ParallelOptions, bucket =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(buckets, bucket =>
@@ -1116,7 +1116,7 @@ namespace SabreTools.DatFiles
                 // If the bucket has no items in it
                 Dictionary<long, DatItem> items = GetItemsForBucketDB(bucket);
                 if (items.Count == 0)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
                     continue;
@@ -1125,7 +1125,7 @@ namespace SabreTools.DatFiles
                 // Get the machine
                 var machine = GetMachineForItemDB(items.First().Key);
                 if (machine.Value == null)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
                     continue;
@@ -1143,7 +1143,7 @@ namespace SabreTools.DatFiles
 
                 // Remove the machine
                 RemoveMachineDB(machine.Key);
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -1355,7 +1355,7 @@ namespace SabreTools.DatFiles
         {
             string[] buckets = [.. Items.SortedKeys];
 
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(buckets, Globals.ParallelOptions, bucket =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(buckets, bucket =>
@@ -1366,7 +1366,7 @@ namespace SabreTools.DatFiles
                 // If the bucket has no items in it
                 var items = GetItemsForBucket(bucket);
                 if (items == null || items.Count == 0)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
                     continue;
@@ -1386,7 +1386,7 @@ namespace SabreTools.DatFiles
                     machine.SetFieldValue<string?>(Data.Models.Metadata.Machine.RomOfKey, null);
                     machine.SetFieldValue<string?>(Data.Models.Metadata.Machine.SampleOfKey, null);
                 }
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -1401,7 +1401,7 @@ namespace SabreTools.DatFiles
         {
             var machines = GetMachinesDB();
 
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(machines, Globals.ParallelOptions, machine =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(machines, machine =>
@@ -1412,7 +1412,7 @@ namespace SabreTools.DatFiles
                 // TODO: Remove merge tags here
                 // Get the machine
                 if (machine.Value == null)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
                     continue;
@@ -1421,7 +1421,7 @@ namespace SabreTools.DatFiles
                 machine.Value.SetFieldValue<string?>(Data.Models.Metadata.Machine.CloneOfKey, null);
                 machine.Value.SetFieldValue<string?>(Data.Models.Metadata.Machine.RomOfKey, null);
                 machine.Value.SetFieldValue<string?>(Data.Models.Metadata.Machine.SampleOfKey, null);
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }

@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
 using System.Collections.Concurrent;
 #endif
 using System.IO;
 using System.Text.RegularExpressions;
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
 using System.Threading.Tasks;
 #endif
 using SabreTools.Core;
@@ -96,12 +96,12 @@ namespace SabreTools.DatFiles
         /// <remarks>Applies to <see cref="Items"/></remarks>
         private IDictionary<string, string> CreateMachineToDescriptionMapping()
         {
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             ConcurrentDictionary<string, string> mapping = new();
 #else
             Dictionary<string, string> mapping = [];
 #endif
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(Items.SortedKeys, Globals.ParallelOptions, key =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(Items.SortedKeys, key =>
@@ -111,7 +111,7 @@ namespace SabreTools.DatFiles
             {
                 var items = GetItemsForBucket(key);
                 if (items == null)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
                     continue;
@@ -136,14 +136,14 @@ namespace SabreTools.DatFiles
                         continue;
 
                     // If the key mapping doesn't exist, add it
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     mapping.TryAdd(machineName, machineDesc);
 #else
                     if (!mapping.ContainsKey(machineName))
                         mapping[machineName] = machineDesc;
 #endif
                 }
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -191,7 +191,7 @@ namespace SabreTools.DatFiles
         /// <remarks>Applies to <see cref="Items"/></remarks>
         private void ExecuteFiltersImpl(FilterRunner filterRunner)
         {
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(Items.SortedKeys, Core.Globals.ParallelOptions, key =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(Items.SortedKeys, key =>
@@ -200,7 +200,7 @@ namespace SabreTools.DatFiles
 #endif
             {
                 ExecuteFilterOnBucket(filterRunner, key);
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -215,7 +215,7 @@ namespace SabreTools.DatFiles
         private void ExecuteFiltersImplDB(FilterRunner filterRunner)
         {
             List<string> keys = [.. ItemsDB.SortedKeys];
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(keys, Globals.ParallelOptions, key =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(keys, key =>
@@ -224,7 +224,7 @@ namespace SabreTools.DatFiles
 #endif
             {
                 ExecuteFilterOnBucketDB(filterRunner, key);
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -481,7 +481,7 @@ namespace SabreTools.DatFiles
         private void SetOneRomPerGameImpl()
         {
             // For each rom, we want to update the game to be "<game name>/<rom name>"
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(Items.SortedKeys, Globals.ParallelOptions, key =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(Items.SortedKeys, key =>
@@ -491,7 +491,7 @@ namespace SabreTools.DatFiles
             {
                 var items = GetItemsForBucket(key);
                 if (items == null)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
                     continue;
@@ -501,7 +501,7 @@ namespace SabreTools.DatFiles
                 {
                     SetOneRomPerGameImpl(items[i]);
                 }
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -558,7 +558,7 @@ namespace SabreTools.DatFiles
         private void SetOneRomPerGameImplDB()
         {
             // For each rom, we want to update the game to be "<game name>/<rom name>"
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(ItemsDB.SortedKeys, Globals.ParallelOptions, key =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(ItemsDB.SortedKeys, key =>
@@ -568,7 +568,7 @@ namespace SabreTools.DatFiles
             {
                 var items = GetItemsForBucketDB(key);
                 if (items == null)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
                     continue;
@@ -578,7 +578,7 @@ namespace SabreTools.DatFiles
                 {
                     SetOneRomPerGameImplDB(item);
                 }
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -638,7 +638,7 @@ namespace SabreTools.DatFiles
         private void StripSceneDatesFromItemsImpl()
         {
             // Now process all of the roms
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(Items.SortedKeys, Globals.ParallelOptions, key =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(Items.SortedKeys, key =>
@@ -648,7 +648,7 @@ namespace SabreTools.DatFiles
             {
                 var items = GetItemsForBucket(key);
                 if (items == null)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
                     continue;
@@ -671,7 +671,7 @@ namespace SabreTools.DatFiles
                     if (machineDesc != null && Regex.IsMatch(machineDesc, SceneNamePattern))
                         item.GetMachine()!.SetFieldValue<string?>(Data.Models.Metadata.Machine.DescriptionKey, Regex.Replace(machineDesc, SceneNamePattern, "$2"));
                 }
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -685,7 +685,7 @@ namespace SabreTools.DatFiles
         private void StripSceneDatesFromItemsImplDB()
         {
             // Now process all of the machines
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(GetMachinesDB(), Core.Globals.ParallelOptions, machine =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(GetMachinesDB(), machine =>
@@ -695,7 +695,7 @@ namespace SabreTools.DatFiles
             {
                 // Get the current machine
                 if (machine.Value == null)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
                     continue;
@@ -710,7 +710,7 @@ namespace SabreTools.DatFiles
 
                 if (machineDesc != null && Regex.IsMatch(machineDesc, SceneNamePattern))
                     machine.Value.SetFieldValue<string?>(Data.Models.Metadata.Machine.DescriptionKey, Regex.Replace(machineDesc, SceneNamePattern, "$2"));
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -723,7 +723,7 @@ namespace SabreTools.DatFiles
         /// <remarks>Applies to <see cref="Items"/></remarks>
         private void UpdateMachineNamesFromDescriptions(IDictionary<string, string> mapping)
         {
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(Items.SortedKeys, Globals.ParallelOptions, key =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(Items.SortedKeys, key =>
@@ -733,7 +733,7 @@ namespace SabreTools.DatFiles
             {
                 var items = GetItemsForBucket(key);
                 if (items == null)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
                     continue;
@@ -768,7 +768,7 @@ namespace SabreTools.DatFiles
                     if (sampleOf != null && mapping.ContainsKey(sampleOf))
                         machine.SetFieldValue<string?>(Data.Models.Metadata.Machine.SampleOfKey, mapping[sampleOf]);
                 }
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
 using System.Threading.Tasks;
 #endif
 using SabreTools.Core.Filter;
@@ -162,7 +162,7 @@ namespace SabreTools.DatTools
             try
             {
                 // Write out all required formats
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 Parallel.ForEach(outfiles.Keys, Core.Globals.ParallelOptions, reportFormat =>
 #elif NET40_OR_GREATER
                 Parallel.ForEach(outfiles.Keys, reportFormat =>
@@ -179,7 +179,7 @@ namespace SabreTools.DatTools
                     {
                         _staticLogger.Error(ex, $"Report '{outfile}' could not be written out");
                     }
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 });
 #else
                 }

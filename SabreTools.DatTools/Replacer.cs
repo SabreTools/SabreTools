@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
 using System.Threading.Tasks;
 #endif
 using SabreTools.DatFiles;
@@ -67,7 +67,7 @@ namespace SabreTools.DatTools
             intDat.BucketBy(ItemKey.CRC);
 
             // Then we do a hashwise comparison against the base DAT
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(intDat.Items.SortedKeys, Core.Globals.ParallelOptions, key =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(intDat.Items.SortedKeys, key =>
@@ -77,7 +77,7 @@ namespace SabreTools.DatTools
             {
                 List<DatItem>? datItems = intDat.GetItemsForBucket(key);
                 if (datItems == null)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
                     continue;
@@ -100,7 +100,7 @@ namespace SabreTools.DatTools
                 // Now add the new list to the key
                 intDat.RemoveBucket(key);
                 newDatItems.ForEach(item => intDat.AddItem(item, statsOnly: false));
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -128,7 +128,7 @@ namespace SabreTools.DatTools
             intDat.BucketBy(ItemKey.CRC);
 
             // Then we do a hashwise comparison against the base DAT
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(intDat.ItemsDB.SortedKeys, Core.Globals.ParallelOptions, key =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(intDat.ItemsDB.SortedKeys, key =>
@@ -138,7 +138,7 @@ namespace SabreTools.DatTools
             {
                 var datItems = intDat.GetItemsForBucketDB(key);
                 if (datItems == null)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
                     continue;
@@ -154,7 +154,7 @@ namespace SabreTools.DatTools
                     if (dupes.Count > 0)
                         ReplaceFields(datItem.Value, dupes.First().Value, itemFieldNames);
                 }
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -184,7 +184,7 @@ namespace SabreTools.DatTools
             intDat.BucketBy(ItemKey.Machine);
 
             // Then we do a namewise comparison against the base DAT
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(intDat.Items.SortedKeys, Core.Globals.ParallelOptions, key =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(intDat.Items.SortedKeys, key =>
@@ -194,7 +194,7 @@ namespace SabreTools.DatTools
             {
                 List<DatItem>? datItems = intDat.GetItemsForBucket(key);
                 if (datItems == null)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
                     continue;
@@ -216,7 +216,7 @@ namespace SabreTools.DatTools
                 // Now add the new list to the key
                 intDat.RemoveBucket(key);
                 newDatItems.ForEach(item => intDat.AddItem(item, statsOnly: false));
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -246,7 +246,7 @@ namespace SabreTools.DatTools
             intDat.BucketBy(ItemKey.Machine);
 
             // Then we do a namewise comparison against the base DAT
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(intDat.ItemsDB.SortedKeys, Core.Globals.ParallelOptions, key =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(intDat.ItemsDB.SortedKeys, key =>
@@ -256,7 +256,7 @@ namespace SabreTools.DatTools
             {
                 var datItems = intDat.GetItemsForBucketDB(key);
                 if (datItems == null)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
                     continue;
@@ -269,7 +269,7 @@ namespace SabreTools.DatTools
                     if (datMachine.Value != null && intMachine.Value != null)
                         ReplaceFields(intMachine.Value, datMachine.Value, machineFieldNames, onlySame);
                 }
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }

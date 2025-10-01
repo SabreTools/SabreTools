@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
 using System.Threading.Tasks;
 #endif
 
@@ -34,7 +34,7 @@ namespace SabreTools.Core
             }
         }
 
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
         /// <summary>
         /// Maximum threads to use during parallel operations
         /// </summary>
@@ -62,7 +62,7 @@ namespace SabreTools.Core
             mid = $"|{mid.PadLeft(((width - mid.Length) / 2) + mid.Length).PadRight(width)}|";
 
             // If we're outputting to console, do fancy things
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             if (!Console.IsOutputRedirected)
             {
                 // Set the console to ready state

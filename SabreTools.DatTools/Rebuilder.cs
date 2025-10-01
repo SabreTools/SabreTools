@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
 using System.Threading.Tasks;
 #endif
 using SabreTools.Core.Tools;
@@ -78,7 +78,7 @@ namespace SabreTools.DatTools
 
             // Now loop through and get only directories from the input paths
             List<string> directories = [];
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(inputs, Core.Globals.ParallelOptions, input =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(inputs, input =>
@@ -95,7 +95,7 @@ namespace SabreTools.DatTools
                         directories.Add(input);
                     }
                 }
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }

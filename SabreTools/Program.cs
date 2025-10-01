@@ -86,7 +86,7 @@ namespace SabreTools
             if (!feature.ProcessArgs(args, _help))
                 return;
 
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             // If output is being redirected or we are in script mode, don't allow clear screens
             if (!Console.IsOutputRedirected && feature.ScriptMode)
             {
@@ -158,7 +158,7 @@ namespace SabreTools
             Console.WriteLine(_barrier);
             Console.WriteLine(_barrier);
 
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             if (!Console.IsOutputRedirected)
 #endif
             {

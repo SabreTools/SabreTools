@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
 using System.Threading.Tasks;
 #endif
 using SabreTools.Core.Filter;
@@ -216,7 +216,7 @@ namespace SabreTools.DatTools
             InternalStopwatch watch = new("Processing individual DATs");
 
             // Parse all of the DATs into their own DatFiles in the array
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.For(0, inputs.Count, Core.Globals.ParallelOptions, i =>
 #elif NET40_OR_GREATER
             Parallel.For(0, inputs.Count, i =>
@@ -233,7 +233,7 @@ namespace SabreTools.DatTools
                 datFiles[i].Header.RemoveField(DatHeader.DatFormatKey);
                 ParseInto(datFiles[i], input.CurrentPath, indexId: i, keep: true, filterRunner: filterRunner);
                 datFiles[i].Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, currentFormat);
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -309,7 +309,7 @@ namespace SabreTools.DatTools
             }
 
             // Loop through and add the items
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(datItems, Core.Globals.ParallelOptions, item =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(datItems, item =>
@@ -327,7 +327,7 @@ namespace SabreTools.DatTools
                 if (delete)
                     addFrom.RemoveItemDB(item.Key);
 
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }

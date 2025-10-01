@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
 using System.Threading.Tasks;
 #endif
 using SabreTools.DatFiles;
@@ -249,7 +249,7 @@ namespace SabreTools.DatTools
             string parent = (Path.GetDirectoryName(Path.GetFullPath(item)) + Path.DirectorySeparatorChar).Remove(0, basePath?.Length ?? 0) + Path.GetFileNameWithoutExtension(item);
 
             // First take care of the found items
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(extracted, Core.Globals.ParallelOptions, baseFile =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(extracted, baseFile =>
@@ -259,14 +259,14 @@ namespace SabreTools.DatTools
             {
                 DatItem? datItem = DatItemTool.CreateDatItem(baseFile);
                 if (datItem == null)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
                     continue;
 #endif
 
                 ProcessFileHelper(datFile, item, datItem, basePath, parent);
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -292,7 +292,7 @@ namespace SabreTools.DatTools
                 empties = archive.GetEmptyFolders();
 
             // Add add all of the found empties to the DAT
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(empties, Core.Globals.ParallelOptions, empty =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(empties, empty =>
@@ -308,7 +308,7 @@ namespace SabreTools.DatTools
                 emptyRom.SetFieldValue<Machine?>(DatItem.MachineKey, emptyMachine);
 
                 ProcessFileHelper(datFile, item, emptyRom, basePath, parent);
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -327,7 +327,7 @@ namespace SabreTools.DatTools
                 return;
 
             List<string> empties = basePath.ListEmpty() ?? [];
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(empties, Core.Globals.ParallelOptions, dir =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(empties, dir =>
@@ -382,7 +382,7 @@ namespace SabreTools.DatTools
                 blankRom.SetFieldValue<Machine?>(DatItem.MachineKey, blankMachine);
 
                 datFile.AddItem(blankRom, statsOnly: false);
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }

@@ -341,7 +341,7 @@ namespace SabreTools.Help
         /// </summary>
         private static void Pause()
         {
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             if (!Console.IsOutputRedirected)
 #endif
             {

@@ -1,10 +1,10 @@
-﻿#if NET40_OR_GREATER || NETCOREAPP
+﻿#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
 using System.Collections.Concurrent;
 #endif
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
 using System.Threading;
 using System.Threading.Tasks;
 #endif
@@ -47,7 +47,7 @@ namespace SabreTools.DatFiles
         /// Internal dictionary for all items
         /// </summary>
         [JsonIgnore, XmlIgnore]
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
         private readonly ConcurrentDictionary<long, DatItem> _items = [];
 #else
         private readonly Dictionary<long, DatItem> _items = [];
@@ -63,7 +63,7 @@ namespace SabreTools.DatFiles
         /// Internal dictionary for all machines
         /// </summary>
         [JsonIgnore, XmlIgnore]
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
         private readonly ConcurrentDictionary<long, Machine> _machines = [];
 #else
         private readonly Dictionary<long, Machine> _machines = [];
@@ -79,7 +79,7 @@ namespace SabreTools.DatFiles
         /// Internal dictionary for all sources
         /// </summary>
         [JsonIgnore, XmlIgnore]
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
         private readonly ConcurrentDictionary<long, Source> _sources = [];
 #else
         private readonly Dictionary<long, Source> _sources = [];
@@ -95,7 +95,7 @@ namespace SabreTools.DatFiles
         /// Internal dictionary for item to machine mappings
         /// </summary>
         [JsonIgnore, XmlIgnore]
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
         private readonly ConcurrentDictionary<long, long> _itemToMachineMapping = [];
 #else
         private readonly Dictionary<long, long> _itemToMachineMapping = [];
@@ -105,7 +105,7 @@ namespace SabreTools.DatFiles
         /// Internal dictionary for item to source mappings
         /// </summary>
         [JsonIgnore, XmlIgnore]
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
         private readonly ConcurrentDictionary<long, long> _itemToSourceMapping = [];
 #else
         private readonly Dictionary<long, long> _itemToSourceMapping = [];
@@ -115,7 +115,7 @@ namespace SabreTools.DatFiles
         /// Internal dictionary representing the current buckets
         /// </summary>
         [JsonIgnore, XmlIgnore]
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
         private readonly ConcurrentDictionary<string, List<long>> _buckets = [];
 #else
         private readonly Dictionary<string, List<long>> _buckets = [];
@@ -287,7 +287,7 @@ namespace SabreTools.DatFiles
         /// </summary>
         public long AddMachine(Machine machine)
         {
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             long index = Interlocked.Increment(ref _machineIndex) - 1;
             _machines.TryAdd(index, machine);
             return index;
@@ -303,7 +303,7 @@ namespace SabreTools.DatFiles
         /// </summary>
         public long AddSource(Source source)
         {
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             long index = Interlocked.Increment(ref _sourceIndex) - 1;
             _sources.TryAdd(index, source);
             return index;
@@ -322,7 +322,7 @@ namespace SabreTools.DatFiles
             long[] itemIndices = [.. _items.Keys];
             foreach (long itemIndex in itemIndices)
             {
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 if (!_items.TryGetValue(itemIndex, out var datItem) || datItem == null)
                     continue;
 #else
@@ -349,7 +349,7 @@ namespace SabreTools.DatFiles
             if (bucketName == null)
                 return [];
 
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             if (!_buckets.TryGetValue(bucketName, out var itemIds))
                 return [];
 #else
@@ -363,7 +363,7 @@ namespace SabreTools.DatFiles
             foreach (long itemId in itemIds)
             {
                 // Ignore missing IDs
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 if (!_items.TryGetValue(itemId, out var datItem) || datItem == null)
                     continue;
 #else
@@ -387,7 +387,7 @@ namespace SabreTools.DatFiles
         /// </summary>
         public Machine? GetMachine(long index)
         {
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             if (!_machines.TryGetValue(index, out var machine))
                 return null;
 
@@ -418,7 +418,7 @@ namespace SabreTools.DatFiles
         /// </summary>
         public KeyValuePair<long, Machine?> GetMachineForItem(long itemIndex)
         {
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             if (!_itemToMachineMapping.TryGetValue(itemIndex, out long machineIndex))
                 return new KeyValuePair<long, Machine?>(-1, null);
 
@@ -460,7 +460,7 @@ namespace SabreTools.DatFiles
         /// </summary>
         public KeyValuePair<long, Source?> GetSourceForItem(long itemIndex)
         {
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             if (!_itemToSourceMapping.TryGetValue(itemIndex, out long sourceIndex))
                 return new KeyValuePair<long, Source?>(-1, null);
 
@@ -505,7 +505,7 @@ namespace SabreTools.DatFiles
         /// <param name="key">Key in the dictionary to remove</param>
         public bool RemoveBucket(string key)
         {
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             bool removed = _buckets.TryRemove(key, out var list);
 #else
             if (!_buckets.ContainsKey(key))
@@ -520,7 +520,7 @@ namespace SabreTools.DatFiles
 
             foreach (var index in list)
             {
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 if (!_items.TryGetValue(index, out var datItem) || datItem == null)
                     continue;
 #else
@@ -542,7 +542,7 @@ namespace SabreTools.DatFiles
         public bool RemoveItem(long itemIndex)
         {
             // If the key doesn't exist, return
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             if (!_items.TryRemove(itemIndex, out var datItem))
                 return false;
 #else
@@ -558,7 +558,7 @@ namespace SabreTools.DatFiles
                 DatStatistics.RemoveItemStatistics(datItem);
 
             // Remove the machine mapping
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             _itemToMachineMapping.TryRemove(itemIndex, out _);
 #else
             if (_itemToMachineMapping.ContainsKey(itemIndex))
@@ -566,7 +566,7 @@ namespace SabreTools.DatFiles
 #endif
 
             // Remove the source mapping
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             _itemToSourceMapping.TryRemove(itemIndex, out _);
 #else
             if (_itemToSourceMapping.ContainsKey(itemIndex))
@@ -584,7 +584,7 @@ namespace SabreTools.DatFiles
             if (!_machines.ContainsKey(machineIndex))
                 return false;
 
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             _machines.TryRemove(machineIndex, out _);
 #else
             _machines.Remove(machineIndex);
@@ -596,7 +596,7 @@ namespace SabreTools.DatFiles
 
             foreach (long itemId in itemIds)
             {
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 _itemToMachineMapping.TryRemove(itemId, out _);
 #else
                 _itemToMachineMapping.Remove(itemId);
@@ -623,7 +623,7 @@ namespace SabreTools.DatFiles
         /// </summary>
         internal long AddItem(DatItem item, long machineIndex, long sourceIndex)
         {
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             // Add the item with a new index
             long index = Interlocked.Increment(ref _itemIndex) - 1;
             _items.TryAdd(index, item);
@@ -685,7 +685,7 @@ namespace SabreTools.DatFiles
         /// </summary>
         public void Deduplicate()
         {
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(SortedKeys, Core.Globals.ParallelOptions, key =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(SortedKeys, key =>
@@ -714,7 +714,7 @@ namespace SabreTools.DatFiles
                 RemoveBucket(key);
                 currentMappings.ForEach(map =>
                     AddItem(map.Item, map.MachineId, map.SourceId));
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -960,7 +960,7 @@ namespace SabreTools.DatFiles
         private void EnsureBucketingKey(string key)
         {
             // If the key is missing from the dictionary, add it
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             _buckets.GetOrAdd(key, []);
 #else
             if (!_buckets.ContainsKey(key))
@@ -1029,7 +1029,7 @@ namespace SabreTools.DatFiles
         /// </summary>
         private string GetBucketKey(long itemIndex, ItemKey bucketBy, bool lower, bool norename)
         {
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             if (!_items.TryGetValue(itemIndex, out var datItem) || datItem == null)
                 return string.Empty;
 #else
@@ -1067,7 +1067,7 @@ namespace SabreTools.DatFiles
             // Get the current list of item indicies
             long[] itemIndicies = [.. _items.Keys];
 
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.For(0, itemIndicies.Length, Core.Globals.ParallelOptions, i =>
 #elif NET40_OR_GREATER
             Parallel.For(0, itemIndicies.Length, i =>
@@ -1076,7 +1076,7 @@ namespace SabreTools.DatFiles
 #endif
             {
                 PerformItemBucketing(i, bucketBy, lower, norename);
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -1097,7 +1097,7 @@ namespace SabreTools.DatFiles
             {
                 EnsureBucketingKey(bucketKey);
 
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 if (!_buckets.TryGetValue(bucketKey, out var bucket) || bucket == null)
                     return;
 
@@ -1116,7 +1116,7 @@ namespace SabreTools.DatFiles
             // Get the current list of bucket keys
             string[] bucketKeys = [.. _buckets.Keys];
 
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.For(0, bucketKeys.Length, Core.Globals.ParallelOptions, i =>
 #elif NET40_OR_GREATER
             Parallel.For(0, bucketKeys.Length, i =>
@@ -1124,14 +1124,14 @@ namespace SabreTools.DatFiles
             for (int i = 0; i < bucketKeys.Length; i++)
 #endif
             {
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 _buckets.TryGetValue(bucketKeys[i], out var itemIndices);
 #else
                 var itemIndices = _buckets[bucketKeys[i]];
 #endif
                 if (itemIndices == null || itemIndices.Count == 0)
                 {
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     _buckets.TryRemove(bucketKeys[i], out _);
                     return;
 #else
@@ -1146,7 +1146,7 @@ namespace SabreTools.DatFiles
 
                 Sort(ref datItems, norename);
 
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 _buckets.TryAdd(bucketKeys[i], datItems.ConvertAll(kvp => kvp.Key));
             });
 #else

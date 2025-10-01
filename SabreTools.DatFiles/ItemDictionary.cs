@@ -1,9 +1,9 @@
-﻿#if NET40_OR_GREATER || NETCOREAPP
+﻿#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
 using System.Collections.Concurrent;
 #endif
 using System.Collections.Generic;
 using System.IO;
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
 using System.Threading.Tasks;
 #endif
 using System.Xml.Serialization;
@@ -33,7 +33,7 @@ namespace SabreTools.DatFiles
         /// <summary>
         /// Internal dictionary for the class
         /// </summary>
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
         private readonly ConcurrentDictionary<string, List<DatItem>?> _items = [];
 #else
         private readonly Dictionary<string, List<DatItem>?> _items = [];
@@ -206,7 +206,7 @@ namespace SabreTools.DatFiles
         public void ClearMarked()
         {
             string[] keys = [.. SortedKeys];
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(keys, Core.Globals.ParallelOptions, key =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(keys, key =>
@@ -217,7 +217,7 @@ namespace SabreTools.DatFiles
                 var list = GetItemsForBucket(key, filter: true);
                 RemoveBucket(key);
                 list.ForEach(item => AddItem(key, item));
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -235,7 +235,7 @@ namespace SabreTools.DatFiles
             if (bucketName == null)
                 return [];
 
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             if (!_items.TryGetValue(bucketName, out var items))
                 return [];
 #else
@@ -264,7 +264,7 @@ namespace SabreTools.DatFiles
         /// <param name="key">Key in the dictionary to remove</param>
         public bool RemoveBucket(string key)
         {
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             bool removed = _items.TryRemove(key, out var list);
 #else
             if (!_items.ContainsKey(key))
@@ -297,7 +297,7 @@ namespace SabreTools.DatFiles
             lock (key)
             {
                 // If the key doesn't exist, return
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 if (!_items.TryGetValue(key, out var list) || list == null)
                     return false;
 #else
@@ -388,7 +388,7 @@ namespace SabreTools.DatFiles
         /// </summary>
         public void Deduplicate()
         {
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(SortedKeys, Core.Globals.ParallelOptions, key =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(SortedKeys, key =>
@@ -406,7 +406,7 @@ namespace SabreTools.DatFiles
                 // Add the list back to the dictionary
                 RemoveBucket(key);
                 sortedList.ForEach(item => AddItem(key, item));
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -645,7 +645,7 @@ namespace SabreTools.DatFiles
         private void EnsureBucketingKey(string key)
         {
             // If the key is missing from the dictionary, add it
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             _items.GetOrAdd(key, []);
 #else
             if (!_items.ContainsKey(key))
@@ -743,7 +743,7 @@ namespace SabreTools.DatFiles
             // First do the initial sort of all of the roms inplace
             List<string> oldkeys = [.. SortedKeys];
 
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.For(0, oldkeys.Count, Core.Globals.ParallelOptions, k =>
 #elif NET40_OR_GREATER
             Parallel.For(0, oldkeys.Count, k =>
@@ -784,7 +784,7 @@ namespace SabreTools.DatFiles
                 // If the key is now empty, remove it
                 if (GetItemsForBucket(key, filter: true).Count == 0)
                     RemoveBucket(key);
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -796,7 +796,7 @@ namespace SabreTools.DatFiles
         /// </summary>
         private void PerformSorting(bool norename)
         {
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(SortedKeys, Core.Globals.ParallelOptions, key =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(SortedKeys, key =>
@@ -813,7 +813,7 @@ namespace SabreTools.DatFiles
                 // Add the list back to the dictionary
                 RemoveBucket(key);
                 sortedList.ForEach(item => AddItem(key, item));
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }

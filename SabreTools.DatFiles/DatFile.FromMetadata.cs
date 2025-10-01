@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
 using System.Threading.Tasks;
 #endif
 using SabreTools.Core;
@@ -198,7 +198,7 @@ namespace SabreTools.DatFiles
                 return;
 
             // Loop through the machines and add
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(items, Globals.ParallelOptions, machine =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(items, machine =>
@@ -207,7 +207,7 @@ namespace SabreTools.DatFiles
 #endif
             {
                 ConvertMachine(machine, source, sourceIndex, statsOnly, filterRunner);
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }

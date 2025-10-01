@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
 using System.Threading.Tasks;
 #endif
 using SabreTools.Core.Filter;
@@ -125,7 +125,7 @@ namespace SabreTools.DatTools
         /// <param name="inputs">List of inputs to use for renaming</param>
         public static void ApplySuperDAT(DatFile datFile, List<ParentablePath> inputs)
         {
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(datFile.Items.SortedKeys, Core.Globals.ParallelOptions, key =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(datFile.Items.SortedKeys, key =>
@@ -135,7 +135,7 @@ namespace SabreTools.DatTools
             {
                 List<DatItem>? items = datFile.GetItemsForBucket(key);
                 if (items == null)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
                     continue;
@@ -185,7 +185,7 @@ namespace SabreTools.DatTools
 
                 datFile.RemoveBucket(key);
                 newItems.ForEach(item => datFile.AddItem(item, statsOnly: false));
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
@@ -200,7 +200,7 @@ namespace SabreTools.DatTools
         public static void ApplySuperDATDB(DatFile datFile, List<ParentablePath> inputs)
         {
             List<string> keys = [.. datFile.ItemsDB.SortedKeys];
-#if NET452_OR_GREATER || NETCOREAPP
+#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(keys, Core.Globals.ParallelOptions, key =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(keys, key =>
@@ -210,7 +210,7 @@ namespace SabreTools.DatTools
             {
                 var items = datFile.GetItemsForBucketDB(key);
                 if (items == null)
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
                     continue;
@@ -253,7 +253,7 @@ namespace SabreTools.DatTools
 
                     machine.Value.SetName(machineName);
                 }
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
             }
