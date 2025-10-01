@@ -48,13 +48,13 @@ namespace SabreTools.Features
                 return false;
 
             // Get a list of files from the input datfiles
-            var datfiles = GetStringList(features, DatListValue);
+            var datfiles = GetStringList(DatListValue);
             var datfilePaths = PathTool.GetFilesOnly(datfiles);
 
             // Get feature flags
             TreatAsFile treatAsFile = GetTreatAsFile(features);
-            bool hashOnly = GetBoolean(features, HashOnlyValue);
-            bool quickScan = GetBoolean(features, QuickValue);
+            bool hashOnly = GetBoolean(HashOnlyValue);
+            bool quickScan = GetBoolean(QuickValue);
             HashType[] hashes = quickScan ? [HashType.CRC32] : [HashType.CRC32, HashType.MD5, HashType.SHA1];
             var dfd = new DatTools.DatFromDir(hashes, SkipFileType.None, treatAsFile, addBlanks: false);
 
@@ -62,7 +62,7 @@ namespace SabreTools.Features
             OutputDir = OutputDir.Ensure();
 
             // If we are in individual mode, process each DAT on their own
-            if (GetBoolean(features, IndividualValue))
+            if (GetBoolean(IndividualValue))
             {
                 foreach (ParentablePath datfile in datfilePaths)
                 {

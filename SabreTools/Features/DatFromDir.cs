@@ -63,10 +63,10 @@ namespace SabreTools.Features
                 return false;
 
             // Get feature flags
-            bool addBlankFiles = GetBoolean(features, AddBlankFilesValue);
-            bool addFileDates = GetBoolean(features, AddDateValue);
+            bool addBlankFiles = GetBoolean(AddBlankFilesValue);
+            bool addFileDates = GetBoolean(AddDateValue);
             TreatAsFile treatAsFile = GetTreatAsFile(features);
-            bool noAutomaticDate = GetBoolean(features, NoAutomaticDateValue);
+            bool noAutomaticDate = GetBoolean(NoAutomaticDateValue);
             var includeInScan = GetIncludeInScan(features);
             var skipFileType = GetSkipFileType(features);
             var dfd = new DatTools.DatFromDir(includeInScan, skipFileType, treatAsFile, addBlankFiles);

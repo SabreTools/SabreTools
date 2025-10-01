@@ -63,11 +63,11 @@ namespace SabreTools.Features
 
             // Get feature flags
             TreatAsFile asFile = GetTreatAsFile(features);
-            bool date = GetBoolean(features, AddDateValue);
-            bool delete = GetBoolean(features, DeleteValue);
-            bool inverse = GetBoolean(features, InverseValue);
-            bool quickScan = GetBoolean(features, QuickValue);
-            bool updateDat = GetBoolean(features, UpdateDatValue);
+            bool date = GetBoolean(AddDateValue);
+            bool delete = GetBoolean(DeleteValue);
+            bool inverse = GetBoolean(InverseValue);
+            bool quickScan = GetBoolean(QuickValue);
+            bool updateDat = GetBoolean(UpdateDatValue);
             var outputFormat = GetOutputFormat(features);
 
             // Get the depots
@@ -90,11 +90,11 @@ namespace SabreTools.Features
             OutputDir = OutputDir.Ensure();
 
             // Get a list of files from the input datfiles
-            var datfiles = GetStringList(features, DatListValue);
+            var datfiles = GetStringList(DatListValue);
             var datfilePaths = PathTool.GetFilesOnly(datfiles);
 
             // If we are in individual mode, process each DAT on their own, appending the DAT name to the output dir
-            if (GetBoolean(features, IndividualValue))
+            if (GetBoolean(IndividualValue))
             {
                 foreach (ParentablePath datfile in datfilePaths)
                 {

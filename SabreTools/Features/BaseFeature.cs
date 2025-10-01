@@ -1117,13 +1117,13 @@ Some special strings that can be used:
             FilterRunner = GetFilterRunner(features);
             Header = GetDatHeader(features);
             Modifiers = GetDatModifiers(features);
-            OutputDir = GetString(features, OutputDirStringValue)?.Trim('"');
+            OutputDir = GetString(OutputDirStringValue)?.Trim('"');
             Remover = GetRemover(features);
-            ScriptMode = GetBoolean(features, ScriptValue);
+            ScriptMode = GetBoolean(ScriptValue);
             Splitter = GetSplitter(features);
 
             // Handle logging levels
-            string? logLevel = GetString(features, LogLevelStringValue);
+            string? logLevel = GetString(LogLevelStringValue);
             if (logLevel?.ToLowerInvariant() == "none")
             {
                 LoggerImpl.LowestLogLevel = LogLevel.VERBOSE;
@@ -1143,7 +1143,7 @@ Some special strings that can be used:
             // Set threading flag, if necessary
 #if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             if (features.ContainsKey(ThreadsInt32Value))
-                Core.Globals.MaxThreads = GetInt32(features, ThreadsInt32Value);
+                Core.Globals.MaxThreads = GetInt32(ThreadsInt32Value);
 #endif
 
             // Failure conditions
@@ -1178,31 +1178,31 @@ Some special strings that can be used:
         /// <summary>
         /// Get include from scan from feature list
         /// </summary>
-        protected static HashType[] GetIncludeInScan(Dictionary<string, UserInput> features)
+        protected HashType[] GetIncludeInScan(Dictionary<string, UserInput> features)
         {
             List<HashType> includeInScan = [];
 
-            if (GetBoolean(features, IncludeCrcValue))
+            if (GetBoolean(IncludeCrcValue))
                 includeInScan.Add(HashType.CRC32);
-            if (GetBoolean(features, IncludeMd2Value))
+            if (GetBoolean(IncludeMd2Value))
                 includeInScan.Add(HashType.MD2);
-            if (GetBoolean(features, IncludeMd4Value))
+            if (GetBoolean(IncludeMd4Value))
                 includeInScan.Add(HashType.MD4);
-            if (GetBoolean(features, IncludeMd5Value))
+            if (GetBoolean(IncludeMd5Value))
                 includeInScan.Add(HashType.MD5);
-            if (GetBoolean(features, IncludeRipeMD128Value))
+            if (GetBoolean(IncludeRipeMD128Value))
                 includeInScan.Add(HashType.RIPEMD128);
-            if (GetBoolean(features, IncludeRipeMD160Value))
+            if (GetBoolean(IncludeRipeMD160Value))
                 includeInScan.Add(HashType.RIPEMD160);
-            if (GetBoolean(features, IncludeSha1Value))
+            if (GetBoolean(IncludeSha1Value))
                 includeInScan.Add(HashType.SHA1);
-            if (GetBoolean(features, IncludeSha256Value))
+            if (GetBoolean(IncludeSha256Value))
                 includeInScan.Add(HashType.SHA256);
-            if (GetBoolean(features, IncludeSha384Value))
+            if (GetBoolean(IncludeSha384Value))
                 includeInScan.Add(HashType.SHA384);
-            if (GetBoolean(features, IncludeSha512Value))
+            if (GetBoolean(IncludeSha512Value))
                 includeInScan.Add(HashType.SHA512);
-            if (GetBoolean(features, IncludeSpamSumValue))
+            if (GetBoolean(IncludeSpamSumValue))
                 includeInScan.Add(HashType.SpamSum);
 
             // Fallback to "Standard" if no flags are set
@@ -1215,19 +1215,19 @@ Some special strings that can be used:
         /// <summary>
         /// Get OutputFormat from feature list
         /// </summary>
-        protected static OutputFormat GetOutputFormat(Dictionary<string, UserInput> features)
+        protected OutputFormat GetOutputFormat(Dictionary<string, UserInput> features)
         {
-            if (GetBoolean(features, TarValue))
+            if (GetBoolean(TarValue))
                 return OutputFormat.TapeArchive;
-            else if (GetBoolean(features, Torrent7zipValue))
+            else if (GetBoolean(Torrent7zipValue))
                 return OutputFormat.Torrent7Zip;
-            else if (GetBoolean(features, TorrentGzipValue))
+            else if (GetBoolean(TorrentGzipValue))
                 return OutputFormat.TorrentGzip;
-            //else if (GetBoolean(features, SharedTorrentRarValue))
+            //else if (GetBoolean(SharedTorrentRarValue))
             //    return OutputFormat.TorrentRar;
-            //else if (GetBoolean(features, SharedTorrentXzValue))
+            //else if (GetBoolean(SharedTorrentXzValue))
             //    return OutputFormat.TorrentXZ;
-            else if (GetBoolean(features, TorrentZipValue))
+            else if (GetBoolean(TorrentZipValue))
                 return OutputFormat.TorrentZip;
             else
                 return OutputFormat.Folder;
@@ -1236,11 +1236,11 @@ Some special strings that can be used:
         /// <summary>
         /// Get SkipFileType from feature list
         /// </summary>
-        protected static SkipFileType GetSkipFileType(Dictionary<string, UserInput> features)
+        protected SkipFileType GetSkipFileType(Dictionary<string, UserInput> features)
         {
-            if (GetBoolean(features, SkipArchivesValue))
+            if (GetBoolean(SkipArchivesValue))
                 return SkipFileType.Archive;
-            else if (GetBoolean(features, SkipFilesValue))
+            else if (GetBoolean(SkipFilesValue))
                 return SkipFileType.File;
             else
                 return SkipFileType.None;
@@ -1249,21 +1249,21 @@ Some special strings that can be used:
         /// <summary>
         /// Get SplittingMode from feature list
         /// </summary>
-        protected static SplittingMode GetSplittingMode(Dictionary<string, UserInput> features)
+        protected SplittingMode GetSplittingMode(Dictionary<string, UserInput> features)
         {
             SplittingMode splittingMode = SplittingMode.None;
 
-            if (GetBoolean(features, ExtensionValue))
+            if (GetBoolean(ExtensionValue))
                 splittingMode |= SplittingMode.Extension;
-            if (GetBoolean(features, HashValue))
+            if (GetBoolean(HashValue))
                 splittingMode |= SplittingMode.Hash;
-            if (GetBoolean(features, LevelValue))
+            if (GetBoolean(LevelValue))
                 splittingMode |= SplittingMode.Level;
-            if (GetBoolean(features, SizeValue))
+            if (GetBoolean(SizeValue))
                 splittingMode |= SplittingMode.Size;
-            if (GetBoolean(features, TotalSizeValue))
+            if (GetBoolean(TotalSizeValue))
                 splittingMode |= SplittingMode.TotalSize;
-            if (GetBoolean(features, TypeValue))
+            if (GetBoolean(TypeValue))
                 splittingMode |= SplittingMode.Type;
 
             return splittingMode;
@@ -1272,11 +1272,11 @@ Some special strings that can be used:
         /// <summary>
         /// Get StatReportFormat from feature list
         /// </summary>
-        protected static StatReportFormat GetStatReportFormat(Dictionary<string, UserInput> features)
+        protected StatReportFormat GetStatReportFormat(Dictionary<string, UserInput> features)
         {
             StatReportFormat statDatFormat = StatReportFormat.None;
 
-            foreach (string rt in GetStringList(features, ReportTypeListValue))
+            foreach (string rt in GetStringList(ReportTypeListValue))
             {
                 statDatFormat |= GetStatReportFormat(rt);
             }
@@ -1287,14 +1287,14 @@ Some special strings that can be used:
         /// <summary>
         /// Get TreatAsFile from feature list
         /// </summary>
-        protected static TreatAsFile GetTreatAsFile(Dictionary<string, UserInput> features)
+        protected TreatAsFile GetTreatAsFile(Dictionary<string, UserInput> features)
         {
             TreatAsFile asFile = 0x00;
-            if (GetBoolean(features, AaruFormatsAsFilesValue))
+            if (GetBoolean(AaruFormatsAsFilesValue))
                 asFile |= TreatAsFile.AaruFormat;
-            if (GetBoolean(features, ArchivesAsFilesValue))
+            if (GetBoolean(ArchivesAsFilesValue))
                 asFile |= TreatAsFile.Archive;
-            if (GetBoolean(features, ChdsAsFilesValue))
+            if (GetBoolean(ChdsAsFilesValue))
                 asFile |= TreatAsFile.CHD;
 
             return asFile;
@@ -1303,10 +1303,10 @@ Some special strings that can be used:
         /// <summary>
         /// Get update Machine fields from feature list
         /// </summary>
-        protected static List<string> GetUpdateMachineFields(Dictionary<string, UserInput> features)
+        protected List<string> GetUpdateMachineFields(Dictionary<string, UserInput> features)
         {
             List<string> updateFields = [];
-            foreach (string fieldName in GetStringList(features, UpdateFieldListValue))
+            foreach (string fieldName in GetStringList(UpdateFieldListValue))
             {
                 // Ensure the field is valid
                 try
@@ -1326,10 +1326,10 @@ Some special strings that can be used:
         /// <summary>
         /// Get update DatItem fields from feature list
         /// </summary>
-        protected static Dictionary<string, List<string>> GetUpdateDatItemFields(Dictionary<string, UserInput> features)
+        protected Dictionary<string, List<string>> GetUpdateDatItemFields(Dictionary<string, UserInput> features)
         {
             Dictionary<string, List<string>> updateFields = [];
-            foreach (string fieldName in GetStringList(features, UpdateFieldListValue))
+            foreach (string fieldName in GetStringList(UpdateFieldListValue))
             {
                 // Ensure the field is valid
                 try
@@ -1352,38 +1352,38 @@ Some special strings that can be used:
         /// <summary>
         /// Get UpdateMode from feature list
         /// </summary>
-        protected static UpdateMode GetUpdateMode(Dictionary<string, UserInput> features)
+        protected UpdateMode GetUpdateMode(Dictionary<string, UserInput> features)
         {
             UpdateMode updateMode = UpdateMode.None;
 
-            if (GetBoolean(features, DiffAllValue))
+            if (GetBoolean(DiffAllValue))
                 updateMode |= UpdateMode.AllDiffs;
 
-            if (GetBoolean(features, BaseReplaceValue))
+            if (GetBoolean(BaseReplaceValue))
                 updateMode |= UpdateMode.BaseReplace;
 
-            if (GetBoolean(features, DiffAgainstValue))
+            if (GetBoolean(DiffAgainstValue))
                 updateMode |= UpdateMode.DiffAgainst;
 
-            if (GetBoolean(features, DiffCascadeValue))
+            if (GetBoolean(DiffCascadeValue))
                 updateMode |= UpdateMode.DiffCascade;
 
-            if (GetBoolean(features, DiffDuplicatesValue))
+            if (GetBoolean(DiffDuplicatesValue))
                 updateMode |= UpdateMode.DiffDupesOnly;
 
-            if (GetBoolean(features, DiffIndividualsValue))
+            if (GetBoolean(DiffIndividualsValue))
                 updateMode |= UpdateMode.DiffIndividualsOnly;
 
-            if (GetBoolean(features, DiffNoDuplicatesValue))
+            if (GetBoolean(DiffNoDuplicatesValue))
                 updateMode |= UpdateMode.DiffNoDupesOnly;
 
-            if (GetBoolean(features, DiffReverseCascadeValue))
+            if (GetBoolean(DiffReverseCascadeValue))
                 updateMode |= UpdateMode.DiffReverseCascade;
 
-            if (GetBoolean(features, MergeValue))
+            if (GetBoolean(MergeValue))
                 updateMode |= UpdateMode.Merge;
 
-            if (GetBoolean(features, ReverseBaseReplaceValue))
+            if (GetBoolean(ReverseBaseReplaceValue))
                 updateMode |= UpdateMode.ReverseBaseReplace;
 
             return updateMode;
@@ -1396,22 +1396,22 @@ Some special strings that can be used:
         /// <summary>
         /// Get Cleaner from feature list
         /// </summary>
-        private static Cleaner GetCleaner(Dictionary<string, UserInput> features)
+        private Cleaner GetCleaner(Dictionary<string, UserInput> features)
         {
             Cleaner cleaner = new()
             {
-                Normalize = GetBoolean(features, CleanValue),
+                Normalize = GetBoolean(CleanValue),
                 DedupeRoms = GetDedupeType(features),
-                DescriptionAsName = GetBoolean(features, DescriptionAsNameValue),
-                KeepEmptyGames = GetBoolean(features, KeepEmptyGamesValue),
-                OneGamePerRegion = GetBoolean(features, OneGamePerRegionValue),
-                RegionList = GetStringList(features, RegionListValue),
-                OneRomPerGame = GetBoolean(features, OneRomPerGameValue),
-                RemoveUnicode = GetBoolean(features, RemoveUnicodeValue),
-                Root = GetString(features, RootDirStringValue),
-                SceneDateStrip = GetBoolean(features, SceneDateStripValue),
-                Single = GetBoolean(features, SingleSetValue),
-                Trim = GetBoolean(features, TrimValue),
+                DescriptionAsName = GetBoolean(DescriptionAsNameValue),
+                KeepEmptyGames = GetBoolean(KeepEmptyGamesValue),
+                OneGamePerRegion = GetBoolean(OneGamePerRegionValue),
+                RegionList = GetStringList(RegionListValue),
+                OneRomPerGame = GetBoolean(OneRomPerGameValue),
+                RemoveUnicode = GetBoolean(RemoveUnicodeValue),
+                Root = GetString(RootDirStringValue),
+                SceneDateStrip = GetBoolean(SceneDateStripValue),
+                Single = GetBoolean(SingleSetValue),
+                Trim = GetBoolean(TrimValue),
             };
 
             return cleaner;
@@ -1423,26 +1423,26 @@ Some special strings that can be used:
         private DatHeader? GetDatHeader(Dictionary<string, UserInput> features)
         {
             var datHeader = new DatHeader();
-            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.AuthorKey, GetString(features, AuthorStringValue));
-            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.CategoryKey, GetString(features, CategoryStringValue));
-            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.CommentKey, GetString(features, CommentStringValue));
-            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.DateKey, GetString(features, DateStringValue));
-            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, GetString(features, DescriptionStringValue));
-            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.EmailKey, GetString(features, EmailStringValue));
-            datHeader.SetFieldValue<string?>(DatHeader.FileNameKey, GetString(features, FilenameStringValue));
-            datHeader.SetFieldValue<MergingFlag>(Data.Models.Metadata.Header.ForceMergingKey, GetString(features, ForceMergingStringValue).AsMergingFlag());
-            datHeader.SetFieldValue<NodumpFlag>(Data.Models.Metadata.Header.ForceNodumpKey, GetString(features, ForceNodumpStringValue).AsNodumpFlag());
-            datHeader.SetFieldValue<PackingFlag>(Data.Models.Metadata.Header.ForceNodumpKey, GetString(features, ForcePackingStringValue).AsPackingFlag());
-            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.HeaderKey, GetString(features, HeaderStringValue));
-            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.HomepageKey, GetString(features, HomepageStringValue));
-            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, GetString(features, NameStringValue));
-            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.RootDirKey, GetString(features, RootStringValue));
-            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.TypeKey, GetBoolean(features, SuperdatValue) ? "SuperDAT" : null);
-            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.UrlKey, GetString(features, UrlStringValue));
-            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.VersionKey, GetString(features, VersionStringValue));
+            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.AuthorKey, GetString(AuthorStringValue));
+            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.CategoryKey, GetString(CategoryStringValue));
+            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.CommentKey, GetString(CommentStringValue));
+            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.DateKey, GetString(DateStringValue));
+            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, GetString(DescriptionStringValue));
+            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.EmailKey, GetString(EmailStringValue));
+            datHeader.SetFieldValue<string?>(DatHeader.FileNameKey, GetString(FilenameStringValue));
+            datHeader.SetFieldValue<MergingFlag>(Data.Models.Metadata.Header.ForceMergingKey, GetString(ForceMergingStringValue).AsMergingFlag());
+            datHeader.SetFieldValue<NodumpFlag>(Data.Models.Metadata.Header.ForceNodumpKey, GetString(ForceNodumpStringValue).AsNodumpFlag());
+            datHeader.SetFieldValue<PackingFlag>(Data.Models.Metadata.Header.ForceNodumpKey, GetString(ForcePackingStringValue).AsPackingFlag());
+            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.HeaderKey, GetString(HeaderStringValue));
+            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.HomepageKey, GetString(HomepageStringValue));
+            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, GetString(NameStringValue));
+            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.RootDirKey, GetString(RootStringValue));
+            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.TypeKey, GetBoolean(SuperdatValue) ? "SuperDAT" : null);
+            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.UrlKey, GetString(UrlStringValue));
+            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.VersionKey, GetString(VersionStringValue));
 
-            bool deprecated = GetBoolean(features, DeprecatedValue);
-            foreach (string ot in GetStringList(features, OutputTypeListValue))
+            bool deprecated = GetBoolean(DeprecatedValue);
+            foreach (string ot in GetStringList(OutputTypeListValue))
             {
                 DatFormat dftemp = GetDatFormat(ot);
                 if (dftemp == 0x00)
@@ -1469,22 +1469,22 @@ Some special strings that can be used:
         {
             // Get the depot information
             var inputDepot = new DepotInformation(
-                GetBoolean(features, DepotValue),
-                GetInt32(features, DepotDepthInt32Value));
+                GetBoolean(DepotValue),
+                GetInt32(DepotDepthInt32Value));
             var outputDepot = new DepotInformation(
-                GetBoolean(features, RombaValue),
-                GetInt32(features, RombaDepthInt32Value));
+                GetBoolean(RombaValue),
+                GetInt32(RombaDepthInt32Value));
 
             var datModifiers = new DatModifiers();
 
-            datModifiers.Prefix = GetString(features, PrefixStringValue);
-            datModifiers.Postfix = GetString(features, PostfixStringValue);
-            datModifiers.AddExtension = GetString(features, AddExtensionStringValue);
-            datModifiers.RemoveExtension = GetBoolean(features, RemoveExtensionsValue);
-            datModifiers.ReplaceExtension = GetString(features, ReplaceExtensionStringValue);
-            datModifiers.GameName = GetBoolean(features, GamePrefixValue);
-            datModifiers.Quotes = GetBoolean(features, QuotesValue);
-            datModifiers.UseRomName = GetBoolean(features, RomsValue);
+            datModifiers.Prefix = GetString(PrefixStringValue);
+            datModifiers.Postfix = GetString(PostfixStringValue);
+            datModifiers.AddExtension = GetString(AddExtensionStringValue);
+            datModifiers.RemoveExtension = GetBoolean(RemoveExtensionsValue);
+            datModifiers.ReplaceExtension = GetString(ReplaceExtensionStringValue);
+            datModifiers.GameName = GetBoolean(GamePrefixValue);
+            datModifiers.Quotes = GetBoolean(QuotesValue);
+            datModifiers.UseRomName = GetBoolean(RomsValue);
             datModifiers.InputDepot = inputDepot;
             datModifiers.OutputDepot = outputDepot;
 
@@ -1494,11 +1494,11 @@ Some special strings that can be used:
         /// <summary>
         /// Get DedupeType from feature list
         /// </summary>
-        private static DedupeType GetDedupeType(Dictionary<string, UserInput> features)
+        private DedupeType GetDedupeType(Dictionary<string, UserInput> features)
         {
-            if (GetBoolean(features, DedupValue))
+            if (GetBoolean(DedupValue))
                 return DedupeType.Full;
-            else if (GetBoolean(features, GameDedupValue))
+            else if (GetBoolean(GameDedupValue))
                 return DedupeType.Game;
             else
                 return DedupeType.None;
@@ -1507,23 +1507,23 @@ Some special strings that can be used:
         /// <summary>
         /// Get ExtraIni from feature list
         /// </summary>
-        private static ExtraIni GetExtras(Dictionary<string, UserInput> features)
+        private ExtraIni GetExtras(Dictionary<string, UserInput> features)
         {
             ExtraIni extraIni = new();
-            extraIni.PopulateFromList(GetStringList(features, ExtraIniListValue));
+            extraIni.PopulateFromList(GetStringList(ExtraIniListValue));
             return extraIni;
         }
 
         /// <summary>
         /// Get FilterRunner from feature list
         /// </summary>
-        private static FilterRunner GetFilterRunner(Dictionary<string, UserInput> features)
+        private FilterRunner GetFilterRunner(Dictionary<string, UserInput> features)
         {
             // Populate filters
-            List<string> filterPairs = GetStringList(features, FilterListValue);
+            List<string> filterPairs = GetStringList(FilterListValue);
 
             // Include 'of" in game filters
-            bool matchOfTags = GetBoolean(features, MatchOfTagsValue);
+            bool matchOfTags = GetBoolean(MatchOfTagsValue);
             if (matchOfTags)
             {
                 // TODO: Support this use case somehow
@@ -1537,12 +1537,12 @@ Some special strings that can be used:
         /// <summary>
         /// Get Remover from feature list
         /// </summary>
-        private static Remover GetRemover(Dictionary<string, UserInput> features)
+        private Remover GetRemover(Dictionary<string, UserInput> features)
         {
             Remover remover = new();
 
             // Populate field exclusions
-            List<string> exclusionFields = GetStringList(features, ExcludeFieldListValue);
+            List<string> exclusionFields = GetStringList(ExcludeFieldListValue);
             remover.PopulateExclusionsFromList(exclusionFields);
 
             return remover;
@@ -1551,7 +1551,7 @@ Some special strings that can be used:
         /// <summary>
         /// Get Splitter from feature list
         /// </summary>
-        private static MergeSplit GetSplitter(Dictionary<string, UserInput> features)
+        private MergeSplit GetSplitter(Dictionary<string, UserInput> features)
         {
             MergeSplit splitter = new()
             {
@@ -1563,20 +1563,20 @@ Some special strings that can be used:
         /// <summary>
         /// Get SplitType from feature list
         /// </summary>
-        private static MergingFlag GetSplitType(Dictionary<string, UserInput> features)
+        private MergingFlag GetSplitType(Dictionary<string, UserInput> features)
         {
             MergingFlag splitType = MergingFlag.None;
-            if (GetBoolean(features, DatDeviceNonMergedValue))
+            if (GetBoolean(DatDeviceNonMergedValue))
                 splitType = MergingFlag.DeviceNonMerged;
-            else if (GetBoolean(features, DatFullMergedValue))
+            else if (GetBoolean(DatFullMergedValue))
                 splitType = MergingFlag.FullMerged;
-            else if (GetBoolean(features, DatFullNonMergedValue))
+            else if (GetBoolean(DatFullNonMergedValue))
                 splitType = MergingFlag.FullNonMerged;
-            else if (GetBoolean(features, DatMergedValue))
+            else if (GetBoolean(DatMergedValue))
                 splitType = MergingFlag.Merged;
-            else if (GetBoolean(features, DatNonMergedValue))
+            else if (GetBoolean(DatNonMergedValue))
                 splitType = MergingFlag.NonMerged;
-            else if (GetBoolean(features, DatSplitValue))
+            else if (GetBoolean(DatSplitValue))
                 splitType = MergingFlag.Split;
 
             return splitType;

@@ -60,13 +60,13 @@ The stats that are outputted are as follows:
                 filename = Path.GetFileName(filename);
             }
 
-            var statistics = Statistics.CalculateStatistics(Inputs, GetBoolean(features, IndividualValue));
+            var statistics = Statistics.CalculateStatistics(Inputs, GetBoolean(IndividualValue));
             Statistics.Write(
                 statistics,
                 filename,
                 OutputDir,
-                GetBoolean(features, BaddumpColumnValue),
-                GetBoolean(features, NodumpColumnValue),
+                GetBoolean(BaddumpColumnValue),
+                GetBoolean(NodumpColumnValue),
                 GetStatReportFormat(features));
 
             return true;

@@ -71,7 +71,7 @@ namespace SabreTools.Features
 
                 // Get the output directory
                 OutputDir = OutputDir.Ensure();
-                OutputDir = file.GetOutputPath(OutputDir, GetBoolean(features, InplaceValue));
+                OutputDir = file.GetOutputPath(OutputDir, GetBoolean(InplaceValue));
 
                 // Extension splitting
 #if NET20 || NET35
@@ -80,7 +80,7 @@ namespace SabreTools.Features
                 if (splittingMode.HasFlag(SplittingMode.Extension))
 #endif
                 {
-                    (DatFile? extADat, DatFile? extBDat) = DatTools.Splitter.SplitByExtension(internalDat, GetStringList(features, ExtAListValue), GetStringList(features, ExtBListValue));
+                    (DatFile? extADat, DatFile? extBDat) = DatTools.Splitter.SplitByExtension(internalDat, GetStringList(ExtAListValue), GetStringList(ExtBListValue));
                     if (extADat != null && extBDat != null)
                     {
                         var watch = new InternalStopwatch("Outputting extension-split DATs");
@@ -134,8 +134,8 @@ namespace SabreTools.Features
                     DatTools.Splitter.SplitByLevel(
                         internalDat,
                         OutputDir!,
-                        GetBoolean(features, ShortValue),
-                        GetBoolean(features, BaseValue));
+                        GetBoolean(ShortValue),
+                        GetBoolean(BaseValue));
                 }
 
                 // Size splitting
@@ -145,7 +145,7 @@ namespace SabreTools.Features
                 if (splittingMode.HasFlag(SplittingMode.Size))
 #endif
                 {
-                    (DatFile lessThan, DatFile greaterThan) = DatTools.Splitter.SplitBySize(internalDat, GetInt64(features, RadixInt64Value));
+                    (DatFile lessThan, DatFile greaterThan) = DatTools.Splitter.SplitBySize(internalDat, GetInt64(RadixInt64Value));
 
                     var watch = new InternalStopwatch("Outputting size-split DATs");
 
@@ -164,7 +164,7 @@ namespace SabreTools.Features
 #endif
                 {
                     _logger.Warning("This feature is not implemented: level-split");
-                    List<DatFile> sizedDats = DatTools.Splitter.SplitByTotalSize(internalDat, GetInt64(features, ChunkSizeInt64Value));
+                    List<DatFile> sizedDats = DatTools.Splitter.SplitByTotalSize(internalDat, GetInt64(ChunkSizeInt64Value));
 
                     var watch = new InternalStopwatch("Outputting total-size-split DATs");
 

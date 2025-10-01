@@ -113,7 +113,7 @@ namespace SabreTools.Features
 
             // Ensure we only have files in the inputs
             List<ParentablePath> inputPaths = PathTool.GetFilesOnly(Inputs, appendParent: true);
-            List<ParentablePath> basePaths = PathTool.GetFilesOnly(GetStringList(features, BaseDatListValue));
+            List<ParentablePath> basePaths = PathTool.GetFilesOnly(GetStringList(BaseDatListValue));
 
             // Ensure the output directory
             OutputDir = OutputDir.Ensure();
@@ -121,7 +121,7 @@ namespace SabreTools.Features
             // If we're in standard update mode, run through all of the inputs
             if (updateMode == UpdateMode.None)
             {
-                StandardUpdate(inputPaths, GetBoolean(features, InplaceValue), GetBoolean(features, NoAutomaticDateValue));
+                StandardUpdate(inputPaths, GetBoolean(InplaceValue), GetBoolean(NoAutomaticDateValue));
                 return true;
             }
 
@@ -149,7 +149,7 @@ namespace SabreTools.Features
             DatFile userInputDat = Parser.CreateDatFile(Header!, Modifiers);
 
             // If we're in a non-replacement special update mode and the names aren't set, set defaults
-            SetDefaultHeaderValues(userInputDat, updateMode, GetBoolean(features, NoAutomaticDateValue));
+            SetDefaultHeaderValues(userInputDat, updateMode, GetBoolean(NoAutomaticDateValue));
 
             // Populate using the correct set
             List<DatHeader> datHeaders = GetDatHeaders(updateMode, inputPaths, basePaths, userInputDat);
@@ -206,10 +206,10 @@ namespace SabreTools.Features
                 for (int j = 0; j < inputPaths.Count; j++)
 #endif
                 {
-                    string path = inputPaths[j].GetOutputPath(OutputDir, GetBoolean(features, InplaceValue))!;
+                    string path = inputPaths[j].GetOutputPath(OutputDir, GetBoolean(InplaceValue))!;
 
                     // Try to output the file
-                    Writer.Write(datFiles[j], path, overwrite: GetBoolean(features, InplaceValue));
+                    Writer.Write(datFiles[j], path, overwrite: GetBoolean(InplaceValue));
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 });
 #else
@@ -236,7 +236,7 @@ namespace SabreTools.Features
 #endif
                 {
                     // Skip renaming if not outputting to the runtime folder
-                    if (GetBoolean(features, InplaceValue) || OutputDir != Environment.CurrentDirectory)
+                    if (GetBoolean(InplaceValue) || OutputDir != Environment.CurrentDirectory)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                         return;
 #else
@@ -261,7 +261,7 @@ namespace SabreTools.Features
                 // Loop through and output the new DatFiles
                 InternalStopwatch watch = new("Outputting all created DATs");
 
-                int startIndex = GetBoolean(features, SkipFirstOutputValue) ? 1 : 0;
+                int startIndex = GetBoolean(SkipFirstOutputValue) ? 1 : 0;
 #if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 Parallel.For(startIndex, inputPaths.Count, Core.Globals.ParallelOptions, j =>
 #elif NET40_OR_GREATER
@@ -270,10 +270,10 @@ namespace SabreTools.Features
                 for (int j = startIndex; j < inputPaths.Count; j++)
 #endif
                 {
-                    string path = inputPaths[j].GetOutputPath(OutputDir, GetBoolean(features, InplaceValue))!;
+                    string path = inputPaths[j].GetOutputPath(OutputDir, GetBoolean(InplaceValue))!;
 
                     // Try to output the file
-                    Writer.Write(datFiles[j], path, overwrite: GetBoolean(features, InplaceValue));
+                    Writer.Write(datFiles[j], path, overwrite: GetBoolean(InplaceValue));
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 });
 #else
@@ -311,11 +311,11 @@ namespace SabreTools.Features
                     AdditionalProcessing(repDat);
 
                     // Now replace the fields from the base DatFile
-                    Diffing.Against(userInputDat, repDat, GetBoolean(features, ByGameValue));
+                    Diffing.Against(userInputDat, repDat, GetBoolean(ByGameValue));
 
                     // Finally output the diffed DatFile
-                    string interOutDir = inputPath.GetOutputPath(OutputDir, GetBoolean(features, InplaceValue))!;
-                    Writer.Write(repDat, interOutDir, overwrite: GetBoolean(features, InplaceValue));
+                    string interOutDir = inputPath.GetOutputPath(OutputDir, GetBoolean(InplaceValue))!;
+                    Writer.Write(repDat, interOutDir, overwrite: GetBoolean(InplaceValue));
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 });
 #else
@@ -356,11 +356,11 @@ namespace SabreTools.Features
                         repDat,
                         updateMachineFieldNames,
                         updateItemFieldNames,
-                        GetBoolean(features, OnlySameValue));
+                        GetBoolean(OnlySameValue));
 
                     // Finally output the replaced DatFile
-                    string interOutDir = inputPath.GetOutputPath(OutputDir, GetBoolean(features, InplaceValue))!;
-                    Writer.Write(repDat, interOutDir, overwrite: GetBoolean(features, InplaceValue));
+                    string interOutDir = inputPath.GetOutputPath(OutputDir, GetBoolean(InplaceValue))!;
+                    Writer.Write(repDat, interOutDir, overwrite: GetBoolean(InplaceValue));
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 });
 #else
