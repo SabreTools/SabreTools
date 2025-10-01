@@ -1,4 +1,7 @@
-﻿namespace SabreTools.Help
+﻿using System.Collections.Generic;
+using SabreTools.Help.Inputs;
+
+namespace SabreTools.Help
 {
     /// <summary>
     /// Default help feature implementation
@@ -34,5 +37,7 @@
                 return true;
             }
         }
+
+        public override bool ProcessFeatures(Dictionary<string, UserInput> features) => true;
     }
 }
