@@ -41,497 +41,497 @@ namespace SabreTools.Features
         #region Flag features
 
         internal const string AaruFormatsAsFilesValue = "aaruformats-as-files";
-        internal static FlagUserInput AaruFormatsAsFilesFlag => new(
+        internal static FlagInput AaruFormatsAsFilesFlag => new(
             AaruFormatsAsFilesValue,
             ["-caf", "--aaruformats-as-files"],
             "Treat AaruFormats as files",
             longDescription: "Normally, AaruFormats would be processed using their internal hash to compare against the input DATs. This flag forces all AaruFormats to be treated like regular files.");
 
         internal const string AddBlankFilesValue = "add-blank-files";
-        internal static FlagUserInput AddBlankFilesFlag => new(
+        internal static FlagInput AddBlankFilesFlag => new(
             AddBlankFilesValue,
             ["-ab", "--add-blank-files"],
             "Output blank files for folders",
             longDescription: "If this flag is set, then blank entries will be created for each of the empty directories in the source. This is useful for tools that require all folders be accounted for in the output DAT.");
 
         internal const string AddDateValue = "add-date";
-        internal static FlagUserInput AddDateFlag => new(
+        internal static FlagInput AddDateFlag => new(
             AddDateValue,
             ["-ad", "--add-date"],
             "Add dates to items, where possible",
             longDescription: "If this flag is set, then the Date will be appended to each file information in the output DAT. The output format is standardized as \"yyyy/MM/dd HH:mm:ss\".");
 
         internal const string ArchivesAsFilesValue = "archives-as-files";
-        internal static FlagUserInput ArchivesAsFilesFlag => new(
+        internal static FlagInput ArchivesAsFilesFlag => new(
             ArchivesAsFilesValue,
             ["-aaf", "--archives-as-files"],
             "Treat archives as files",
             longDescription: "Instead of trying to enumerate the files within archives, treat the archives as files themselves. This is good for uncompressed sets that include archives that should be read as-is.");
 
         internal const string BaddumpColumnValue = "baddump-column";
-        internal static FlagUserInput BaddumpColumnFlag => new(
+        internal static FlagInput BaddumpColumnFlag => new(
             BaddumpColumnValue,
             ["-bc", "--baddump-column"],
             "Add baddump stats to output",
             longDescription: "Add a new column or field for counting the number of baddumps in the DAT.");
 
         internal const string BaseValue = "base";
-        internal static FlagUserInput BaseFlag => new(
+        internal static FlagInput BaseFlag => new(
             BaseValue,
             ["-ba", "--base"],
             "Use source DAT as base name for outputs",
             longDescription: "If splitting an entire folder of DATs, some output files may be normally overwritten since the names would be the same. With this flag, the original DAT name is used in the output name, in the format of \"Original Name(Dir - Name)\". This can be used in conjunction with --short to output in the format of \"Original Name (Name)\" instead.");
 
         internal const string BaseReplaceValue = "base-replace";
-        internal static FlagUserInput BaseReplaceFlag => new(
+        internal static FlagInput BaseReplaceFlag => new(
             BaseReplaceValue,
             ["-br", "--base-replace"],
             "Replace from base DATs in order",
             longDescription: "By default, no item names are changed except when there is a merge occurring. This flag enables users to define a DAT or set of base DATs to use as \"replacements\" for all input DATs. Note that the first found instance of an item in the base DAT(s) will be used and all others will be discarded. If no additional flag is given, it will default to updating names.");
 
         internal const string ByGameValue = "by-game";
-        internal static FlagUserInput ByGameFlag => new(
+        internal static FlagInput ByGameFlag => new(
             ByGameValue,
             ["-bg", "--by-game"],
             "Diff against by game instead of hashes",
             longDescription: "By default, diffing against uses hashes to determine similar files. This flag enables using using each game as a comparision point instead.");
 
         internal const string ChdsAsFilesValue = "chds-as-files";
-        internal static FlagUserInput ChdsAsFilesFlag => new(
+        internal static FlagInput ChdsAsFilesFlag => new(
             ChdsAsFilesValue,
             ["-ic", "--chds-as-files"],
             "Treat CHDs as regular files",
             longDescription: "Normally, CHDs would be processed using their internal hash to compare against the input DATs. This flag forces all CHDs to be treated like regular files.");
 
         internal const string CleanValue = "clean";
-        internal static FlagUserInput CleanFlag => new(
+        internal static FlagInput CleanFlag => new(
             CleanValue,
             ["-clean", "--clean"],
             "Clean game names according to WoD standards",
             longDescription: "Game names will be sanitized to remove what the original WoD standards deemed as unneeded information, such as parenthesized or bracketed strings.");
 
         internal const string DatDeviceNonMergedValue = "dat-device-non-merged";
-        internal static FlagUserInput DatDeviceNonMergedFlag => new(
+        internal static FlagInput DatDeviceNonMergedFlag => new(
             DatDeviceNonMergedValue,
             ["-dnd", "--dat-device-non-merged"],
             "Create device non-merged sets",
             longDescription: "Preprocess the DAT to have child sets contain all items from the device references. This is incompatible with the other --dat-X flags.");
 
         internal const string DatFullMergedValue = "dat-full-merged";
-        internal static FlagUserInput DatFullMergedFlag => new(
+        internal static FlagInput DatFullMergedFlag => new(
             DatFullMergedValue,
             ["-dfm", "--dat-full-merged"],
             "Create fully merged sets",
             longDescription: "Preprocess the DAT to have parent sets contain all items from the children based on the cloneof tag while also performing deduplication within a parent. This is incompatible with the other --dat-X flags.");
 
         internal const string DatFullNonMergedValue = "dat-full-non-merged";
-        internal static FlagUserInput DatFullNonMergedFlag => new(
+        internal static FlagInput DatFullNonMergedFlag => new(
             DatFullNonMergedValue,
             ["-df", "--dat-full-non-merged"],
             "Create fully non-merged sets",
             longDescription: "Preprocess the DAT to have child sets contain all items from the parent sets based on the cloneof and romof tags as well as device references. This is incompatible with the other --dat-X flags.");
 
         internal const string DatMergedValue = "dat-merged";
-        internal static FlagUserInput DatMergedFlag => new(
+        internal static FlagInput DatMergedFlag => new(
             DatMergedValue,
             ["-dm", "--dat-merged"],
             "Force creating merged sets",
             longDescription: "Preprocess the DAT to have parent sets contain all items from the children based on the cloneof tag. This is incompatible with the other --dat-X flags.");
 
         internal const string DatNonMergedValue = "dat-non-merged";
-        internal static FlagUserInput DatNonMergedFlag => new(
+        internal static FlagInput DatNonMergedFlag => new(
             DatNonMergedValue,
             ["-dnm", "--dat-non-merged"],
             "Force creating non-merged sets",
             longDescription: "Preprocess the DAT to have child sets contain all items from the parent set based on the romof and cloneof tags. This is incompatible with the other --dat-X flags.");
 
         internal const string DatSplitValue = "dat-split";
-        internal static FlagUserInput DatSplitFlag => new(
+        internal static FlagInput DatSplitFlag => new(
             DatSplitValue,
             ["-ds", "--dat-split"],
             "Force creating split sets",
             longDescription: "Preprocess the DAT to remove redundant files between parents and children based on the romof and cloneof tags. This is incompatible with the other --dat-X flags.");
 
         internal const string DedupValue = "dedup";
-        internal static FlagUserInput DedupFlag => new(
+        internal static FlagInput DedupFlag => new(
             DedupValue,
             ["-dd", "--dedup"],
             "Enable deduping in the created DAT",
             longDescription: "For all outputted DATs, allow for hash deduping. This makes sure that there are effectively no duplicates in the output files. Cannot be used with game dedup.");
 
         internal const string DeleteValue = "delete";
-        internal static FlagUserInput DeleteFlag => new(
+        internal static FlagInput DeleteFlag => new(
             DeleteValue,
             ["-del", "--delete"],
             "Delete fully rebuilt input files",
             longDescription: "Optionally, the input files, once processed and fully matched, can be deleted. This can be useful when the original file structure is no longer needed or if there is limited space on the source drive.");
 
         internal const string DepotValue = "depot";
-        internal static FlagUserInput DepotFlag => new(
+        internal static FlagInput DepotFlag => new(
             DepotValue,
             ["-dep", "--depot"],
             "Assume directories are Romba depots",
             longDescription: "Normally, input directories will be treated with no special format. If this flag is used, all input directories will be assumed to be Romba-style depots.");
 
         internal const string DeprecatedValue = "deprecated";
-        internal static FlagUserInput DeprecatedFlag => new(
+        internal static FlagInput DeprecatedFlag => new(
             DeprecatedValue,
             ["-dpc", "--deprecated"],
             "Output 'game' instead of 'machine'",
             longDescription: "By default, Logiqx XML DATs output with the more modern \"machine\" tag for each set. This flag allows users to output the older \"game\" tag instead, for compatibility reasons. [Logiqx only]");
 
         internal const string DescriptionAsNameValue = "description-as-name";
-        internal static FlagUserInput DescriptionAsNameFlag => new(
+        internal static FlagInput DescriptionAsNameFlag => new(
             DescriptionAsNameValue,
             ["-dan", "--description-as-name"],
             "Use description instead of machine name",
             longDescription: "By default, all DATs are converted exactly as they are input. Enabling this flag allows for the machine names in the DAT to be replaced by the machine description instead. In most cases, this will result in no change in the output DAT, but a notable example would be a software list DAT where the machine names are generally DOS-friendly while the description is more complete.");
 
         internal const string DiffAgainstValue = "diff-against";
-        internal static FlagUserInput DiffAgainstFlag => new(
+        internal static FlagInput DiffAgainstFlag => new(
             DiffAgainstValue,
             ["-dag", "--diff-against"],
             "Diff all inputs against a set of base DATs",
             "This flag will enable a special type of diffing in which a set of base DATs are used as a comparison point for each of the input DATs. This allows users to get a slightly different output to cascaded diffing, which may be more useful in some cases. This is heavily influenced by the diffing model used by Romba.");
 
         internal const string DiffAllValue = "diff-all";
-        internal static FlagUserInput DiffAllFlag => new(
+        internal static FlagInput DiffAllFlag => new(
             DiffAllValue,
             ["-di", "--diff-all"],
             "Create diffdats from inputs (all standard outputs)",
             longDescription: "By default, all DATs are processed individually with the user-specified flags. With this flag enabled, input DATs are diffed against each other to find duplicates, no duplicates, and only in individuals.");
 
         internal const string DiffCascadeValue = "diff-cascade";
-        internal static FlagUserInput DiffCascadeFlag => new(
+        internal static FlagInput DiffCascadeFlag => new(
             DiffCascadeValue,
             ["-dc", "--diff-cascade"],
             "Enable cascaded diffing",
             longDescription: "This flag allows for a special type of diffing in which the first DAT is considered a base, and for each additional input DAT, it only leaves the files that are not in one of the previous DATs. This can allow for the creation of rollback sets or even just reduce the amount of duplicates across multiple sets.");
 
         internal const string DiffDuplicatesValue = "diff-duplicates";
-        internal static FlagUserInput DiffDuplicatesFlag => new(
+        internal static FlagInput DiffDuplicatesFlag => new(
             DiffDuplicatesValue,
             ["-did", "--diff-duplicates"],
             "Create diffdat containing just duplicates",
             longDescription: "All files that have duplicates outside of the original DAT are included.");
 
         internal const string DiffIndividualsValue = "diff-individuals";
-        internal static FlagUserInput DiffIndividualsFlag => new(
+        internal static FlagInput DiffIndividualsFlag => new(
             DiffIndividualsValue,
             ["-dii", "--diff-individuals"],
             "Create diffdats for individual DATs",
             longDescription: "All files that have no duplicates outside of the original DATs are put into DATs that are named after the source DAT.");
 
         internal const string DiffNoDuplicatesValue = "diff-no-duplicates";
-        internal static FlagUserInput DiffNoDuplicatesFlag => new(
+        internal static FlagInput DiffNoDuplicatesFlag => new(
             DiffNoDuplicatesValue,
             ["-din", "--diff-no-duplicates"],
             "Create diffdat containing no duplicates",
             longDescription: "All files that have no duplicates outside of the original DATs are included.");
 
         internal const string DiffReverseCascadeValue = "diff-reverse-cascade";
-        internal static FlagUserInput DiffReverseCascadeFlag => new(
+        internal static FlagInput DiffReverseCascadeFlag => new(
             DiffReverseCascadeValue,
             ["-drc", "--diff-reverse-cascade"],
             "Enable reverse cascaded diffing",
             longDescription: "This flag allows for a special type of diffing in which the last DAT is considered a base, and for each additional input DAT, it only leaves the files that are not in one of the previous DATs. This can allow for the creation of rollback sets or even just reduce the amount of duplicates across multiple sets.");
 
         internal const string ExtensionValue = "extension";
-        internal static FlagUserInput ExtensionFlag => new(
+        internal static FlagInput ExtensionFlag => new(
             ExtensionValue,
             ["-es", "--extension"],
             "Split DAT(s) by two file extensions",
             longDescription: "For a DAT, or set of DATs, allow for splitting based on a list of input extensions. This can allow for combined DAT files, such as those combining two separate systems, to be split. Files with any extensions not listed in the input lists will be included in both outputted DAT files.");
 
         internal const string GameDedupValue = "game-dedup";
-        internal static FlagUserInput GameDedupFlag => new(
+        internal static FlagInput GameDedupFlag => new(
             GameDedupValue,
             ["-gdd", "--game-dedup"],
             "Enable deduping within games in the created DAT",
             longDescription: "For all outputted DATs, allow for hash deduping but only within the games, and not across the entire DAT. This makes sure that there are effectively no duplicates within each of the output sets. Cannot be used with standard dedup.");
 
         internal const string GamePrefixValue = "game-prefix";
-        internal static FlagUserInput GamePrefixFlag => new(
+        internal static FlagInput GamePrefixFlag => new(
             GamePrefixValue,
             ["-gp", "--game-prefix"],
             "Add game name as a prefix",
             longDescription: "This flag allows for the name of the game to be used as a prefix to each file.");
 
         internal const string HashValue = "hash";
-        internal static FlagUserInput HashFlag => new(
+        internal static FlagInput HashFlag => new(
             HashValue,
             ["-hs", "--hash"],
             "Split DAT(s) or folder by best-available hashes",
             longDescription: "For a DAT, or set of DATs, allow for splitting based on the best available hash for each file within. The order of preference for the outputted DATs is as follows: Nodump, SHA-512, SHA-384, SHA-256, SHA-1, RIPEMD160, RIPEMD128, MD5, MD4, MD2, CRC (or worse).");
 
         internal const string HashOnlyValue = "hash-only";
-        internal static FlagUserInput HashOnlyFlag => new(
+        internal static FlagInput HashOnlyFlag => new(
             HashOnlyValue,
             ["-ho", "--hash-only"],
             "Check files by hash only",
             longDescription: "This sets a mode where files are not checked based on name but rather hash alone. This allows verification of (possibly) incorrectly named folders and sets to be verified without worrying about the proper set structure to be there.");
 
         internal const string IncludeCrcValue = "include-crc";
-        internal static FlagUserInput IncludeCrcFlag => new(
+        internal static FlagInput IncludeCrcFlag => new(
             IncludeCrcValue,
             ["-crc", "--include-crc"],
             "Include CRC32 in output",
             longDescription: "This enables CRC32 calculation for each of the files. Adding this flag overrides the default hashing behavior of including CRC32, MD5, and SHA-1 hashes.");
 
         internal const string IncludeMd2Value = "include-md2";
-        internal static FlagUserInput IncludeMd2Flag => new(
+        internal static FlagInput IncludeMd2Flag => new(
             IncludeMd2Value,
             ["-md2", "--include-md2"],
             "Include MD2 in output",
             longDescription: "This enables MD2 calculation for each of the files. Adding this flag overrides the default hashing behavior of including CRC32, MD5, and SHA-1 hashes.");
 
         internal const string IncludeMd4Value = "include-md4";
-        internal static FlagUserInput IncludeMd4Flag => new(
+        internal static FlagInput IncludeMd4Flag => new(
             IncludeMd4Value,
             ["-md4", "--include-md4"],
             "Include MD4 in output",
             longDescription: "This enables MD4 calculation for each of the files. Adding this flag overrides the default hashing behavior of including CRC32, MD5, and SHA-1 hashes.");
 
         internal const string IncludeMd5Value = "include-md5";
-        internal static FlagUserInput IncludeMd5Flag => new(
+        internal static FlagInput IncludeMd5Flag => new(
             IncludeMd5Value,
             ["-md5", "--include-md5"],
             "Include MD5 in output",
             longDescription: "This enables MD5 calculation for each of the files. Adding this flag overrides the default hashing behavior of including CRC32, MD5, and SHA-1 hashes.");
 
         internal const string IncludeRipeMD128Value = "include-ripemd128";
-        internal static FlagUserInput IncludeRipeMD128Flag => new(
+        internal static FlagInput IncludeRipeMD128Flag => new(
             IncludeRipeMD128Value,
             ["-ripemd128", "--include-ripemd128"],
             "Include RIPEMD128 in output",
             longDescription: "This enables RIPEMD128 calculation for each of the files. Adding this flag overrides the default hashing behavior of including CRC32, MD5, and SHA-1 hashes.");
 
         internal const string IncludeRipeMD160Value = "include-ripemd160";
-        internal static FlagUserInput IncludeRipeMD160Flag => new(
+        internal static FlagInput IncludeRipeMD160Flag => new(
             IncludeRipeMD128Value,
             ["-ripemd160", "--include-ripemd160"],
             "Include RIPEMD160 in output",
             longDescription: "This enables RIPEMD160 calculation for each of the files. Adding this flag overrides the default hashing behavior of including CRC32, MD5, and SHA-1 hashes.");
 
         internal const string IncludeSha1Value = "include-sha1";
-        internal static FlagUserInput IncludeSha1Flag => new(
+        internal static FlagInput IncludeSha1Flag => new(
             IncludeSha1Value,
             ["-sha1", "--include-sha1"],
             "Include SHA-1 in output",
             longDescription: "This enables SHA-1 calculation for each of the files. Adding this flag overrides the default hashing behavior of including CRC32, MD5, and SHA-1 hashes.");
 
         internal const string IncludeSha256Value = "include-sha256";
-        internal static FlagUserInput IncludeSha256Flag => new(
+        internal static FlagInput IncludeSha256Flag => new(
             IncludeSha256Value,
             ["-sha256", "--include-sha256"],
             "Include SHA-256 in output",
             longDescription: "This enables SHA-256 calculation for each of the files. Adding this flag overrides the default hashing behavior of including CRC32, MD5, and SHA-1 hashes.");
 
         internal const string IncludeSha384Value = "include-sha384";
-        internal static FlagUserInput IncludeSha384Flag => new(
+        internal static FlagInput IncludeSha384Flag => new(
             IncludeSha384Value,
             ["-sha384", "--include-sha384"],
             "Include SHA-384 in output",
             longDescription: "This enables SHA-384 calculation for each of the files. Adding this flag overrides the default hashing behavior of including CRC32, MD5, and SHA-1 hashes.");
 
         internal const string IncludeSha512Value = "include-sha512";
-        internal static FlagUserInput IncludeSha512Flag => new(
+        internal static FlagInput IncludeSha512Flag => new(
             IncludeSha512Value,
             ["-sha512", "--include-sha512"],
             "Include SHA-512 in output",
             longDescription: "This enables SHA-512 calculation for each of the files. Adding this flag overrides the default hashing behavior of including CRC32, MD5, and SHA-1 hashes.");
 
         internal const string IncludeSpamSumValue = "include-spamsum";
-        internal static FlagUserInput IncludeSpamSumFlag => new(
+        internal static FlagInput IncludeSpamSumFlag => new(
             IncludeSpamSumValue,
             ["-spamsum", "--include-spamsum"],
             "Include SpamSum in output",
             longDescription: "This enables SpamSum calculation for each of the files. Adding this flag overrides the default hashing behavior of including CRC32, MD5, and SHA-1 hashes.");
 
         internal const string IndividualValue = "individual";
-        internal static FlagUserInput IndividualFlag => new(
+        internal static FlagInput IndividualFlag => new(
             IndividualValue,
             ["-ind", "--individual"],
             "Process input DATs individually",
             longDescription: "In cases where DATs would be processed in bulk, this flag allows them to be processed on their own instead.");
 
         internal const string InplaceValue = "inplace";
-        internal static FlagUserInput InplaceFlag => new(
+        internal static FlagInput InplaceFlag => new(
             InplaceValue,
             ["-ip", "--inplace"],
             "Write to the input directories, where possible",
             longDescription: "By default, files are written to the runtime directory (or the output directory, if set). This flag enables users to write out to the directory that the DATs originated from.");
 
         internal const string InverseValue = "inverse";
-        internal static FlagUserInput InverseFlag => new(
+        internal static FlagInput InverseFlag => new(
             InverseValue,
             ["-in", "--inverse"],
             "Rebuild only files not in DAT",
             longDescription: "Instead of the normal behavior of rebuilding using a DAT, this flag allows the user to use the DAT as a filter instead. All files that are found in the DAT will be skipped and everything else will be output in the selected format.");
 
         internal const string KeepEmptyGamesValue = "keep-empty-games";
-        internal static FlagUserInput KeepEmptyGamesFlag => new(
+        internal static FlagInput KeepEmptyGamesFlag => new(
             KeepEmptyGamesValue,
             ["-keg", "--keep-empty-games"],
             "Keep originally empty sets from the input(s)",
             longDescription: "Normally, any sets that are considered empty will not be included in the output, this flag allows these empty sets to be added to the output.");
 
         internal const string LevelValue = "level";
-        internal static FlagUserInput LevelFlag => new(
+        internal static FlagInput LevelFlag => new(
             LevelValue,
             ["-ls", "--level"],
             "Split a SuperDAT or folder by lowest available level",
             longDescription: "For a DAT, or set of DATs, allow for splitting based on the lowest available level of game name. That is, if a game name is top/mid/last, then it will create an output DAT for the parent directory \"mid\" in a folder called \"top\" with a game called \"last\".");
 
         internal const string MatchOfTagsValue = "match-of-tags";
-        internal static FlagUserInput MatchOfTagsFlag => new(
+        internal static FlagInput MatchOfTagsFlag => new(
             MatchOfTagsValue,
             ["-ofg", "--match-of-tags"],
             "Allow cloneof and romof tags to match game name filters",
             longDescription: "If filter or exclude by game name is used, this flag will allow those filters to be checked against the romof and cloneof tags as well. This can allow for more advanced set-building, especially in arcade-based sets.");
 
         internal const string MergeValue = "merge";
-        internal static FlagUserInput MergeFlag => new(
+        internal static FlagInput MergeFlag => new(
             MergeValue,
             ["-m", "--merge"],
             "Merge the input DATs",
             longDescription: "By default, all DATs are processed individually with the user-specified flags. With this flag enabled, all of the input DATs are merged into a single output. This is best used with the dedup flag.");
 
         internal const string NoAutomaticDateValue = "no-automatic-date";
-        internal static FlagUserInput NoAutomaticDateFlag => new(
+        internal static FlagInput NoAutomaticDateFlag => new(
             NoAutomaticDateValue,
             ["-b", "--no-automatic-date"],
             "Don't include date in file name",
             longDescription: "Normally, the DAT will be created with the date in the file name in brackets. This flag removes that instead of the default.");
 
         internal const string NodumpColumnValue = "nodump-column";
-        internal static FlagUserInput NodumpColumnFlag => new(
+        internal static FlagInput NodumpColumnFlag => new(
             NodumpColumnValue,
             ["-nc", "--nodump-column"],
             "Add statistics for nodumps to output",
             longDescription: "Add a new column or field for counting the number of nodumps in the DAT.");
 
         internal const string OneGamePerRegionValue = "one-game-per-region";
-        internal static FlagUserInput OneGamePerRegionFlag => new(
+        internal static FlagInput OneGamePerRegionFlag => new(
             OneGamePerRegionValue,
             ["-1g1r", "--one-game-per-region"],
             "[EXPERIMENTAL] Try to ensure one game per user-defined region",
             longDescription: "This allows users to input a list of regions to use to filter on in order so only one game from each set of parent and clones will be included. This requires either cloneof or romof tags to function properly.");
 
         internal const string OneRomPerGameValue = "one-rom-per-game";
-        internal static FlagUserInput OneRomPerGameFlag => new(
+        internal static FlagInput OneRomPerGameFlag => new(
             OneRomPerGameValue,
             ["-orpg", "--one-rom-per-game"],
             "Try to ensure each rom has its own game",
             longDescription: "In some cases, it is beneficial to have every rom put into its own output set as a subfolder of the original parent. This flag enables outputting each rom to its own game for this purpose.");
 
         internal const string OnlySameValue = "only-same";
-        internal static FlagUserInput OnlySameFlag => new(
+        internal static FlagInput OnlySameFlag => new(
             OnlySameValue,
             ["-ons", "--only-same"],
             "Only update description if machine name matches description",
             longDescription: "Normally, updating the description will always overwrite if the machine names are the same. With this flag, descriptions will only be overwritten if they are the same as the machine names.");
 
         internal const string QuickValue = "quick";
-        internal static FlagUserInput QuickFlag => new(
+        internal static FlagInput QuickFlag => new(
             QuickValue,
             ["-qs", "--quick"],
             "Enable quick scanning of archives",
             longDescription: "For all archives, if this flag is enabled, it will only use the header information to get the archive entries' file information. The upside to this is that it is the fastest option. On the downside, it can only get the CRC and size from most archive formats, leading to possible issues.");
 
         internal const string QuotesValue = "quotes";
-        internal static FlagUserInput QuotesFlag => new(
+        internal static FlagInput QuotesFlag => new(
             QuotesValue,
             ["-q", "--quotes"],
             "Double-quote each item",
             longDescription: "This flag surrounds the item by double-quotes, not including the prefix or postfix.");
 
         internal const string RemoveExtensionsValue = "remove-extensions";
-        internal static FlagUserInput RemoveExtensionsFlag => new(
+        internal static FlagInput RemoveExtensionsFlag => new(
             RemoveExtensionsValue,
             ["-rme", "--remove-extensions"],
             "Remove all extensions from all items",
             longDescription: "For each item, remove the extension.");
 
         internal const string RemoveUnicodeValue = "remove-unicode";
-        internal static FlagUserInput RemoveUnicodeFlag => new(
+        internal static FlagInput RemoveUnicodeFlag => new(
             RemoveUnicodeValue,
             ["-ru", "--remove-unicode"],
             "Remove unicode characters from names",
             longDescription: "By default, the character set from the original file(s) will be used for item naming. This flag removes all Unicode characters from the item names, machine names, and machine descriptions.");
 
         internal const string ReverseBaseReplaceValue = "reverse-base-replace";
-        internal static FlagUserInput ReverseBaseReplaceFlag => new(
+        internal static FlagInput ReverseBaseReplaceFlag => new(
             ReverseBaseReplaceValue,
             ["-rbr", "--reverse-base-replace"],
             "Replace item names from base DATs in reverse",
             longDescription: "By default, no item names are changed except when there is a merge occurring. This flag enables users to define a DAT or set of base DATs to use as \"replacements\" for all input DATs. Note that the first found instance of an item in the last base DAT(s) will be used and all others will be discarded. If no additional flag is given, it will default to updating names.");
 
         internal const string RombaValue = "romba";
-        internal static FlagUserInput RombaFlag => new(
+        internal static FlagInput RombaFlag => new(
             RombaValue,
             ["-ro", "--romba"],
             "Treat like a Romba depot (requires SHA-1)",
             longDescription: "This flag allows reading and writing of DATs and output files to and from a Romba-style depot. This also implies TorrentGZ input and output for physical files. Where appropriate, Romba depot files will be created as well.");
 
         internal const string RomsValue = "roms";
-        internal static FlagUserInput RomsFlag => new(
+        internal static FlagInput RomsFlag => new(
             RomsValue,
             ["-r", "--roms"],
             "Output roms to miss instead of sets",
             longDescription: "By default, the outputted file will include the name of the game so this flag allows for the name of the rom to be output instead. [Missfile only]");
 
         internal const string SceneDateStripValue = "scene-date-strip";
-        internal static FlagUserInput SceneDateStripFlag => new(
+        internal static FlagInput SceneDateStripFlag => new(
             SceneDateStripValue,
             ["-sds", "--scene-date-strip"],
             "Remove date from scene-named sets",
             longDescription: "If this flag is enabled, sets with \"scene\" names will have the date removed from the beginning. For example \"01.01.01-Game_Name-GROUP\" would become \"Game_Name-Group\".");
 
         internal const string ScriptValue = "script";
-        internal static FlagUserInput ScriptFlag => new(
+        internal static FlagInput ScriptFlag => new(
             ScriptValue,
             ["-sc", "--script"],
             "Enable script mode (no clear screen)",
             "For times when SabreTools is being used in a scripted environment, the user may not want the screen to be cleared every time that it is called. This flag allows the user to skip clearing the screen on run just like if the console was being redirected.");
 
         internal const string ShortValue = "short";
-        internal static FlagUserInput ShortFlag => new(
+        internal static FlagInput ShortFlag => new(
             ShortValue,
             ["-s", "--short"],
             "Use short output names",
             longDescription: "Instead of using ClrMamePro-style long names for DATs, use just the name of the folder as the name of the DAT. This can be used in conjunction with --base to output in the format of \"Original Name (Name)\" instead.");
 
         internal const string SingleSetValue = "single-set";
-        internal static FlagUserInput SingleSetFlag => new(
+        internal static FlagInput SingleSetFlag => new(
             SingleSetValue,
             ["-si", "--single-set"],
             "All game names replaced by '!'",
             longDescription: "This is useful for keeping all roms in a DAT in the same archive or folder.");
 
         internal const string SizeValue = "size";
-        internal static FlagUserInput SizeFlag => new(
+        internal static FlagInput SizeFlag => new(
             SizeValue,
             ["-szs", "--size"],
             "Split DAT(s) or folder by file sizes",
             longDescription: "For a DAT, or set of DATs, allow for splitting based on the sizes of the files, specifically if the type is a Rom (most item types don't have sizes).");
 
         internal const string SkipArchivesValue = "skip-archives";
-        internal static FlagUserInput SkipArchivesFlag => new(
+        internal static FlagInput SkipArchivesFlag => new(
             SkipArchivesValue,
             ["-ska", "--skip-archives"],
             "Skip all archives",
             longDescription: "Skip any files that are treated like archives");
 
         internal const string SkipFilesValue = "skip-files";
-        internal static FlagUserInput SkipFilesFlag => new(
+        internal static FlagInput SkipFilesFlag => new(
             SkipFilesValue,
             ["-skf", "--skip-files"],
             "Skip all non-archives",
             longDescription: "Skip any files that are not treated like archives");
 
         internal const string SkipFirstOutputValue = "skip-first-output";
-        internal static FlagUserInput SkipFirstOutputFlag => new(
+        internal static FlagInput SkipFirstOutputFlag => new(
             SkipFirstOutputValue,
             ["-sf", "--skip-first-output"],
             "Skip output of first DAT",
@@ -541,70 +541,70 @@ namespace SabreTools.Features
         // The rationale behind skipping the entire DAT is that if one thing is missing, likely a lot more is missing
         // TDOO: Add to documentation
         internal const string StrictValue = "strict";
-        internal static FlagUserInput StrictFlag => new(
+        internal static FlagInput StrictFlag => new(
             StrictValue,
             ["-str", "--strict"],
             "Enable strict DAT creation",
             longDescription: "Instead of writing empty strings for null values when set as required, cancel writing the DAT entirely.");
 
         internal const string SuperdatValue = "superdat";
-        internal static FlagUserInput SuperdatFlag => new(
+        internal static FlagInput SuperdatFlag => new(
             SuperdatValue,
             ["-sd", "--superdat"],
             "Enable SuperDAT creation",
             longDescription: "Set the type flag to \"SuperDAT\" for the output DAT as well as preserving the directory structure of the inputted folder, if applicable.");
 
         internal const string TarValue = "tar";
-        internal static FlagUserInput TarFlag => new(
+        internal static FlagInput TarFlag => new(
             TarValue,
             ["-tar", "--tar"],
             "Enable Tape ARchive output",
             longDescription: "Instead of outputting the files to folder, files will be rebuilt to Tape ARchive (TAR) files. This format is a standardized storage archive without any compression, usually used with other compression formats around it. It is widely used in backup applications and source code archives.");
 
         internal const string Torrent7zipValue = "torrent-7zip";
-        internal static FlagUserInput Torrent7zipFlag => new(
+        internal static FlagInput Torrent7zipFlag => new(
             Torrent7zipValue,
             ["-t7z", "--torrent-7zip"],
             "Enable Torrent7Zip output",
             longDescription: "Instead of outputting the files to folder, files will be rebuilt to Torrent7Zip (T7Z) files. This format is based on the LZMA container format 7Zip, but with custom header information. This is currently unused by any major application. Currently does not produce proper Torrent-compatible outputs.");
 
         internal const string TorrentGzipValue = "torrent-gzip";
-        internal static FlagUserInput TorrentGzipFlag => new(
+        internal static FlagInput TorrentGzipFlag => new(
             TorrentGzipValue,
             ["-tgz", "--torrent-gzip"],
             "Enable Torrent GZip output",
             longDescription: "Instead of outputting the files to folder, files will be rebuilt to TorrentGZ (TGZ) files. This format is based on the GZip archive format, but with custom header information and a file name replaced by the SHA-1 of the file inside. This is primarily used by external tool Romba (https://github.com/uwedeportivo/romba), but may be used more widely in the future.");
 
         internal const string TorrentZipValue = "torrent-zip";
-        internal static FlagUserInput TorrentZipFlag => new(
+        internal static FlagInput TorrentZipFlag => new(
             TorrentZipValue,
             ["-tzip", "--torrent-zip"],
             "Enable Torrent Zip output",
             longDescription: "Instead of outputting files to folder, files will be rebuilt to TorrentZip (TZip) files. This format is based on the ZIP archive format, but with custom header information. This is primarily used by external tool RomVault (http://www.romvault.com/) and is already widely used.");
 
         internal const string TotalSizeValue = "total-size";
-        internal static FlagUserInput TotalSizeFlag => new(
+        internal static FlagInput TotalSizeFlag => new(
             TotalSizeValue,
             ["-tis", "--total-size"],
             "Split DAT(s) or folder by total game sizes",
             longDescription: "For a DAT, or set of DATs, allow for splitting based on the combined sizes of the games, splitting into individual chunks.");
 
         internal const string TrimValue = "trim";
-        internal static FlagUserInput TrimFlag => new(
+        internal static FlagInput TrimFlag => new(
             TrimValue,
             ["-trim", "--trim"],
             "Trim file names to fit NTFS length",
             longDescription: "In the cases where files will have too long a name, this allows for trimming the name of the files to the NTFS maximum length at most.");
 
         internal const string TypeValue = "type";
-        internal static FlagUserInput TypeFlag => new(
+        internal static FlagInput TypeFlag => new(
             TypeValue,
             ["-ts", "--type"],
             "Split DAT(s) or folder by file types (rom/disk)",
             longDescription: "For a DAT, or set of DATs, allow for splitting based on the types of the files, specifically if the type is a rom or a disk.");
 
         internal const string UpdateDatValue = "update-dat";
-        internal static FlagUserInput UpdateDatFlag => new(
+        internal static FlagInput UpdateDatFlag => new(
             UpdateDatValue,
             ["-ud", "--update-dat"],
             "Output updated DAT to output directory",
