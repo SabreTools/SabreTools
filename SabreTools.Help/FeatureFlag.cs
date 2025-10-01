@@ -6,9 +6,9 @@ using SabreTools.IO.Logging;
 namespace SabreTools.Help
 {
     /// <summary>
-    /// Represents an actionable top-level feature
+    /// Represents an application-level feature
     /// </summary>
-    public abstract class TopLevel : FlagFeature
+    public abstract class FeatureFlag : FlagUserInput
     {
         #region Fields
 
@@ -30,13 +30,13 @@ namespace SabreTools.Help
 
         #region Constructors
 
-        public TopLevel(string name, string flag, string description, string? longDescription = null)
+        public FeatureFlag(string name, string flag, string description, string? longDescription = null)
             : base(name, flag, description, longDescription)
         {
             _logger = new Logger(this);
         }
 
-        public TopLevel(string name, string[] flags, string description, string? longDescription = null)
+        public FeatureFlag(string name, string[] flags, string description, string? longDescription = null)
             : base(name, flags, description, longDescription)
         {
             _logger = new Logger(this);
@@ -90,7 +90,7 @@ namespace SabreTools.Help
         /// Process and extract variables based on current feature
         /// </summary>
         /// <returns>True if execution was successful, false otherwise</returns>
-        public virtual bool ProcessFeatures(Dictionary<string, Feature?> features) => true;
+        public virtual bool ProcessFeatures(Dictionary<string, UserInput?> features) => true;
 
         #endregion
 
@@ -99,7 +99,7 @@ namespace SabreTools.Help
         /// <summary>
         /// Get boolean value from nullable feature
         /// </summary>
-        protected static bool GetBoolean(Dictionary<string, Feature?> features, string key)
+        protected static bool GetBoolean(Dictionary<string, UserInput?> features, string key)
         {
             if (!features.ContainsKey(key))
                 return false;
@@ -110,12 +110,12 @@ namespace SabreTools.Help
         /// <summary>
         /// Get int value from nullable feature
         /// </summary>
-        protected static int GetInt32(Dictionary<string, Feature?> features, string key)
+        protected static int GetInt32(Dictionary<string, UserInput?> features, string key)
         {
             if (!features.ContainsKey(key))
                 return int.MinValue;
 
-            if (features[key] is not Int32Feature i)
+            if (features[key] is not Int32UserInput i)
                 throw new ArgumentException("Feature is not an int");
 
             return i.Value;
@@ -124,12 +124,12 @@ namespace SabreTools.Help
         /// <summary>
         /// Get long value from nullable feature
         /// </summary>
-        protected static long GetInt64(Dictionary<string, Feature?> features, string key)
+        protected static long GetInt64(Dictionary<string, UserInput?> features, string key)
         {
             if (!features.ContainsKey(key))
                 return long.MinValue;
 
-            if (features[key] is not Int64Feature l)
+            if (features[key] is not Int64UserInput l)
                 throw new ArgumentException("Feature is not a long");
 
             return l.Value;
@@ -138,12 +138,12 @@ namespace SabreTools.Help
         /// <summary>
         /// Get list value from nullable feature
         /// </summary>
-        protected static List<string> GetList(Dictionary<string, Feature?> features, string key)
+        protected static List<string> GetList(Dictionary<string, UserInput?> features, string key)
         {
             if (!features.ContainsKey(key))
                 return [];
 
-            if (features[key] is not ListFeature l)
+            if (features[key] is not StringListUserInput l)
                 throw new ArgumentException("Feature is not a list");
 
             return l.Value ?? [];
@@ -152,12 +152,12 @@ namespace SabreTools.Help
         /// <summary>
         /// Get string value from nullable feature
         /// </summary>
-        protected static string? GetString(Dictionary<string, Feature?> features, string key)
+        protected static string? GetString(Dictionary<string, UserInput?> features, string key)
         {
             if (!features.ContainsKey(key))
                 return null;
 
-            if (features[key] is not StringFeature s)
+            if (features[key] is not StringUserInput s)
                 throw new ArgumentException("Feature is not a string");
 
             return s.Value;

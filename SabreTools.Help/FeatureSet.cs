@@ -26,7 +26,7 @@ namespace SabreTools.Help
         /// Only the top level inputs need to be defined. All
         /// children will be included by default.
         /// </remarks>
-        private readonly Dictionary<string, Feature> _features = [];
+        private readonly Dictionary<string, UserInput> _features = [];
 
         /// <summary>
         /// Custom formatting string for writing to console
@@ -46,7 +46,7 @@ namespace SabreTools.Help
 
         #region Accessors
 
-        public Feature? this[string name]
+        public UserInput? this[string name]
         {
             get
             {
@@ -57,7 +57,7 @@ namespace SabreTools.Help
             }
         }
 
-        public Feature? this[Feature subfeature]
+        public UserInput? this[UserInput subfeature]
         {
             get
             {
@@ -75,7 +75,7 @@ namespace SabreTools.Help
         /// Add a new feature to the help
         /// </summary>
         /// <param name="feature">Feature object to map to</param>
-        public void Add(Feature feature)
+        public void Add(UserInput feature)
         {
             if (feature.Name == null)
                 return;
@@ -281,9 +281,9 @@ namespace SabreTools.Help
         /// Retrieve a list of enabled features
         /// </summary>
         /// <returns>List of Features representing what is enabled</returns>
-        public Dictionary<string, Feature?> GetEnabledFeatures()
+        public Dictionary<string, UserInput?> GetEnabledFeatures()
         {
-            Dictionary<string, Feature?> enabled = [];
+            Dictionary<string, UserInput?> enabled = [];
 
             // Loop through the features
             foreach (var feature in _features)
@@ -307,9 +307,9 @@ namespace SabreTools.Help
         /// <param name="key">Name that should be assigned to the feature</param>
         /// <param name="feature">Feature with possible subfeatures to test</param>
         /// <returns>List of Features representing what is enabled</returns>
-        private static Dictionary<string, Feature?> GetEnabledSubfeatures(string key, Feature? feature)
+        private static Dictionary<string, UserInput?> GetEnabledSubfeatures(string key, UserInput? feature)
         {
-            Dictionary<string, Feature?> enabled = [];
+            Dictionary<string, UserInput?> enabled = [];
 
             // If the feature is invalid
             if (feature == null)
@@ -320,7 +320,7 @@ namespace SabreTools.Help
                 enabled.Add(key, feature);
 
             // Now loop through the subfeatures recursively
-            foreach (KeyValuePair<string, Feature?> sub in feature.Features)
+            foreach (KeyValuePair<string, UserInput?> sub in feature.Features)
             {
                 var temp = GetEnabledSubfeatures(sub.Key, sub.Value);
                 foreach (var tempfeat in temp)

@@ -7,7 +7,7 @@ namespace SabreTools.Help
     /// <summary>
     /// Represents a single user input which may contain children
     /// </summary>
-    public abstract class Feature
+    public abstract class UserInput
     {
         #region Fields
 
@@ -43,13 +43,13 @@ namespace SabreTools.Help
         /// <summary>
         /// Set of subfeatures associated with this feature
         /// </summary>
-        public readonly Dictionary<string, Feature?> Features = [];
+        public readonly Dictionary<string, UserInput?> Features = [];
 
         #endregion
 
         #region Constructors
 
-        internal Feature(string name, string flag, string description, string? longDescription = null)
+        internal UserInput(string name, string flag, string description, string? longDescription = null)
         {
             Name = name;
             Flags.Add(flag);
@@ -57,7 +57,7 @@ namespace SabreTools.Help
             LongDescription = longDescription;
         }
 
-        internal Feature(string name, string[] flags, string description, string? longDescription = null)
+        internal UserInput(string name, string[] flags, string description, string? longDescription = null)
         {
             Name = name;
             Flags.AddRange(flags);
@@ -72,7 +72,7 @@ namespace SabreTools.Help
         /// <summary>
         /// Directly address a given subfeature
         /// </summary>
-        public Feature? this[string name]
+        public UserInput? this[string name]
         {
             get { return Features.ContainsKey(name) ? Features[name] : null; }
             set { Features[name] = value; }
@@ -81,7 +81,7 @@ namespace SabreTools.Help
         /// <summary>
         /// Directly address a given subfeature
         /// </summary>
-        public Feature? this[Feature subfeature]
+        public UserInput? this[UserInput subfeature]
         {
             get { return Features.ContainsKey(subfeature.Name) ? Features[subfeature.Name] : null; }
             set { Features[subfeature?.Name ?? string.Empty] = value; }
@@ -91,7 +91,7 @@ namespace SabreTools.Help
         /// Add a new feature for this feature
         /// </summary>
         /// <param name="feature"></param>
-        public void AddFeature(Feature feature)
+        public void AddFeature(UserInput feature)
         {
             lock (Features)
             {

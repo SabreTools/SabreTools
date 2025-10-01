@@ -6,17 +6,17 @@ namespace SabreTools.Help
     /// <summary>
     /// Represents a user input bounded to the range of <see cref="int"/> 
     /// </summary>
-    public class Int32Feature : Feature<int>
+    public class Int32UserInput : UserInput<int>
     {
         #region Constructors
 
-        public Int32Feature(string name, string flag, string description, string? longDescription = null)
+        public Int32UserInput(string name, string flag, string description, string? longDescription = null)
             : base(name, flag, description, longDescription)
         {
             Value = int.MinValue;
         }
 
-        public Int32Feature(string name, string[] flags, string description, string? longDescription = null)
+        public Int32UserInput(string name, string[] flags, string description, string? longDescription = null)
             : base(name, flags, description, longDescription)
         {
             Value = int.MinValue;

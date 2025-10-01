@@ -3,7 +3,7 @@ namespace SabreTools.Help
     /// <summary>
     /// Represents a single user input which may contain children
     /// </summary>
-    public abstract class Feature<T> : Feature
+    public abstract class UserInput<T> : UserInput
     {
         /// <summary>
         /// Typed value provided by the user
@@ -12,12 +12,12 @@ namespace SabreTools.Help
 
         #region Constructors
 
-        internal Feature(string name, string flag, string description, string? longDescription = null)
+        internal UserInput(string name, string flag, string description, string? longDescription = null)
             : base(name, flag, description, longDescription)
         {
         }
 
-        internal Feature(string name, string[] flags, string description, string? longDescription = null)
+        internal UserInput(string name, string[] flags, string description, string? longDescription = null)
             : base(name, flags, description, longDescription)
         {
         }
