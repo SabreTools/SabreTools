@@ -102,6 +102,10 @@ namespace SabreTools.Help
                 if (feature == null)
                     continue;
 
+                // Validate the name matches
+                if (feature.Name == splitInput[0])
+                    return key;
+
                 // Validate the flag is contained
                 if (feature.ContainsFlag(splitInput[0]))
                     return key;

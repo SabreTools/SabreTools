@@ -63,7 +63,13 @@ namespace SabreTools
             featureName = _help.GetFeatureName(featureName);
 
             // Get the associated feature
-            BaseFeature feature = (_help[featureName] as BaseFeature)!;
+            var feature = _help[featureName] as Feature;
+            if (feature == null)
+            {
+                Console.WriteLine($"'{featureName}' is not valid feature flag");
+                _help.OutputIndividualFeature(featureName);
+                return;
+            }
 
             // If we had the help feature first
             if (featureName == DefaultHelp.DisplayName || featureName == DefaultHelpExtended.DisplayName)
@@ -78,7 +84,7 @@ namespace SabreTools
 
 #if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             // If output is being redirected or we are in script mode, don't allow clear screens
-            if (!Console.IsOutputRedirected && feature.ScriptMode)
+            if (!Console.IsOutputRedirected && feature is BaseFeature bf && bf.ScriptMode)
             {
                 Console.Clear();
                 SabreTools.Core.Globals.SetConsoleHeader("SabreTools");
@@ -217,7 +223,7 @@ namespace SabreTools
         /// </summary>
         /// <param name="inputs">List of inputs</param>
         /// <param name="feature">Name of the current feature</param>
-        private static void VerifyInputs(List<string> inputs, BaseFeature feature)
+        private static void VerifyInputs(List<string> inputs, Feature feature)
         {
             if (inputs.Count == 0)
             {
