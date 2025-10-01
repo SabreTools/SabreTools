@@ -28,9 +28,21 @@ namespace SabreTools.Help.Inputs
         /// <inheritdoc/>
         public override bool ProcessInput(string[] args, ref int index)
         {
-            // Check for space-separated
+            /// Get the current part
             string part = args[index];
-            if (ContainsFlag(part) && !part.Contains("="))
+
+            // If the current flag doesn't match, check to see if any of the subfeatures are valid
+            if (!ContainsFlag(part))
+            {
+                foreach (var kvp in Children)
+                {
+                    if (kvp.Value.ProcessInput(args, ref index))
+                        return true;
+                }
+            }
+
+            // Check for space-separated
+            if (!part.Contains("="))
             {
                 // Ensure the value exists
                 if (index + 1 >= args.Length)
@@ -42,22 +54,14 @@ namespace SabreTools.Help.Inputs
             }
 
             // Check for equal separated
-            if (ContainsFlag(part) && part.Contains("="))
+            if (part.Contains("="))
             {
                 // Split the string, using the first equal sign as the separator
                 string[] tempSplit = part.Split('=');
-                string key = tempSplit[0];
                 string val = string.Join("=", tempSplit, 1, tempSplit.Length - 1);
 
                 Value = val;
                 return true;
-            }
-
-            // If the current flag doesn't match, check to see if any of the subfeatures are valid
-            foreach (var kvp in Children)
-            {
-                if (kvp.Value.ProcessInput(args, ref index))
-                    return true;
             }
 
             return false;

@@ -28,22 +28,21 @@ namespace SabreTools.Help.Inputs
         /// <inheritdoc/>
         public override bool ProcessInput(string[] args, ref int index)
         {
-            // Check for space-separated
+            // Get the current part
             string part = args[index];
-            if (ContainsFlag(part))
-            {
-                Value = true;
-                return true;
-            }
 
             // If the current flag doesn't match, check to see if any of the subfeatures are valid
-            foreach (var kvp in Children)
+            if (!ContainsFlag(part))
             {
-                if (kvp.Value.ProcessInput(args, ref index))
-                    return true;
+                foreach (var kvp in Children)
+                {
+                    if (kvp.Value.ProcessInput(args, ref index))
+                        return true;
+                }
             }
 
-            return false;
+            Value = true;
+            return true;
         }
 
         /// <inheritdoc/>
