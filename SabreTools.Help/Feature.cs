@@ -4,6 +4,9 @@ using System.Text;
 
 namespace SabreTools.Help
 {
+    /// <summary>
+    /// Represents a single user input which may contain children
+    /// </summary>
     public abstract class Feature
     {
         #region Fields

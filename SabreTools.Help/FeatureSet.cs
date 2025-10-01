@@ -3,12 +3,34 @@ using System.Collections.Generic;
 
 namespace SabreTools.Help
 {
+    /// <summary>
+    /// Represents a logically-grouped set of user inputs
+    /// </summary>
+    /// <remarks>
+    /// It is recommended to use this class as the primary
+    /// way to address user inputs from the application
+    /// </remarks>
     public class FeatureSet
     {
         #region Private variables
 
+        /// <summary>
+        /// Preamble used when printing help text to console
+        /// </summary>
         private readonly List<string> _header = [];
-        private readonly Dictionary<string, Feature?> _features = [];
+
+        /// <summary>
+        /// Set of all user inputs in this grouping
+        /// </summary>
+        /// <remarks>
+        /// Only the top level inputs need to be defined. All
+        /// children will be included by default.
+        /// </remarks>
+        private readonly Dictionary<string, Feature> _features = [];
+
+        /// <summary>
+        /// Custom formatting string for writing to console
+        /// </summary>
         private const string _barrier = "-----------------------------------------";
 
         #endregion
@@ -33,10 +55,6 @@ namespace SabreTools.Help
 
                 return _features[name];
             }
-            set
-            {
-                _features[name] = value;
-            }
         }
 
         public Feature? this[Feature subfeature]
@@ -50,11 +68,6 @@ namespace SabreTools.Help
                     return null;
 
                 return _features[subfeature.Name];
-            }
-            set
-            {
-                if (subfeature.Name != null)
-                    _features[subfeature.Name] = value;
             }
         }
 

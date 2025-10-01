@@ -3,6 +3,9 @@ using System.Text;
 
 namespace SabreTools.Help
 {
+    /// <summary>
+    /// Represents a string input with a single instance allowed
+    /// </summary>
     public class StringFeature : Feature<string>
     {
         #region Constructors

@@ -3,6 +3,9 @@ using System.Text;
 
 namespace SabreTools.Help
 {
+    /// <summary>
+    /// Represents a user input bounded to the range of <see cref="long"/> 
+    /// </summary>
     public class Int64Feature : Feature<long>
     {
         #region Constructors

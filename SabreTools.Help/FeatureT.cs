@@ -1,7 +1,13 @@
 namespace SabreTools.Help
 {
+    /// <summary>
+    /// Represents a single user input which may contain children
+    /// </summary>
     public abstract class Feature<T> : Feature
     {
+        /// <summary>
+        /// Typed value provided by the user
+        /// </summary>
         public T? Value { get; protected set; }
 
         #region Constructors

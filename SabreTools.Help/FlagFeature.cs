@@ -3,6 +3,9 @@ using System.Text;
 
 namespace SabreTools.Help
 {
+    /// <summary>
+    /// Represents a boolean user input
+    /// </summary>
     public class FlagFeature : Feature<bool>
     {
         #region Constructors

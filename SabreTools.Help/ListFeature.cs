@@ -4,6 +4,9 @@ using System.Text;
 
 namespace SabreTools.Help
 {
+    /// <summary>
+    /// Represents a string input with multiple instances allowed
+    /// </summary>
     public class ListFeature : Feature<List<string>>
     {
         #region Constructors
