@@ -44,6 +44,14 @@ namespace SabreTools.Help
         /// <returns>True if all arguments were processed correctly, false otherwise</returns>
         public virtual bool ProcessArgs(string[] args, int index, FeatureSet parentSet)
         {
+            // Empty arguments is always successful
+            if (args.Length == 0)
+                return true;
+
+            // Invalid index values are not processed
+            if (index < 0 || index >= args.Length)
+                return false;
+
             for (int i = index; i < args.Length; i++)
             {
                 // Verify that the current flag is proper for the feature

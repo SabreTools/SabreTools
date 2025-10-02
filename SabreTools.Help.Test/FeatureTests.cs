@@ -1,7 +1,113 @@
-﻿namespace SabreTools.Help.Test
+﻿using Xunit;
+
+namespace SabreTools.Help.Test
 {
     public class FeatureTests
     {
+        [Fact]
+        public void ProcessArgs_EmptyArgs_Success()
+        {
+            Feature feature = new MockFeature("", "", "");
 
+            string[] args = [];
+            int index = 0;
+            var featureSet = new FeatureSet([]);
+
+            bool actual = feature.ProcessArgs(args, index, featureSet);
+            Assert.True(actual);
+        }
+
+        [Fact]
+        public void ProcessArgs_NegativeIndex_Failure()
+        {
+            Feature feature = new MockFeature("", "", "");
+
+            string[] args = ["a", "b", "c"];
+            int index = -1;
+            var featureSet = new FeatureSet([]);
+
+            bool actual = feature.ProcessArgs(args, index, featureSet);
+            Assert.False(actual);
+        }
+
+        [Fact]
+        public void ProcessArgs_OverIndex_Failure()
+        {
+            Feature feature = new MockFeature("", "", "");
+
+            string[] args = ["a", "b", "c"];
+            int index = 3;
+            var featureSet = new FeatureSet([]);
+
+            bool actual = feature.ProcessArgs(args, index, featureSet);
+            Assert.False(actual);
+        }
+
+        [Fact]
+        public void ProcessArgs_ValidArgs_Success()
+        {
+            Feature feature = new MockFeature("a", "a", "a");
+            feature.AddFeature(new MockFeature("b", "b", "b"));
+            feature.AddFeature(new MockFeature("c", "c", "c"));
+
+            string[] args = ["a", "b", "c"];
+            int index = 0;
+            var featureSet = new FeatureSet([]);
+
+            bool actual = feature.ProcessArgs(args, index, featureSet);
+            Assert.True(actual);
+        }
+
+        [Fact]
+        public void ProcessArgs_InvalidArg_Failure()
+        {
+            Feature feature = new MockFeature("a", "a", "a");
+            feature.AddFeature(new MockFeature("b", "b", "b"));
+            feature.AddFeature(new MockFeature("d", "d", "d"));
+
+            string[] args = ["a", "b", "c"];
+            int index = 0;
+            var featureSet = new FeatureSet([]);
+
+            bool actual = feature.ProcessArgs(args, index, featureSet);
+            Assert.False(actual);
+        }
+
+        [Fact]
+        public void ProcessArgs_NestedArgs_Success()
+        {
+            Feature feature = new MockFeature("a", "a", "a");
+            var sub = new MockFeature("b", "b", "b");
+            sub.AddFeature(new MockFeature("c", "c", "c"));
+            feature.AddFeature(sub);
+
+            string[] args = ["a", "b", "c"];
+            int index = 0;
+            var featureSet = new FeatureSet([]);
+
+            bool actual = feature.ProcessArgs(args, index, featureSet);
+            Assert.True(actual);
+        }
+
+        // TODO: Add tests around path and wildcard handling
+
+        /// <summary>
+        /// Mock Feature implementation for testing
+        /// </summary>
+        private class MockFeature : Feature
+        {
+            public MockFeature(string name, string flag, string description, string? longDescription = null)
+                : base(name, flag, description, longDescription)
+            {
+            }
+
+            public MockFeature(string name, string[] flags, string description, string? longDescription = null)
+                : base(name, flags, description, longDescription)
+            {
+            }
+
+            /// <inheritdoc/>
+            public override bool ProcessFeatures() => true;
+        }
     }
 }
