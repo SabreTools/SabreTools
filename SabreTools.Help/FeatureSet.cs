@@ -88,12 +88,8 @@ namespace SabreTools.Help
 
             foreach (var key in _inputs.Keys)
             {
-                // Skip invalid features
-                var feature = _inputs[key];
-                if (feature == null)
-                    continue;
-
                 // Validate the name matches
+                var feature = _inputs[key];
                 if (feature.Name == splitInput[0])
                     return key;
 
