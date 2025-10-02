@@ -5,20 +5,20 @@ namespace SabreTools.Help.Inputs
     /// <summary>
     /// Represents a user input bounded to the range of <see cref="uint"/> 
     /// </summary>
-    public class UInt32Input : UserInput<uint>
+    public class UInt32Input : UserInput<uint?>
     {
         #region Constructors
 
         public UInt32Input(string name, string flag, string description, string? longDescription = null)
             : base(name, flag, description, longDescription)
         {
-            Value = uint.MinValue;
+            Value = null;
         }
 
         public UInt32Input(string name, string[] flags, string description, string? longDescription = null)
             : base(name, flags, description, longDescription)
         {
-            Value = uint.MinValue;
+            Value = null;
         }
 
         #endregion

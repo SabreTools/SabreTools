@@ -5,20 +5,20 @@ namespace SabreTools.Help.Inputs
     /// <summary>
     /// Represents a user input bounded to the range of <see cref="short"/> 
     /// </summary>
-    public class Int16Input : UserInput<short>
+    public class Int16Input : UserInput<short?>
     {
         #region Constructors
 
         public Int16Input(string name, string flag, string description, string? longDescription = null)
             : base(name, flag, description, longDescription)
         {
-            Value = short.MinValue;
+            Value = null;
         }
 
         public Int16Input(string name, string[] flags, string description, string? longDescription = null)
             : base(name, flags, description, longDescription)
         {
-            Value = short.MinValue;
+            Value = null;
         }
 
         #endregion

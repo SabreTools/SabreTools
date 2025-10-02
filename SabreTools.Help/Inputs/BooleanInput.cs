@@ -5,20 +5,20 @@ namespace SabreTools.Help.Inputs
     /// <summary>
     /// Represents a user input bounded to the range of <see cref="bool"/> 
     /// </summary>
-    public class BooleanInput : UserInput<bool>
+    public class BooleanInput : UserInput<bool?>
     {
         #region Constructors
 
         public BooleanInput(string name, string flag, string description, string? longDescription = null)
             : base(name, flag, description, longDescription)
         {
-            Value = false;
+            Value = null;
         }
 
         public BooleanInput(string name, string[] flags, string description, string? longDescription = null)
             : base(name, flags, description, longDescription)
         {
-            Value = false;
+            Value = null;
         }
 
         #endregion

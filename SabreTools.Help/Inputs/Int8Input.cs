@@ -5,20 +5,20 @@ namespace SabreTools.Help.Inputs
     /// <summary>
     /// Represents a user input bounded to the range of <see cref="sbyte"/> 
     /// </summary>
-    public class Int8Input : UserInput<sbyte>
+    public class Int8Input : UserInput<sbyte?>
     {
         #region Constructors
 
         public Int8Input(string name, string flag, string description, string? longDescription = null)
             : base(name, flag, description, longDescription)
         {
-            Value = sbyte.MinValue;
+            Value = null;
         }
 
         public Int8Input(string name, string[] flags, string description, string? longDescription = null)
             : base(name, flags, description, longDescription)
         {
-            Value = sbyte.MinValue;
+            Value = null;
         }
 
         #endregion

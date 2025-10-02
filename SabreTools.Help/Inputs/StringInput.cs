@@ -5,7 +5,7 @@ namespace SabreTools.Help.Inputs
     /// <summary>
     /// Represents a string input with a single instance allowed
     /// </summary>
-    public class StringInput : UserInput<string>
+    public class StringInput : UserInput<string?>
     {
         #region Constructors
 

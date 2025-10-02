@@ -5,20 +5,20 @@ namespace SabreTools.Help.Inputs
     /// <summary>
     /// Represents a user input bounded to the range of <see cref="long"/> 
     /// </summary>
-    public class Int64Input : UserInput<long>
+    public class Int64Input : UserInput<long?>
     {
         #region Constructors
 
         public Int64Input(string name, string flag, string description, string? longDescription = null)
             : base(name, flag, description, longDescription)
         {
-            Value = long.MinValue;
+            Value = null;
         }
 
         public Int64Input(string name, string[] flags, string description, string? longDescription = null)
             : base(name, flags, description, longDescription)
         {
-            Value = long.MinValue;
+            Value = null;
         }
 
         #endregion

@@ -5,20 +5,20 @@ namespace SabreTools.Help.Inputs
     /// <summary>
     /// Represents a user input bounded to the range of <see cref="ulong"/> 
     /// </summary>
-    public class UInt64Input : UserInput<ulong>
+    public class UInt64Input : UserInput<ulong?>
     {
         #region Constructors
 
         public UInt64Input(string name, string flag, string description, string? longDescription = null)
             : base(name, flag, description, longDescription)
         {
-            Value = ulong.MinValue;
+            Value = null;
         }
 
         public UInt64Input(string name, string[] flags, string description, string? longDescription = null)
             : base(name, flags, description, longDescription)
         {
-            Value = ulong.MinValue;
+            Value = null;
         }
 
         #endregion

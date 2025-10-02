@@ -116,7 +116,7 @@ namespace SabreTools.Help.Inputs
             if (Children.TryGetValue(key, out var input))
             {
                 if (input is BooleanInput b)
-                    return b.Value;
+                    return b.Value ?? false;
                 else if (input is FlagInput f)
                     return f.Value;
 
@@ -144,7 +144,7 @@ namespace SabreTools.Help.Inputs
                 if (input is not Int8Input i)
                     throw new ArgumentException("Feature is not an sbyte");
 
-                return i.Value;
+                return i.Value ?? sbyte.MinValue;
             }
 
             // Check all children recursively
@@ -169,7 +169,7 @@ namespace SabreTools.Help.Inputs
                 if (input is not Int16Input i)
                     throw new ArgumentException("Feature is not a short");
 
-                return i.Value;
+                return i.Value ?? short.MinValue;
             }
 
             // Check all children recursively
@@ -194,7 +194,7 @@ namespace SabreTools.Help.Inputs
                 if (input is not Int32Input i)
                     throw new ArgumentException("Feature is not an int");
 
-                return i.Value;
+                return i.Value ?? int.MinValue;
             }
 
             // Check all children recursively
@@ -219,7 +219,7 @@ namespace SabreTools.Help.Inputs
                 if (input is not Int64Input l)
                     throw new ArgumentException("Feature is not a long");
 
-                return l.Value;
+                return l.Value ?? long.MinValue;
             }
 
             // Check all children recursively
@@ -294,7 +294,7 @@ namespace SabreTools.Help.Inputs
                 if (input is not UInt8Input i)
                     throw new ArgumentException("Feature is not an byte");
 
-                return i.Value;
+                return i.Value ?? byte.MinValue;
             }
 
             // Check all children recursively
@@ -319,7 +319,7 @@ namespace SabreTools.Help.Inputs
                 if (input is not UInt16Input i)
                     throw new ArgumentException("Feature is not a ushort");
 
-                return i.Value;
+                return i.Value ?? ushort.MinValue;
             }
 
             // Check all children recursively
@@ -344,7 +344,7 @@ namespace SabreTools.Help.Inputs
                 if (input is not UInt32Input i)
                     throw new ArgumentException("Feature is not an uint");
 
-                return i.Value;
+                return i.Value ?? uint.MinValue;
             }
 
             // Check all children recursively
@@ -369,7 +369,7 @@ namespace SabreTools.Help.Inputs
                 if (input is not UInt64Input l)
                     throw new ArgumentException("Feature is not a ulong");
 
-                return l.Value;
+                return l.Value ?? ulong.MinValue;
             }
 
             // Check all children recursively
