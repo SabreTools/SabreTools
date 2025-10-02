@@ -28,6 +28,10 @@ namespace SabreTools.Help.Inputs
         /// <inheritdoc/>
         public override bool ProcessInput(string[] args, ref int index)
         {
+            // If the index is invalid
+            if (index < 0 || index >= args.Length)
+                return false;
+
             // Get the current part
             string part = args[index];
 
