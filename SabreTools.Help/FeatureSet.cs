@@ -60,9 +60,6 @@ namespace SabreTools.Help
         {
             get
             {
-                if (subfeature.Name == null)
-                    return null;
-
                 if (!_inputs.ContainsKey(subfeature.Name))
                     return null;
 
@@ -75,12 +72,7 @@ namespace SabreTools.Help
         /// </summary>
         /// <param name="input">UserInput object to map to</param>
         public void Add(UserInput input)
-        {
-            if (input.Name == null)
-                return;
-
-            _inputs.Add(input.Name, input);
-        }
+            => _inputs.Add(input.Name, input);
 
         #endregion
 

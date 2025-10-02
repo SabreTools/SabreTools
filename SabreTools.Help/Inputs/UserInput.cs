@@ -85,12 +85,7 @@ namespace SabreTools.Help.Inputs
         /// </summary>
         /// <param name="feature"></param>
         public void AddFeature(UserInput feature)
-        {
-            lock (Children)
-            {
-                Children[feature.Name ?? string.Empty] = feature;
-            }
-        }
+            => Children[feature.Name] = feature;
 
         /// <summary>
         /// Returns if a flag exists for the current feature
