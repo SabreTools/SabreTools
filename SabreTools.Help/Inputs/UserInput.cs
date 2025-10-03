@@ -105,7 +105,6 @@ namespace SabreTools.Help.Inputs
 
         #endregion
 
-        // TODO: Revisit all cases where children are searched
         #region Children
 
         /// <summary>
@@ -116,23 +115,8 @@ namespace SabreTools.Help.Inputs
         /// <returns>The value if found, the default value otherwise</returns>
         public bool GetBoolean(string key, bool defaultValue = false)
         {
-            // Try to check immediate children
-            if (Children.TryGetValue(key, out var input))
-            {
-                if (input is BooleanInput b)
-                    return b.Value ?? defaultValue;
-                else if (input is FlagInput f)
-                    return f.Value;
-
-                throw new ArgumentException("Feature is not a bool");
-            }
-
-            // Check all children recursively
-            foreach (var child in Children.Values)
-            {
-                if (child.GetBoolean(key))
-                    return true;
-            }
+            if (TryGetBoolean(key, out bool value, defaultValue))
+                return value;
 
             return defaultValue;
         }
@@ -145,22 +129,8 @@ namespace SabreTools.Help.Inputs
         /// <returns>The value if found, the default value otherwise</returns>
         public sbyte GetInt8(string key, sbyte defaultValue = sbyte.MinValue)
         {
-            // Try to check immediate children
-            if (Children.TryGetValue(key, out var input))
-            {
-                if (input is not Int8Input i)
-                    throw new ArgumentException("Feature is not an sbyte");
-
-                return i.Value ?? defaultValue;
-            }
-
-            // Check all children recursively
-            foreach (var child in Children.Values)
-            {
-                sbyte childValue = child.GetInt8(key);
-                if (childValue != sbyte.MinValue)
-                    return childValue;
-            }
+            if (TryGetInt8(key, out sbyte value, defaultValue))
+                return value;
 
             return defaultValue;
         }
@@ -173,22 +143,8 @@ namespace SabreTools.Help.Inputs
         /// <returns>The value if found, the default value otherwise</returns>
         public short GetInt16(string key, short defaultValue = short.MinValue)
         {
-            // Try to check immediate children
-            if (Children.TryGetValue(key, out var input))
-            {
-                if (input is not Int16Input i)
-                    throw new ArgumentException("Feature is not a short");
-
-                return i.Value ?? defaultValue;
-            }
-
-            // Check all children recursively
-            foreach (var child in Children.Values)
-            {
-                short childValue = child.GetInt16(key);
-                if (childValue != short.MinValue)
-                    return childValue;
-            }
+            if (TryGetInt16(key, out short value, defaultValue))
+                return value;
 
             return defaultValue;
         }
@@ -201,22 +157,8 @@ namespace SabreTools.Help.Inputs
         /// <returns>The value if found, the default value otherwise</returns>
         public int GetInt32(string key, int defaultValue = int.MinValue)
         {
-            // Try to check immediate children
-            if (Children.TryGetValue(key, out var input))
-            {
-                if (input is not Int32Input i)
-                    throw new ArgumentException("Feature is not an int");
-
-                return i.Value ?? defaultValue;
-            }
-
-            // Check all children recursively
-            foreach (var child in Children.Values)
-            {
-                int childValue = child.GetInt32(key);
-                if (childValue != int.MinValue)
-                    return childValue;
-            }
+            if (TryGetInt32(key, out int value, defaultValue))
+                return value;
 
             return defaultValue;
         }
@@ -229,22 +171,8 @@ namespace SabreTools.Help.Inputs
         /// <returns>The value if found, the default value otherwise</returns>
         public long GetInt64(string key, long defaultValue = long.MinValue)
         {
-            // Try to check immediate children
-            if (Children.TryGetValue(key, out var input))
-            {
-                if (input is not Int64Input l)
-                    throw new ArgumentException("Feature is not a long");
-
-                return l.Value ?? defaultValue;
-            }
-
-            // Check all children recursively
-            foreach (var child in Children.Values)
-            {
-                long childValue = child.GetInt64(key);
-                if (childValue != long.MinValue)
-                    return childValue;
-            }
+            if (TryGetInt64(key, out long value, defaultValue))
+                return value;
 
             return defaultValue;
         }
@@ -257,22 +185,8 @@ namespace SabreTools.Help.Inputs
         /// <returns>The value if found, the default value otherwise</returns>
         public string? GetString(string key, string? defaultValue = null)
         {
-            // Try to check immediate children
-            if (Children.TryGetValue(key, out var input))
-            {
-                if (input is not StringInput s)
-                    throw new ArgumentException("Feature is not a string");
-
-                return s.Value;
-            }
-
-            // Check all children recursively
-            foreach (var child in Children.Values)
-            {
-                string? childValue = child.GetString(key);
-                if (childValue != null)
-                    return childValue;
-            }
+            if (TryGetString(key, out string? value, defaultValue))
+                return value;
 
             return defaultValue;
         }
@@ -283,26 +197,12 @@ namespace SabreTools.Help.Inputs
         /// <param name="key">Input name to retrieve, if possible</param>
         /// <param name="defaultValue">Optional default value if not found</param>
         /// <returns>The value if found, the default value otherwise</returns>
-        public List<string>? GetStringList(string key, List<string>? defaultValue = null)
+        public List<string> GetStringList(string key)
         {
-            // Try to check immediate children
-            if (Children.TryGetValue(key, out var input))
-            {
-                if (input is not StringListInput l)
-                    throw new ArgumentException("Feature is not a list");
+           if (TryGetStringList(key, out var value))
+                return value;
 
-                return l.Value ?? defaultValue;
-            }
-
-            // Check all children recursively
-            foreach (var child in Children.Values)
-            {
-                List<string>? childValue = child.GetStringList(key);
-                if (childValue != null)
-                    return childValue;
-            }
-
-            return defaultValue;
+            return [];
         }
 
         /// <summary>
@@ -313,22 +213,8 @@ namespace SabreTools.Help.Inputs
         /// <returns>The value if found, the default value otherwise</returns>
         public byte GetUInt8(string key, byte defaultValue = byte.MinValue)
         {
-            // Try to check immediate children
-            if (Children.TryGetValue(key, out var input))
-            {
-                if (input is not UInt8Input i)
-                    throw new ArgumentException("Feature is not an byte");
-
-                return i.Value ?? defaultValue;
-            }
-
-            // Check all children recursively
-            foreach (var child in Children.Values)
-            {
-                byte childValue = child.GetUInt8(key);
-                if (childValue != byte.MinValue)
-                    return childValue;
-            }
+            if (TryGetUInt8(key, out byte value, defaultValue))
+                return value;
 
             return defaultValue;
         }
@@ -341,22 +227,8 @@ namespace SabreTools.Help.Inputs
         /// <returns>The value if found, the default value otherwise</returns>
         public ushort GetUInt16(string key, ushort defaultValue = ushort.MinValue)
         {
-            // Try to check immediate children
-            if (Children.TryGetValue(key, out var input))
-            {
-                if (input is not UInt16Input i)
-                    throw new ArgumentException("Feature is not a ushort");
-
-                return i.Value ?? defaultValue;
-            }
-
-            // Check all children recursively
-            foreach (var child in Children.Values)
-            {
-                ushort childValue = child.GetUInt16(key);
-                if (childValue != ushort.MinValue)
-                    return childValue;
-            }
+            if (TryGetUInt16(key, out ushort value, defaultValue))
+                return value;
 
             return defaultValue;
         }
@@ -369,22 +241,8 @@ namespace SabreTools.Help.Inputs
         /// <returns>The value if found, the default value otherwise</returns>
         public uint GetUInt32(string key, uint defaultValue = uint.MinValue)
         {
-            // Try to check immediate children
-            if (Children.TryGetValue(key, out var input))
-            {
-                if (input is not UInt32Input i)
-                    throw new ArgumentException("Feature is not an uint");
-
-                return i.Value ?? defaultValue;
-            }
-
-            // Check all children recursively
-            foreach (var child in Children.Values)
-            {
-                uint childValue = child.GetUInt32(key);
-                if (childValue != uint.MinValue)
-                    return childValue;
-            }
+            if (TryGetUInt32(key, out uint value, defaultValue))
+                return value;
 
             return defaultValue;
         }
@@ -397,22 +255,8 @@ namespace SabreTools.Help.Inputs
         /// <returns>The value if found, the default value otherwise</returns>
         public ulong GetUInt64(string key, ulong defaultValue = ulong.MinValue)
         {
-            // Try to check immediate children
-            if (Children.TryGetValue(key, out var input))
-            {
-                if (input is not UInt64Input l)
-                    throw new ArgumentException("Feature is not a ulong");
-
-                return l.Value ?? defaultValue;
-            }
-
-            // Check all children recursively
-            foreach (var child in Children.Values)
-            {
-                ulong childValue = child.GetUInt64(key);
-                if (childValue != ulong.MinValue)
-                    return childValue;
-            }
+            if (TryGetUInt64(key, out ulong value, defaultValue))
+                return value;
 
             return defaultValue;
         }
@@ -609,9 +453,8 @@ namespace SabreTools.Help.Inputs
         /// </summary>
         /// <param name="key">Input name to retrieve, if possible</param>
         /// <param name="value">Value that was found, default value otherwise</param>
-        /// <param name="defaultValue">Optional default value if not found</param>
         /// <returns>True if the value was found, false otherwise</returns>
-        public bool TryGetStringList(string key, out List<string>? value, List<string>? defaultValue = null)
+        public bool TryGetStringList(string key, out List<string> value)
         {
             // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
@@ -619,18 +462,18 @@ namespace SabreTools.Help.Inputs
                 if (input is not StringListInput l)
                     throw new ArgumentException("Feature is not a list");
 
-                value = l.Value ?? defaultValue;
+                value = l.Value ?? [];
                 return true;
             }
 
             // Check all children recursively
             foreach (var child in Children.Values)
             {
-                if (child.TryGetStringList(key, out value, defaultValue))
+                if (child.TryGetStringList(key, out value))
                     return true;
             }
 
-            value = defaultValue;
+            value = [];
             return false;
         }
 
