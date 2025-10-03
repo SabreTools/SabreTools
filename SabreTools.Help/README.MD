@@ -12,9 +12,9 @@ Below is a list of special classes included in the library and their utility to 
 
 ### `CommandSet`
 
-Represents a logically-grouped set of functionality, usually scoped to an application. Inputs defined in a feature set do not need to be any specific type, but using `Feature` is recommended. `CommandSet` also allows implementers to easily print help text to the screen.
+Represents a logically-grouped set of functionality, usually scoped to an application. Inputs defined in a command set do not need to be any specific type, but using `Feature` is recommended. `CommandSet` also allows implementers to easily print help text to the screen.
 
-An example of a feature set would be including `Program.exe feature1` and `Program.exe feature2`as top-level pieces of functionality. This can allow implementers to have multiple feature sets that depend on execution environment or even other commandline arguments. In single-operation or single-set programs, this can represent the default state of the program internally.
+An example of a command set would be including `Program.exe feature1` and `Program.exe feature2`as top-level pieces of functionality. This can allow implementers to have multiple command sets that depend on execution environment or even other commandline arguments. In single-operation or single-set programs, this can represent the default state of the program internally.
 
 ### `Feature`
 
