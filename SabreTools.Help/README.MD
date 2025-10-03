@@ -8,7 +8,7 @@ For an example of a program implementing the library, see [SabreTools](https://g
 
 ## Special Types
 
-Below is a list of special classes included in the library and their utility to implementers. A short mapping of class to language construct is provided for reference.
+Included in the library are a few special classes that make up the core of the functionality. Each work a different layers of implementation and can be used in combination with each other. For more details on their language construct equivalents and longer descriptions, see the table and sections below.
 
 | Class | Language Construct |
 | --- | --- |
