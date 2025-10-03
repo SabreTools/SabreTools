@@ -36,6 +36,15 @@ namespace SabreTools.Help
 
         #region Constructors
 
+        /// <summary>
+        /// Create a new CommandSet with no printable header
+        /// </summary>
+        public CommandSet() { }
+
+        /// <summary>
+        /// Create a new CommandSet with a printable header
+        /// </summary>
+        /// <param name="header">Custom commandline header to be printed when outputting help</param>
         public CommandSet(List<string> header)
         {
             _header.AddRange(header);
@@ -122,8 +131,9 @@ namespace SabreTools.Help
             // Start building the output list
             List<string> output = [];
 
-            // Append the header first
-            output.AddRange(_header);
+            // Append the header first, if needed
+            if (_header.Count > 0)
+                output.AddRange(_header);
 
             // Now append all available top-level flags
             output.Add("Available options:");
@@ -150,8 +160,9 @@ namespace SabreTools.Help
             // Start building the output list
             List<string> output = [];
 
-            // Append the header first
-            output.AddRange(_header);
+            // Append the header first, if needed
+            if (_header.Count > 0)
+                output.AddRange(_header);
 
             // Now append all available flags recursively
             output.Add("Available options:");

@@ -11,7 +11,7 @@ namespace SabreTools.Help.Test
             var input1 = new FlagInput("input1", "--input1", "input1");
             var input2 = new FlagInput("input2", "--input2", "input2");
 
-            var featureSet = new CommandSet([]);
+            var featureSet = new CommandSet();
             featureSet.Add(input1);
             featureSet.Add(input2);
 
@@ -33,7 +33,7 @@ namespace SabreTools.Help.Test
             var input1 = new FlagInput("input1", "--input1", "input1");
             var input2 = new FlagInput("input2", "--input2", "input2");
 
-            var featureSet = new CommandSet([]);
+            var featureSet = new CommandSet();
             featureSet.Add(input1);
             featureSet.Add(input2);
 
@@ -55,7 +55,7 @@ namespace SabreTools.Help.Test
             var input1 = new FlagInput("input1", "--input1", "input1");
             var input2 = new FlagInput("input2", "--input2", "input2");
 
-            var featureSet = new CommandSet([]);
+            var featureSet = new CommandSet();
             featureSet.Add(input1);
             featureSet.Add(input2);
 
