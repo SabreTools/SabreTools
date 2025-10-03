@@ -2,7 +2,7 @@
 
 This library contains logic to both parse commandlines using typed inputs as well as format and output help text.
 
-All inputs allow for inputs in both `a=b` and `a b` formats. This allows for greater flexibility for cross-platform support. Flags for reach input are fully defined by the implementer, so inputs of the form `-a`, `--a`, `/a`, and `a` are all accepted and can even be mixed. The only restriction is that flags should not end with the `=` character as it may interfere with default parsing.
+All inputs allow for non-flag inputs in both `a=b` and `a b` formats. This allows for greater flexibility for cross-platform support. Flags for reach input are fully defined by the implementer, so inputs of the form `-a`, `--a`, `/a`, and `a` are all accepted and can even be mixed. The only restriction is that flags should not end with the `=` character as it may interfere with default parsing.
 
 For an example of a program implementing the library, see [SabreTools](https://github.com/SabreTools/SabreTools).
 
