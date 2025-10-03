@@ -105,18 +105,22 @@ namespace SabreTools.Help.Inputs
 
         #endregion
 
+        // TODO: Revisit all cases where children are searched
         #region Children
 
         /// <summary>
-        /// Get boolean value from nullable feature
+        /// Get a boolean value from a named input
         /// </summary>
-        public bool GetBoolean(string key)
+        /// <param name="key">Input name to retrieve, if possible</param>
+        /// <param name="defaultValue">Optional default value if not found</param>
+        /// <returns>The value if found, the default value otherwise</returns>
+        public bool GetBoolean(string key, bool defaultValue = false)
         {
             // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
             {
                 if (input is BooleanInput b)
-                    return b.Value ?? false;
+                    return b.Value ?? defaultValue;
                 else if (input is FlagInput f)
                     return f.Value;
 
@@ -130,13 +134,16 @@ namespace SabreTools.Help.Inputs
                     return true;
             }
 
-            return false;
+            return defaultValue;
         }
 
         /// <summary>
-        /// Get sbyte value from nullable feature
+        /// Get an Int8 value from a named input
         /// </summary>
-        public sbyte GetInt8(string key)
+        /// <param name="key">Input name to retrieve, if possible</param>
+        /// <param name="defaultValue">Optional default value if not found</param>
+        /// <returns>The value if found, the default value otherwise</returns>
+        public sbyte GetInt8(string key, sbyte defaultValue = sbyte.MinValue)
         {
             // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
@@ -144,7 +151,7 @@ namespace SabreTools.Help.Inputs
                 if (input is not Int8Input i)
                     throw new ArgumentException("Feature is not an sbyte");
 
-                return i.Value ?? sbyte.MinValue;
+                return i.Value ?? defaultValue;
             }
 
             // Check all children recursively
@@ -155,13 +162,16 @@ namespace SabreTools.Help.Inputs
                     return childValue;
             }
 
-            return sbyte.MinValue;
+            return defaultValue;
         }
 
         /// <summary>
-        /// Get short value from nullable feature
+        /// Get an Int16 value from a named input
         /// </summary>
-        public short GetInt16(string key)
+        /// <param name="key">Input name to retrieve, if possible</param>
+        /// <param name="defaultValue">Optional default value if not found</param>
+        /// <returns>The value if found, the default value otherwise</returns>
+        public short GetInt16(string key, short defaultValue = short.MinValue)
         {
             // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
@@ -169,7 +179,7 @@ namespace SabreTools.Help.Inputs
                 if (input is not Int16Input i)
                     throw new ArgumentException("Feature is not a short");
 
-                return i.Value ?? short.MinValue;
+                return i.Value ?? defaultValue;
             }
 
             // Check all children recursively
@@ -180,13 +190,16 @@ namespace SabreTools.Help.Inputs
                     return childValue;
             }
 
-            return short.MinValue;
+            return defaultValue;
         }
 
         /// <summary>
-        /// Get int value from nullable feature
+        /// Get an Int32 value from a named input
         /// </summary>
-        public int GetInt32(string key)
+        /// <param name="key">Input name to retrieve, if possible</param>
+        /// <param name="defaultValue">Optional default value if not found</param>
+        /// <returns>The value if found, the default value otherwise</returns>
+        public int GetInt32(string key, int defaultValue = int.MinValue)
         {
             // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
@@ -194,7 +207,7 @@ namespace SabreTools.Help.Inputs
                 if (input is not Int32Input i)
                     throw new ArgumentException("Feature is not an int");
 
-                return i.Value ?? int.MinValue;
+                return i.Value ?? defaultValue;
             }
 
             // Check all children recursively
@@ -205,13 +218,16 @@ namespace SabreTools.Help.Inputs
                     return childValue;
             }
 
-            return int.MinValue;
+            return defaultValue;
         }
 
         /// <summary>
-        /// Get long value from nullable feature
+        /// Get an Int64 value from a named input
         /// </summary>
-        public long GetInt64(string key)
+        /// <param name="key">Input name to retrieve, if possible</param>
+        /// <param name="defaultValue">Optional default value if not found</param>
+        /// <returns>The value if found, the default value otherwise</returns>
+        public long GetInt64(string key, long defaultValue = long.MinValue)
         {
             // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
@@ -219,7 +235,7 @@ namespace SabreTools.Help.Inputs
                 if (input is not Int64Input l)
                     throw new ArgumentException("Feature is not a long");
 
-                return l.Value ?? long.MinValue;
+                return l.Value ?? defaultValue;
             }
 
             // Check all children recursively
@@ -230,13 +246,16 @@ namespace SabreTools.Help.Inputs
                     return childValue;
             }
 
-            return long.MinValue;
+            return defaultValue;
         }
 
         /// <summary>
-        /// Get string value from nullable feature
+        /// Get a string value from a named input
         /// </summary>
-        public string? GetString(string key)
+        /// <param name="key">Input name to retrieve, if possible</param>
+        /// <param name="defaultValue">Optional default value if not found</param>
+        /// <returns>The value if found, the default value otherwise</returns>
+        public string? GetString(string key, string? defaultValue = null)
         {
             // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
@@ -255,13 +274,16 @@ namespace SabreTools.Help.Inputs
                     return childValue;
             }
 
-            return null;
+            return defaultValue;
         }
 
         /// <summary>
-        /// Get list value from nullable feature
+        /// Get a string list value from a named input
         /// </summary>
-        public List<string> GetStringList(string key)
+        /// <param name="key">Input name to retrieve, if possible</param>
+        /// <param name="defaultValue">Optional default value if not found</param>
+        /// <returns>The value if found, the default value otherwise</returns>
+        public List<string>? GetStringList(string key, List<string>? defaultValue = null)
         {
             // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
@@ -269,24 +291,27 @@ namespace SabreTools.Help.Inputs
                 if (input is not StringListInput l)
                     throw new ArgumentException("Feature is not a list");
 
-                return l.Value ?? [];
+                return l.Value ?? defaultValue;
             }
 
             // Check all children recursively
             foreach (var child in Children.Values)
             {
-                List<string> childValue = child.GetStringList(key);
-                if (childValue.Count > 0)
+                List<string>? childValue = child.GetStringList(key);
+                if (childValue != null)
                     return childValue;
             }
 
-            return [];
+            return defaultValue;
         }
 
         /// <summary>
-        /// Get byte value from nullable feature
+        /// Get a UInt8 value from a named input
         /// </summary>
-        public byte GetUInt8(string key)
+        /// <param name="key">Input name to retrieve, if possible</param>
+        /// <param name="defaultValue">Optional default value if not found</param>
+        /// <returns>The value if found, the default value otherwise</returns>
+        public byte GetUInt8(string key, byte defaultValue = byte.MinValue)
         {
             // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
@@ -294,7 +319,7 @@ namespace SabreTools.Help.Inputs
                 if (input is not UInt8Input i)
                     throw new ArgumentException("Feature is not an byte");
 
-                return i.Value ?? byte.MinValue;
+                return i.Value ?? defaultValue;
             }
 
             // Check all children recursively
@@ -305,13 +330,16 @@ namespace SabreTools.Help.Inputs
                     return childValue;
             }
 
-            return byte.MinValue;
+            return defaultValue;
         }
 
         /// <summary>
-        /// Get short value from nullable feature
+        /// Get a UInt16 value from a named input
         /// </summary>
-        public ushort GetUInt16(string key)
+        /// <param name="key">Input name to retrieve, if possible</param>
+        /// <param name="defaultValue">Optional default value if not found</param>
+        /// <returns>The value if found, the default value otherwise</returns>
+        public ushort GetUInt16(string key, ushort defaultValue = ushort.MinValue)
         {
             // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
@@ -319,7 +347,7 @@ namespace SabreTools.Help.Inputs
                 if (input is not UInt16Input i)
                     throw new ArgumentException("Feature is not a ushort");
 
-                return i.Value ?? ushort.MinValue;
+                return i.Value ?? defaultValue;
             }
 
             // Check all children recursively
@@ -330,13 +358,16 @@ namespace SabreTools.Help.Inputs
                     return childValue;
             }
 
-            return ushort.MinValue;
+            return defaultValue;
         }
 
         /// <summary>
-        /// Get int value from nullable feature
+        /// Get a UInt32 value from a named input
         /// </summary>
-        public uint GetUInt32(string key)
+        /// <param name="key">Input name to retrieve, if possible</param>
+        /// <param name="defaultValue">Optional default value if not found</param>
+        /// <returns>The value if found, the default value otherwise</returns>
+        public uint GetUInt32(string key, uint defaultValue = uint.MinValue)
         {
             // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
@@ -344,7 +375,7 @@ namespace SabreTools.Help.Inputs
                 if (input is not UInt32Input i)
                     throw new ArgumentException("Feature is not an uint");
 
-                return i.Value ?? uint.MinValue;
+                return i.Value ?? defaultValue;
             }
 
             // Check all children recursively
@@ -355,13 +386,16 @@ namespace SabreTools.Help.Inputs
                     return childValue;
             }
 
-            return uint.MinValue;
+            return defaultValue;
         }
 
         /// <summary>
-        /// Get long value from nullable feature
+        /// Get a UInt64 value from a named input
         /// </summary>
-        public ulong GetUInt64(string key)
+        /// <param name="key">Input name to retrieve, if possible</param>
+        /// <param name="defaultValue">Optional default value if not found</param>
+        /// <returns>The value if found, the default value otherwise</returns>
+        public ulong GetUInt64(string key, ulong defaultValue = ulong.MinValue)
         {
             // Try to check immediate children
             if (Children.TryGetValue(key, out var input))
@@ -369,7 +403,7 @@ namespace SabreTools.Help.Inputs
                 if (input is not UInt64Input l)
                     throw new ArgumentException("Feature is not a ulong");
 
-                return l.Value ?? ulong.MinValue;
+                return l.Value ?? defaultValue;
             }
 
             // Check all children recursively
@@ -380,7 +414,7 @@ namespace SabreTools.Help.Inputs
                     return childValue;
             }
 
-            return ulong.MinValue;
+            return defaultValue;
         }
 
         #endregion
