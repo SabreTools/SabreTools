@@ -20,19 +20,19 @@
         }
 
         /// <inheritdoc/>
-        public override bool ProcessArgs(string[] args, int index, FeatureSet parentSet)
+        public override bool ProcessArgs(string[] args, int index, FeatureSet? parentSet)
         {
             // If we had something else after help
             if (args.Length > 1)
             {
-                parentSet.OutputIndividualFeature(args[1]);
+                parentSet?.OutputIndividualFeature(args[1]);
                 return true;
             }
 
             // Otherwise, show generic help
             else
             {
-                parentSet.OutputGenericHelp();
+                parentSet?.OutputGenericHelp();
                 return true;
             }
         }
