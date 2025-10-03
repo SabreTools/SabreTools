@@ -24,6 +24,8 @@ namespace SabreTools.Features
         public Update()
             : base(DisplayName, _flags, _description, _longDescription)
         {
+            RequiresInputs = true;
+
             // Common Features
             AddCommonFeatures();
 

@@ -44,6 +44,8 @@ Reset the internal state:           reset();";
         public Batch()
             : base(DisplayName, _flags, _description, _longDescription)
         {
+            RequiresInputs = true;
+
             // Common Features
             AddCommonFeatures();
         }

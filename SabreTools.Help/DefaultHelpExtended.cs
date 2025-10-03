@@ -16,6 +16,7 @@
         public DefaultHelpExtended()
             : base(DisplayName, _flags, _description, _longDescription)
         {
+            RequiresInputs = false;
         }
 
         /// <inheritdoc/>

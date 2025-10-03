@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using SabreTools.Help.Inputs;
 
 namespace SabreTools.Help
@@ -13,9 +11,14 @@ namespace SabreTools.Help
         #region Fields
 
         /// <summary>
-        /// List of files, directories, and potential wildcard paths
+        /// List of undefined inputs
         /// </summary>
         public readonly List<string> Inputs = [];
+
+        /// <summary>
+        /// Indicates if the feature requires inputs to be set
+        /// </summary>
+        public bool RequiresInputs { get; protected set; } = false;
 
         #endregion
 
@@ -58,29 +61,8 @@ namespace SabreTools.Help
                 if (ProcessInput(args, ref i))
                     continue;
 
-                // Special precautions for files and directories
-                if (File.Exists(args[i]) || Directory.Exists(args[i]))
-                {
-                    Inputs.Add(item: args[i]);
-                }
-
-                // Special precautions for wildcarded inputs (potential paths)
-#if NETFRAMEWORK || NETSTANDARD
-                else if (args[i].Contains("*") || args[i].Contains("?"))
-#else
-                else if (args[i].Contains('*') || args[i].Contains('?'))
-#endif
-                {
-                    Inputs.Add(args[i]);
-                }
-
-                // Everything else isn't a file
-                else
-                {
-                    Console.Error.WriteLine($"Invalid input detected: {args[i]}");
-                    parentSet.OutputIndividualFeature(Name);
-                    return false;
-                }
+                // Add all other arguments to the generic inputs
+                Inputs.Add(item: args[i]);
             }
 
             return true;

@@ -22,6 +22,8 @@ namespace SabreTools.Features
         public Split()
             : base(DisplayName, _flags, _description, _longDescription)
         {
+            RequiresInputs = true;
+
             // Common Features
             AddCommonFeatures();
 

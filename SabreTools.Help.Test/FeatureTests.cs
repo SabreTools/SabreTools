@@ -15,6 +15,7 @@ namespace SabreTools.Help.Test
 
             bool actual = feature.ProcessArgs(args, index, featureSet);
             Assert.True(actual);
+            Assert.Empty(feature.Inputs);
         }
 
         [Fact]
@@ -28,6 +29,7 @@ namespace SabreTools.Help.Test
 
             bool actual = feature.ProcessArgs(args, index, featureSet);
             Assert.False(actual);
+            Assert.Empty(feature.Inputs);
         }
 
         [Fact]
@@ -41,6 +43,7 @@ namespace SabreTools.Help.Test
 
             bool actual = feature.ProcessArgs(args, index, featureSet);
             Assert.False(actual);
+            Assert.Empty(feature.Inputs);
         }
 
         [Fact]
@@ -56,10 +59,11 @@ namespace SabreTools.Help.Test
 
             bool actual = feature.ProcessArgs(args, index, featureSet);
             Assert.True(actual);
+            Assert.Empty(feature.Inputs);
         }
 
         [Fact]
-        public void ProcessArgs_InvalidArg_Failure()
+        public void ProcessArgs_InvalidArg_AddedAsGeneric()
         {
             Feature feature = new MockFeature("a", "a", "a");
             feature.Add(new MockFeature("b", "b", "b"));
@@ -70,7 +74,9 @@ namespace SabreTools.Help.Test
             var featureSet = new FeatureSet([]);
 
             bool actual = feature.ProcessArgs(args, index, featureSet);
-            Assert.False(actual);
+            Assert.True(actual);
+            string input = Assert.Single(feature.Inputs);
+            Assert.Equal("c", input);
         }
 
         [Fact]
@@ -87,9 +93,8 @@ namespace SabreTools.Help.Test
 
             bool actual = feature.ProcessArgs(args, index, featureSet);
             Assert.True(actual);
+            Assert.Empty(feature.Inputs);
         }
-
-        // TODO: Add tests around path and wildcard handling
 
         /// <summary>
         /// Mock Feature implementation for testing

@@ -29,6 +29,8 @@ The stats that are outputted are as follows:
         public Stats()
             : base(DisplayName, _flags, _description, _longDescription)
         {
+            RequiresInputs = true;
+
             // Common Features
             AddCommonFeatures();
 

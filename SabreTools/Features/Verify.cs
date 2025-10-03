@@ -20,6 +20,8 @@ namespace SabreTools.Features
         public Verify()
             : base(DisplayName, _flags, _description, _longDescription)
         {
+            RequiresInputs = true;
+
             // Common Features
             AddCommonFeatures();
 

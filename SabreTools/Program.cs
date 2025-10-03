@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text.RegularExpressions;
 using SabreTools.Features;
 using SabreTools.Help;
@@ -63,8 +64,7 @@ namespace SabreTools
             featureName = _help.GetInputName(featureName);
 
             // Get the associated feature
-            var feature = _help[featureName] as Feature;
-            if (feature == null)
+            if (_help[featureName] is not Feature feature)
             {
                 Console.WriteLine($"'{featureName}' is not valid feature flag");
                 _help.OutputIndividualFeature(featureName);
@@ -87,44 +87,16 @@ namespace SabreTools
             if (!Console.IsOutputRedirected && feature is BaseFeature bf && bf.ScriptMode)
             {
                 Console.Clear();
-                SabreTools.Core.Globals.SetConsoleHeader("SabreTools");
+                Core.Globals.SetConsoleHeader("SabreTools");
             }
 #endif
 
+            // If inputs are required
+            if (feature.RequiresInputs)
+                VerifyInputs(feature);
+
             // Now process the current feature
-            bool success = false;
-            switch (featureName)
-            {
-                // No-op as these should be caught
-                case DefaultHelp.DisplayName:
-                case DefaultHelpExtended.DisplayName:
-                    break;
-
-                // Require input verification
-                case Batch.DisplayName:
-                case DatFromDir.DisplayName:
-                case Split.DisplayName:
-                case Stats.DisplayName:
-                case Update.DisplayName:
-                case Verify.DisplayName:
-                    VerifyInputs(feature.Inputs, feature);
-                    success = feature.ProcessFeatures();
-                    break;
-
-                // Requires no input verification
-                case Sort.DisplayName:
-                case DefaultVersion.DisplayName:
-                    success = feature.ProcessFeatures();
-                    break;
-
-                // If nothing is set, show the help
-                default:
-                    _help.OutputGenericHelp();
-                    break;
-            }
-
-            // If the feature failed, output help
-            if (!success)
+            if (!feature.ProcessFeatures())
             {
                 _staticLogger.Error("An error occurred during processing!");
                 _help.OutputIndividualFeature(featureName);
@@ -221,13 +193,35 @@ namespace SabreTools
         /// <summary>
         /// Verify that there are inputs, show help otherwise
         /// </summary>
-        /// <param name="inputs">List of inputs</param>
         /// <param name="feature">Name of the current feature</param>
-        private static void VerifyInputs(List<string> inputs, Feature feature)
+        /// <remarks>Assumes inputs need to be a file, directory, or wildcard path</remarks>
+        private static void VerifyInputs(Feature feature)
         {
-            if (inputs.Count == 0)
+            // If there are no inputs
+            if (feature.Inputs.Count == 0)
             {
                 _staticLogger.Error("This feature requires at least one input");
+                _help?.OutputIndividualFeature(feature.Name);
+                Environment.Exit(0);
+            }
+
+            // Loop through and verify all inputs are valid
+            for (int i = 0; i < feature.Inputs.Count; i++)
+            {
+                // Files and directories are valid
+                if (File.Exists(feature.Inputs[i]) || Directory.Exists(feature.Inputs[i]))
+                    continue;
+
+                // Wildcard inputs are treated as potential paths
+#if NETFRAMEWORK || NETSTANDARD
+                if (feature.Inputs[i].Contains("*") || feature.Inputs[i].Contains("?"))
+#else
+                if (feature.Inputs[i].Contains('*') || feature.Inputs[i].Contains('?'))
+#endif
+                    continue;
+
+                // Everything else is an error
+                Console.Error.WriteLine($"Invalid input detected: {feature.Inputs[i]}");
                 _help?.OutputIndividualFeature(feature.Name);
                 Environment.Exit(0);
             }
