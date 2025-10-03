@@ -81,11 +81,10 @@ namespace SabreTools.Help.Inputs
         }
 
         /// <summary>
-        /// Add a new feature for this feature
+        /// Add a new child input
         /// </summary>
-        /// <param name="feature"></param>
-        public void AddFeature(UserInput feature)
-            => Children[feature.Name] = feature;
+        public void Add(UserInput input)
+            => Children[input.Name] = input;
 
         /// <summary>
         /// Returns if a flag exists for the current feature

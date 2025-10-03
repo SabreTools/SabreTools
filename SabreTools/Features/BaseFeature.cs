@@ -1044,10 +1044,10 @@ Some special strings that can be used:
         /// </summary>
         protected void AddCommonFeatures()
         {
-            AddFeature(ScriptFlag);
-            AddFeature(LogLevelStringInput);
+            Add(ScriptFlag);
+            Add(LogLevelStringInput);
 #if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            AddFeature(ThreadsInt32Input);
+            Add(ThreadsInt32Input);
 #endif
         }
 
@@ -1056,8 +1056,8 @@ Some special strings that can be used:
         /// </summary>
         protected void AddFilteringFeatures()
         {
-            AddFeature(FilterListInput);
-            AddFeature(MatchOfTagsFlag);
+            Add(FilterListInput);
+            Add(MatchOfTagsFlag);
             //AddFeature(PerMachineFlag); // TODO: Add and implement this flag
         }
 
@@ -1067,30 +1067,30 @@ Some special strings that can be used:
         protected void AddHeaderFeatures()
         {
             // Header Values
-            AddFeature(FilenameStringInput);
-            AddFeature(NameStringInput);
-            AddFeature(DescriptionStringInput);
-            AddFeature(RootStringInput);
-            AddFeature(CategoryStringInput);
-            AddFeature(VersionStringInput);
-            AddFeature(DateStringInput);
-            AddFeature(AuthorStringInput);
-            AddFeature(EmailStringInput);
-            AddFeature(HomepageStringInput);
-            AddFeature(UrlStringInput);
-            AddFeature(CommentStringInput);
-            AddFeature(HeaderStringInput);
-            AddFeature(SuperdatFlag);
-            AddFeature(ForceMergingStringInput);
-            AddFeature(ForceNodumpStringInput);
-            AddFeature(ForcePackingStringInput);
+            Add(FilenameStringInput);
+            Add(NameStringInput);
+            Add(DescriptionStringInput);
+            Add(RootStringInput);
+            Add(CategoryStringInput);
+            Add(VersionStringInput);
+            Add(DateStringInput);
+            Add(AuthorStringInput);
+            Add(EmailStringInput);
+            Add(HomepageStringInput);
+            Add(UrlStringInput);
+            Add(CommentStringInput);
+            Add(HeaderStringInput);
+            Add(SuperdatFlag);
+            Add(ForceMergingStringInput);
+            Add(ForceNodumpStringInput);
+            Add(ForcePackingStringInput);
 
             // Header Filters
-            AddFeature(ExcludeFieldListInput);
-            AddFeature(OneGamePerRegionFlag);
-            this[OneGamePerRegionFlag]!.AddFeature(RegionListInput);
-            AddFeature(OneRomPerGameFlag);
-            AddFeature(SceneDateStripFlag);
+            Add(ExcludeFieldListInput);
+            Add(OneGamePerRegionFlag);
+            this[OneGamePerRegionFlag]!.Add(RegionListInput);
+            Add(OneRomPerGameFlag);
+            Add(SceneDateStripFlag);
         }
 
         /// <summary>
@@ -1098,12 +1098,12 @@ Some special strings that can be used:
         /// </summary>
         protected void AddInternalSplitFeatures()
         {
-            AddFeature(DatMergedFlag);
-            AddFeature(DatFullMergedFlag);
-            AddFeature(DatSplitFlag);
-            AddFeature(DatNonMergedFlag);
-            AddFeature(DatDeviceNonMergedFlag);
-            AddFeature(DatFullNonMergedFlag);
+            Add(DatMergedFlag);
+            Add(DatFullMergedFlag);
+            Add(DatSplitFlag);
+            Add(DatNonMergedFlag);
+            Add(DatDeviceNonMergedFlag);
+            Add(DatFullNonMergedFlag);
         }
 
         #endregion

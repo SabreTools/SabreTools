@@ -23,18 +23,18 @@ namespace SabreTools.Features
             // Common Features
             AddCommonFeatures();
 
-            AddFeature(DatListInput);
-            AddFeature(DepotFlag);
-            this[DepotFlag]!.AddFeature(DepotDepthInt32Input);
-            AddFeature(OutputDirStringInput);
-            AddFeature(HashOnlyFlag);
-            AddFeature(QuickFlag);
-            AddFeature(HeaderStringInput);
-            AddFeature(AaruFormatsAsFilesFlag);
-            AddFeature(ChdsAsFilesFlag);
-            AddFeature(IndividualFlag);
+            Add(DatListInput);
+            Add(DepotFlag);
+            this[DepotFlag]!.Add(DepotDepthInt32Input);
+            Add(OutputDirStringInput);
+            Add(HashOnlyFlag);
+            Add(QuickFlag);
+            Add(HeaderStringInput);
+            Add(AaruFormatsAsFilesFlag);
+            Add(ChdsAsFilesFlag);
+            Add(IndividualFlag);
             AddInternalSplitFeatures();
-            AddFeature(ExtraIniListInput);
+            Add(ExtraIniListInput);
             AddFilteringFeatures();
         }
 

@@ -24,32 +24,32 @@ namespace SabreTools.Features
             // Common Features
             AddCommonFeatures();
 
-            AddFeature(DatListInput);
-            AddFeature(OutputDirStringInput);
-            AddFeature(DepotFlag);
-            this[DepotFlag]!.AddFeature(DepotDepthInt32Input);
-            AddFeature(DeleteFlag);
-            AddFeature(InverseFlag);
-            AddFeature(QuickFlag);
-            AddFeature(AaruFormatsAsFilesFlag);
-            AddFeature(ChdsAsFilesFlag);
-            AddFeature(AddDateFlag);
-            AddFeature(IndividualFlag);
+            Add(DatListInput);
+            Add(OutputDirStringInput);
+            Add(DepotFlag);
+            this[DepotFlag]!.Add(DepotDepthInt32Input);
+            Add(DeleteFlag);
+            Add(InverseFlag);
+            Add(QuickFlag);
+            Add(AaruFormatsAsFilesFlag);
+            Add(ChdsAsFilesFlag);
+            Add(AddDateFlag);
+            Add(IndividualFlag);
 
             // Output Formats
-            AddFeature(Torrent7zipFlag);
-            AddFeature(TarFlag);
-            AddFeature(TorrentGzipFlag);
-            this[TorrentGzipFlag]!.AddFeature(RombaFlag);
-            this[TorrentGzipFlag]![RombaFlag]!.AddFeature(RombaDepthInt32Input);
+            Add(Torrent7zipFlag);
+            Add(TarFlag);
+            Add(TorrentGzipFlag);
+            this[TorrentGzipFlag]!.Add(RombaFlag);
+            this[TorrentGzipFlag]![RombaFlag]!.Add(RombaDepthInt32Input);
             //AddFeature(SharedInputs.TorrentRarFlag);
             //AddFeature(SharedInputs.TorrentXzFlag);
             //this[SharedInputs.TorrentXzFlag]!.AddFeature(SharedInputs.RombaFlag);
-            AddFeature(TorrentZipFlag);
+            Add(TorrentZipFlag);
 
-            AddFeature(HeaderStringInput);
+            Add(HeaderStringInput);
             AddInternalSplitFeatures();
-            AddFeature(UpdateDatFlag);
+            Add(UpdateDatFlag);
         }
 
         /// <inheritdoc/>

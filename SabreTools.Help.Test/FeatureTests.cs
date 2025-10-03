@@ -47,8 +47,8 @@ namespace SabreTools.Help.Test
         public void ProcessArgs_ValidArgs_Success()
         {
             Feature feature = new MockFeature("a", "a", "a");
-            feature.AddFeature(new MockFeature("b", "b", "b"));
-            feature.AddFeature(new MockFeature("c", "c", "c"));
+            feature.Add(new MockFeature("b", "b", "b"));
+            feature.Add(new MockFeature("c", "c", "c"));
 
             string[] args = ["a", "b", "c"];
             int index = 0;
@@ -62,8 +62,8 @@ namespace SabreTools.Help.Test
         public void ProcessArgs_InvalidArg_Failure()
         {
             Feature feature = new MockFeature("a", "a", "a");
-            feature.AddFeature(new MockFeature("b", "b", "b"));
-            feature.AddFeature(new MockFeature("d", "d", "d"));
+            feature.Add(new MockFeature("b", "b", "b"));
+            feature.Add(new MockFeature("d", "d", "d"));
 
             string[] args = ["a", "b", "c"];
             int index = 0;
@@ -78,8 +78,8 @@ namespace SabreTools.Help.Test
         {
             Feature feature = new MockFeature("a", "a", "a");
             var sub = new MockFeature("b", "b", "b");
-            sub.AddFeature(new MockFeature("c", "c", "c"));
-            feature.AddFeature(sub);
+            sub.Add(new MockFeature("c", "c", "c"));
+            feature.Add(sub);
 
             string[] args = ["a", "b", "c"];
             int index = 0;

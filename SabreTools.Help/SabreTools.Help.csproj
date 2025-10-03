@@ -21,4 +21,8 @@
         <RepositoryType>git</RepositoryType>
     </PropertyGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="SabreTools.Help.Test" />
+    </ItemGroup>
+
 </Project>

@@ -25,22 +25,22 @@ namespace SabreTools.Features
             // Common Features
             AddCommonFeatures();
 
-            AddFeature(OutputTypeListInput);
-            this[OutputTypeListInput]!.AddFeature(DeprecatedFlag);
-            AddFeature(OutputDirStringInput);
-            AddFeature(InplaceFlag);
-            AddFeature(ExtensionFlag);
-            this[ExtensionFlag]!.AddFeature(ExtaListInput);
-            this[ExtensionFlag]!.AddFeature(ExtbListInput);
-            AddFeature(HashFlag);
-            AddFeature(LevelFlag);
-            this[LevelFlag]!.AddFeature(ShortFlag);
-            this[LevelFlag]!.AddFeature(BaseFlag);
-            AddFeature(SizeFlag);
-            this[SizeFlag]!.AddFeature(RadixInt64Input);
-            AddFeature(TotalSizeFlag);
-            this[TotalSizeFlag]!.AddFeature(ChunkSizeInt64Input);
-            AddFeature(TypeFlag);
+            Add(OutputTypeListInput);
+            this[OutputTypeListInput]!.Add(DeprecatedFlag);
+            Add(OutputDirStringInput);
+            Add(InplaceFlag);
+            Add(ExtensionFlag);
+            this[ExtensionFlag]!.Add(ExtaListInput);
+            this[ExtensionFlag]!.Add(ExtbListInput);
+            Add(HashFlag);
+            Add(LevelFlag);
+            this[LevelFlag]!.Add(ShortFlag);
+            this[LevelFlag]!.Add(BaseFlag);
+            Add(SizeFlag);
+            this[SizeFlag]!.Add(RadixInt64Input);
+            Add(TotalSizeFlag);
+            this[TotalSizeFlag]!.Add(ChunkSizeInt64Input);
+            Add(TypeFlag);
         }
 
         /// <inheritdoc/>

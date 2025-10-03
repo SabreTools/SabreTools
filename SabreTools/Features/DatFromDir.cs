@@ -22,35 +22,35 @@ namespace SabreTools.Features
             AddCommonFeatures();
 
             // Hash Features
-            AddFeature(IncludeCrcFlag);
-            AddFeature(IncludeMd2Flag);
-            AddFeature(IncludeMd4Flag);
-            AddFeature(IncludeMd5Flag);
-            AddFeature(IncludeRipeMD128Flag);
-            AddFeature(IncludeRipeMD160Flag);
-            AddFeature(IncludeSha1Flag);
-            AddFeature(IncludeSha256Flag);
-            AddFeature(IncludeSha384Flag);
-            AddFeature(IncludeSha512Flag);
-            AddFeature(IncludeSpamSumFlag);
+            Add(IncludeCrcFlag);
+            Add(IncludeMd2Flag);
+            Add(IncludeMd4Flag);
+            Add(IncludeMd5Flag);
+            Add(IncludeRipeMD128Flag);
+            Add(IncludeRipeMD160Flag);
+            Add(IncludeSha1Flag);
+            Add(IncludeSha256Flag);
+            Add(IncludeSha384Flag);
+            Add(IncludeSha512Flag);
+            Add(IncludeSpamSumFlag);
 
-            AddFeature(NoAutomaticDateFlag);
-            AddFeature(AaruFormatsAsFilesFlag);
-            AddFeature(ArchivesAsFilesFlag);
-            AddFeature(ChdsAsFilesFlag);
-            AddFeature(OutputTypeListInput);
-            this[OutputTypeListInput]!.AddFeature(DeprecatedFlag);
-            AddFeature(RombaFlag);
-            this[RombaFlag]!.AddFeature(RombaDepthInt32Input);
-            AddFeature(SkipArchivesFlag);
-            AddFeature(SkipFilesFlag);
+            Add(NoAutomaticDateFlag);
+            Add(AaruFormatsAsFilesFlag);
+            Add(ArchivesAsFilesFlag);
+            Add(ChdsAsFilesFlag);
+            Add(OutputTypeListInput);
+            this[OutputTypeListInput]!.Add(DeprecatedFlag);
+            Add(RombaFlag);
+            this[RombaFlag]!.Add(RombaDepthInt32Input);
+            Add(SkipArchivesFlag);
+            Add(SkipFilesFlag);
             AddHeaderFeatures();
-            AddFeature(AddBlankFilesFlag);
-            AddFeature(AddDateFlag);
-            AddFeature(HeaderStringInput);
-            AddFeature(ExtraIniListInput);
+            Add(AddBlankFilesFlag);
+            Add(AddDateFlag);
+            Add(HeaderStringInput);
+            Add(ExtraIniListInput);
             AddFilteringFeatures();
-            AddFeature(OutputDirStringInput);
+            Add(OutputDirStringInput);
         }
 
         /// <inheritdoc/>

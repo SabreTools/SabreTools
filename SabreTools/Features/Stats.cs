@@ -32,12 +32,12 @@ The stats that are outputted are as follows:
             // Common Features
             AddCommonFeatures();
 
-            AddFeature(ReportTypeListInput);
-            AddFeature(FilenameStringInput);
-            AddFeature(OutputDirStringInput);
-            AddFeature(BaddumpColumnFlag);
-            AddFeature(NodumpColumnFlag);
-            AddFeature(IndividualFlag);
+            Add(ReportTypeListInput);
+            Add(FilenameStringInput);
+            Add(OutputDirStringInput);
+            Add(BaddumpColumnFlag);
+            Add(NodumpColumnFlag);
+            Add(IndividualFlag);
         }
 
         /// <inheritdoc/>
