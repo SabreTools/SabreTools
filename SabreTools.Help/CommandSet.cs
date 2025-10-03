@@ -189,6 +189,10 @@ namespace SabreTools.Help
                     output.AddRange(outputs);
             }
 
+            // Append the footer, if needed
+            if (_footer.Count > 0)
+                output.AddRange(_footer);
+
             // Now write out everything in a staged manner
             WriteOutWithPauses(output);
         }
