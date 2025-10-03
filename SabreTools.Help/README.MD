@@ -8,7 +8,13 @@ For an example of a program implementing the library, see [SabreTools](https://g
 
 ## Special Types
 
-Below is a list of special classes included in the library and their utility to implementers.
+Below is a list of special classes included in the library and their utility to implementers. A short mapping of class to language construct is provided for reference.
+
+| Class | Language Construct |
+| --- | --- |
+| `CommandSet` | Vocabulary |
+| `Feature` | Verb |
+| `Inputs.UserInput` | Noun |
 
 ### `CommandSet`
 
