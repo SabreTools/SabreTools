@@ -14,7 +14,7 @@ Below is a list of special classes included in the library and their utility to 
 | --- | --- |
 | `Feature` | Represents an application-level feature that may have its own custom set of supported inputs. Features can also allow for internal processing if preferred by the implementer. |
 | `FeatureSet` | Represents a logically-grouped set of functionality, usually scoped to an application. Inputs defined in a feature set do not need to be any specific type, but using `Feature` is recommended. `FeatureSet` also allows implementers to easily print help text to the screen. |
-| `Inputs/UserInput` | Base class used for all supported input classes. Both typed and untyped variants exist. This can be used to define custom input classes for any type, including types already defined by one of the default included classes. The typed version of the base class is recommended, but not mandatory. |
+| `Inputs.UserInput` | Base class used for all supported input classes. Both typed and untyped variants exist. This can be used to define custom input classes for any type, including types already defined by one of the default included classes. The typed version of the base class is recommended, but not mandatory. |
 
 ## Supported Input Formats
 
