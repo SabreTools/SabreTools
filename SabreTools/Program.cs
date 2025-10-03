@@ -13,9 +13,9 @@ namespace SabreTools
         #region Static Variables
 
         /// <summary>
-        /// Help object that determines available functionality
+        /// Feature set that determines available functionality
         /// </summary>
-        private static FeatureSet? _help;
+        private static FeatureSet? _features;
 
         /// <summary>
         /// Logging object
@@ -35,7 +35,7 @@ namespace SabreTools
                 args = ReformatArguments(args);
 
             // Create a new Help object for this program
-            _help = RetrieveHelp();
+            _features = RetrieveHelp();
 
             // Credits take precidence over all
             if (Array.Exists(args, a => a == "--credits"))
@@ -47,39 +47,39 @@ namespace SabreTools
             // If there's no arguments, show help
             if (args.Length == 0)
             {
-                _help.OutputGenericHelp();
+                _features.OutputGenericHelp();
                 return;
             }
 
             // Get the first argument as a feature flag
             string featureName = args[0];
-            if (!_help.TopLevelFlag(featureName))
+            if (!_features.TopLevelFlag(featureName))
             {
                 Console.WriteLine($"'{featureName}' is not valid feature flag");
-                _help.OutputIndividualFeature(featureName);
+                _features.OutputIndividualFeature(featureName);
                 return;
             }
 
             // Get the proper name for the feature
-            featureName = _help.GetInputName(featureName);
+            featureName = _features.GetInputName(featureName);
 
             // Get the associated feature
-            if (_help[featureName] is not Feature feature)
+            if (_features[featureName] is not Feature feature)
             {
                 Console.WriteLine($"'{featureName}' is not valid feature flag");
-                _help.OutputIndividualFeature(featureName);
+                _features.OutputIndividualFeature(featureName);
                 return;
             }
 
             // If we had the help feature first
             if (featureName == DefaultHelp.DisplayName || featureName == DefaultHelpExtended.DisplayName)
             {
-                feature.ProcessArgs(args, 0, _help);
+                feature.ProcessArgs(args, 0, _features);
                 return;
             }
 
             // Now verify that all other flags are valid
-            if (!feature.ProcessArgs(args, 1, _help))
+            if (!feature.ProcessArgs(args, 1, _features))
                 return;
 
 #if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
@@ -99,7 +99,7 @@ namespace SabreTools
             if (!feature.ProcessFeatures())
             {
                 _staticLogger.Error("An error occurred during processing!");
-                _help.OutputIndividualFeature(featureName);
+                _features.OutputIndividualFeature(featureName);
             }
 
             LoggerImpl.Close();
@@ -201,7 +201,7 @@ namespace SabreTools
             if (feature.Inputs.Count == 0)
             {
                 _staticLogger.Error("This feature requires at least one input");
-                _help?.OutputIndividualFeature(feature.Name);
+                _features?.OutputIndividualFeature(feature.Name);
                 Environment.Exit(0);
             }
 
@@ -222,7 +222,7 @@ namespace SabreTools
 
                 // Everything else is an error
                 Console.Error.WriteLine($"Invalid input detected: {feature.Inputs[i]}");
-                _help?.OutputIndividualFeature(feature.Name);
+                _features?.OutputIndividualFeature(feature.Name);
                 Environment.Exit(0);
             }
         }
