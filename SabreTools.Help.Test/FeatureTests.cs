@@ -11,9 +11,8 @@ namespace SabreTools.Help.Test
 
             string[] args = [];
             int index = 0;
-            var featureSet = new CommandSet();
 
-            bool actual = feature.ProcessArgs(args, index, featureSet);
+            bool actual = feature.ProcessArgs(args, index);
             Assert.True(actual);
             Assert.Empty(feature.Inputs);
         }
@@ -25,9 +24,8 @@ namespace SabreTools.Help.Test
 
             string[] args = ["a", "b", "c"];
             int index = -1;
-            var featureSet = new CommandSet();
 
-            bool actual = feature.ProcessArgs(args, index, featureSet);
+            bool actual = feature.ProcessArgs(args, index);
             Assert.False(actual);
             Assert.Empty(feature.Inputs);
         }
@@ -39,9 +37,8 @@ namespace SabreTools.Help.Test
 
             string[] args = ["a", "b", "c"];
             int index = 3;
-            var featureSet = new CommandSet();
 
-            bool actual = feature.ProcessArgs(args, index, featureSet);
+            bool actual = feature.ProcessArgs(args, index);
             Assert.False(actual);
             Assert.Empty(feature.Inputs);
         }
@@ -55,9 +52,8 @@ namespace SabreTools.Help.Test
 
             string[] args = ["a", "b", "c"];
             int index = 0;
-            var featureSet = new CommandSet();
 
-            bool actual = feature.ProcessArgs(args, index, featureSet);
+            bool actual = feature.ProcessArgs(args, index);
             Assert.True(actual);
             Assert.Empty(feature.Inputs);
         }
@@ -71,9 +67,8 @@ namespace SabreTools.Help.Test
 
             string[] args = ["a", "b", "c"];
             int index = 0;
-            var featureSet = new CommandSet();
 
-            bool actual = feature.ProcessArgs(args, index, featureSet);
+            bool actual = feature.ProcessArgs(args, index);
             Assert.True(actual);
             string input = Assert.Single(feature.Inputs);
             Assert.Equal("c", input);
@@ -89,9 +84,8 @@ namespace SabreTools.Help.Test
 
             string[] args = ["a", "b", "c"];
             int index = 0;
-            var featureSet = new CommandSet();
 
-            bool actual = feature.ProcessArgs(args, index, featureSet);
+            bool actual = feature.ProcessArgs(args, index);
             Assert.True(actual);
             Assert.Empty(feature.Inputs);
         }
