@@ -47,7 +47,7 @@ Below is a mapping from default supported types to their respective class names 
 | `int` | `Int32Input` | Numeric input bounded to `int.MinValue` to `int.MaxValue`, inclusive |
 | `long` | `Int64Input` | Numeric input bounded to `long.MinValue` to `long.MaxValue`, inclusive |
 | `string?` | `StringInput` | Non-repeating generic string input; may be empty |
-| `List<string>` | `Int8Input` | Repeating generic string input; may be empty |
+| `List<string>` | `StringListInput` | Repeating generic string input; may be empty |
 | `byte` | `UInt8Input` | Numeric input bounded to `byte.MinValue` to `byte.MaxValue`, inclusive |
 | `ushort` | `UInt16Input` | Numeric input bounded to `ushort.MinValue` to `ushort.MaxValue`, inclusive |
 | `uint` | `UInt32Input` | Numeric input bounded to `uint.MinValue` to `uint.MaxValue`, inclusive |
