@@ -24,6 +24,11 @@ namespace SabreTools.Help
         private readonly List<string> _header = [];
 
         /// <summary>
+        /// Trailing lines used when printing help text to console
+        /// </summary>
+        private readonly List<string> _footer = [];
+
+        /// <summary>
         /// Set of all user inputs in this grouping
         /// </summary>
         /// <remarks>
@@ -48,6 +53,17 @@ namespace SabreTools.Help
         public CommandSet(List<string> header)
         {
             _header.AddRange(header);
+        }
+
+        /// <summary>
+        /// Create a new CommandSet with a printable header
+        /// </summary>
+        /// <param name="header">Custom commandline header to be printed when outputting help</param>
+        /// <param name="footer">Custom commandline footer to be printed when outputting help</param>
+        public CommandSet(List<string> header, List<string> footer)
+        {
+            _header.AddRange(header);
+            _footer.AddRange(footer);
         }
 
         #endregion
@@ -131,7 +147,7 @@ namespace SabreTools.Help
             // Start building the output list
             List<string> output = [];
 
-            // Append the header first, if needed
+            // Append the header, if needed
             if (_header.Count > 0)
                 output.AddRange(_header);
 
@@ -144,9 +160,9 @@ namespace SabreTools.Help
                     output.AddRange(outputs);
             }
 
-            // And append the generic ending
-            output.Add(string.Empty);
-            output.Add("For information on available flags, put the option name after help");
+            // Append the footer, if needed
+            if (_footer.Count > 0)
+                output.AddRange(_footer);
 
             // Now write out everything in a staged manner
             WriteOutWithPauses(output);

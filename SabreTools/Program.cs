@@ -171,9 +171,14 @@ namespace SabreTools
                 "Usage: SabreTools [option] [flags] [filename|dirname] ...",
                 string.Empty
             ];
+            List<string> helpFooter =
+            [
+                string.Empty,
+                "For information on available flags, put the option name after help",
+            ];
 
             // Create the base help object with header
-            var help = new CommandSet(helpHeader);
+            var help = new CommandSet(helpHeader, helpFooter);
 
             // Add all of the features
             help.Add(new DefaultHelp());
