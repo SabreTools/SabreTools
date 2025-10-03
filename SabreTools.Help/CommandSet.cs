@@ -14,7 +14,7 @@ namespace SabreTools.Help
     /// inputs are <see cref="Feature"/> unless the implementing
     /// program only has a single utility.
     /// </remarks>
-    public class FeatureSet
+    public class CommandSet
     {
         #region Private variables
 
@@ -36,7 +36,7 @@ namespace SabreTools.Help
 
         #region Constructors
 
-        public FeatureSet(List<string> header)
+        public CommandSet(List<string> header)
         {
             _header.AddRange(header);
         }

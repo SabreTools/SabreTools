@@ -45,7 +45,7 @@ namespace SabreTools.Help
         /// <param name="index">Starting index into the arguments</param>
         /// <param name="parentSet">Reference to the enclosing parent set</param>
         /// <returns>True if all arguments were processed correctly, false otherwise</returns>
-        public virtual bool ProcessArgs(string[] args, int index, FeatureSet? parentSet)
+        public virtual bool ProcessArgs(string[] args, int index, CommandSet? parentSet)
         {
             // Empty arguments is always successful
             if (args.Length == 0)

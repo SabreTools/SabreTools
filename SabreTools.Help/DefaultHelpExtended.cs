@@ -20,7 +20,7 @@
         }
 
         /// <inheritdoc/>
-        public override bool ProcessArgs(string[] args, int index, FeatureSet? parentSet)
+        public override bool ProcessArgs(string[] args, int index, CommandSet? parentSet)
         {
             // If we had something else after help
             if (args.Length > 1)
