@@ -16,7 +16,7 @@ namespace SabreTools.Help.Test.Inputs
 
             Assert.False(actual);
             Assert.Equal(0, index);
-            Assert.Equal(short.MinValue, input.Value);
+            Assert.Null(input.Value);
         }
 
         [Fact]
@@ -30,7 +30,7 @@ namespace SabreTools.Help.Test.Inputs
 
             Assert.False(actual);
             Assert.Equal(-1, index);
-            Assert.Equal(short.MinValue, input.Value);
+            Assert.Null(input.Value);
         }
 
         [Fact]
@@ -44,7 +44,7 @@ namespace SabreTools.Help.Test.Inputs
 
             Assert.False(actual);
             Assert.Equal(2, index);
-            Assert.Equal(short.MinValue, input.Value);
+            Assert.Null(input.Value);
         }
 
         [Fact]
@@ -58,7 +58,7 @@ namespace SabreTools.Help.Test.Inputs
 
             Assert.False(actual);
             Assert.Equal(0, index);
-            Assert.Equal(short.MinValue, input.Value);
+            Assert.Null(input.Value);
         }
 
         [Fact]
@@ -72,7 +72,7 @@ namespace SabreTools.Help.Test.Inputs
 
             Assert.False(actual);
             Assert.Equal(0, index);
-            Assert.Equal(short.MinValue, input.Value);
+            Assert.Null(input.Value);
         }
 
         [Fact]
@@ -86,7 +86,8 @@ namespace SabreTools.Help.Test.Inputs
 
             Assert.True(actual);
             Assert.Equal(1, index);
-            Assert.Equal(5, input.Value);
+            short value = Assert.NotNull(input.Value);
+            Assert.Equal(5, value);
         }
 
         [Fact]
@@ -100,7 +101,7 @@ namespace SabreTools.Help.Test.Inputs
 
             Assert.False(actual);
             Assert.Equal(0, index);
-            Assert.Equal(short.MinValue, input.Value);
+            Assert.Null(input.Value);
         }
 
         [Fact]
@@ -114,7 +115,7 @@ namespace SabreTools.Help.Test.Inputs
 
             Assert.False(actual);
             Assert.Equal(0, index);
-            Assert.Equal(short.MinValue, input.Value);
+            Assert.Null(input.Value);
         }
 
         [Fact]
@@ -128,7 +129,8 @@ namespace SabreTools.Help.Test.Inputs
 
             Assert.True(actual);
             Assert.Equal(0, index);
-            Assert.Equal(5, input.Value);
+            short value = Assert.NotNull(input.Value);
+            Assert.Equal(5, value);
         }
     }
 }

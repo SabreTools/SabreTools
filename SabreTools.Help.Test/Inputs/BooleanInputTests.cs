@@ -16,7 +16,7 @@ namespace SabreTools.Help.Test.Inputs
 
             Assert.False(actual);
             Assert.Equal(0, index);
-            Assert.False(input.Value);
+            Assert.Null(input.Value);
         }
 
         [Fact]
@@ -30,7 +30,7 @@ namespace SabreTools.Help.Test.Inputs
 
             Assert.False(actual);
             Assert.Equal(-1, index);
-            Assert.False(input.Value);
+            Assert.Null(input.Value);
         }
 
         [Fact]
@@ -44,7 +44,7 @@ namespace SabreTools.Help.Test.Inputs
 
             Assert.False(actual);
             Assert.Equal(2, index);
-            Assert.False(input.Value);
+            Assert.Null(input.Value);
         }
 
         [Fact]
@@ -58,7 +58,7 @@ namespace SabreTools.Help.Test.Inputs
 
             Assert.False(actual);
             Assert.Equal(0, index);
-            Assert.False(input.Value);
+            Assert.Null(input.Value);
         }
 
         [Fact]
@@ -72,7 +72,7 @@ namespace SabreTools.Help.Test.Inputs
 
             Assert.False(actual);
             Assert.Equal(0, index);
-            Assert.False(input.Value);
+            Assert.Null(input.Value);
         }
 
         [Fact]
@@ -100,7 +100,7 @@ namespace SabreTools.Help.Test.Inputs
 
             Assert.False(actual);
             Assert.Equal(0, index);
-            Assert.False(input.Value);
+            Assert.Null(input.Value);
         }
 
         [Fact]
@@ -114,7 +114,7 @@ namespace SabreTools.Help.Test.Inputs
 
             Assert.False(actual);
             Assert.Equal(0, index);
-            Assert.False(input.Value);
+            Assert.Null(input.Value);
         }
 
         [Fact]
