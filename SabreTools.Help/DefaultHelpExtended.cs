@@ -41,11 +41,11 @@
                 return true;
             }
         }
-    
-        /// <inheritdoc/>
-        public override bool Execute() => true;
 
         /// <inheritdoc/>
         public override bool VerifyInputs() => true;
+
+        /// <inheritdoc/>
+        public override bool Execute() => true;
     }
 }

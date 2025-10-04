@@ -1109,6 +1109,39 @@ Some special strings that can be used:
         #endregion
 
         /// <inheritdoc/>
+        public override bool VerifyInputs()
+        {
+            // If there are no inputs
+            if (Inputs.Count == 0)
+            {
+                _logger.Error("This feature requires at least one input");
+                return false;
+            }
+
+            // Loop through and verify all inputs are valid
+            for (int i = 0; i < Inputs.Count; i++)
+            {
+                // Files and directories are valid
+                if (File.Exists(Inputs[i]) || Directory.Exists(Inputs[i]))
+                    continue;
+
+                // Wildcard inputs are treated as potential paths
+#if NETFRAMEWORK || NETSTANDARD
+                if (Inputs[i].Contains("*") || Inputs[i].Contains("?"))
+#else
+                if (Inputs[i].Contains('*') || Inputs[i].Contains('?'))
+#endif
+                    continue;
+
+                // Everything else is an error
+                _logger.Error($"Invalid input detected: {Inputs[i]}");
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <inheritdoc/>
         public override bool Execute()
         {
             // Generic feature flags
@@ -1172,39 +1205,6 @@ Some special strings that can be used:
 #else
             return Path.Combine(runtimeDir, "logs", "sabretools.log");
 #endif
-        }
-
-        /// <inheritdoc/>
-        public override bool VerifyInputs()
-        {
-            // If there are no inputs
-            if (Inputs.Count == 0)
-            {
-                _logger.Error("This feature requires at least one input");
-                return false;
-            }
-
-            // Loop through and verify all inputs are valid
-            for (int i = 0; i < Inputs.Count; i++)
-            {
-                // Files and directories are valid
-                if (File.Exists(Inputs[i]) || Directory.Exists(Inputs[i]))
-                    continue;
-
-                // Wildcard inputs are treated as potential paths
-#if NETFRAMEWORK || NETSTANDARD
-                if (Inputs[i].Contains("*") || Inputs[i].Contains("?"))
-#else
-                if (Inputs[i].Contains('*') || Inputs[i].Contains('?'))
-#endif
-                    continue;
-
-                // Everything else is an error
-                _logger.Error($"Invalid input detected: {Inputs[i]}");
-                return false;
-            }
-
-            return true;
         }
 
         #region Protected Specific Extraction

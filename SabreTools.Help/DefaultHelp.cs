@@ -43,9 +43,9 @@
         }
 
         /// <inheritdoc/>
-        public override bool Execute() => true;
+        public override bool VerifyInputs() => true;
 
         /// <inheritdoc/>
-        public override bool VerifyInputs() => true;
+        public override bool Execute() => true;
     }
 }

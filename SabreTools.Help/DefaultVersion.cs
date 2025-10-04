@@ -23,14 +23,14 @@ namespace SabreTools.Help
         }
 
         /// <inheritdoc/>
+        public override bool VerifyInputs() => true;
+
+        /// <inheritdoc/>
         public override bool Execute()
         {
             Console.WriteLine($"Version: {GetVersion()}");
             return true;
         }
-
-        /// <inheritdoc/>
-        public override bool VerifyInputs() => true;
 
         /// <summary>
         /// The current toolset version to be used by all child applications

@@ -68,16 +68,16 @@ namespace SabreTools.Help
         }
 
         /// <summary>
-        /// Execute the logic associated with the feature
-        /// </summary>
-        /// <returns>True if execution was successful, false otherwise</returns>
-        public abstract bool Execute();
-
-        /// <summary>
         /// Verify all inputs based on the feature requirements
         /// </summary>
         /// <returns>True if the inputs verified correctly, false otherwise</returns>
         public abstract bool VerifyInputs();
+
+        /// <summary>
+        /// Execute the logic associated with the feature
+        /// </summary>
+        /// <returns>True if execution was successful, false otherwise</returns>
+        public abstract bool Execute();
 
         #endregion
     }
