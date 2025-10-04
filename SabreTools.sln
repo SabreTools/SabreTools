@@ -16,7 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SabreTools.Core", "SabreTools.Core\SabreTools.Core.csproj", "{66E2FB10-77C0-4589-9DCD-3CA48702C18A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SabreTools.Help", "SabreTools.Help\SabreTools.Help.csproj", "{55364167-844F-4B58-8280-F5327FA3D8E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SabreTools.CommandLine", "SabreTools.CommandLine\SabreTools.CommandLine.csproj", "{55364167-844F-4B58-8280-F5327FA3D8E7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SabreTools.FileTypes", "SabreTools.FileTypes\SabreTools.FileTypes.csproj", "{0B36F39B-69CB-4E8A-B251-D063CB08B247}"
 EndProject
@@ -36,7 +36,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SabreTools.DatFiles.Test", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SabreTools.DatTools.Test", "SabreTools.DatTools.Test\SabreTools.DatTools.Test.csproj", "{5FBED394-6E51-460E-933B-779846F6CDC8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SabreTools.Help.Test", "SabreTools.Help.Test\SabreTools.Help.Test.csproj", "{859BE083-B475-4D7D-BF49-970014F9E47D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SabreTools.CommandLine.Test", "SabreTools.CommandLine.Test\SabreTools.CommandLine.Test.csproj", "{859BE083-B475-4D7D-BF49-970014F9E47D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

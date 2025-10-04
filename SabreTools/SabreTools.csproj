@@ -38,9 +38,9 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\SabreTools.CommandLine\SabreTools.CommandLine.csproj" />
         <ProjectReference Include="..\SabreTools.DatFiles\SabreTools.DatFiles.csproj" />
         <ProjectReference Include="..\SabreTools.DatTools\SabreTools.DatTools.csproj" />
-        <ProjectReference Include="..\SabreTools.Help\SabreTools.Help.csproj" />
     </ItemGroup>
 
 </Project>

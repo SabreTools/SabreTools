@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using SabreTools.CommandLine;
+using SabreTools.CommandLine.Inputs;
 using SabreTools.Core.Filter;
 using SabreTools.DatFiles;
 using SabreTools.DatTools;
 using SabreTools.FileTypes;
 using SabreTools.Hashing;
-using SabreTools.Help;
-using SabreTools.Help.Inputs;
 using SabreTools.IO.Logging;
 using SabreTools.Reports;
 
