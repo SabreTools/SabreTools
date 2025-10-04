@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace SabreTools.Help
+namespace SabreTools.Help.Features
 {
     /// <summary>
     /// Default version feature implementation

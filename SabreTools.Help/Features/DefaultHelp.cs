@@ -1,19 +1,19 @@
-﻿namespace SabreTools.Help
+﻿namespace SabreTools.Help.Features
 {
     /// <summary>
-    /// Default extended help feature implementation
+    /// Default help feature implementation
     /// </summary>
-    public class DefaultHelpExtended : Feature
+    public class DefaultHelp : Feature
     {
-        public const string DisplayName = "Help (Detailed)";
+        public const string DisplayName = "Help";
 
-        private static readonly string[] _flags = ["??", "hd", "help-detailed"];
+        private static readonly string[] _flags = ["?", "h", "help"];
 
-        private const string _description = "Show this detailed help";
+        private const string _description = "Show this help";
 
-        private const string _longDescription = "Display a detailed help text to the screen.";
+        private const string _longDescription = "Built-in to most of the programs is a basic help text.";
 
-        public DefaultHelpExtended()
+        public DefaultHelp()
             : base(DisplayName, _flags, _description, _longDescription)
         {
             RequiresInputs = false;
@@ -30,14 +30,14 @@
             // If we had something else after help
             if (args.Length > 1)
             {
-                parentSet?.OutputIndividualFeature(args[1], includeLongDescription: true);
+                parentSet?.OutputIndividualFeature(args[1]);
                 return true;
             }
 
             // Otherwise, show generic help
             else
             {
-                parentSet?.OutputAllHelp();
+                parentSet?.OutputGenericHelp();
                 return true;
             }
         }
