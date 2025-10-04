@@ -69,12 +69,12 @@ namespace SabreTools
             }
 
             // If we had a help feature first
-            if (feature is DefaultHelp helpFeature)
+            if (feature is Help helpFeature)
             {
                 helpFeature.ProcessArgs(args, 0, _commands);
                 return;
             }
-            else if (feature is DefaultHelpExtended helpExtFeature)
+            else if (feature is HelpExtended helpExtFeature)
             {
                 helpExtFeature.ProcessArgs(args, 0, _commands);
                 return;
@@ -186,8 +186,8 @@ namespace SabreTools
             var commands = new CommandSet(header, footer);
 
             // Add all of the features
-            commands.Add(new DefaultHelp());
-            commands.Add(new DefaultHelpExtended());
+            commands.Add(new Help());
+            commands.Add(new HelpExtended());
             commands.Add(new Batch());
             commands.Add(new DatFromDir());
             commands.Add(new Sort());
@@ -195,7 +195,7 @@ namespace SabreTools
             commands.Add(new Stats());
             commands.Add(new Update());
             commands.Add(new Verify());
-            commands.Add(new DefaultVersion());
+            commands.Add(new CommandLine.Features.Version());
 
             return commands;
         }

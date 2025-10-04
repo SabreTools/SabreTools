@@ -6,7 +6,7 @@ namespace SabreTools.CommandLine.Features
     /// <summary>
     /// Default version feature implementation
     /// </summary>
-    public class DefaultVersion : Feature
+    public class Version : Feature
     {
         public const string DisplayName = "Version";
 
@@ -16,7 +16,7 @@ namespace SabreTools.CommandLine.Features
 
         private const string _longDescription = "Prints current program version.";
 
-        public DefaultVersion()
+        public Version()
             : base(DisplayName, _flags, _description, _longDescription)
         {
             RequiresInputs = false;

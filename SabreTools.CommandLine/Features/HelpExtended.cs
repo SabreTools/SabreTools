@@ -3,7 +3,7 @@
     /// <summary>
     /// Default extended help feature implementation
     /// </summary>
-    public class DefaultHelpExtended : Feature
+    public class HelpExtended : Feature
     {
         public const string DisplayName = "Help (Detailed)";
 
@@ -13,7 +13,7 @@
 
         private const string _longDescription = "Display a detailed help text to the screen.";
 
-        public DefaultHelpExtended()
+        public HelpExtended()
             : base(DisplayName, _flags, _description, _longDescription)
         {
             RequiresInputs = false;

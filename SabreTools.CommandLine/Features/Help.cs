@@ -3,7 +3,7 @@
     /// <summary>
     /// Default help feature implementation
     /// </summary>
-    public class DefaultHelp : Feature
+    public class Help : Feature
     {
         public const string DisplayName = "Help";
 
@@ -13,7 +13,7 @@
 
         private const string _longDescription = "Built-in to most of the programs is a basic help text.";
 
-        public DefaultHelp()
+        public Help()
             : base(DisplayName, _flags, _description, _longDescription)
         {
             RequiresInputs = false;
