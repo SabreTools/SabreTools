@@ -1201,7 +1201,7 @@ Some special strings that can be used:
                     continue;
 
                 // Everything else is an error
-                Console.Error.WriteLine($"Invalid input detected: {Inputs[i]}");
+                _logger.Error($"Invalid input detected: {Inputs[i]}");
                 return false;
             }
 
