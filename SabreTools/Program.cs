@@ -12,9 +12,9 @@ namespace SabreTools
         #region Static Variables
 
         /// <summary>
-        /// Feature set that determines available functionality
+        /// Command set that determines available functionality
         /// </summary>
-        private static readonly CommandSet _features = RetrieveHelp();
+        private static readonly CommandSet _commands = RetrieveCommands();
 
         /// <summary>
         /// Logging object
@@ -43,39 +43,39 @@ namespace SabreTools
             // If there's no arguments, show help
             if (args.Length == 0)
             {
-                _features.OutputGenericHelp();
+                _commands.OutputGenericHelp();
                 return;
             }
 
             // Get the first argument as a feature flag
             string featureName = args[0];
-            if (!_features.TopLevelFlag(featureName))
+            if (!_commands.TopLevelFlag(featureName))
             {
                 Console.WriteLine($"'{featureName}' is not valid feature flag");
-                _features.OutputIndividualFeature(featureName);
+                _commands.OutputIndividualFeature(featureName);
                 return;
             }
 
             // Get the proper name for the feature
-            featureName = _features.GetInputName(featureName);
+            featureName = _commands.GetInputName(featureName);
 
             // Get the associated feature
-            if (_features[featureName] is not Feature feature)
+            if (_commands[featureName] is not Feature feature)
             {
                 Console.WriteLine($"'{featureName}' is not valid feature flag");
-                _features.OutputIndividualFeature(featureName);
+                _commands.OutputIndividualFeature(featureName);
                 return;
             }
 
-            // If we had the help feature first
+            // If we had a help feature first
             if (feature is DefaultHelp helpFeature)
             {
-                helpFeature.ProcessArgs(args, 0, _features);
+                helpFeature.ProcessArgs(args, 0, _commands);
                 return;
             }
             else if (feature is DefaultHelpExtended helpExtFeature)
             {
-                helpExtFeature.ProcessArgs(args, 0, _features);
+                helpExtFeature.ProcessArgs(args, 0, _commands);
                 return;
             }
 
@@ -95,7 +95,7 @@ namespace SabreTools
             // If inputs are required
             if (feature.RequiresInputs && !feature.VerifyInputs())
             {
-                _features.OutputIndividualFeature(feature.Name);
+                _commands.OutputIndividualFeature(feature.Name);
                 Environment.Exit(0);
             }
 
@@ -103,7 +103,7 @@ namespace SabreTools
             if (!feature.Execute())
             {
                 _staticLogger.Error("An error occurred during processing!");
-                _features.OutputIndividualFeature(featureName);
+                _commands.OutputIndividualFeature(featureName);
             }
 
             LoggerImpl.Close();
@@ -161,42 +161,42 @@ namespace SabreTools
         }
 
         /// <summary>
-        /// Generate a Help object for this program
+        /// Generate a CommandSet object for this program
         /// </summary>
-        /// <returns>Populated Help object</returns>
-        private static CommandSet RetrieveHelp()
+        /// <returns>Populated CommandSet object</returns>
+        private static CommandSet RetrieveCommands()
         {
-            // Create and add the header to the Help object
+            // Create and add the header to the CommandSet object
             const string barrier = "-----------------------------------------";
-            List<string> helpHeader =
+            List<string> header =
             [
                 "SabreTools - Manipulate, convert, and use DAT files",
                 barrier,
                 "Usage: SabreTools [option] [flags] [filename|dirname] ...",
                 string.Empty
             ];
-            List<string> helpFooter =
+            List<string> footer =
             [
                 string.Empty,
                 "For information on available flags, put the option name after help",
             ];
 
-            // Create the base help object with header
-            var help = new CommandSet(helpHeader, helpFooter);
+            // Create the base command set with header and footer
+            var commands = new CommandSet(header, footer);
 
             // Add all of the features
-            help.Add(new DefaultHelp());
-            help.Add(new DefaultHelpExtended());
-            help.Add(new Batch());
-            help.Add(new DatFromDir());
-            help.Add(new Sort());
-            help.Add(new Split());
-            help.Add(new Stats());
-            help.Add(new Update());
-            help.Add(new Verify());
-            help.Add(new DefaultVersion());
+            commands.Add(new DefaultHelp());
+            commands.Add(new DefaultHelpExtended());
+            commands.Add(new Batch());
+            commands.Add(new DatFromDir());
+            commands.Add(new Sort());
+            commands.Add(new Split());
+            commands.Add(new Stats());
+            commands.Add(new Update());
+            commands.Add(new Verify());
+            commands.Add(new DefaultVersion());
 
-            return help;
+            return commands;
         }
     }
 }
