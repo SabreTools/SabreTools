@@ -200,15 +200,15 @@ namespace SabreTools.CommandLine
         /// <summary>
         /// Output a single feature recursively
         /// </summary>
-        /// <param name="featurename">Name of the feature to output information for, if possible</param>
+        /// <param name="featureName">Name of the feature to output information for, if possible</param>
         /// <param name="includeLongDescription">True if the long description should be formatted and output, false otherwise</param>
-        public void OutputIndividualFeature(string? featurename, bool includeLongDescription = false)
+        public void OutputIndividualFeature(string? featureName, bool includeLongDescription = false)
         {
             // Start building the output list
             List<string> output = [];
 
             // If the feature name is null, empty, or just consisting of `-` characters, just show everything
-            if (string.IsNullOrEmpty(featurename?.TrimStart('-')))
+            if (string.IsNullOrEmpty(featureName?.TrimStart('-')))
             {
                 OutputGenericHelp();
                 return;
@@ -220,7 +220,7 @@ namespace SabreTools.CommandLine
             foreach (string feature in _inputs.Keys)
             {
                 // If we have a match to the feature name somehow
-                if (feature == featurename)
+                if (feature == featureName)
                 {
                     realname = feature;
                     break;
@@ -233,14 +233,14 @@ namespace SabreTools.CommandLine
                 }
 
                 // If we have a match within the flags
-                else if (_inputs[feature]!.ContainsFlag(featurename!))
+                else if (_inputs[feature]!.ContainsFlag(featureName!))
                 {
                     realname = feature;
                     break;
                 }
 
                 // Otherwise, we want to get features with the same start
-                else if (_inputs[feature]!.StartsWith(featurename!.TrimStart('-')[0]))
+                else if (_inputs[feature]!.StartsWith(featureName!.TrimStart('-')[0]))
                 {
                     startsWith.Add(feature);
                 }
@@ -256,7 +256,7 @@ namespace SabreTools.CommandLine
             // If no name was found but we have possible matches, show them
             else if (startsWith.Count > 0)
             {
-                output.Add($"\"{featurename}\" not found. Did you mean:");
+                output.Add($"\"{featureName}\" not found. Did you mean:");
                 foreach (string possible in startsWith)
                 {
                     output.AddRange(_inputs[possible]!.Output(pre: 2, midpoint: 30, includeLongDescription: includeLongDescription));
@@ -285,19 +285,19 @@ namespace SabreTools.CommandLine
         /// <summary>
         /// Write out the help text with pauses, if needed
         /// </summary>
-        private static void WriteOutWithPauses(List<string> helptext)
+        private static void WriteOutWithPauses(List<string> helpText)
         {
             // Now output based on the size of the screen
             int i = 0;
-            for (int line = 0; line < helptext.Count; line++)
+            for (int line = 0; line < helpText.Count; line++)
             {
-                string help = helptext[line];
+                string help = helpText[line];
 
                 Console.WriteLine(help);
                 i++;
 
                 // If we're not being redirected and we reached the size of the screen, pause
-                if (i == Console.WindowHeight - 3 && line != helptext.Count - 1)
+                if (i == Console.WindowHeight - 3 && line != helpText.Count - 1)
                 {
                     i = 0;
                     Pause();
