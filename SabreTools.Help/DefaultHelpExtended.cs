@@ -44,5 +44,8 @@
     
         /// <inheritdoc/>
         public override bool ProcessFeatures() => true;
+
+        /// <inheritdoc/>
+        public override bool VerifyInputs() => true;
     }
 }

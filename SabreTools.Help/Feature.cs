@@ -73,6 +73,12 @@ namespace SabreTools.Help
         /// <returns>True if execution was successful, false otherwise</returns>
         public abstract bool ProcessFeatures();
 
+        /// <summary>
+        /// Verify all inputs based on the feature requirements
+        /// </summary>
+        /// <returns>True if the inputs verified correctly, false otherwise</returns>
+        public abstract bool VerifyInputs();
+
         #endregion
     }
 }

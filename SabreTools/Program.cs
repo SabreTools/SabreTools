@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text.RegularExpressions;
 using SabreTools.Features;
 using SabreTools.Help;
@@ -15,7 +14,7 @@ namespace SabreTools
         /// <summary>
         /// Feature set that determines available functionality
         /// </summary>
-        private static CommandSet? _features;
+        private static readonly CommandSet _features = RetrieveHelp();
 
         /// <summary>
         /// Logging object
@@ -33,9 +32,6 @@ namespace SabreTools
             // Reformat the arguments, if needed
             if (Array.Exists(args, a => a.Contains("\"")))
                 args = ReformatArguments(args);
-
-            // Create a new Help object for this program
-            _features = RetrieveHelp();
 
             // Credits take precidence over all
             if (Array.Exists(args, a => a == "--credits"))
@@ -97,8 +93,11 @@ namespace SabreTools
 #endif
 
             // If inputs are required
-            if (feature.RequiresInputs)
-                VerifyInputs(feature);
+            if (feature.RequiresInputs && !feature.VerifyInputs())
+            {
+                _features.OutputIndividualFeature(feature.Name);
+                Environment.Exit(0);
+            }
 
             // Now process the current feature
             if (!feature.ProcessFeatures())
@@ -168,7 +167,7 @@ namespace SabreTools
         private static CommandSet RetrieveHelp()
         {
             // Create and add the header to the Help object
-            string barrier = "-----------------------------------------";
+            const string barrier = "-----------------------------------------";
             List<string> helpHeader =
             [
                 "SabreTools - Manipulate, convert, and use DAT files",
@@ -198,43 +197,6 @@ namespace SabreTools
             help.Add(new DefaultVersion());
 
             return help;
-        }
-
-        /// <summary>
-        /// Verify that there are inputs, show help otherwise
-        /// </summary>
-        /// <param name="feature">Name of the current feature</param>
-        /// <remarks>Assumes inputs need to be a file, directory, or wildcard path</remarks>
-        private static void VerifyInputs(Feature feature)
-        {
-            // If there are no inputs
-            if (feature.Inputs.Count == 0)
-            {
-                _staticLogger.Error("This feature requires at least one input");
-                _features?.OutputIndividualFeature(feature.Name);
-                Environment.Exit(0);
-            }
-
-            // Loop through and verify all inputs are valid
-            for (int i = 0; i < feature.Inputs.Count; i++)
-            {
-                // Files and directories are valid
-                if (File.Exists(feature.Inputs[i]) || Directory.Exists(feature.Inputs[i]))
-                    continue;
-
-                // Wildcard inputs are treated as potential paths
-#if NETFRAMEWORK || NETSTANDARD
-                if (feature.Inputs[i].Contains("*") || feature.Inputs[i].Contains("?"))
-#else
-                if (feature.Inputs[i].Contains('*') || feature.Inputs[i].Contains('?'))
-#endif
-                    continue;
-
-                // Everything else is an error
-                Console.Error.WriteLine($"Invalid input detected: {feature.Inputs[i]}");
-                _features?.OutputIndividualFeature(feature.Name);
-                Environment.Exit(0);
-            }
         }
     }
 }

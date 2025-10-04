@@ -29,6 +29,9 @@ namespace SabreTools.Help
             return true;
         }
 
+        /// <inheritdoc/>
+        public override bool VerifyInputs() => true;
+
         /// <summary>
         /// The current toolset version to be used by all child applications
         /// </summary>
