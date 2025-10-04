@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using SabreTools.Core.Filter;
 using SabreTools.DatFiles;
