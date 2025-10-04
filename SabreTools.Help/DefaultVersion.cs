@@ -23,7 +23,7 @@ namespace SabreTools.Help
         }
 
         /// <inheritdoc/>
-        public override bool ProcessFeatures()
+        public override bool Execute()
         {
             Console.WriteLine($"Version: {GetVersion()}");
             return true;

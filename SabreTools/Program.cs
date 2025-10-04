@@ -99,8 +99,8 @@ namespace SabreTools
                 Environment.Exit(0);
             }
 
-            // Now process the current feature
-            if (!feature.ProcessFeatures())
+            // Now execute the current feature
+            if (!feature.Execute())
             {
                 _staticLogger.Error("An error occurred during processing!");
                 _features.OutputIndividualFeature(featureName);

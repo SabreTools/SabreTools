@@ -1110,7 +1110,7 @@ Some special strings that can be used:
         #endregion
 
         /// <inheritdoc/>
-        public override bool ProcessFeatures()
+        public override bool Execute()
         {
             // Generic feature flags
             Cleaner = GetCleaner();

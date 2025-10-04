@@ -43,10 +43,10 @@ The stats that are outputted are as follows:
         }
 
         /// <inheritdoc/>
-        public override bool ProcessFeatures()
+        public override bool Execute()
         {
             // If the base fails, just fail out
-            if (!base.ProcessFeatures())
+            if (!base.Execute())
                 return false;
 
             string filename = Header!.GetStringFieldValue(DatFiles.DatHeader.FileNameKey)!;

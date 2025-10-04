@@ -41,10 +41,10 @@ namespace SabreTools.Features
         }
 
         /// <inheritdoc/>
-        public override bool ProcessFeatures()
+        public override bool Execute()
         {
             // If the base fails, just fail out
-            if (!base.ProcessFeatures())
+            if (!base.Execute())
                 return false;
 
             // Get a list of files from the input datfiles

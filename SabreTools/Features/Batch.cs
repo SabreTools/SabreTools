@@ -51,10 +51,10 @@ Reset the internal state:           reset();";
         }
 
         /// <inheritdoc/>
-        public override bool ProcessFeatures()
+        public override bool Execute()
         {
             // If the base fails, just fail out
-            if (!base.ProcessFeatures())
+            if (!base.Execute())
                 return false;
 
             // Try to read each input as a batch run file

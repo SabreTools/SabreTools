@@ -68,10 +68,10 @@ namespace SabreTools.Help
         }
 
         /// <summary>
-        /// Process and extract variables based on current feature
+        /// Execute the logic associated with the feature
         /// </summary>
         /// <returns>True if execution was successful, false otherwise</returns>
-        public abstract bool ProcessFeatures();
+        public abstract bool Execute();
 
         /// <summary>
         /// Verify all inputs based on the feature requirements
