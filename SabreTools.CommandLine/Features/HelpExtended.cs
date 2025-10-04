@@ -7,14 +7,20 @@
     {
         public const string DisplayName = "Help (Detailed)";
 
-        private static readonly string[] _flags = ["??", "hd", "help-detailed"];
+        private static readonly string[] _defaultFlags = ["??", "hd", "help-detailed"];
 
         private const string _description = "Show this detailed help";
 
         private const string _longDescription = "Display a detailed help text to the screen.";
 
         public HelpExtended()
-            : base(DisplayName, _flags, _description, _longDescription)
+            : base(DisplayName, _defaultFlags, _description, _longDescription)
+        {
+            RequiresInputs = false;
+        }
+
+        public HelpExtended(string[] flags)
+            : base(DisplayName, flags, _description, _longDescription)
         {
             RequiresInputs = false;
         }

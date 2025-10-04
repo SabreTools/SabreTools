@@ -10,14 +10,20 @@ namespace SabreTools.CommandLine.Features
     {
         public const string DisplayName = "Version";
 
-        private static readonly string[] _flags = ["v", "version"];
+        private static readonly string[] _defaultFlags = ["v", "version"];
 
         private const string _description = "Prints version";
 
         private const string _longDescription = "Prints current program version.";
 
         public Version()
-            : base(DisplayName, _flags, _description, _longDescription)
+            : base(DisplayName, _defaultFlags, _description, _longDescription)
+        {
+            RequiresInputs = false;
+        }
+
+        public Version(string[] flags)
+            : base(DisplayName, flags, _description, _longDescription)
         {
             RequiresInputs = false;
         }
