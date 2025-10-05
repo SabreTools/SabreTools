@@ -50,31 +50,23 @@ namespace SabreTools
 
             // Get the first argument as a feature flag
             string featureName = args[0];
-            if (!_commands.TopLevelFlag(featureName))
-            {
-                Console.WriteLine($"'{featureName}' is not valid feature flag");
-                _commands.OutputIndividualFeature(featureName);
-                return;
-            }
-
-            // Get the proper name for the feature
-            featureName = _commands.GetInputName(featureName);
 
             // Get the associated feature
-            if (_commands[featureName] is not Feature feature)
+            var topLevel = _commands.GetTopLevel(featureName);
+            if (topLevel == null || topLevel is not Feature feature)
             {
                 Console.WriteLine($"'{featureName}' is not valid feature flag");
-                _commands.OutputIndividualFeature(featureName);
+                _commands.OutputFeatureHelp(featureName);
                 return;
             }
 
             // If we had a help feature first
-            if (feature is Help helpFeature)
+            if (topLevel is Help helpFeature)
             {
                 helpFeature.ProcessArgs(args, 0, _commands);
                 return;
             }
-            else if (feature is HelpExtended helpExtFeature)
+            else if (topLevel is HelpExtended helpExtFeature)
             {
                 helpExtFeature.ProcessArgs(args, 0, _commands);
                 return;
@@ -86,7 +78,7 @@ namespace SabreTools
 
 #if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             // If output is being redirected or we are in script mode, don't allow clear screens
-            if (!Console.IsOutputRedirected && feature is BaseFeature bf && bf.ScriptMode)
+            if (!Console.IsOutputRedirected && topLevel is BaseFeature bf && bf.ScriptMode)
             {
                 Console.Clear();
                 Core.Globals.SetConsoleHeader("SabreTools");
@@ -96,7 +88,7 @@ namespace SabreTools
             // If inputs are required
             if (feature.RequiresInputs && !feature.VerifyInputs())
             {
-                _commands.OutputIndividualFeature(feature.Name);
+                _commands.OutputFeatureHelp(topLevel.Name);
                 Environment.Exit(0);
             }
 
@@ -104,7 +96,7 @@ namespace SabreTools
             if (!feature.Execute())
             {
                 _staticLogger.Error("An error occurred during processing!");
-                _commands.OutputIndividualFeature(featureName);
+                _commands.OutputFeatureHelp(topLevel.Name);
             }
 
             LoggerImpl.Close();

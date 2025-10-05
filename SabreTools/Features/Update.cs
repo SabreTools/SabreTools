@@ -19,10 +19,10 @@ namespace SabreTools.Features
 
         private const string _description = "Update and manipulate DAT(s)";
 
-        private const string _longDescription = "This is the multitool part of the program, allowing for almost every manipulation to a DAT, or set of DATs. This is also a combination of many different programs that performed DAT manipulation that work better together.";
+        private const string _detailed = "This is the multitool part of the program, allowing for almost every manipulation to a DAT, or set of DATs. This is also a combination of many different programs that performed DAT manipulation that work better together.";
 
         public Update()
-            : base(DisplayName, _flags, _description, _longDescription)
+            : base(DisplayName, _flags, _description, _detailed)
         {
             RequiresInputs = true;
 

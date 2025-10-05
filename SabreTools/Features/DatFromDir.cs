@@ -13,10 +13,10 @@ namespace SabreTools.Features
 
         private const string _description = "Create DAT(s) from an input directory";
 
-        private const string _longDescription = "Create a DAT file from an input directory or set of files. By default, this will output a DAT named based on the input directory and the current date. It will also treat all archives as possible games and add all three hashes (CRC, MD5, SHA-1) for each file.";
+        private const string _detailed = "Create a DAT file from an input directory or set of files. By default, this will output a DAT named based on the input directory and the current date. It will also treat all archives as possible games and add all three hashes (CRC, MD5, SHA-1) for each file.";
 
         public DatFromDir()
-            : base(DisplayName, _flags, _description, _longDescription)
+            : base(DisplayName, _flags, _description, _detailed)
         {
             RequiresInputs = true;
 
@@ -115,7 +115,7 @@ namespace SabreTools.Features
                 else
                 {
                     Console.WriteLine();
-                    OutputRecursive(0);
+                    FormatRecursive();
                 }
             }
 

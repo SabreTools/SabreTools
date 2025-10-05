@@ -17,10 +17,10 @@ namespace SabreTools.Features
 
         private const string _description = "Split input DATs by a given criteria";
 
-        private const string _longDescription = "This feature allows the user to split input DATs by a number of different possible criteria. See the individual input information for details. More than one split type is allowed at a time.";
+        private const string _detailed = "This feature allows the user to split input DATs by a number of different possible criteria. See the individual input information for details. More than one split type is allowed at a time.";
 
         public Split()
-            : base(DisplayName, _flags, _description, _longDescription)
+            : base(DisplayName, _flags, _description, _detailed)
         {
             RequiresInputs = true;
 

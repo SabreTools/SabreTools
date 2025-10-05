@@ -21,7 +21,7 @@ namespace SabreTools.Features
 
         private const string _description = "Enable batch mode";
 
-        private const string _longDescription = @"Run a special mode that takes input files as lists of batch commands to run sequentially. Each command has to be its own line and must be followed by a semicolon (`;`). Commented lines may start with either `REM` or `#`. Multiple batch files are allowed but they will be run independently from each other.
+        private const string _detailed = @"Run a special mode that takes input files as lists of batch commands to run sequentially. Each command has to be its own line and must be followed by a semicolon (`;`). Commented lines may start with either `REM` or `#`. Multiple batch files are allowed but they will be run independently from each other.
 
 The following commands are currently implemented:
 
@@ -42,7 +42,7 @@ Write the internal items:           write([overwrite = true]);
 Reset the internal state:           reset();";
 
         public Batch()
-            : base(DisplayName, _flags, _description, _longDescription)
+            : base(DisplayName, _flags, _description, _detailed)
         {
             RequiresInputs = true;
 

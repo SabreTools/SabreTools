@@ -16,10 +16,10 @@ namespace SabreTools.Features
 
         private const string _description = "Sort inputs by a set of DATs";
 
-        private const string _longDescription = "This feature allows the user to quickly rebuild based on a supplied DAT file(s). By default all files will be rebuilt to uncompressed folders in the output directory.";
+        private const string _detailed = "This feature allows the user to quickly rebuild based on a supplied DAT file(s). By default all files will be rebuilt to uncompressed folders in the output directory.";
 
         public Sort()
-            : base(DisplayName, _flags, _description, _longDescription)
+            : base(DisplayName, _flags, _description, _detailed)
         {
             RequiresInputs = false;
 
