@@ -6,7 +6,7 @@ using Compress;
 using Compress.SevenZip;
 using SabreTools.Core.Tools;
 using SabreTools.Hashing;
-using SabreTools.IO.Compare;
+using SabreTools.Text.Compare;
 
 namespace SabreTools.FileTypes.Archives
 {

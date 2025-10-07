@@ -6,7 +6,7 @@ using System.Linq;
 using Compress;
 using SabreTools.Core.Tools;
 using SabreTools.Hashing;
-using SabreTools.IO.Compare;
+using SabreTools.Text.Compare;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Tar;
 using SharpCompress.Common;

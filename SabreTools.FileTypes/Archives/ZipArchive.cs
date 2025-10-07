@@ -9,7 +9,7 @@ using Compress;
 using Compress.ZipFile;
 using SabreTools.Core.Tools;
 using SabreTools.Hashing;
-using SabreTools.IO.Compare;
+using SabreTools.Text.Compare;
 
 namespace SabreTools.FileTypes.Archives
 {

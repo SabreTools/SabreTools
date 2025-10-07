@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using SabreTools.Hashing;
-using SabreTools.IO.Compare;
+using SabreTools.Text.Compare;
 #if NET462_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
 using SharpCompress.Archives.Rar;
 using SharpCompress.Readers;
