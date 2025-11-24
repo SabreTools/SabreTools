@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-using System.Threading.Tasks;
-#endif
 using SabreTools.DatFiles;
 using SabreTools.DatItems;
 using SabreTools.DatItems.Formats;
@@ -246,31 +243,23 @@ namespace SabreTools.DatTools
         private static void ProcessArchive(DatFile datFile, string item, string? basePath, List<BaseFile> extracted)
         {
             // Get the parent path for all items
-            string parent = (Path.GetDirectoryName(Path.GetFullPath(item)) + Path.DirectorySeparatorChar).Remove(0, basePath?.Length ?? 0) + Path.GetFileNameWithoutExtension(item);
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
+            string parent = (Path.GetDirectoryName(Path.GetFullPath(item)) + Path.DirectorySeparatorChar)[(basePath?.Length ?? 0)..]
+                + Path.GetFileNameWithoutExtension(item);
+#else
+            string parent = (Path.GetDirectoryName(Path.GetFullPath(item)) + Path.DirectorySeparatorChar).Remove(0, basePath?.Length ?? 0)
+                + Path.GetFileNameWithoutExtension(item);
+#endif
 
             // First take care of the found items
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            Parallel.ForEach(extracted, Core.Globals.ParallelOptions, baseFile =>
-#elif NET40_OR_GREATER
-            Parallel.ForEach(extracted, baseFile =>
-#else
             foreach (var baseFile in extracted)
-#endif
             {
                 DatItem? datItem = DatItemTool.CreateDatItem(baseFile);
                 if (datItem == null)
-#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-                    return;
-#else
                     continue;
-#endif
 
                 ProcessFileHelper(datFile, item, datItem, basePath, parent);
-#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            });
-#else
             }
-#endif
         }
 
         /// <summary>
@@ -285,20 +274,20 @@ namespace SabreTools.DatTools
             List<string> empties = [];
 
             // Get the parent path for all items
-            string parent = (Path.GetDirectoryName(Path.GetFullPath(item)) + Path.DirectorySeparatorChar).Remove(0, basePath?.Length ?? 0) + Path.GetFileNameWithoutExtension(item);
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
+            string parent = (Path.GetDirectoryName(Path.GetFullPath(item)) + Path.DirectorySeparatorChar)[(basePath?.Length ?? 0)..]
+                + Path.GetFileNameWithoutExtension(item);
+#else
+            string parent = (Path.GetDirectoryName(Path.GetFullPath(item)) + Path.DirectorySeparatorChar).Remove(0, basePath?.Length ?? 0)
+                + Path.GetFileNameWithoutExtension(item);
+#endif
 
             // Now get all blank folders from the archive
             if (archive != null)
                 empties = archive.GetEmptyFolders();
 
             // Add add all of the found empties to the DAT
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            Parallel.ForEach(empties, Core.Globals.ParallelOptions, empty =>
-#elif NET40_OR_GREATER
-            Parallel.ForEach(empties, empty =>
-#else
             foreach (var empty in empties)
-#endif
             {
                 var emptyMachine = new Machine();
                 emptyMachine.SetName(item);
@@ -308,11 +297,7 @@ namespace SabreTools.DatTools
                 emptyRom.SetFieldValue<Machine?>(DatItem.MachineKey, emptyMachine);
 
                 ProcessFileHelper(datFile, item, emptyRom, basePath, parent);
-#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            });
-#else
             }
-#endif
         }
 
         /// <summary>
@@ -327,13 +312,7 @@ namespace SabreTools.DatTools
                 return;
 
             List<string> empties = basePath.ListEmpty() ?? [];
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            Parallel.ForEach(empties, Core.Globals.ParallelOptions, dir =>
-#elif NET40_OR_GREATER
-            Parallel.ForEach(empties, dir =>
-#else
             foreach (var dir in empties)
-#endif
             {
                 // Get the full path for the directory
                 string fulldir = Path.GetFullPath(dir);
@@ -346,7 +325,11 @@ namespace SabreTools.DatTools
                 if (datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.TypeKey) == "SuperDAT")
                 {
                     if (basePath != null)
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
+                        gamename = fulldir[(basePath.Length + 1)..];
+#else
                         gamename = fulldir.Remove(0, basePath.Length + 1);
+#endif
                     else
                         gamename = fulldir;
 
@@ -358,8 +341,13 @@ namespace SabreTools.DatTools
                 {
                     if (basePath != null)
                     {
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
+                        gamename = fulldir[(basePath.Length + 1)..].Split(Path.DirectorySeparatorChar)[0];
+                        romname = Path.Combine(fulldir[(basePath.Length + 1 + gamename.Length)..], "_");
+#else
                         gamename = fulldir.Remove(0, basePath.Length + 1).Split(Path.DirectorySeparatorChar)[0];
                         romname = Path.Combine(fulldir.Remove(0, basePath.Length + 1 + gamename.Length), "_");
+#endif
                     }
                     else
                     {
@@ -382,11 +370,7 @@ namespace SabreTools.DatTools
                 blankRom.SetFieldValue<Machine?>(DatItem.MachineKey, blankMachine);
 
                 datFile.AddItem(blankRom, statsOnly: false);
-#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            });
-#else
             }
-#endif
         }
 
         /// <summary>
@@ -464,18 +448,30 @@ namespace SabreTools.DatTools
                 // If we have a SuperDAT, we want anything that's not the base path as the game, and the file as the rom
                 if (datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.TypeKey) == "SuperDAT")
                 {
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
+                    machineName = Path.GetDirectoryName(item[(basepath?.Length ?? 0)..]);
+#else
                     machineName = Path.GetDirectoryName(item.Remove(0, basepath?.Length ?? 0));
+#endif
                     itemName = Path.GetFileName(item);
                 }
 
                 // Otherwise, we want just the top level folder as the game, and the file as everything else
                 else
                 {
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
+                    machineName = item[(basepath?.Length ?? 0)..].Split(Path.DirectorySeparatorChar)[0];
+                    if (basepath != null)
+                        itemName = item[Path.Combine(basepath, machineName).Length..];
+                    else
+                        itemName = item[machineName.Length..];
+#else
                     machineName = item.Remove(0, basepath?.Length ?? 0).Split(Path.DirectorySeparatorChar)[0];
                     if (basepath != null)
-                        itemName = item.Remove(0, (Path.Combine(basepath, machineName).Length));
+                        itemName = item.Remove(0, Path.Combine(basepath, machineName).Length);
                     else
-                        itemName = item.Remove(0, (machineName.Length));
+                        itemName = item.Remove(0, machineName.Length);
+#endif
                 }
             }
 
@@ -514,12 +510,28 @@ namespace SabreTools.DatTools
             // If we have a Disk, then the ".chd" extension needs to be removed
             if (datItem is Disk && itemName!.EndsWith(".chd"))
             {
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
+                itemName = itemName[..^4];
+#else
                 itemName = itemName.Substring(0, itemName.Length - 4);
+#endif
             }
 
             // If we have a Media, then the extension needs to be removed
             else if (datItem is Media)
             {
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
+                if (itemName!.EndsWith(".dicf"))
+                    itemName = itemName[..^5];
+                else if (itemName.EndsWith(".aaru"))
+                    itemName = itemName[..^5];
+                else if (itemName.EndsWith(".aaruformat"))
+                    itemName = itemName[..^11];
+                else if (itemName.EndsWith(".aaruf"))
+                    itemName = itemName[..^6];
+                else if (itemName.EndsWith(".aif"))
+                    itemName = itemName[..^4];
+#else
                 if (itemName!.EndsWith(".dicf"))
                     itemName = itemName.Substring(0, itemName.Length - 5);
                 else if (itemName.EndsWith(".aaru"))
@@ -530,6 +542,7 @@ namespace SabreTools.DatTools
                     itemName = itemName.Substring(0, itemName.Length - 6);
                 else if (itemName.EndsWith(".aif"))
                     itemName = itemName.Substring(0, itemName.Length - 4);
+#endif
             }
 
             // Set the item name back
