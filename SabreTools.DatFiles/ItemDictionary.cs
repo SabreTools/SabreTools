@@ -93,8 +93,6 @@ namespace SabreTools.DatFiles
         /// <returns>The key for the item</returns>
         public string AddItem(DatItem item, bool statsOnly)
         {
-            string key;
-
             // If we have a Disk, File, Media, or Rom, clean the hash data
             if (item is Disk disk)
             {
@@ -184,7 +182,7 @@ namespace SabreTools.DatFiles
             }
 
             // Get the key and add the file
-            key = GetBucketKey(item, _bucketedBy, lower: true, norename: true);
+            string key = GetBucketKey(item, _bucketedBy, lower: true, norename: true);
 
             // If only adding statistics, we add an empty key for games and then just item stats
             if (statsOnly)
