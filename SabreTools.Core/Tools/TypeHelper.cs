@@ -51,7 +51,7 @@ namespace SabreTools.Core.Tools
                     assemblyTypes = Array.FindAll(rtle.Types ?? [], t => t != null);
                 }
 
-                // Loop through all types 
+                // Loop through all types
                 foreach (Type? type in assemblyTypes)
                 {
                     // If the type is invalid
@@ -94,7 +94,7 @@ namespace SabreTools.Core.Tools
                     assemblyTypes = Array.FindAll(rtle.Types ?? [], t => t != null);
                 }
 
-                // Loop through all types 
+                // Loop through all types
                 foreach (Type? type in assemblyTypes)
                 {
                     // If the type is invalid

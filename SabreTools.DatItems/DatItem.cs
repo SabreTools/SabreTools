@@ -104,7 +104,7 @@ namespace SabreTools.DatItems
         /// Get the machine for a DatItem
         /// </summary>
         /// <returns>Machine if available, null otherwise</returns>
-        /// <remarks>Relies on <see cref="MachineKey"/></remarks> 
+        /// <remarks>Relies on <see cref="MachineKey"/></remarks>
         public Machine? GetMachine() => _internal.Read<Machine>(MachineKey);
 
         /// <summary>

@@ -18,7 +18,7 @@ namespace SabreTools.DatFiles.Formats
         where TCrossModel : ICrossModel<TModel, MetadataFile>
     {
         #region Static Serialization Instances
-        
+
         /// <summary>
         /// File deserializer instance
         /// </summary>

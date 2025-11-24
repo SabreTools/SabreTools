@@ -1,14 +1,13 @@
 ﻿using System.IO;
 using System.Text;
 using SabreTools.IO.Extensions;
-using static SabreTools.FileTypes.Constants;
 
 namespace SabreTools.FileTypes.Aaru
 {
     /// <summary>
     /// AaruFormat code is based on the Aaru project
     /// </summary>
-    /// <see href="https://github.com/aaru-dps/Aaru/tree/master/Aaru.Images/AaruFormat"/> 
+    /// <see href="https://github.com/aaru-dps/Aaru/tree/master/Aaru.Images/AaruFormat"/>
     public class AaruFormat : BaseFile
     {
         #region Fields
@@ -121,7 +120,7 @@ namespace SabreTools.FileTypes.Aaru
                 return false;
 
             // If the bytes don't match, we don't have an AaruFormat
-            if (!magicBytes.StartsWith(AaruFormatSignature))
+            if (!magicBytes.StartsWith([0x41, 0x41, 0x52, 0x55, 0x46, 0x52, 0x4d, 0x54]))
                 return false;
 
             return true;

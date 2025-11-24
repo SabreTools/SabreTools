@@ -254,7 +254,11 @@ namespace SabreTools.DatTools
                 if (datItemName.Length > usableLength)
                 {
                     string ext = Path.GetExtension(datItemName);
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
+                    datItemName = datItemName[..(usableLength - ext.Length)] + ext;
+#else
                     datItemName = datItemName.Substring(0, usableLength - ext.Length) + ext;
+#endif
                 }
             }
 

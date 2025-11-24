@@ -7,7 +7,6 @@ using SabreTools.Hashing;
 using SabreTools.IO.Extensions;
 using SabreTools.IO.Logging;
 using SabreTools.Skippers;
-using static SabreTools.FileTypes.Constants;
 
 namespace SabreTools.FileTypes
 {
@@ -270,33 +269,33 @@ namespace SabreTools.FileTypes
             }
 
             // Now try to match it to a known signature
-            if (magic.StartsWith(SevenZipSignature))
+            if (magic.StartsWith(Data.Models.SevenZip.Constants.SignatureBytes))
             {
                 return FileType.SevenZipArchive;
             }
-            else if (magic.StartsWith(AaruFormatSignature))
+            else if (magic.StartsWith([0x41, 0x41, 0x52, 0x55, 0x46, 0x52, 0x4d, 0x54]))
             {
                 return FileType.AaruFormat;
             }
-            else if (magic.StartsWith(CHDSignature))
+            else if (magic.StartsWith(Data.Models.CHD.Constants.SignatureBytes))
             {
                 return FileType.CHD;
             }
-            else if (magic.StartsWith(GzSignature))
+            else if (magic.StartsWith(Data.Models.GZIP.Constants.SignatureBytes))
             {
                 return FileType.GZipArchive;
             }
-            else if (magic.StartsWith(RarSignature)
-                || magic.StartsWith(RarFiveSignature))
+            else if (magic.StartsWith(Data.Models.RAR.Constants.OldSignatureBytes)
+                || magic.StartsWith(Data.Models.RAR.Constants.NewSignatureBytes))
             {
                 return FileType.RarArchive;
             }
-            else if (magic.StartsWith(TarSignature)
-                || magic.StartsWith(TarZeroSignature))
+            else if (magic.StartsWith([0x75, 0x73, 0x74, 0x61, 0x72, 0x20, 0x20, 0x00])
+                || magic.StartsWith([0x75, 0x73, 0x74, 0x61, 0x72, 0x00, 0x30, 0x30]))
             {
                 return FileType.TapeArchive;
             }
-            else if (magic.StartsWith(XZSignature))
+            else if (magic.StartsWith(Data.Models.XZ.Constants.HeaderSignatureBytes))
             {
                 return FileType.XZArchive;
             }

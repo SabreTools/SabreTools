@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+#if NET462_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
 using System.Linq;
 using SabreTools.Hashing;
 using SabreTools.Text.Compare;
-#if NET462_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
 using SharpCompress.Archives.Rar;
 using SharpCompress.Readers;
 #endif
@@ -128,7 +128,7 @@ namespace SabreTools.FileTypes.Archives
             if (Filename == null)
                 return null;
 
-#if NET462_OR_GREATER || NETCOREAPP
+#if NET462_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             try
             {
                 Stream? stream = null;
@@ -175,7 +175,7 @@ namespace SabreTools.FileTypes.Archives
         /// <inheritdoc/>
         public override List<BaseFile>? GetChildren()
         {
-#if NET462_OR_GREATER || NETCOREAPP
+#if NET462_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             // If we have an invalid file
             if (Filename == null)
                 return null;
@@ -234,7 +234,7 @@ namespace SabreTools.FileTypes.Archives
         /// <inheritdoc/>
         public override List<string> GetEmptyFolders()
         {
-#if NET462_OR_GREATER || NETCOREAPP
+#if NET462_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             List<string> empties = [];
 
             // If we have an invalid file

@@ -181,7 +181,7 @@ namespace SabreTools.DatTools
                         continue;
 #endif
 
-                    // 
+                    //
 
                     // Otherwise, compare by name and hash the remaining files
                     bool exactMatch = true;

@@ -56,7 +56,11 @@ namespace SabreTools.DatTools
             foreach (string input in inputs)
             {
                 // If we don't even have a possible field and file combination
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
+                if (!input.Contains(':'))
+#else
                 if (!input.Contains(":"))
+#endif
                 {
                     _logger.Warning($"'{input}` is not a valid INI extras string. Valid INI extras strings are of the form 'key:value'. Please refer to README.1ST or the help feature for more details.");
                     return;
@@ -64,7 +68,11 @@ namespace SabreTools.DatTools
 
                 string inputTrimmed = input.Trim('"', ' ', '\t');
                 string fieldString = inputTrimmed.Split(':')[0].ToLowerInvariant().Trim('"', ' ', '\t');
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
+                string fileString = inputTrimmed[(fieldString.Length + 1)..].Trim('"', ' ', '\t');
+#else
                 string fileString = inputTrimmed.Substring(fieldString.Length + 1).Trim('"', ' ', '\t');
+#endif
 
                 var item = new ExtraIniItem(fieldString, fileString);
                 if (item.Mappings.Count > 0)

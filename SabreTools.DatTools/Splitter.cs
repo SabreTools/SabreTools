@@ -821,7 +821,7 @@ namespace SabreTools.DatTools
             currentDat.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, currentDat.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey) + $"_{currentIndex}");
             currentDat.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, currentDat.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey) + $"_{currentIndex}");
 
-            // Loop through each machine 
+            // Loop through each machine
             foreach (string machine in keys)
             {
                 // Get the current machine

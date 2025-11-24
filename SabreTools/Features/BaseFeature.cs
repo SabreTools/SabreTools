@@ -1509,18 +1509,19 @@ Some special strings that can be used:
                 GetBoolean(RombaValue),
                 GetInt32(RombaDepthInt32Value));
 
-            var datModifiers = new DatModifiers();
-
-            datModifiers.Prefix = GetString(PrefixStringValue);
-            datModifiers.Postfix = GetString(PostfixStringValue);
-            datModifiers.AddExtension = GetString(AddExtensionStringValue);
-            datModifiers.RemoveExtension = GetBoolean(RemoveExtensionsValue);
-            datModifiers.ReplaceExtension = GetString(ReplaceExtensionStringValue);
-            datModifiers.GameName = GetBoolean(GamePrefixValue);
-            datModifiers.Quotes = GetBoolean(QuotesValue);
-            datModifiers.UseRomName = GetBoolean(RomsValue);
-            datModifiers.InputDepot = inputDepot;
-            datModifiers.OutputDepot = outputDepot;
+            var datModifiers = new DatModifiers
+            {
+                Prefix = GetString(PrefixStringValue),
+                Postfix = GetString(PostfixStringValue),
+                AddExtension = GetString(AddExtensionStringValue),
+                RemoveExtension = GetBoolean(RemoveExtensionsValue),
+                ReplaceExtension = GetString(ReplaceExtensionStringValue),
+                GameName = GetBoolean(GamePrefixValue),
+                Quotes = GetBoolean(QuotesValue),
+                UseRomName = GetBoolean(RomsValue),
+                InputDepot = inputDepot,
+                OutputDepot = outputDepot
+            };
 
             return datModifiers;
         }

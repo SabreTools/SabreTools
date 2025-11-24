@@ -540,7 +540,7 @@ namespace SabreTools.DatFiles
         }
 
         /// <summary>
-        /// Convert Part information 
+        /// Convert Part information
         /// </summary>
         /// <param name="items">Array of internal items to convert</param>
         /// <param name="machine">Machine to use with the converted items</param>

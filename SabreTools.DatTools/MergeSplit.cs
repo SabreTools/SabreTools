@@ -164,7 +164,11 @@ namespace SabreTools.DatTools
                         rootpath += Path.DirectorySeparatorChar.ToString();
                     }
 
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
+                    filename = filename[rootpath.Length..];
+#else
                     filename = filename.Remove(0, rootpath.Length);
+#endif
 
                     var machine = newItem.GetMachine();
                     if (machine == null)
@@ -241,7 +245,11 @@ namespace SabreTools.DatTools
                         rootpath += Path.DirectorySeparatorChar.ToString();
                     }
 
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
+                    filename = filename[rootpath.Length..];
+#else
                     filename = filename.Remove(0, rootpath.Length);
+#endif
 
                     string machineName = Path.GetDirectoryName(filename)
                         + Path.DirectorySeparatorChar

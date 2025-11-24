@@ -84,7 +84,7 @@ namespace SabreTools.DatFiles
         public DatHeader(Data.Models.Metadata.Header header)
         {
             // Create a new internal model
-            _internal = new Data.Models.Metadata.Header();
+            _internal = [];
 
             // Get all fields to automatically copy without processing
             var nonItemFields = TypeHelper.GetConstants(typeof(Data.Models.Metadata.Header));

@@ -1,48 +1,48 @@
 name: Build and Test
 
 on:
-  push:
-    branches: [ "main" ]
+    push:
+        branches: ["main"]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+    build:
+        runs-on: ubuntu-latest
 
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-    
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: |
-            6.0.x
-            8.0.x
-            9.0.x
-        
-    - name: Run tests
-      run: dotnet test
-      
-    - name: Run publish script
-      run: ./publish-nix.sh -d
+        steps:
+            - uses: actions/checkout@v5
+              with:
+                  fetch-depth: 0
 
-    - name: Update rolling tag
-      run: |
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        git tag -f rolling
-        git push origin :refs/tags/rolling || true
-        git push origin rolling --force
+            - name: Setup .NET
+              uses: actions/setup-dotnet@v5
+              with:
+                  dotnet-version: |
+                      8.0.x
+                      9.0.x
+                      10.0.x
 
-    - name: Upload to rolling
-      uses: ncipollo/release-action@v1.14.0
-      with:
-        allowUpdates: True
-        artifacts: "*.nupkg,*.snupkg,*.zip"
-        body: 'Last built commit: ${{ github.sha }}'
-        name: 'Rolling Release'
-        prerelease: True
-        replacesArtifacts: True
-        tag: "rolling"
-        updateOnlyUnreleased: True
+            - name: Run tests
+              run: dotnet test
+
+            - name: Run publish script
+              run: ./publish-nix.sh -d
+
+            - name: Update rolling tag
+              run: |
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+                  git tag -f rolling
+                  git push origin :refs/tags/rolling || true
+                  git push origin rolling --force
+
+            - name: Upload to rolling
+              uses: ncipollo/release-action@v1.20.0
+              with:
+                  allowUpdates: True
+                  artifacts: "*.nupkg,*.snupkg,*.zip"
+                  body: "Last built commit: ${{ github.sha }}"
+                  name: "Rolling Release"
+                  prerelease: True
+                  replacesArtifacts: True
+                  tag: "rolling"
+                  updateOnlyUnreleased: True

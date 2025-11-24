@@ -463,7 +463,7 @@ Reset the internal state:           reset();";
                 }
 
                 // Check all inputs to be valid formats
-                List<string> unmappedFormats = new();
+                List<string> unmappedFormats = [];
                 foreach (string format in Arguments)
                 {
                     if (GetDatFormat(format) == 0x0)

@@ -76,7 +76,11 @@ namespace SabreTools.DatTools
 
                 InternalStopwatch watch = new($"Collecting statistics for '{file.CurrentPath}'");
 
-                FilterRunner filterRunner = new FilterRunner(new string[0]);
+#if NET20 || NET35 || NET40 || NET452
+                var filterRunner = new FilterRunner(new string[0]);
+#else
+                var filterRunner = new FilterRunner(Array.Empty<string>());
+#endif
                 DatFile datdata = Parser.ParseStatistics(file.CurrentPath, filterRunner, throwOnError);
 
                 // Add single DAT stats (if asked)

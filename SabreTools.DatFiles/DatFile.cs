@@ -481,8 +481,8 @@ namespace SabreTools.DatFiles
         protected internal void ProcessItemName(DatItem item, Machine? machine, bool forceRemoveQuotes, bool forceRomName)
         {
             // Get the relevant processing values
-            bool quotes = forceRemoveQuotes ? false : Modifiers.Quotes;
-            bool useRomName = forceRomName ? true : Modifiers.UseRomName;
+            bool quotes = !forceRemoveQuotes && Modifiers.Quotes;
+            bool useRomName = forceRomName || Modifiers.UseRomName;
 
             // Create the full Prefix
             string pre = Modifiers.Prefix + (quotes ? "\"" : string.Empty);

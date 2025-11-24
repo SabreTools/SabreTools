@@ -178,9 +178,8 @@ namespace SabreTools.FileTypes.Archives
                 zf.ZipFileClose();
                 return stream;
 #else
-                var zf = ZipFile.OpenRead(Filename);
-                if (zf == null)
-                    throw new Exception($"Could not open {Filename} as a zip file");
+                var zf = ZipFile.OpenRead(Filename)
+                    ?? throw new Exception($"Could not open {Filename} as a zip file");
 
                 for (int i = 0; i < zf.Entries.Count; i++)
                 {
@@ -294,9 +293,8 @@ namespace SabreTools.FileTypes.Archives
                 zr = zf.ZipFileCloseReadStream();
                 zf.ZipFileClose();
 #else
-                var zf = ZipFile.OpenRead(Filename);
-                if (zf == null)
-                    throw new Exception($"Could not open {Filename} as a zip file");
+                var zf = ZipFile.OpenRead(Filename)
+                    ?? throw new Exception($"Could not open {Filename} as a zip file");
 
                 for (int i = 0; i < zf.Entries.Count; i++)
                 {
@@ -399,9 +397,8 @@ namespace SabreTools.FileTypes.Archives
                     }
                 }
 #else
-                var zf = ZipFile.OpenRead(Filename);
-                if (zf == null)
-                    throw new Exception($"Could not open {Filename} as a zip file");
+                var zf = ZipFile.OpenRead(Filename)
+                    ?? throw new Exception($"Could not open {Filename} as a zip file");
 
                 Dictionary<string, bool> zipEntries = [];
                 for (int i = 0; i < zf.Entries.Count; i++)
@@ -558,7 +555,7 @@ namespace SabreTools.FileTypes.Archives
                     oldZipFile.ZipFileOpen(archiveFileName, -1, true);
 
                     // Map all inputs to index
-                    Dictionary<string, int> inputIndexMap = new();
+                    Dictionary<string, int> inputIndexMap = [];
                     List<string> oldZipFileContents = [];
                     for (int i = 0; i < oldZipFile.LocalFilesCount(); i++)
                     {
@@ -715,7 +712,7 @@ namespace SabreTools.FileTypes.Archives
                     zipReturn = zipFile.ZipFileCreate(tempFile);
 
                     // Map all inputs to index
-                    Dictionary<string, int> inputIndexMap = new();
+                    Dictionary<string, int> inputIndexMap = [];
                     for (int i = 0; i < files.Count; i++)
                     {
                         inputIndexMap.Add(baseFiles[i].Filename!.Replace('\\', '/'), i);
@@ -768,7 +765,7 @@ namespace SabreTools.FileTypes.Archives
                     oldZipFile.ZipFileOpen(archiveFileName, -1, true);
 
                     // Map all inputs to index
-                    Dictionary<string, int> inputIndexMap = new();
+                    Dictionary<string, int> inputIndexMap = [];
                     for (int i = 0; i < files.Count; i++)
                     {
                         List<string> oldZipFileContents = [];

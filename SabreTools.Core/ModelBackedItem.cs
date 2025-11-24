@@ -33,7 +33,7 @@ namespace SabreTools.Core
 
         public ModelBackedItem()
         {
-            _internal = (T)Activator.CreateInstance(typeof(T))!;
+            _internal = Activator.CreateInstance<T>();
         }
 
         #endregion

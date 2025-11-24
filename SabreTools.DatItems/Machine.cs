@@ -17,7 +17,7 @@ namespace SabreTools.DatItems
 
         public Machine()
         {
-            _internal = new Data.Models.Metadata.Machine();
+            _internal = [];
         }
 
         public Machine(Data.Models.Metadata.Machine machine)
@@ -28,7 +28,7 @@ namespace SabreTools.DatItems
                 return;
 
             // Populate the internal machine from non-filter fields
-            _internal = new Data.Models.Metadata.Machine();
+            _internal = [];
             foreach (string fieldName in nonItemFields)
             {
                 if (machine.ContainsKey(fieldName))

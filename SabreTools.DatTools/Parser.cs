@@ -439,7 +439,7 @@ namespace SabreTools.DatTools
             }
 
             // If we have an SMDB (SHA-256, Filename, SHA-1, MD5, CRC32)
-            else if (Regex.IsMatch(first, @"[0-9a-f]{64}\t.*?\t[0-9a-f]{40}\t[0-9a-f]{32}\t[0-9a-f]{8}"))
+            else if (Regex.IsMatch(first, @"[0-9a-f]{64}\t.*?\t[0-9a-f]{40}\t[0-9a-f]{32}\t[0-9a-f]{8}", RegexOptions.Compiled))
                 return DatFormat.EverdriveSMDB;
 
             // If we have an INI-based DAT

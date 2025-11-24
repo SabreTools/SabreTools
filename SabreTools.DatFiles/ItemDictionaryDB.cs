@@ -19,12 +19,12 @@ using SabreTools.Text.Compare;
 
 /*
  * Planning Notes:
- * 
+ *
  * In order for this in-memory "database" design to work, there need to be a few things:
  * - Feature parity with all existing item dictionary operations
  * - A way to transition between the two item dictionaries (a flag?)
  * - Helper methods that target the "database" version instead of assuming the standard dictionary
- * 
+ *
  * Notable changes include:
  * - Separation of Machine from DatItem, leading to a mapping instead
  *      + Should DatItem include an index reference to the machine? Or should that be all external?

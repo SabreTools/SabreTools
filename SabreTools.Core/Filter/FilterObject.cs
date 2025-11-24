@@ -29,7 +29,7 @@ namespace SabreTools.Core.Filter
         public FilterObject(string? filterString)
         {
             if (!SplitFilterString(filterString, out var keyItem, out Operation operation, out var value))
-                throw new ArgumentException(nameof(filterString));
+                throw new ArgumentException($"{nameof(filterString)} could not be parsed", nameof(filterString));
 
             Key = new FilterKey(keyItem);
             Value = value;
@@ -308,11 +308,19 @@ namespace SabreTools.Core.Filter
                 return false;
 
             // If we find a special character, try parsing as regex
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
+            if (value.Contains('^')
+                || value.Contains('$')
+                || value.Contains('*')
+                || value.Contains('?')
+                || value.Contains('+'))
+#else
             if (value.Contains("^")
                 || value.Contains("$")
                 || value.Contains("*")
                 || value.Contains("?")
                 || value.Contains("+"))
+#endif
             {
                 try
                 {
@@ -366,11 +374,16 @@ namespace SabreTools.Core.Filter
                 return false;
 
             // Trim quotations, if necessary
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
+            if (filterString!.StartsWith('\"'))
+                filterString = filterString[1..^1];
+#else
             if (filterString!.StartsWith("\""))
                 filterString = filterString.Substring(1, filterString.Length - 2);
+#endif
 
             // Split the string using regex
-            var match = Regex.Match(filterString, @"^(?<itemField>[a-zA-Z._]+)(?<operation>[=!:><]{1,2})(?<value>.*)$");
+            var match = Regex.Match(filterString, @"^(?<itemField>[a-zA-Z._]+)(?<operation>[=!:><]{1,2})(?<value>.*)$", RegexOptions.Compiled);
             if (!match.Success)
                 return false;
 

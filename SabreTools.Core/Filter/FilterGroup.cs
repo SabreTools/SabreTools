@@ -184,7 +184,7 @@ namespace SabreTools.Core.Filter
             // - Key-value pairs are enforced for statements
             // - Numbers can be a value without quotes
             // - All other values require quotes
-            return Regex.Split(input, @"(\(|\)|[&|]{1,2}|[^\s()""]+[:!=]\d+|[^\s()""]+[:!=]{1,2}""[^""]*"")");
+            return Regex.Split(input, @"(\(|\)|[&|]{1,2}|[^\s()""]+[:!=]\d+|[^\s()""]+[:!=]{1,2}""[^""]*"")", RegexOptions.Compiled);
         }
 
         #endregion

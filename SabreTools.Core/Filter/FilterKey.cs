@@ -25,7 +25,7 @@ namespace SabreTools.Core.Filter
         public FilterKey(string? key)
         {
             if (!ParseFilterId(key, out string itemName, out string fieldName))
-                throw new ArgumentException(nameof(key));
+                throw new ArgumentException($"{nameof(key)} could not be parsed", nameof(key));
 
             ItemName = itemName;
             FieldName = fieldName;
@@ -37,7 +37,7 @@ namespace SabreTools.Core.Filter
         public FilterKey(string itemName, string fieldName)
         {
             if (!ParseFilterId(ref itemName, ref fieldName))
-                throw new ArgumentException(nameof(itemName));
+                throw new ArgumentException($"{nameof(itemName)} was not recognized", nameof(itemName));
 
             ItemName = itemName;
             FieldName = fieldName;

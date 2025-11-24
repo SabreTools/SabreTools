@@ -633,7 +633,7 @@ namespace SabreTools.FileTypes.Archives
                     oldZipFile.ZipFileOpen(archiveFileName, -1, true);
 
                     // Map all inputs to index
-                    Dictionary<string, int> inputIndexMap = new();
+                    Dictionary<string, int> inputIndexMap = [];
                     for (int i = 0; i < files.Count; i++)
                     {
                         List<string> oldZipFileContents = [];

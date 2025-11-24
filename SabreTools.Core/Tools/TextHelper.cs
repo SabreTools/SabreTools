@@ -22,7 +22,7 @@ namespace SabreTools.Core.Tools
             input = RussianToLatin(input);
             input = SearchPattern(input);
 
-            input = new Regex(@"(([[(].*[\)\]] )?([^([]+))").Match(input).Groups[1].Value;
+            input = new Regex(@"(([[(].*[\)\]] )?([^([]+))", RegexOptions.Compiled).Match(input).Groups[1].Value;
             input = input.TrimStart().TrimEnd();
             return input;
         }

@@ -84,12 +84,13 @@ namespace SabreTools.DatTools
         /// <returns>File containing original BaseFile information</returns>
         public static DatItems.Formats.File ConvertToFile(this BaseFile baseFile)
         {
-            var file = new DatItems.Formats.File();
-
-            file.CRC = baseFile.CRC.ToHexString();
-            file.MD5 = baseFile.MD5.ToHexString();
-            file.SHA1 = baseFile.SHA1.ToHexString();
-            file.SHA256 = baseFile.SHA256.ToHexString();
+            var file = new DatItems.Formats.File
+            {
+                CRC = baseFile.CRC.ToHexString(),
+                MD5 = baseFile.MD5.ToHexString(),
+                SHA1 = baseFile.SHA1.ToHexString(),
+                SHA256 = baseFile.SHA256.ToHexString()
+            };
 
             file.SetFieldValue<ItemType>(Data.Models.Metadata.DatItem.TypeKey, ItemType.File);
             file.SetFieldValue<DupeType>(DatItem.DupeTypeKey, 0x00);

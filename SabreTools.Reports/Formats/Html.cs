@@ -108,7 +108,7 @@ body {
 
             xtw.WriteStartElement("body");
 
-            xtw.WriteElementString("h2", $"DAT Statistics Report ({DateTime.Now.ToShortDateString()})");
+            xtw.WriteElementString("h2", $"DAT Statistics Report ({DateTime.Now:d})");
 
             xtw.WriteStartElement("table");
             xtw.WriteAttributeString("border", "1");

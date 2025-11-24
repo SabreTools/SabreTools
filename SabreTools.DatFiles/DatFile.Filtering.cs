@@ -66,9 +66,9 @@ namespace SabreTools.DatFiles
         /// confine its values to be just regions. Since it's essentially acting like a
         /// specialized version of the machine name filter, anything that is usually encapsulated
         /// in parenthesis would be matched on, including disc numbers, languages, editions,
-        /// and anything else commonly used. Please note that, unlike other existing 1G1R 
+        /// and anything else commonly used. Please note that, unlike other existing 1G1R
         /// solutions, this does not have the ability to contain custom mappings of parent
-        /// to clone sets based on name, nor does it have the ability to match on the 
+        /// to clone sets based on name, nor does it have the ability to match on the
         /// Release DatItem type.
         /// </remarks>
         public void SetOneGamePerRegion(List<string> regionList)
