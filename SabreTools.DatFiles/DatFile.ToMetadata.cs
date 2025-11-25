@@ -471,7 +471,7 @@ namespace SabreTools.DatFiles
                     }
 
                     // Assign the part array to the machine
-                    machine[Data.Models.Metadata.Machine.PartKey] = partItems.Values.ToArray();
+                    machine[Data.Models.Metadata.Machine.PartKey] = (Data.Models.Metadata.Part[])[.. partItems.Values];
                 }
 
                 // Add the machine to the list
@@ -891,7 +891,7 @@ namespace SabreTools.DatFiles
                     }
 
                     // Assign the part array to the machine
-                    machine[Data.Models.Metadata.Machine.PartKey] = partItems.Values.ToArray();
+                    machine[Data.Models.Metadata.Machine.PartKey] = (Data.Models.Metadata.Part[])[..partItems.Values];
                 }
 
                 // Add the machine to the list
@@ -918,13 +918,15 @@ namespace SabreTools.DatFiles
             // Create a Video for any item that has specific fields
             if (displayItem.ContainsKey(Data.Models.Metadata.Video.AspectXKey))
             {
-                var videoItem = new Data.Models.Metadata.Video();
-                videoItem[Data.Models.Metadata.Video.AspectXKey] = displayItem.ReadLong(Data.Models.Metadata.Video.AspectXKey).ToString();
-                videoItem[Data.Models.Metadata.Video.AspectYKey] = displayItem.ReadLong(Data.Models.Metadata.Video.AspectYKey).ToString();
-                videoItem[Data.Models.Metadata.Video.HeightKey] = displayItem.ReadLong(Data.Models.Metadata.Display.HeightKey).ToString();
-                videoItem[Data.Models.Metadata.Video.RefreshKey] = displayItem.ReadDouble(Data.Models.Metadata.Display.RefreshKey).ToString();
-                videoItem[Data.Models.Metadata.Video.ScreenKey] = displayItem.ReadString(Data.Models.Metadata.Display.DisplayTypeKey).AsDisplayType().AsStringValue();
-                videoItem[Data.Models.Metadata.Video.WidthKey] = displayItem.ReadLong(Data.Models.Metadata.Display.WidthKey).ToString();
+                var videoItem = new Data.Models.Metadata.Video
+                {
+                    [Data.Models.Metadata.Video.AspectXKey] = displayItem.ReadLong(Data.Models.Metadata.Video.AspectXKey).ToString(),
+                    [Data.Models.Metadata.Video.AspectYKey] = displayItem.ReadLong(Data.Models.Metadata.Video.AspectYKey).ToString(),
+                    [Data.Models.Metadata.Video.HeightKey] = displayItem.ReadLong(Data.Models.Metadata.Display.HeightKey).ToString(),
+                    [Data.Models.Metadata.Video.RefreshKey] = displayItem.ReadDouble(Data.Models.Metadata.Display.RefreshKey).ToString(),
+                    [Data.Models.Metadata.Video.ScreenKey] = displayItem.ReadString(Data.Models.Metadata.Display.DisplayTypeKey).AsDisplayType().AsStringValue(),
+                    [Data.Models.Metadata.Video.WidthKey] = displayItem.ReadLong(Data.Models.Metadata.Display.WidthKey).ToString()
+                };
 
                 switch (displayItem.ReadLong(Data.Models.Metadata.Display.RotateKey))
                 {
