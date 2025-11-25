@@ -169,15 +169,6 @@ namespace SabreTools.Core.Test
         }
 
         [Fact]
-        public void RemoveField_NullFieldName_False()
-        {
-            var modelBackedItem = new TestModelBackedItem();
-            string? fieldName = null;
-            bool? actual = modelBackedItem.RemoveField(fieldName);
-            Assert.False(actual);
-        }
-
-        [Fact]
         public void RemoveField_EmptyFieldName_False()
         {
             var modelBackedItem = new TestModelBackedItem();
@@ -232,16 +223,6 @@ namespace SabreTools.Core.Test
         }
 
         [Fact]
-        public void ReplaceField_NullFieldName_False()
-        {
-            TestModelBackedItem? from = new TestModelBackedItem();
-            TestModelBackedItem? to = new TestModelBackedItem();
-            string? fieldName = null;
-            bool actual = to.ReplaceField(from, fieldName);
-            Assert.False(actual);
-        }
-
-        [Fact]
         public void ReplaceField_EmptyFieldName_False()
         {
             TestModelBackedItem? from = new TestModelBackedItem();
@@ -285,16 +266,6 @@ namespace SabreTools.Core.Test
             object value = "value";
             bool? actual = modelBackedItem?.SetField(fieldName, value);
             Assert.Null(actual);
-        }
-
-        [Fact]
-        public void SetField_NullFieldName_False()
-        {
-            TestModelBackedItem? modelBackedItem = new TestModelBackedItem();
-            string? fieldName = null;
-            object value = "value";
-            bool actual = modelBackedItem.SetField(fieldName, value);
-            Assert.False(actual);
         }
 
         [Fact]

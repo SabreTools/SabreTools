@@ -46,10 +46,10 @@ namespace SabreTools.Core
         /// <typeparam name="U">Type of the value to get from the internal model</typeparam>
         /// <param name="fieldName">Field to retrieve</param>
         /// <returns>Value from the field, if possible</returns>
-        public U? GetFieldValue<U>(string? fieldName)
+        public U? GetFieldValue<U>(string fieldName)
         {
             // Invalid field cannot be processed
-            if (fieldName == null || !_internal.ContainsKey(fieldName))
+            if (!_internal.ContainsKey(fieldName))
                 return default;
 
             // Get the value based on the type
@@ -61,10 +61,10 @@ namespace SabreTools.Core
         /// </summary>
         /// <param name="fieldName">Field to retrieve</param>
         /// <returns>Value from the field, if possible</returns>
-        public bool? GetBoolFieldValue(string? fieldName)
+        public bool? GetBoolFieldValue(string fieldName)
         {
             // Invalid field cannot be processed
-            if (fieldName == null || !_internal.ContainsKey(fieldName))
+            if (!_internal.ContainsKey(fieldName))
                 return default;
 
             // Get the value based on the type
@@ -76,10 +76,10 @@ namespace SabreTools.Core
         /// </summary>
         /// <param name="fieldName">Field to retrieve</param>
         /// <returns>Value from the field, if possible</returns>
-        public double? GetDoubleFieldValue(string? fieldName)
+        public double? GetDoubleFieldValue(string fieldName)
         {
             // Invalid field cannot be processed
-            if (fieldName == null || !_internal.ContainsKey(fieldName))
+            if (!_internal.ContainsKey(fieldName))
                 return default;
 
             // Try to parse directly
@@ -97,10 +97,10 @@ namespace SabreTools.Core
         /// </summary>
         /// <param name="fieldName">Field to retrieve</param>
         /// <returns>Value from the field, if possible</returns>
-        public long? GetInt64FieldValue(string? fieldName)
+        public long? GetInt64FieldValue(string fieldName)
         {
             // Invalid field cannot be processed
-            if (fieldName == null || !_internal.ContainsKey(fieldName))
+            if (!_internal.ContainsKey(fieldName))
                 return default;
 
             // Try to parse directly
@@ -118,10 +118,10 @@ namespace SabreTools.Core
         /// </summary>
         /// <param name="fieldName">Field to retrieve</param>
         /// <returns>Value from the field, if possible</returns>
-        public string? GetStringFieldValue(string? fieldName)
+        public string? GetStringFieldValue(string fieldName)
         {
             // Invalid field cannot be processed
-            if (fieldName == null || !_internal.ContainsKey(fieldName))
+            if (!_internal.ContainsKey(fieldName))
                 return default;
 
             // Get the value based on the type
@@ -133,10 +133,10 @@ namespace SabreTools.Core
         /// </summary>
         /// <param name="fieldName">Field to retrieve</param>
         /// <returns>Value from the field, if possible</returns>
-        public string[]? GetStringArrayFieldValue(string? fieldName)
+        public string[]? GetStringArrayFieldValue(string fieldName)
         {
             // Invalid field cannot be processed
-            if (fieldName == null || !_internal.ContainsKey(fieldName))
+            if (!_internal.ContainsKey(fieldName))
                 return default;
 
             // Get the value based on the type
@@ -150,7 +150,7 @@ namespace SabreTools.Core
         /// <param name="fieldName">Field to set</param>
         /// <param name="value">Value to set</param>
         /// <returns>True if the value was set, false otherwise</returns>
-        public bool SetFieldValue<U>(string? fieldName, U? value)
+        public bool SetFieldValue<U>(string fieldName, U? value)
         {
             // Invalid field cannot be processed
             if (fieldName == null)
@@ -175,10 +175,10 @@ namespace SabreTools.Core
         /// <summary>
         /// Remove a field from the backing item
         /// </summary>
-        public bool RemoveField(string? fieldName)
+        public bool RemoveField(string fieldName)
         {
             // If the item or field name are missing, we can't do anything
-            if (_internal == null || string.IsNullOrEmpty(fieldName))
+            if (string.IsNullOrEmpty(fieldName))
                 return false;
 
             // If the key doesn't exist, then it's already removed
@@ -193,10 +193,10 @@ namespace SabreTools.Core
         /// <summary>
         /// Replace a field from another ModelBackedItem
         /// </summary>
-        public bool ReplaceField(ModelBackedItem<T>? from, string? fieldName)
+        public bool ReplaceField(ModelBackedItem<T>? from, string fieldName)
         {
             // If the items or field name are missing, we can't do anything
-            if (from?._internal == null || _internal == null || string.IsNullOrEmpty(fieldName))
+            if (from?._internal == null || string.IsNullOrEmpty(fieldName))
                 return false;
 
             // If the types of the items are not the same, we can't do anything
@@ -215,10 +215,10 @@ namespace SabreTools.Core
         /// <summary>
         /// Set a field from the backing item
         /// </summary>
-        public bool SetField(string? fieldName, object value)
+        public bool SetField(string fieldName, object value)
         {
             // If the item or field name are missing, we can't do anything
-            if (_internal == null || string.IsNullOrEmpty(fieldName))
+            if (string.IsNullOrEmpty(fieldName))
                 return false;
 
             // Retrieve the list of valid fields for the item
