@@ -39,7 +39,6 @@
         <PackageReference Include="SabreTools.Serialization" Version="[2.2.1]" />
         <PackageReference Include="System.ValueTuple" Version="4.5.0" Condition="$(TargetFramework.StartsWith(`net40`)) OR $(TargetFramework.StartsWith(`net45`))" />
         <PackageReference Include="System.ValueTuple" Version="4.6.1" Condition="$(TargetFramework.StartsWith(`net46`)) OR $(TargetFramework.StartsWith(`net47`)) OR $(TargetFramework.StartsWith(`net48`))" />
-    
     </ItemGroup>
 
 </Project>
