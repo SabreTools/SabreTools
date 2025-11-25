@@ -240,7 +240,7 @@ namespace SabreTools.Core
                 return false;
 
             // Check based on the item type
-#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER || NETSTANDARD2_0_OR_GREATER
+#if NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             return (self, other) switch
             {
                 (Disk diskSelf, Disk diskOther) => EqualsImpl(diskSelf, diskOther),
@@ -278,7 +278,7 @@ namespace SabreTools.Core
             // Check all pairs to see if they're equal
             foreach (var kvp in self)
             {
-#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
+#if NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 switch (kvp.Value, other[kvp.Key])
                 {
                     case (string selfString, string otherString):
@@ -880,7 +880,7 @@ namespace SabreTools.Core
             if (self == null || other == null)
                 return;
 
-#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
+#if NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             switch (self, other)
             {
                 case (Disk diskSelf, Disk diskOther):
