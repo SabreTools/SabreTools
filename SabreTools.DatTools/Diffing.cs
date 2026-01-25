@@ -204,7 +204,7 @@ namespace SabreTools.DatTools
                 else
                 {
                     Dictionary<long, DatItem> datItems = intDat.GetItemsForBucketDB(key);
-                    if (datItems == null)
+                    if (datItems is null)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                         return;
 #else
@@ -310,7 +310,7 @@ namespace SabreTools.DatTools
                 List<DatItem> items = datFile.GetItemsForBucket(key);
 
                 // If the rom list is empty or null, just skip it
-                if (items == null || items.Count == 0)
+                if (items is null || items.Count == 0)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
@@ -320,7 +320,7 @@ namespace SabreTools.DatTools
                 foreach (DatItem item in items)
                 {
                     var source = item.GetFieldValue<Source?>(DatItem.SourceKey);
-                    if (source != null && source.Index == index)
+                    if (source is not null && source.Index == index)
                         indexDat.AddItem(item, statsOnly: false);
                 }
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
@@ -378,7 +378,7 @@ namespace SabreTools.DatTools
                 // Get the source associated with the item
                 var source = datFile.ItemsDB.GetSource(sourceIndex);
 
-                if (source != null && source.Index == index)
+                if (source is not null && source.Index == index)
                     indexDat.AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
@@ -469,7 +469,7 @@ namespace SabreTools.DatTools
                 List<DatItem> items = ItemDictionary.Merge(datFile.GetItemsForBucket(key));
 
                 // If the rom list is empty or null, just skip it
-                if (items == null || items.Count == 0)
+                if (items is null || items.Count == 0)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
@@ -488,7 +488,7 @@ namespace SabreTools.DatTools
                         if (item.Clone() is not DatItem newrom)
                             continue;
 
-                        if (item.GetFieldValue<Source?>(DatItem.SourceKey) != null)
+                        if (item.GetFieldValue<Source?>(DatItem.SourceKey) is not null)
                             newrom.GetMachine()!.SetName(newrom.GetMachine()!.GetName() + $" ({Path.GetFileNameWithoutExtension(inputs[item.GetFieldValue<Source?>(DatItem.SourceKey)!.Index].CurrentPath)})");
 
                         dupeData.AddItem(newrom, statsOnly: false);
@@ -561,7 +561,7 @@ namespace SabreTools.DatTools
                 var currentSource = sources[sourceIndex];
                 string? currentMachineName = machines[machineIndex].GetName();
                 var currentMachine = datFile.ItemsDB.GetMachine(currentMachineName);
-                if (currentMachine.Value == null)
+                if (currentMachine.Value is null)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
@@ -571,7 +571,7 @@ namespace SabreTools.DatTools
                 // Get the source-specific machine
                 string? renamedMachineName = $"{currentMachineName} ({Path.GetFileNameWithoutExtension(inputs[currentSource!.Index].CurrentPath)})";
                 var renamedMachine = datFile.ItemsDB.GetMachine(renamedMachineName);
-                if (renamedMachine.Value == null)
+                if (renamedMachine.Value is null)
                 {
                     var newMachine = currentMachine.Value.Clone() as Machine;
                     newMachine!.SetName(renamedMachineName);
@@ -685,7 +685,7 @@ namespace SabreTools.DatTools
                 List<DatItem> items = ItemDictionary.Merge(datFile.GetItemsForBucket(key));
 
                 // If the rom list is empty or null, just skip it
-                if (items == null || items.Count == 0)
+                if (items is null || items.Count == 0)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
@@ -695,7 +695,7 @@ namespace SabreTools.DatTools
                 // Loop through and add the items correctly
                 foreach (DatItem item in items)
                 {
-                    if (item.GetFieldValue<Source?>(DatItem.SourceKey) == null)
+                    if (item.GetFieldValue<Source?>(DatItem.SourceKey) is null)
                         continue;
 
 #if NET20 || NET35
@@ -767,7 +767,7 @@ namespace SabreTools.DatTools
 
                 // Get the source associated with the item
                 var source = datFile.ItemsDB.GetSource(sourceIndex);
-                if (source == null)
+                if (source is null)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
@@ -869,7 +869,7 @@ namespace SabreTools.DatTools
                 List<DatItem> items = ItemDictionary.Merge(datFile.GetItemsForBucket(key));
 
                 // If the rom list is empty or null, just skip it
-                if (items == null || items.Count == 0)
+                if (items is null || items.Count == 0)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
@@ -885,7 +885,7 @@ namespace SabreTools.DatTools
                     if (item.GetFieldValue<DupeType>(DatItem.DupeTypeKey).HasFlag(DupeType.Internal) || item.GetFieldValue<DupeType>(DatItem.DupeTypeKey) == 0x00)
 #endif
                     {
-                        if (item.Clone() is not DatItem newrom || newrom.GetFieldValue<Source?>(DatItem.SourceKey) == null)
+                        if (item.Clone() is not DatItem newrom || newrom.GetFieldValue<Source?>(DatItem.SourceKey) is null)
                             continue;
 
                         newrom.GetMachine()!.SetName(newrom.GetMachine()!.GetName() + $" ({Path.GetFileNameWithoutExtension(inputs[newrom.GetFieldValue<Source?>(DatItem.SourceKey)!.Index].CurrentPath)})");
@@ -959,7 +959,7 @@ namespace SabreTools.DatTools
                 var currentSource = sources[sourceIndex];
                 string? currentMachineName = machines[machineIndex].GetName();
                 var currentMachine = datFile.ItemsDB.GetMachine(currentMachineName);
-                if (currentMachine.Value == null)
+                if (currentMachine.Value is null)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
@@ -969,7 +969,7 @@ namespace SabreTools.DatTools
                 // Get the source-specific machine
                 string? renamedMachineName = $"{currentMachineName} ({Path.GetFileNameWithoutExtension(inputs[currentSource!.Index].CurrentPath)})";
                 var renamedMachine = datFile.ItemsDB.GetMachine(renamedMachineName);
-                if (renamedMachine.Value == null)
+                if (renamedMachine.Value is null)
                 {
                     var newMachine = currentMachine.Value.Clone() as Machine;
                     newMachine!.SetName(renamedMachineName);

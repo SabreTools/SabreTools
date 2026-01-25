@@ -21,7 +21,7 @@ namespace SabreTools.DatItems.Formats
             get
             {
                 var features = GetFieldValue<PartFeature[]?>(Data.Models.Metadata.Part.FeatureKey);
-                return features != null && features.Length > 0;
+                return features is not null && features.Length > 0;
             }
         }
 
@@ -35,7 +35,7 @@ namespace SabreTools.DatItems.Formats
 
         public Part(Data.Models.Metadata.Part item, Machine machine, Source source) : this(item)
         {
-            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            SetFieldValue<Source?>(SourceKey, source);
             CopyMachineInformation(machine);
         }
 

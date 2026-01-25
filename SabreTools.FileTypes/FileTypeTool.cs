@@ -79,14 +79,14 @@ namespace SabreTools.FileTypes
         public static BaseFile GetInfo(Stream? input, HashType[] hashes)
         {
             // If we have no stream
-            if (input == null)
+            if (input is null)
                 return new BaseFile();
 
             try
             {
                 // Run the hashing on the input stream
                 var hashDict = HashTool.GetStreamHashesAndSize(input, hashes, leaveOpen: true, out long size);
-                if (hashDict == null)
+                if (hashDict is null)
                     return new BaseFile();
 
                 // Create a base file with the resulting hashes
@@ -151,7 +151,7 @@ namespace SabreTools.FileTypes
             if (fileType == FileType.AaruFormat)
             {
                 AaruFormat? aif = AaruFormat.Create(input);
-                if (aif != null)
+                if (aif is not null)
                 {
                     CopyInformation(baseFile, aif);
                     return aif;
@@ -160,7 +160,7 @@ namespace SabreTools.FileTypes
             else if (fileType == FileType.CHD)
             {
                 CHDFile? chd = CHDFile.Create(input);
-                if (chd != null)
+                if (chd is not null)
                 {
                     CopyInformation(baseFile, chd);
                     return chd;
@@ -177,7 +177,7 @@ namespace SabreTools.FileTypes
         {
             // Open the file directly
             Stream inputStream = File.Open(input, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            if (header == null)
+            if (header is null)
                 return inputStream;
 
             // Try to match the supplied header skipper
@@ -185,7 +185,7 @@ namespace SabreTools.FileTypes
             var rule = SkipperMatch.GetMatchingRule(input, Path.GetFileNameWithoutExtension(header));
 
             // If there's no match, return the original stream
-            if (rule.Tests == null || rule.Tests.Length == 0)
+            if (rule.Tests is null || rule.Tests.Length == 0)
                 return inputStream;
 
             // Transform the stream and get the information from it
@@ -206,6 +206,8 @@ namespace SabreTools.FileTypes
         public static BaseArchive? CreateArchiveType(string input)
         {
             FileType? fileType = GetFileType(input);
+
+#pragma warning disable IDE0072
             return fileType switch
             {
                 FileType.GZipArchive => new GZipArchive(input),
@@ -215,6 +217,7 @@ namespace SabreTools.FileTypes
                 FileType.ZipArchive => new ZipArchive(input),
                 _ => null,
             };
+#pragma warning restore IDE0072
         }
 
         /// <summary>

@@ -22,25 +22,25 @@ namespace SabreTools.DatItems.Formats
 
         public Media() : base()
         {
-            SetFieldValue<DupeType>(DatItem.DupeTypeKey, 0x00);
+            SetFieldValue<DupeType>(DupeTypeKey, 0x00);
         }
 
         public Media(Data.Models.Metadata.Media item) : base(item)
         {
-            SetFieldValue<DupeType>(DatItem.DupeTypeKey, 0x00);
+            SetFieldValue<DupeType>(DupeTypeKey, 0x00);
 
             // Process hash values
-            if (GetStringFieldValue(Data.Models.Metadata.Media.MD5Key) != null)
+            if (GetStringFieldValue(Data.Models.Metadata.Media.MD5Key) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.Media.MD5Key, TextHelper.NormalizeMD5(GetStringFieldValue(Data.Models.Metadata.Media.MD5Key)));
-            if (GetStringFieldValue(Data.Models.Metadata.Media.SHA1Key) != null)
+            if (GetStringFieldValue(Data.Models.Metadata.Media.SHA1Key) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.Media.SHA1Key, TextHelper.NormalizeSHA1(GetStringFieldValue(Data.Models.Metadata.Media.SHA1Key)));
-            if (GetStringFieldValue(Data.Models.Metadata.Media.SHA256Key) != null)
+            if (GetStringFieldValue(Data.Models.Metadata.Media.SHA256Key) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.Media.SHA256Key, TextHelper.NormalizeSHA256(GetStringFieldValue(Data.Models.Metadata.Media.SHA256Key)));
         }
 
         public Media(Data.Models.Metadata.Media item, Machine machine, Source source) : this(item)
         {
-            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            SetFieldValue<Source?>(SourceKey, source);
             CopyMachineInformation(machine);
         }
 
@@ -56,10 +56,10 @@ namespace SabreTools.DatItems.Formats
         {
             var rom = new Rom(_internal.ConvertToRom()!);
 
-            rom.SetFieldValue<DupeType>(DatItem.DupeTypeKey, GetFieldValue<DupeType>(DatItem.DupeTypeKey));
-            rom.SetFieldValue<Machine>(DatItem.MachineKey, GetMachine());
-            rom.SetFieldValue<bool?>(DatItem.RemoveKey, GetBoolFieldValue(DatItem.RemoveKey));
-            rom.SetFieldValue<Source?>(DatItem.SourceKey, GetFieldValue<Source?>(DatItem.SourceKey));
+            rom.SetFieldValue(DupeTypeKey, GetFieldValue<DupeType>(DupeTypeKey));
+            rom.SetFieldValue(MachineKey, GetMachine());
+            rom.SetFieldValue(RemoveKey, GetBoolFieldValue(RemoveKey));
+            rom.SetFieldValue<Source?>(SourceKey, GetFieldValue<Source?>(SourceKey));
 
             return rom;
         }
@@ -97,6 +97,7 @@ namespace SabreTools.DatItems.Formats
             // Set the output key as the default blank string
             string? key;
 
+#pragma warning disable IDE0010
             // Now determine what the key should be based on the bucketedBy value
             switch (bucketedBy)
             {
@@ -120,6 +121,7 @@ namespace SabreTools.DatItems.Formats
                 default:
                     return base.GetKey(bucketedBy, machine, source, lower, norename);
             }
+#pragma warning restore IDE0010
 
             // Double and triple check the key for corner cases
             key ??= string.Empty;

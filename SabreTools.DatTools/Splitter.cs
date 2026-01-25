@@ -105,7 +105,7 @@ namespace SabreTools.DatTools
 #endif
             {
                 var items = datFile.GetItemsForBucket(key);
-                if (items == null)
+                if (items is null)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
@@ -281,7 +281,7 @@ namespace SabreTools.DatTools
 #endif
             {
                 var items = datFile.GetItemsForBucket(key);
-                if (items == null)
+                if (items is null)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
@@ -524,7 +524,7 @@ namespace SabreTools.DatTools
 #endif
             {
                 // Here, the key is the name of the game to be used for comparison
-                if (tempDat.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey) != null && tempDat.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey) != Path.GetDirectoryName(key))
+                if (tempDat.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey) is not null && tempDat.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey) != Path.GetDirectoryName(key))
                 {
                     // Reset the DAT for the next items
                     tempDat = Parser.CreateDatFile(datFile.Header, datFile.Modifiers);
@@ -533,7 +533,7 @@ namespace SabreTools.DatTools
 
                 // Clean the input list and set all games to be pathless
                 List<DatItem>? items = datFile.GetItemsForBucket(key);
-                if (items == null)
+                if (items is null)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
@@ -575,6 +575,7 @@ namespace SabreTools.DatTools
             return adeep - bdeep;
         }
 
+#pragma warning disable IDE0051
         /// <summary>
         /// Helper function for SplitByLevel to clean and write out a DAT
         /// </summary>
@@ -618,6 +619,7 @@ namespace SabreTools.DatTools
             // Write out the temporary DAT to the proper directory
             Writer.Write(newDatFile, outDir);
         }
+#pragma warning restore IDE0051
 
         #endregion
 
@@ -684,7 +686,7 @@ namespace SabreTools.DatTools
 #endif
             {
                 List<DatItem>? items = datFile.GetItemsForBucket(key);
-                if (items == null)
+                if (items is null)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
@@ -697,7 +699,7 @@ namespace SabreTools.DatTools
                         lessThan.AddItem(item, statsOnly: false);
 
                     // If the file is a Rom and has no size, put it in the "lesser" dat
-                    else if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) == null)
+                    else if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) is null)
                         lessThan.AddItem(item, statsOnly: false);
 
                     // If the file is a Rom and less than the radix, put it in the "lesser" dat
@@ -767,7 +769,7 @@ namespace SabreTools.DatTools
                     lessThan.AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
 
                 // If the file is a Rom and has no size, put it in the "lesser" dat
-                else if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) == null)
+                else if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) is null)
                     lessThan.AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
 
                 // If the file is a Rom and less than the radix, put it in the "lesser" dat
@@ -826,7 +828,7 @@ namespace SabreTools.DatTools
             {
                 // Get the current machine
                 var items = datFile.GetItemsForBucket(machine);
-                if (items == null || items.Count == 0)
+                if (items is null || items.Count == 0)
                 {
                     _staticLogger.Error($"{machine} contains no items and will be skipped");
                     continue;
@@ -955,7 +957,7 @@ namespace SabreTools.DatTools
                 List<DatItem> items = ItemDictionary.Merge(datFile.GetItemsForBucket(key));
 
                 // If the rom list is empty or null, just skip it
-                if (items == null || items.Count == 0)
+                if (items is null || items.Count == 0)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else

@@ -96,7 +96,7 @@ namespace SabreTools.DatFiles.Formats
         public SfvFile(DatFile? datFile) : base(datFile)
         {
             _hash = HashType.CRC32;
-            Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, DatFormat.RedumpSFV);
+            Header.SetFieldValue(DatHeader.DatFormatKey, DatFormat.RedumpSFV);
         }
 
         /// <inheritdoc/>
@@ -108,6 +108,7 @@ namespace SabreTools.DatFiles.Formats
             if (string.IsNullOrEmpty(datItem.GetName()))
                 missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
+#pragma warning disable IDE0010
             switch (datItem)
             {
                 case Rom rom:
@@ -115,6 +116,7 @@ namespace SabreTools.DatFiles.Formats
                         missingFields.Add(Data.Models.Metadata.Rom.CRCKey);
                     break;
             }
+#pragma warning restore IDE0010
 
             return missingFields;
         }
@@ -138,7 +140,7 @@ namespace SabreTools.DatFiles.Formats
         public Md2File(DatFile? datFile) : base(datFile)
         {
             _hash = HashType.MD2;
-            Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, DatFormat.RedumpMD2);
+            Header.SetFieldValue(DatHeader.DatFormatKey, DatFormat.RedumpMD2);
         }
 
         /// <inheritdoc/>
@@ -150,6 +152,7 @@ namespace SabreTools.DatFiles.Formats
             if (string.IsNullOrEmpty(datItem.GetName()))
                 missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
+#pragma warning disable IDE0010
             switch (datItem)
             {
                 case Rom rom:
@@ -157,6 +160,7 @@ namespace SabreTools.DatFiles.Formats
                         missingFields.Add(Data.Models.Metadata.Rom.MD2Key);
                     break;
             }
+#pragma warning restore IDE0010
 
             return missingFields;
         }
@@ -180,7 +184,7 @@ namespace SabreTools.DatFiles.Formats
         public Md4File(DatFile? datFile) : base(datFile)
         {
             _hash = HashType.MD4;
-            Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, DatFormat.RedumpMD4);
+            Header.SetFieldValue(DatHeader.DatFormatKey, DatFormat.RedumpMD4);
         }
 
         /// <inheritdoc/>
@@ -192,6 +196,7 @@ namespace SabreTools.DatFiles.Formats
             if (string.IsNullOrEmpty(datItem.GetName()))
                 missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
+#pragma warning disable IDE0010
             switch (datItem)
             {
                 case Rom rom:
@@ -199,6 +204,7 @@ namespace SabreTools.DatFiles.Formats
                         missingFields.Add(Data.Models.Metadata.Rom.MD4Key);
                     break;
             }
+#pragma warning restore IDE0010
 
             return missingFields;
         }
@@ -224,7 +230,7 @@ namespace SabreTools.DatFiles.Formats
         public Md5File(DatFile? datFile) : base(datFile)
         {
             _hash = HashType.MD5;
-            Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, DatFormat.RedumpMD5);
+            Header.SetFieldValue(DatHeader.DatFormatKey, DatFormat.RedumpMD5);
         }
 
         /// <inheritdoc/>
@@ -236,6 +242,7 @@ namespace SabreTools.DatFiles.Formats
             if (string.IsNullOrEmpty(datItem.GetName()))
                 missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
+#pragma warning disable IDE0010
             switch (datItem)
             {
                 case Disk disk:
@@ -253,6 +260,7 @@ namespace SabreTools.DatFiles.Formats
                         missingFields.Add(Data.Models.Metadata.Rom.MD5Key);
                     break;
             }
+#pragma warning restore IDE0010
 
             return missingFields;
         }
@@ -276,7 +284,7 @@ namespace SabreTools.DatFiles.Formats
         public RipeMD128File(DatFile? datFile) : base(datFile)
         {
             _hash = HashType.RIPEMD128;
-            Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, DatFormat.RedumpRIPEMD128);
+            Header.SetFieldValue(DatHeader.DatFormatKey, DatFormat.RedumpRIPEMD128);
         }
 
         /// <inheritdoc/>
@@ -288,6 +296,7 @@ namespace SabreTools.DatFiles.Formats
             if (string.IsNullOrEmpty(datItem.GetName()))
                 missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
+#pragma warning disable IDE0010
             switch (datItem)
             {
                 case Rom rom:
@@ -295,6 +304,7 @@ namespace SabreTools.DatFiles.Formats
                         missingFields.Add(Data.Models.Metadata.Rom.RIPEMD128Key);
                     break;
             }
+#pragma warning restore IDE0010
 
             return missingFields;
         }
@@ -318,7 +328,7 @@ namespace SabreTools.DatFiles.Formats
         public RipeMD160File(DatFile? datFile) : base(datFile)
         {
             _hash = HashType.RIPEMD160;
-            Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, DatFormat.RedumpRIPEMD160);
+            Header.SetFieldValue(DatHeader.DatFormatKey, DatFormat.RedumpRIPEMD160);
         }
 
         /// <inheritdoc/>
@@ -330,6 +340,7 @@ namespace SabreTools.DatFiles.Formats
             if (string.IsNullOrEmpty(datItem.GetName()))
                 missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
+#pragma warning disable IDE0010
             switch (datItem)
             {
                 case Rom rom:
@@ -337,6 +348,7 @@ namespace SabreTools.DatFiles.Formats
                         missingFields.Add(Data.Models.Metadata.Rom.RIPEMD160Key);
                     break;
             }
+#pragma warning restore IDE0010
 
             return missingFields;
         }
@@ -362,7 +374,7 @@ namespace SabreTools.DatFiles.Formats
         public Sha1File(DatFile? datFile) : base(datFile)
         {
             _hash = HashType.SHA1;
-            Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, DatFormat.RedumpSHA1);
+            Header.SetFieldValue(DatHeader.DatFormatKey, DatFormat.RedumpSHA1);
         }
 
         /// <inheritdoc/>
@@ -374,6 +386,7 @@ namespace SabreTools.DatFiles.Formats
             if (string.IsNullOrEmpty(datItem.GetName()))
                 missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
+#pragma warning disable IDE0010
             switch (datItem)
             {
                 case Disk disk:
@@ -391,6 +404,7 @@ namespace SabreTools.DatFiles.Formats
                         missingFields.Add(Data.Models.Metadata.Rom.SHA1Key);
                     break;
             }
+#pragma warning restore IDE0010
 
             return missingFields;
         }
@@ -415,7 +429,7 @@ namespace SabreTools.DatFiles.Formats
         public Sha256File(DatFile? datFile) : base(datFile)
         {
             _hash = HashType.SHA256;
-            Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, DatFormat.RedumpSHA256);
+            Header.SetFieldValue(DatHeader.DatFormatKey, DatFormat.RedumpSHA256);
         }
 
         /// <inheritdoc/>
@@ -427,6 +441,7 @@ namespace SabreTools.DatFiles.Formats
             if (string.IsNullOrEmpty(datItem.GetName()))
                 missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
+#pragma warning disable IDE0010
             switch (datItem)
             {
                 case Media medium:
@@ -439,6 +454,7 @@ namespace SabreTools.DatFiles.Formats
                         missingFields.Add(Data.Models.Metadata.Rom.SHA256Key);
                     break;
             }
+#pragma warning restore IDE0010
 
             return missingFields;
         }
@@ -462,7 +478,7 @@ namespace SabreTools.DatFiles.Formats
         public Sha384File(DatFile? datFile) : base(datFile)
         {
             _hash = HashType.SHA384;
-            Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, DatFormat.RedumpSHA384);
+            Header.SetFieldValue(DatHeader.DatFormatKey, DatFormat.RedumpSHA384);
         }
 
         /// <inheritdoc/>
@@ -474,6 +490,7 @@ namespace SabreTools.DatFiles.Formats
             if (string.IsNullOrEmpty(datItem.GetName()))
                 missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
+#pragma warning disable IDE0010
             switch (datItem)
             {
                 case Rom rom:
@@ -481,6 +498,7 @@ namespace SabreTools.DatFiles.Formats
                         missingFields.Add(Data.Models.Metadata.Rom.SHA384Key);
                     break;
             }
+#pragma warning restore IDE0010
 
             return missingFields;
         }
@@ -504,7 +522,7 @@ namespace SabreTools.DatFiles.Formats
         public Sha512File(DatFile? datFile) : base(datFile)
         {
             _hash = HashType.SHA512;
-            Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, DatFormat.RedumpSHA512);
+            Header.SetFieldValue(DatHeader.DatFormatKey, DatFormat.RedumpSHA512);
         }
 
         /// <inheritdoc/>
@@ -516,6 +534,7 @@ namespace SabreTools.DatFiles.Formats
             if (string.IsNullOrEmpty(datItem.GetName()))
                 missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
+#pragma warning disable IDE0010
             switch (datItem)
             {
                 case Rom rom:
@@ -523,6 +542,7 @@ namespace SabreTools.DatFiles.Formats
                         missingFields.Add(Data.Models.Metadata.Rom.SHA512Key);
                     break;
             }
+#pragma warning restore IDE0010
 
             return missingFields;
         }
@@ -547,7 +567,7 @@ namespace SabreTools.DatFiles.Formats
         public SpamSumFile(DatFile? datFile) : base(datFile)
         {
             _hash = HashType.SpamSum;
-            Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, DatFormat.RedumpSpamSum);
+            Header.SetFieldValue(DatHeader.DatFormatKey, DatFormat.RedumpSpamSum);
         }
 
         /// <inheritdoc/>
@@ -559,6 +579,7 @@ namespace SabreTools.DatFiles.Formats
             if (string.IsNullOrEmpty(datItem.GetName()))
                 missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
+#pragma warning disable IDE0010
             switch (datItem)
             {
                 case Media medium:
@@ -571,6 +592,7 @@ namespace SabreTools.DatFiles.Formats
                         missingFields.Add(Data.Models.Metadata.Rom.SpamSumKey);
                     break;
             }
+#pragma warning restore IDE0010
 
             return missingFields;
         }

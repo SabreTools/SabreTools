@@ -39,7 +39,7 @@ namespace SabreTools.DatFiles.Formats
         /// <param name="datFile">Parent DatFile to copy from</param>
         public ClrMamePro(DatFile? datFile) : base(datFile)
         {
-            Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, DatFormat.ClrMamePro);
+            Header.SetFieldValue(DatHeader.DatFormatKey, DatFormat.ClrMamePro);
         }
 
         /// <inheritdoc/>
@@ -70,6 +70,8 @@ namespace SabreTools.DatFiles.Formats
         protected internal override List<string>? GetMissingRequiredFields(DatItem datItem)
         {
             List<string> missingFields = [];
+
+#pragma warning disable IDE0010
             switch (datItem)
             {
                 case Release release:
@@ -89,7 +91,7 @@ namespace SabreTools.DatFiles.Formats
                 case Rom rom:
                     if (string.IsNullOrEmpty(rom.GetName()))
                         missingFields.Add(Data.Models.Metadata.Rom.NameKey);
-                    if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) == null || rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) < 0)
+                    if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) is null || rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) < 0)
                         missingFields.Add(Data.Models.Metadata.Rom.SizeKey);
                     if (string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.CRCKey))
                         && string.IsNullOrEmpty(rom.GetStringFieldValue("MD2"))
@@ -105,6 +107,7 @@ namespace SabreTools.DatFiles.Formats
                     {
                         missingFields.Add(Data.Models.Metadata.Rom.SHA1Key);
                     }
+
                     break;
 
                 case Disk disk:
@@ -115,6 +118,7 @@ namespace SabreTools.DatFiles.Formats
                     {
                         missingFields.Add(Data.Models.Metadata.Disk.SHA1Key);
                     }
+
                     break;
 
                 case Sample sample:
@@ -137,17 +141,17 @@ namespace SabreTools.DatFiles.Formats
                 case Display display:
                     if (display.GetStringFieldValue(Data.Models.Metadata.Display.DisplayTypeKey).AsDisplayType() == DisplayType.NULL)
                         missingFields.Add(Data.Models.Metadata.Display.DisplayTypeKey);
-                    if (display.GetInt64FieldValue(Data.Models.Metadata.Display.RotateKey) == null)
+                    if (display.GetInt64FieldValue(Data.Models.Metadata.Display.RotateKey) is null)
                         missingFields.Add(Data.Models.Metadata.Display.RotateKey);
                     break;
 
                 case Sound sound:
-                    if (sound.GetInt64FieldValue(Data.Models.Metadata.Sound.ChannelsKey) == null)
+                    if (sound.GetInt64FieldValue(Data.Models.Metadata.Sound.ChannelsKey) is null)
                         missingFields.Add(Data.Models.Metadata.Sound.ChannelsKey);
                     break;
 
                 case Input input:
-                    if (input.GetInt64FieldValue(Data.Models.Metadata.Input.PlayersKey) == null)
+                    if (input.GetInt64FieldValue(Data.Models.Metadata.Input.PlayersKey) is null)
                         missingFields.Add(Data.Models.Metadata.Input.PlayersKey);
                     if (!input.ControlsSpecified)
                         missingFields.Add(Data.Models.Metadata.Input.ControlKey);
@@ -165,6 +169,7 @@ namespace SabreTools.DatFiles.Formats
                         missingFields.Add(Data.Models.Metadata.Driver.EmulationKey);
                     break;
             }
+#pragma warning restore IDE0010
 
             return missingFields;
         }

@@ -21,7 +21,7 @@ namespace SabreTools.DatItems.Formats
             get
             {
                 var conditions = GetFieldValue<Condition[]?>(Data.Models.Metadata.DipValue.ConditionKey);
-                return conditions != null && conditions.Length > 0;
+                return conditions is not null && conditions.Length > 0;
             }
         }
 
@@ -34,18 +34,18 @@ namespace SabreTools.DatItems.Formats
         public DipValue(Data.Models.Metadata.DipValue item) : base(item)
         {
             // Process flag values
-            if (GetBoolFieldValue(Data.Models.Metadata.DipValue.DefaultKey) != null)
+            if (GetBoolFieldValue(Data.Models.Metadata.DipValue.DefaultKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.DipValue.DefaultKey, GetBoolFieldValue(Data.Models.Metadata.DipValue.DefaultKey).FromYesNo());
 
             // Handle subitems
             var condition = GetFieldValue<Data.Models.Metadata.Condition>(Data.Models.Metadata.DipValue.ConditionKey);
-            if (condition != null)
+            if (condition is not null)
                 SetFieldValue<Condition?>(Data.Models.Metadata.DipValue.ConditionKey, new Condition(condition));
         }
 
         public DipValue(Data.Models.Metadata.DipValue item, Machine machine, Source source) : this(item)
         {
-            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            SetFieldValue<Source?>(SourceKey, source);
             CopyMachineInformation(machine);
         }
 
@@ -60,7 +60,7 @@ namespace SabreTools.DatItems.Formats
 
             // Handle subitems
             var subCondition = GetFieldValue<Condition>(Data.Models.Metadata.DipValue.ConditionKey);
-            if (subCondition != null)
+            if (subCondition is not null)
                 dipValueItem[Data.Models.Metadata.DipValue.ConditionKey] = subCondition.GetInternalClone();
 
             return dipValueItem;

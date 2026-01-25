@@ -52,6 +52,7 @@ namespace SabreTools.DatTools
                 if (useTags && SplitType == MergingFlag.None)
                     SplitType = datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.ForceMergingKey).AsMergingFlag();
 
+#pragma warning disable IDE0010
                 // Run internal splitting
                 switch (SplitType)
                 {
@@ -60,7 +61,7 @@ namespace SabreTools.DatTools
                         // No-op
                         break;
                     case MergingFlag.Split:
-                        if (filterRunner != null)
+                        if (filterRunner is not null)
                         {
                             datFile.ExecuteFilters(filterRunner);
                             datFile.ClearMarked();
@@ -69,7 +70,7 @@ namespace SabreTools.DatTools
                         datFile.ApplySplit();
                         break;
                     case MergingFlag.Merged:
-                        if (filterRunner != null)
+                        if (filterRunner is not null)
                         {
                             datFile.ExecuteFilters(filterRunner);
                             datFile.ClearMarked();
@@ -78,7 +79,7 @@ namespace SabreTools.DatTools
                         datFile.ApplyMerged();
                         break;
                     case MergingFlag.NonMerged:
-                        if (filterRunner != null)
+                        if (filterRunner is not null)
                         {
                             datFile.ExecuteFilters(filterRunner);
                             datFile.ClearMarked();
@@ -89,7 +90,7 @@ namespace SabreTools.DatTools
 
                     // Nonstandard
                     case MergingFlag.FullMerged:
-                        if (filterRunner != null)
+                        if (filterRunner is not null)
                         {
                             datFile.ExecuteFilters(filterRunner);
                             datFile.ClearMarked();
@@ -104,6 +105,7 @@ namespace SabreTools.DatTools
                         datFile.ApplyFullyNonMerged();
                         break;
                 }
+#pragma warning restore IDE0010
             }
             catch (Exception ex) when (!throwOnError)
             {
@@ -134,7 +136,7 @@ namespace SabreTools.DatTools
 #endif
             {
                 List<DatItem>? items = datFile.GetItemsForBucket(key);
-                if (items == null)
+                if (items is null)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
@@ -146,7 +148,7 @@ namespace SabreTools.DatTools
                 {
                     DatItem newItem = item;
                     var source = newItem.GetFieldValue<Source?>(DatItem.SourceKey);
-                    if (source == null)
+                    if (source is null)
                         continue;
 
                     string filename = inputs[source.Index].CurrentPath;
@@ -171,7 +173,7 @@ namespace SabreTools.DatTools
 #endif
 
                     var machine = newItem.GetMachine();
-                    if (machine == null)
+                    if (machine is null)
                         continue;
 
                     string machineName = Path.GetDirectoryName(filename)
@@ -213,7 +215,7 @@ namespace SabreTools.DatTools
 #endif
             {
                 var items = datFile.GetItemsForBucketDB(key);
-                if (items == null)
+                if (items is null)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
@@ -223,11 +225,11 @@ namespace SabreTools.DatTools
                 foreach (var item in items)
                 {
                     var source = datFile.GetSourceForItemDB(item.Key);
-                    if (source.Value == null)
+                    if (source.Value is null)
                         continue;
 
                     var machine = datFile.GetMachineForItemDB(item.Key);
-                    if (machine.Value == null)
+                    if (machine.Value is null)
                         continue;
 
                     string filename = inputs[source.Value.Index].CurrentPath;

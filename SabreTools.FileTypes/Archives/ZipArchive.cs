@@ -59,7 +59,7 @@ namespace SabreTools.FileTypes.Archives
             bool encounteredErrors = true;
 
             // If we have an invalid file
-            if (Filename == null)
+            if (Filename is null)
                 return true;
 
             try
@@ -95,7 +95,7 @@ namespace SabreTools.FileTypes.Archives
         {
             // Try to extract a stream using the given information
             var stream = GetEntryStream(entryName, out string? realEntry);
-            if (stream == null || realEntry == null)
+            if (stream is null || realEntry is null)
                 return null;
 
             // If the stream and the entry name are both non-null, we write to file
@@ -106,7 +106,7 @@ namespace SabreTools.FileTypes.Archives
 
             // Now open and write the file if possible
             FileStream fs = File.Create(realEntry);
-            if (fs != null)
+            if (fs is not null)
             {
                 if (stream.CanSeek)
                     stream.Seek(0, SeekOrigin.Begin);
@@ -139,7 +139,7 @@ namespace SabreTools.FileTypes.Archives
             realEntry = null;
 
             // If we have an invalid file
-            if (Filename == null)
+            if (Filename is null)
                 return null;
 
             try
@@ -158,7 +158,7 @@ namespace SabreTools.FileTypes.Archives
                     var entry = zf.GetLocalFile(i);
 
                     // Skip invalid entries
-                    if (entry.Filename == null)
+                    if (entry.Filename is null)
                         continue;
 
                     // Skip directory entries
@@ -187,7 +187,7 @@ namespace SabreTools.FileTypes.Archives
                     var entry = zf.Entries[i]; ;
 
                     // Skip invalid entries
-                    if (entry.FullName == null)
+                    if (entry.FullName is null)
                         continue;
 
                     // Skip directory entries
@@ -227,7 +227,7 @@ namespace SabreTools.FileTypes.Archives
         public override List<BaseFile>? GetChildren()
         {
             // If we have an invalid file
-            if (Filename == null)
+            if (Filename is null)
                 return null;
 
             List<BaseFile> found = [];
@@ -245,7 +245,7 @@ namespace SabreTools.FileTypes.Archives
                 {
                     // Get the local file
                     var localFile = zf.GetLocalFile(i);
-                    if (localFile == null)
+                    if (localFile is null)
                         continue;
 
                     // If the entry is a directory (or looks like a directory), we don't want to open it
@@ -261,7 +261,7 @@ namespace SabreTools.FileTypes.Archives
                     zr = zf.ZipFileOpenReadStream(i, false, out Stream? readStream, out _, out _);
 
                     // If we get a read error, log it and continue
-                    if (zr != ZipReturn.ZipGood || readStream == null)
+                    if (zr != ZipReturn.ZipGood || readStream is null)
                     {
                         _logger.Warning($"An error occurred while reading archive {Filename}: Zip Error - {zr}");
                         continue;
@@ -300,7 +300,7 @@ namespace SabreTools.FileTypes.Archives
                 {
                     // Get the local file
                     var localFile = zf.Entries[i];
-                    if (localFile == null)
+                    if (localFile is null)
                         continue;
 
                     // If the entry is a directory (or looks like a directory), we don't want to open it
@@ -313,7 +313,7 @@ namespace SabreTools.FileTypes.Archives
 
                     // Open the read stream
                     var readStream = localFile.Open();
-                    if (readStream == null)
+                    if (readStream is null)
                         continue;
 
                     // Create a blank item for the entry
@@ -359,7 +359,7 @@ namespace SabreTools.FileTypes.Archives
         public override List<string> GetEmptyFolders()
         {
             // If we have an invalid file
-            if (Filename == null)
+            if (Filename is null)
                 return [];
 
             List<string> empties = [];
@@ -383,7 +383,7 @@ namespace SabreTools.FileTypes.Archives
                 foreach (var entry in pairs)
                 {
                     // If the current is a superset of last, we skip it
-                    if (lastZipEntry != null && lastZipEntry.StartsWith(entry.Key))
+                    if (lastZipEntry is not null && lastZipEntry.StartsWith(entry.Key))
                     {
                         // No-op
                     }
@@ -405,7 +405,7 @@ namespace SabreTools.FileTypes.Archives
                 {
                     // Get the local file
                     var entry = zf.Entries[i];
-                    if (entry == null)
+                    if (entry is null)
                         continue;
 
                     // If the entry is a directory (or looks like a directory)
@@ -425,7 +425,7 @@ namespace SabreTools.FileTypes.Archives
                 foreach (var entry in pairs)
                 {
                     // If the current is a superset of last, we skip it
-                    if (lastZipEntry != null && lastZipEntry.StartsWith(entry.Key))
+                    if (lastZipEntry is not null && lastZipEntry.StartsWith(entry.Key))
                     {
                         // No-op
                     }
@@ -487,7 +487,7 @@ namespace SabreTools.FileTypes.Archives
             string tempFile = Path.Combine(outDir, $"tmp{Guid.NewGuid()}");
 
             // If either input is null or empty, return
-            if (stream == null || baseFile == null || baseFile.Filename == null)
+            if (stream is null || baseFile is null || baseFile.Filename is null)
                 return success;
 
             // If the stream is not readable, return
@@ -522,7 +522,7 @@ namespace SabreTools.FileTypes.Archives
                     zipReturn = zipFile.ZipFileCreate(tempFile);
 
                     // Open the input file for reading
-                    ulong istreamSize = (ulong)(stream.Length);
+                    ulong istreamSize = (ulong)stream.Length;
 
                     DateTime dt = DateTime.Now;
                     if (_realDates && !string.IsNullOrEmpty(baseFile.Date) && DateTime.TryParse(baseFile.Date!.Replace('\\', '/'), out dt))
@@ -596,7 +596,7 @@ namespace SabreTools.FileTypes.Archives
                         if (index < 0)
                         {
                             // Open the input file for reading
-                            ulong istreamSize = (ulong)(stream.Length);
+                            ulong istreamSize = (ulong)stream.Length;
 
                             DateTime dt = DateTime.Now;
                             if (_realDates && !string.IsNullOrEmpty(baseFile.Date) && DateTime.TryParse(baseFile.Date!.Replace('\\', '/'), out dt))
@@ -677,7 +677,7 @@ namespace SabreTools.FileTypes.Archives
             string tempFile = Path.Combine(outDir, $"tmp{Guid.NewGuid()}");
 
             // If either list of roms is null or empty, return
-            if (files == null || baseFiles == null || files.Count == 0 || baseFiles.Count == 0)
+            if (files is null || baseFiles is null || files.Count == 0 || baseFiles.Count == 0)
                 return false;
 
             // If the number of inputs is less than the number of available roms, return
@@ -730,7 +730,7 @@ namespace SabreTools.FileTypes.Archives
 
                         // Open the input file for reading
                         Stream freadStream = File.Open(files[index], FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                        ulong istreamSize = (ulong)(new FileInfo(files[index]).Length);
+                        ulong istreamSize = (ulong)new FileInfo(files[index]).Length;
 
                         DateTime dt = DateTime.Now;
                         if (_realDates && !string.IsNullOrEmpty(baseFiles[index].Date) && DateTime.TryParse(baseFiles[index].Date?.Replace('\\', '/'), out dt))
@@ -812,7 +812,7 @@ namespace SabreTools.FileTypes.Archives
                         {
                             // Open the input file for reading
                             Stream freadStream = File.Open(files[-index - 1], FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                            ulong istreamSize = (ulong)(new FileInfo(files[-index - 1]).Length);
+                            ulong istreamSize = (ulong)new FileInfo(files[-index - 1]).Length;
 
                             DateTime dt = DateTime.Now;
                             if (_realDates && !string.IsNullOrEmpty(baseFiles[-index - 1].Date) && DateTime.TryParse(baseFiles[-index - 1].Date?.Replace('\\', '/'), out dt))
@@ -834,6 +834,7 @@ namespace SabreTools.FileTypes.Archives
                                 writeStream!.Write(ibuffer, 0, ilen);
                                 writeStream.Flush();
                             }
+
                             freadStream.Dispose();
                             zipFile.ZipFileCloseWriteStream(baseFiles[-index - 1].CRC!);
                         }

@@ -50,7 +50,7 @@ namespace SabreTools.Reports
             {
                 // Try to create the output file
                 FileStream stream = File.Create(outfile ?? string.Empty);
-                if (stream == null)
+                if (stream is null)
                 {
                     _logger.Warning($"File '{outfile}' could not be created for writing! Please check to see if the file is writable");
                     return false;

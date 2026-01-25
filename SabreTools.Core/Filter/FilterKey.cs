@@ -104,13 +104,13 @@ namespace SabreTools.Core.Filter
         {
             // Get the set of constants
             var constants = TypeHelper.GetConstants(typeof(Header));
-            if (constants == null)
+            if (constants is null)
                 return false;
 
             // Get if there's a match to the constant
             string localFieldName = fieldName;
             string? constantMatch = Array.Find(constants, c => string.Equals(c, localFieldName, StringComparison.OrdinalIgnoreCase));
-            if (constantMatch == null)
+            if (constantMatch is null)
                 return false;
 
             // Return the sanitized ID
@@ -126,13 +126,13 @@ namespace SabreTools.Core.Filter
         {
             // Get the set of constants
             var constants = TypeHelper.GetConstants(typeof(Machine));
-            if (constants == null)
+            if (constants is null)
                 return false;
 
             // Get if there's a match to the constant
             string localFieldName = fieldName;
             string? constantMatch = Array.Find(constants, c => string.Equals(c, localFieldName, StringComparison.OrdinalIgnoreCase));
-            if (constantMatch == null)
+            if (constantMatch is null)
                 return false;
 
             // Return the sanitized ID
@@ -156,11 +156,11 @@ namespace SabreTools.Core.Filter
                 // If we get any matches
                 string localFieldName = fieldName;
                 string? matchedType = Array.Find(itemTypes, t => DatItemContainsField(t, localFieldName));
-                if (matchedType != null)
+                if (matchedType is not null)
                 {
                     // Check for a matching field
                     string? matchedField = GetMatchingField(matchedType, fieldName);
-                    if (matchedField == null)
+                    if (matchedField is null)
                         return false;
 
                     itemName = "item";
@@ -172,7 +172,7 @@ namespace SabreTools.Core.Filter
             {
                 // Check for a matching field
                 string? matchedField = GetMatchingField(itemName, fieldName);
-                if (matchedField == null)
+                if (matchedField is null)
                     return false;
 
                 itemName = itemName.ToLowerInvariant();
@@ -188,7 +188,7 @@ namespace SabreTools.Core.Filter
         /// Determine if an item type contains a field
         /// </summary>
         private static bool DatItemContainsField(string itemName, string fieldName)
-            => GetMatchingField(itemName, fieldName) != null;
+            => GetMatchingField(itemName, fieldName) is not null;
 
         /// <summary>
         /// Determine if an item type contains a field
@@ -197,12 +197,12 @@ namespace SabreTools.Core.Filter
         {
             // Get the correct item type
             var itemType = TypeHelper.GetDatItemType(itemName.ToLowerInvariant());
-            if (itemType == null)
+            if (itemType is null)
                 return null;
 
             // Get the set of constants
             var constants = TypeHelper.GetConstants(itemType);
-            if (constants == null)
+            if (constants is null)
                 return null;
 
             // Get if there's a match to the constant

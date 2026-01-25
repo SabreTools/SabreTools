@@ -16,7 +16,7 @@ namespace SabreTools.DatFiles.Formats
         /// DTD for original Logiqx DATs
         /// </summary>
         /// <remarks>This has been edited to reflect actual current standards</remarks>
-        private const string LogiqxDTD = @"<!--
+        internal const string LogiqxDTD = @"<!--
    ROM Management Datafile - DTD
 
    For further information, see: http://www.logiqx.com/
@@ -154,7 +154,7 @@ namespace SabreTools.DatFiles.Formats
         /// <summary>
         /// XSD for No-Intro Logiqx-derived DATs
         /// </summary>
-        private const string NoIntroXSD = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+        internal const string NoIntroXSD = @"<?xml version=""1.0"" encoding=""UTF-8""?>
 <xs:schema attributeFormDefault=""unqualified"" elementFormDefault=""qualified"" xmlns:xs=""http://www.w3.org/2001/XMLSchema"">
   <xs:element name=""datafile"">
     <xs:complexType>
@@ -253,15 +253,17 @@ namespace SabreTools.DatFiles.Formats
         {
             _useGame = useGame;
             if (useGame)
-                Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, DatFormat.LogiqxDeprecated);
+                Header.SetFieldValue(DatHeader.DatFormatKey, DatFormat.LogiqxDeprecated);
             else
-                Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, DatFormat.Logiqx);
+                Header.SetFieldValue(DatHeader.DatFormatKey, DatFormat.Logiqx);
         }
 
         /// <inheritdoc/>
         protected internal override List<string>? GetMissingRequiredFields(DatItem datItem)
         {
             List<string> missingFields = [];
+
+#pragma warning disable IDE0010
             switch (datItem)
             {
                 case Release release:
@@ -281,7 +283,7 @@ namespace SabreTools.DatFiles.Formats
                 case Rom rom:
                     if (string.IsNullOrEmpty(rom.GetName()))
                         missingFields.Add(Data.Models.Metadata.Rom.NameKey);
-                    if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) == null || rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) < 0)
+                    if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) is null || rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) < 0)
                         missingFields.Add(Data.Models.Metadata.Rom.SizeKey);
                     if (string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.CRCKey))
                         && string.IsNullOrEmpty(rom.GetStringFieldValue("MD2"))
@@ -297,6 +299,7 @@ namespace SabreTools.DatFiles.Formats
                     {
                         missingFields.Add(Data.Models.Metadata.Rom.SHA1Key);
                     }
+
                     break;
 
                 case Disk disk:
@@ -307,6 +310,7 @@ namespace SabreTools.DatFiles.Formats
                     {
                         missingFields.Add(Data.Models.Metadata.Disk.SHA1Key);
                     }
+
                     break;
 
                 case Media media:
@@ -319,6 +323,7 @@ namespace SabreTools.DatFiles.Formats
                     {
                         missingFields.Add(Data.Models.Metadata.Media.SHA1Key);
                     }
+
                     break;
 
                 case DeviceRef deviceref:
@@ -356,6 +361,7 @@ namespace SabreTools.DatFiles.Formats
                         missingFields.Add(Data.Models.Metadata.SoftwareList.StatusKey);
                     break;
             }
+#pragma warning restore IDE0010
 
             return missingFields;
         }

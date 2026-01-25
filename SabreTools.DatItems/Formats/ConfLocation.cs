@@ -24,13 +24,13 @@ namespace SabreTools.DatItems.Formats
         public ConfLocation(Data.Models.Metadata.ConfLocation item) : base(item)
         {
             // Process flag values
-            if (GetBoolFieldValue(Data.Models.Metadata.ConfLocation.InvertedKey) != null)
+            if (GetBoolFieldValue(Data.Models.Metadata.ConfLocation.InvertedKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.ConfLocation.InvertedKey, GetBoolFieldValue(Data.Models.Metadata.ConfLocation.InvertedKey).FromYesNo());
         }
 
         public ConfLocation(Data.Models.Metadata.ConfLocation item, Machine machine, Source source) : this(item)
         {
-            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            SetFieldValue<Source?>(SourceKey, source);
             CopyMachineInformation(machine);
         }
 

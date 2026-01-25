@@ -22,7 +22,7 @@ namespace SabreTools.DatFiles.Formats
         /// <param name="datFile">Parent DatFile to copy from</param>
         public Listrom(DatFile? datFile) : base(datFile)
         {
-            Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, DatFormat.Listrom);
+            Header.SetFieldValue(DatHeader.DatFormatKey, DatFormat.Listrom);
         }
 
         /// <inheritdoc/>
@@ -34,6 +34,7 @@ namespace SabreTools.DatFiles.Formats
             if (string.IsNullOrEmpty(datItem.GetName()))
                 missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
+#pragma warning disable IDE0010
             switch (datItem)
             {
                 case Disk disk:
@@ -42,10 +43,11 @@ namespace SabreTools.DatFiles.Formats
                     {
                         missingFields.Add(Data.Models.Metadata.Disk.SHA1Key);
                     }
+
                     break;
 
                 case Rom rom:
-                    if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) == null || rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) < 0)
+                    if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) is null || rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) < 0)
                         missingFields.Add(Data.Models.Metadata.Rom.SizeKey);
                     if (string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.CRCKey)))
                         missingFields.Add(Data.Models.Metadata.Rom.CRCKey);
@@ -53,6 +55,7 @@ namespace SabreTools.DatFiles.Formats
                         missingFields.Add(Data.Models.Metadata.Rom.SHA1Key);
                     break;
             }
+#pragma warning restore IDE0010
 
             return missingFields;
         }

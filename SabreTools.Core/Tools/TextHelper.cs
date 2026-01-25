@@ -183,7 +183,7 @@ namespace SabreTools.Core.Tools
         private static string? NormalizeHashData(string? hash, int expectedLength)
         {
             // If we have a known blank hash, return blank
-            if (hash == null)
+            if (hash is null)
                 return null;
             else if (hash == string.Empty || hash == "-" || hash == "_")
                 return string.Empty;

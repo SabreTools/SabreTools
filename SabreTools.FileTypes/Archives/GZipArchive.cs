@@ -34,7 +34,7 @@ namespace SabreTools.FileTypes.Archives
                 1C-1F	CRC hash
                 20-27	Int64 size (mirrored)
         */
-        private readonly static byte[] TorrentGZHeader = [0x1f, 0x8b, 0x08, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1c, 0x00];
+        private static readonly byte[] TorrentGZHeader = [0x1f, 0x8b, 0x08, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1c, 0x00];
 
         #endregion
 
@@ -75,7 +75,7 @@ namespace SabreTools.FileTypes.Archives
             bool encounteredErrors = true;
 
             // If we have an invalid file
-            if (Filename == null)
+            if (Filename is null)
                 return true;
 
             try
@@ -111,7 +111,7 @@ namespace SabreTools.FileTypes.Archives
         {
             // Try to extract a stream using the given information
             var stream = GetEntryStream(entryName, out string? realEntry);
-            if (stream == null || realEntry == null)
+            if (stream is null || realEntry is null)
                 return null;
 
             // If the stream and the entry name are both non-null, we write to file
@@ -119,12 +119,12 @@ namespace SabreTools.FileTypes.Archives
 
             // Create the output subfolder now
             string? dir = Path.GetDirectoryName(realEntry);
-            if (dir != null)
+            if (dir is not null)
                 Directory.CreateDirectory(dir);
 
             // Now open and write the file if possible
             FileStream fs = File.Create(realEntry);
-            if (fs != null)
+            if (fs is not null)
             {
                 if (stream.CanSeek)
                     stream.Seek(0, SeekOrigin.Begin);
@@ -157,7 +157,7 @@ namespace SabreTools.FileTypes.Archives
             realEntry = null;
 
             // If we have an invalid file
-            if (Filename == null)
+            if (Filename is null)
                 return null;
 
             try
@@ -186,11 +186,11 @@ namespace SabreTools.FileTypes.Archives
         public override List<BaseFile>? GetChildren()
         {
             // If we have an invalid file
-            if (Filename == null)
+            if (Filename is null)
                 return null;
 
             // If we have children cached already
-            if (_children != null && _children.Count > 0)
+            if (_children is not null && _children.Count > 0)
                 return _children;
 
             _children = [];
@@ -200,7 +200,7 @@ namespace SabreTools.FileTypes.Archives
             BaseFile? possibleTgz = GetTorrentGZFileInfo();
 
             // If it was, then add it to the outputs and continue
-            if (possibleTgz != null && possibleTgz.Filename != null)
+            if (possibleTgz is not null && possibleTgz.Filename is not null)
             {
                 _children.Add(possibleTgz);
                 return _children;
@@ -231,7 +231,7 @@ namespace SabreTools.FileTypes.Archives
                     gzipEntryRom = FileTypeTool.GetInfo(gzstream, _hashTypes);
                     gzipEntryRom.Filename = gz.GetLocalFile(0).Filename;
                     gzipEntryRom.Parent = gamename;
-                    gzipEntryRom.Date = (gz.TimeStamp > 0 ? gz.TimeStamp.ToString() : null);
+                    gzipEntryRom.Date = gz.TimeStamp > 0 ? gz.TimeStamp.ToString() : null;
                     gzstream?.Dispose();
                 }
 
@@ -259,7 +259,7 @@ namespace SabreTools.FileTypes.Archives
         public override bool IsStandardized()
         {
             // Check for the file existing first
-            if (Filename == null || !File.Exists(Filename))
+            if (Filename is null || !File.Exists(Filename))
                 return false;
 
             string datum = Path.GetFileName(Filename).ToLowerInvariant();
@@ -273,7 +273,7 @@ namespace SabreTools.FileTypes.Archives
             }
 
             // Check if the name is the right length
-            if (!Regex.IsMatch(datum, @"^[0-9a-f]{" + Hashing.Constants.SHA1Length + @"}\.gz"))
+            if (!Regex.IsMatch(datum, @"^[0-9a-f]{" + Constants.SHA1Length + @"}\.gz"))
             {
                 _logger.Warning($"Non SHA-1 filename found, skipping: '{Path.GetFullPath(Filename)}'");
                 return false;
@@ -302,7 +302,7 @@ namespace SabreTools.FileTypes.Archives
                 if (i == 4 || i == 5 || i == 6 || i == 7 || i == 9)
                     continue;
 
-                correct &= (header[i] == TorrentGZHeader[i]);
+                correct &= header[i] == TorrentGZHeader[i];
             }
 
             if (!correct)
@@ -318,7 +318,7 @@ namespace SabreTools.FileTypes.Archives
         public BaseFile? GetTorrentGZFileInfo()
         {
             // Check for the file existing first
-            if (Filename == null || !File.Exists(Filename))
+            if (Filename is null || !File.Exists(Filename))
                 return null;
 
             string datum = Path.GetFileName(Filename).ToLowerInvariant();
@@ -332,7 +332,7 @@ namespace SabreTools.FileTypes.Archives
             }
 
             // Check if the name is the right length
-            if (!Regex.IsMatch(datum, @"^[0-9a-f]{" + Hashing.Constants.SHA1Length + @"}\.gz"))
+            if (!Regex.IsMatch(datum, @"^[0-9a-f]{" + Constants.SHA1Length + @"}\.gz"))
             {
                 _logger.Warning($"Non SHA-1 filename found, skipping: '{Path.GetFullPath(Filename)}'");
                 return null;
@@ -363,10 +363,9 @@ namespace SabreTools.FileTypes.Archives
             {
                 // This is a temp fix to ignore the modification time and OS until romba can be fixed
                 if (i == 4 || i == 5 || i == 6 || i == 7 || i == 9)
-                {
                     continue;
-                }
-                correct &= (header[i] == TorrentGZHeader[i]);
+
+                correct &= header[i] == TorrentGZHeader[i];
             }
 
             if (!correct)
@@ -416,7 +415,7 @@ namespace SabreTools.FileTypes.Archives
             bool success = false;
 
             // If the stream is not readable, return
-            if (stream == null || !stream.CanRead)
+            if (stream is null || !stream.CanRead)
                 return success;
 
             // Make sure the output directory exists

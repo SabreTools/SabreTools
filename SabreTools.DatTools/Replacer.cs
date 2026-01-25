@@ -76,7 +76,7 @@ namespace SabreTools.DatTools
 #endif
             {
                 List<DatItem>? datItems = intDat.GetItemsForBucket(key);
-                if (datItems == null)
+                if (datItems is null)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
@@ -137,7 +137,7 @@ namespace SabreTools.DatTools
 #endif
             {
                 var datItems = intDat.GetItemsForBucketDB(key);
-                if (datItems == null)
+                if (datItems is null)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
@@ -193,7 +193,7 @@ namespace SabreTools.DatTools
 #endif
             {
                 List<DatItem>? datItems = intDat.GetItemsForBucket(key);
-                if (datItems == null)
+                if (datItems is null)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
@@ -255,7 +255,7 @@ namespace SabreTools.DatTools
 #endif
             {
                 var datItems = intDat.GetItemsForBucketDB(key);
-                if (datItems == null)
+                if (datItems is null)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
@@ -266,7 +266,7 @@ namespace SabreTools.DatTools
                 {
                     var datMachine = datFile.GetMachineForItemDB(datFile.GetItemsForBucketDB(key)!.First().Key);
                     var intMachine = intDat.GetMachineForItemDB(datItem.Key);
-                    if (datMachine.Value != null && intMachine.Value != null)
+                    if (datMachine.Value is not null && intMachine.Value is not null)
                         ReplaceFields(intMachine.Value, datMachine.Value, machineFieldNames, onlySame);
                 }
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
@@ -290,7 +290,7 @@ namespace SabreTools.DatTools
         public static void ReplaceFields(Machine machine, Machine repMachine, List<string> machineFieldNames, bool onlySame)
         {
             // If we have an invalid input, return
-            if (machine == null || repMachine == null || machineFieldNames == null)
+            if (machine is null || repMachine is null || machineFieldNames is null)
                 return;
 
             // Loop through and replace fields
@@ -318,7 +318,7 @@ namespace SabreTools.DatTools
         public static void ReplaceFields(DatItem datItem, DatItem repDatItem, Dictionary<string, List<string>> itemFieldNames)
         {
             // If we have an invalid input, return
-            if (datItem == null || repDatItem == null || itemFieldNames == null)
+            if (datItem is null || repDatItem is null || itemFieldNames is null)
                 return;
 
             #region Common
@@ -328,7 +328,7 @@ namespace SabreTools.DatTools
 
             // If there are no field names for this type or generic, return
             string? itemType = datItem.GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey).AsItemType().AsStringValue();
-            if (itemType == null || (!itemFieldNames.ContainsKey(itemType) && !itemFieldNames.ContainsKey("item")))
+            if (itemType is null || (!itemFieldNames.ContainsKey(itemType) && !itemFieldNames.ContainsKey("item")))
                 return;
 
             // Get the combined list of fields to remove
@@ -354,13 +354,15 @@ namespace SabreTools.DatTools
 
             // TODO: Filter out hashes before here so these checks actually work
             // Handle special cases
+#pragma warning disable IDE0010
             switch (datItem, repDatItem)
             {
                 case (Disk disk, Disk repDisk): ReplaceFields(disk, repDisk, [.. fieldNames]); break;
-                case (DatItems.Formats.File file, DatItems.Formats.File repFile): ReplaceFields(file, repFile, [.. fieldNames]); break;
+                case (File file, File repFile): ReplaceFields(file, repFile, [.. fieldNames]); break;
                 case (Media media, Media repMedia): ReplaceFields(media, repMedia, [.. fieldNames]); break;
                 case (Rom rom, Rom repRom): ReplaceFields(rom, repRom, [.. fieldNames]); break;
             }
+#pragma warning restore IDE0010
 
             #endregion
         }
@@ -392,7 +394,7 @@ namespace SabreTools.DatTools
         /// <param name="file">File to remove replace fields in</param>
         /// <param name="newItem">File to pull new information from</param>
         /// <param name="datItemFields">List of fields representing what should be updated</param>
-        private static void ReplaceFields(DatItems.Formats.File file, DatItems.Formats.File newItem, List<string> datItemFields)
+        private static void ReplaceFields(File file, File newItem, List<string> datItemFields)
         {
             if (datItemFields.Contains(Data.Models.Metadata.Rom.CRCKey))
             {

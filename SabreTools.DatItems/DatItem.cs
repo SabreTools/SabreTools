@@ -148,11 +148,11 @@ namespace SabreTools.DatItems
         /// <param name="machine">Existing machine to copy information from</param>
         public void CopyMachineInformation(Machine? machine)
         {
-            if (machine == null)
+            if (machine is null)
                 return;
 
             if (machine.Clone() is Machine cloned)
-                SetFieldValue<Machine>(MachineKey, cloned);
+                SetFieldValue(MachineKey, cloned);
         }
 
         #endregion
@@ -163,7 +163,7 @@ namespace SabreTools.DatItems
         public int CompareTo(DatItem? other)
         {
             // If the other item doesn't exist
-            if (other == null)
+            if (other is null)
                 return 1;
 
             // Get the names to avoid changing values
@@ -183,7 +183,7 @@ namespace SabreTools.DatItems
         public override bool Equals(ModelBackedItem? other)
         {
             // If other is null
-            if (other == null)
+            if (other is null)
                 return false;
 
             // If the type is mismatched
@@ -198,7 +198,7 @@ namespace SabreTools.DatItems
         public override bool Equals(ModelBackedItem<Data.Models.Metadata.DatItem>? other)
         {
             // If other is null
-            if (other == null)
+            if (other is null)
                 return false;
 
             // If the type is mismatched
@@ -217,7 +217,7 @@ namespace SabreTools.DatItems
         public virtual bool Equals(DatItem? other)
         {
             // If the other item is null
-            if (other == null)
+            if (other is null)
                 return false;
 
             // Get the types for comparison
@@ -244,7 +244,7 @@ namespace SabreTools.DatItems
         public bool PassesFilter(FilterRunner filterRunner)
         {
             var machine = GetMachine();
-            if (machine != null && !machine.PassesFilter(filterRunner))
+            if (machine is not null && !machine.PassesFilter(filterRunner))
                 return false;
 
             return filterRunner.Run(_internal);
@@ -279,6 +279,7 @@ namespace SabreTools.DatItems
             string sourceKeyPadded = source?.Index.ToString().PadLeft(10, '0') + '-';
             string machineName = machine?.GetName() ?? "Default";
 
+#pragma warning disable IDE0010
             // Now determine what the key should be based on the bucketedBy value
             switch (bucketedBy)
             {
@@ -330,6 +331,7 @@ namespace SabreTools.DatItems
                     key = ZeroHash.SpamSumStr;
                     break;
             }
+#pragma warning restore IDE0010
 
             // Double and triple check the key for corner cases
             key ??= string.Empty;

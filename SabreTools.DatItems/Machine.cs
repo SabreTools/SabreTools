@@ -24,37 +24,37 @@ namespace SabreTools.DatItems
         {
             // Get all fields to automatically copy without processing
             var nonItemFields = TypeHelper.GetConstants(typeof(Data.Models.Metadata.Machine));
-            if (nonItemFields == null)
+            if (nonItemFields is null)
                 return;
 
             // Populate the internal machine from non-filter fields
             _internal = [];
             foreach (string fieldName in nonItemFields)
             {
-                if (machine.ContainsKey(fieldName))
-                    _internal[fieldName] = machine[fieldName];
+                if (machine.TryGetValue(fieldName, out var value))
+                    _internal[fieldName] = value;
             }
 
             // Process flag values
-            if (GetStringFieldValue(Data.Models.Metadata.Machine.Im1CRCKey) != null)
+            if (GetStringFieldValue(Data.Models.Metadata.Machine.Im1CRCKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.Machine.Im1CRCKey, TextHelper.NormalizeCRC32(GetStringFieldValue(Data.Models.Metadata.Machine.Im1CRCKey)));
-            if (GetStringFieldValue(Data.Models.Metadata.Machine.Im2CRCKey) != null)
+            if (GetStringFieldValue(Data.Models.Metadata.Machine.Im2CRCKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.Machine.Im2CRCKey, TextHelper.NormalizeCRC32(GetStringFieldValue(Data.Models.Metadata.Machine.Im2CRCKey)));
-            if (GetBoolFieldValue(Data.Models.Metadata.Machine.IsBiosKey) != null)
+            if (GetBoolFieldValue(Data.Models.Metadata.Machine.IsBiosKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.Machine.IsBiosKey, GetBoolFieldValue(Data.Models.Metadata.Machine.IsBiosKey).FromYesNo());
-            if (GetBoolFieldValue(Data.Models.Metadata.Machine.IsDeviceKey) != null)
+            if (GetBoolFieldValue(Data.Models.Metadata.Machine.IsDeviceKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.Machine.IsDeviceKey, GetBoolFieldValue(Data.Models.Metadata.Machine.IsDeviceKey).FromYesNo());
-            if (GetBoolFieldValue(Data.Models.Metadata.Machine.IsMechanicalKey) != null)
+            if (GetBoolFieldValue(Data.Models.Metadata.Machine.IsMechanicalKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.Machine.IsMechanicalKey, GetBoolFieldValue(Data.Models.Metadata.Machine.IsMechanicalKey).FromYesNo());
-            if (GetStringFieldValue(Data.Models.Metadata.Machine.SupportedKey) != null)
+            if (GetStringFieldValue(Data.Models.Metadata.Machine.SupportedKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.Machine.SupportedKey, GetStringFieldValue(Data.Models.Metadata.Machine.SupportedKey).AsSupported().AsStringValue());
 
             // Handle Trurip object, if it exists
             if (machine.ContainsKey(Data.Models.Metadata.Machine.TruripKey))
             {
                 var truripItem = machine.Read<Data.Models.Logiqx.Trurip>(Data.Models.Metadata.Machine.TruripKey);
-                if (truripItem != null)
-                    SetFieldValue<Trurip>(Data.Models.Metadata.Machine.TruripKey, new Trurip(truripItem));
+                if (truripItem is not null)
+                    SetFieldValue(Data.Models.Metadata.Machine.TruripKey, new Trurip(truripItem));
             }
         }
 
@@ -103,7 +103,7 @@ namespace SabreTools.DatItems
         public override bool Equals(ModelBackedItem? other)
         {
             // If other is null
-            if (other == null)
+            if (other is null)
                 return false;
 
             // If the type is mismatched
@@ -118,7 +118,7 @@ namespace SabreTools.DatItems
         public override bool Equals(ModelBackedItem<Data.Models.Metadata.Machine>? other)
         {
             // If other is null
-            if (other == null)
+            if (other is null)
                 return false;
 
             // If the type is mismatched
@@ -133,7 +133,7 @@ namespace SabreTools.DatItems
         public bool Equals(Machine? other)
         {
             // If other is null
-            if (other == null)
+            if (other is null)
                 return false;
 
             // Compare internal models

@@ -19,8 +19,8 @@ namespace SabreTools.DatItems
             _internal = Activator.CreateInstance<T>();
 
             SetName(string.Empty);
-            SetFieldValue<ItemType>(Data.Models.Metadata.DatItem.TypeKey, ItemType);
-            SetFieldValue<Machine>(MachineKey, new Machine());
+            SetFieldValue(Data.Models.Metadata.DatItem.TypeKey, ItemType);
+            SetFieldValue(MachineKey, new Machine());
         }
 
         /// <summary>
@@ -30,8 +30,8 @@ namespace SabreTools.DatItems
         {
             _internal = item;
 
-            SetFieldValue<ItemType>(Data.Models.Metadata.DatItem.TypeKey, ItemType);
-            SetFieldValue<Machine>(MachineKey, new Machine());
+            SetFieldValue(Data.Models.Metadata.DatItem.TypeKey, ItemType);
+            SetFieldValue(MachineKey, new Machine());
         }
 
         #endregion
@@ -69,7 +69,7 @@ namespace SabreTools.DatItems
         public int CompareTo(DatItem<T>? other)
         {
             // If the other item doesn't exist
-            if (other == null)
+            if (other is null)
                 return 1;
 
             // Get the names to avoid changing values
@@ -93,7 +93,7 @@ namespace SabreTools.DatItems
         public virtual bool Equals(DatItem<T>? other)
         {
             // If the other value is null
-            if (other == null)
+            if (other is null)
                 return false;
 
             // Get the types for comparison

@@ -25,7 +25,7 @@ namespace SabreTools.DatItems.Formats
 
         public DiskArea(Data.Models.Metadata.DiskArea item, Machine machine, Source source) : this(item)
         {
-            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            SetFieldValue<Source?>(SourceKey, source);
             CopyMachineInformation(machine);
         }
 

@@ -44,7 +44,7 @@ namespace SabreTools.Core.Filter
             };
 
             // Null is invalid
-            if (itemName == null)
+            if (itemName is null)
                 return false;
 
             // Loop through and run each filter in order

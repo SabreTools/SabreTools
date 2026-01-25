@@ -201,7 +201,7 @@ namespace SabreTools.FileTypes.Aaru
                             for (byte entry = 0; entry < checksumHeader.entries; entry++)
                             {
                                 ChecksumEntry? checksumEntry = ChecksumEntry.Deserialize(stream);
-                                if (checksumEntry == null)
+                                if (checksumEntry is null)
                                     continue;
 
                                 switch (checksumEntry.type)
@@ -220,11 +220,18 @@ namespace SabreTools.FileTypes.Aaru
                                     case AaruChecksumAlgorithm.SpamSum:
                                         aif.InternalSpamSum = checksumEntry.checksum;
                                         break;
+                                    default:
+                                        // TODO: Log invalid values
+                                        break;
                                 }
                             }
 
                             // Once we got hashes, we return early
                             return aif;
+
+                        default:
+                            // TODO: Log invalid values
+                            break;
                     }
                 }
 

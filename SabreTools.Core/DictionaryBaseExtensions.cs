@@ -15,7 +15,7 @@ namespace SabreTools.Core
         /// </summary>
         public static string? GetName(this DictionaryBase self)
         {
-            if (self == null)
+            if (self is null)
                 return null;
 
             return self switch
@@ -69,7 +69,7 @@ namespace SabreTools.Core
         /// </summary>
         public static void SetName(this DictionaryBase self, string? name)
         {
-            if (self == null || string.IsNullOrEmpty(name))
+            if (self is null || string.IsNullOrEmpty(name))
                 return;
 
             switch (self)
@@ -113,6 +113,8 @@ namespace SabreTools.Core
                 case SlotOption: self[SlotOption.NameKey] = name; break;
                 case SoftwareList: self[SoftwareList.NameKey] = name; break;
                 case Sound: break;
+
+                default: break;
             }
         }
 
@@ -165,7 +167,7 @@ namespace SabreTools.Core
         public static Rom? ConvertToRom(this DictionaryBase? self)
         {
             // If the DatItem is missing, we can't do anything
-            if (self == null)
+            if (self is null)
                 return null;
 
             return self switch
@@ -182,12 +184,12 @@ namespace SabreTools.Core
         private static Rom? ConvertToRom(this Disk? disk)
         {
             // If the Disk is missing, we can't do anything
-            if (disk == null)
+            if (disk is null)
                 return null;
 
             // Append a suffix to the name
             string? name = disk.ReadString(Disk.NameKey);
-            if (name != null)
+            if (name is not null)
                 name += ".chd";
 
             return new Rom
@@ -208,12 +210,12 @@ namespace SabreTools.Core
         private static Rom? ConvertToRom(this Media? media)
         {
             // If the Media is missing, we can't do anything
-            if (media == null)
+            if (media is null)
                 return null;
 
             // Append a suffix to the name
             string? name = media.ReadString(Media.NameKey);
-            if (name != null)
+            if (name is not null)
                 name += ".aaruf";
 
             return new Rom
@@ -318,11 +320,11 @@ namespace SabreTools.Core
 
                     default:
                         // Handle cases where a null is involved
-                        if (kvp.Value == null && other[kvp.Key] == null)
+                        if (kvp.Value is null && other[kvp.Key] is null)
                             return true;
-                        else if (kvp.Value == null && other[kvp.Key] != null)
+                        else if (kvp.Value is null && other[kvp.Key] is not null)
                             return false;
-                        else if (kvp.Value != null && other[kvp.Key] == null)
+                        else if (kvp.Value is not null && other[kvp.Key] is null)
                             return false;
 
                         // Try to rely on type hashes
@@ -370,11 +372,11 @@ namespace SabreTools.Core
                 else
                 {
                     // Handle cases where a null is involved
-                    if (kvp.Value == null && other[kvp.Key] == null)
+                    if (kvp.Value is null && other[kvp.Key] is null)
                         return true;
-                    else if (kvp.Value == null && other[kvp.Key] != null)
+                    else if (kvp.Value is null && other[kvp.Key] is not null)
                         return false;
-                    else if (kvp.Value != null && other[kvp.Key] == null)
+                    else if (kvp.Value is not null && other[kvp.Key] is null)
                         return false;
 
                     // Try to rely on type hashes
@@ -454,9 +456,9 @@ namespace SabreTools.Core
             }
 
             // If we have a file that has no known size, rely on the hashes only
-            if (selfSize == null && self.HashMatch(other))
+            if (selfSize is null && self.HashMatch(other))
                 return true;
-            else if (otherSize == null && self.HashMatch(other))
+            else if (otherSize is null && self.HashMatch(other))
                 return true;
 
             // If we get a partial match
@@ -877,7 +879,7 @@ namespace SabreTools.Core
         /// </summary>
         public static void FillMissingHashes(this DictionaryBase? self, DictionaryBase? other)
         {
-            if (self == null || other == null)
+            if (self is null || other is null)
                 return;
 
 #if NETCOREAPP || NETSTANDARD2_0_OR_GREATER
@@ -891,6 +893,9 @@ namespace SabreTools.Core
                     break;
                 case (Rom romSelf, Rom romOther):
                     romSelf.FillMissingHashes(romOther);
+                    break;
+
+                default:
                     break;
             }
 #else
@@ -908,7 +913,7 @@ namespace SabreTools.Core
         /// </summary>
         private static void FillMissingHashes(this Disk? self, Disk? other)
         {
-            if (self == null || other == null)
+            if (self is null || other is null)
                 return;
 
             string? selfMd5 = self.ReadString(Disk.MD5Key);
@@ -927,7 +932,7 @@ namespace SabreTools.Core
         /// </summary>
         private static void FillMissingHashes(this Media? self, Media? other)
         {
-            if (self == null || other == null)
+            if (self is null || other is null)
                 return;
 
             string? selfMd5 = self.ReadString(Media.MD5Key);
@@ -956,12 +961,12 @@ namespace SabreTools.Core
         /// </summary>
         private static void FillMissingHashes(this Rom? self, Rom? other)
         {
-            if (self == null || other == null)
+            if (self is null || other is null)
                 return;
 
             long? selfSize = self.ReadLong(Rom.SizeKey);
             long? otherSize = other.ReadLong(Rom.SizeKey);
-            if (selfSize == null && otherSize != null)
+            if (selfSize is null && otherSize is not null)
                 self[Rom.SizeKey] = otherSize;
 
             string? selfCrc = self.ReadString(Rom.CRCKey);

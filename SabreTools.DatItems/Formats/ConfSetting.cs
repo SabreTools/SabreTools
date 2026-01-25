@@ -21,7 +21,7 @@ namespace SabreTools.DatItems.Formats
             get
             {
                 var conditions = GetFieldValue<Condition[]?>(Data.Models.Metadata.ConfSetting.ConditionKey);
-                return conditions != null && conditions.Length > 0;
+                return conditions is not null && conditions.Length > 0;
             }
         }
 
@@ -34,18 +34,18 @@ namespace SabreTools.DatItems.Formats
         public ConfSetting(Data.Models.Metadata.ConfSetting item) : base(item)
         {
             // Process flag values
-            if (GetBoolFieldValue(Data.Models.Metadata.ConfSetting.DefaultKey) != null)
+            if (GetBoolFieldValue(Data.Models.Metadata.ConfSetting.DefaultKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.ConfSetting.DefaultKey, GetBoolFieldValue(Data.Models.Metadata.ConfSetting.DefaultKey).FromYesNo());
 
             // Handle subitems
             var condition = GetFieldValue<Data.Models.Metadata.Condition>(Data.Models.Metadata.ConfSetting.ConditionKey);
-            if (condition != null)
+            if (condition is not null)
                 SetFieldValue<Condition?>(Data.Models.Metadata.ConfSetting.ConditionKey, new Condition(condition));
         }
 
         public ConfSetting(Data.Models.Metadata.ConfSetting item, Machine machine, Source source) : this(item)
         {
-            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            SetFieldValue<Source?>(SourceKey, source);
             CopyMachineInformation(machine);
         }
 
@@ -60,7 +60,7 @@ namespace SabreTools.DatItems.Formats
 
             // Handle subitems
             var condition = GetFieldValue<Condition>(Data.Models.Metadata.ConfSetting.ConditionKey);
-            if (condition != null)
+            if (condition is not null)
                 confSettingItem[Data.Models.Metadata.ConfSetting.ConditionKey] = condition.GetInternalClone();
 
             return confSettingItem;

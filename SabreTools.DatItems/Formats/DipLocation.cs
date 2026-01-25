@@ -24,13 +24,13 @@ namespace SabreTools.DatItems.Formats
         public DipLocation(Data.Models.Metadata.DipLocation item) : base(item)
         {
             // Process flag values
-            if (GetBoolFieldValue(Data.Models.Metadata.DipLocation.InvertedKey) != null)
+            if (GetBoolFieldValue(Data.Models.Metadata.DipLocation.InvertedKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.DipLocation.InvertedKey, GetBoolFieldValue(Data.Models.Metadata.DipLocation.InvertedKey).FromYesNo());
         }
 
         public DipLocation(Data.Models.Metadata.DipLocation item, Machine machine, Source source) : this(item)
         {
-            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            SetFieldValue<Source?>(SourceKey, source);
             CopyMachineInformation(machine);
         }
 

@@ -117,26 +117,26 @@ namespace SabreTools.DatTools
                 }
 
                 // Process description to machine name
-                if (DescriptionAsName == true)
+                if (DescriptionAsName)
                     datFile.MachineDescriptionToName(throwOnError);
 
                 // If we are removing scene dates, do that now
-                if (SceneDateStrip == true)
+                if (SceneDateStrip)
                     datFile.StripSceneDatesFromItems();
 
                 // Run the one rom per game logic, if required
-                if (OneGamePerRegion == true && RegionList != null)
+                if (OneGamePerRegion && RegionList is not null)
                     datFile.SetOneGamePerRegion(RegionList);
 
                 // Run the one rom per game logic, if required
-                if (OneRomPerGame == true)
+                if (OneRomPerGame)
                     datFile.SetOneRomPerGame();
 
                 // Remove all marked items
                 datFile.ClearMarked();
 
                 // We remove any blanks, if we aren't supposed to have any
-                if (KeepEmptyGames == false)
+                if (!KeepEmptyGames)
                     datFile.ClearEmpty();
             }
             catch (Exception ex) when (!throwOnError)
@@ -162,18 +162,18 @@ namespace SabreTools.DatTools
             {
                 // For every item in the current key
                 var items = datFile.GetItemsForBucket(key);
-                if (items == null)
+                if (items is null)
                     continue;
 
                 foreach (DatItem item in items)
                 {
                     // If we have a null item, we can't clean it it
-                    if (item == null)
+                    if (item is null)
                         continue;
 
                     // Get the machine associated with the item, if possible
                     var machine = item.GetMachine();
-                    if (machine == null)
+                    if (machine is null)
                         continue;
 
                     // Run cleaning per item
@@ -192,18 +192,18 @@ namespace SabreTools.DatTools
             {
                 // For every item in the current key
                 var items = datFile.GetItemsForBucketDB(key);
-                if (items == null)
+                if (items is null)
                     continue;
 
                 foreach (var item in items)
                 {
                     // If we have a null item, we can't clean it it
-                    if (item.Value == null)
+                    if (item.Value is null)
                         continue;
 
                     // Get the machine associated with the item, if possible
                     var machine = datFile.GetMachineForItemDB(item.Key);
-                    if (machine.Value == null)
+                    if (machine.Value is null)
                         continue;
 
                     // Run cleaning per item
@@ -247,7 +247,7 @@ namespace SabreTools.DatTools
             }
 
             // If we are in NTFS trim mode, trim the item name
-            if (Trim && datItemName != null)
+            if (Trim && datItemName is not null)
             {
                 // Windows max name length is 260
                 int usableLength = 260 - (machineName?.Length ?? 0) - (Root?.Length ?? 0);

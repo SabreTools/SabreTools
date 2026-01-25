@@ -48,7 +48,7 @@ namespace SabreTools.DatTools
         public void PopulateFromList(List<string> inputs)
         {
             // If there are no inputs, just skip
-            if (inputs == null || inputs.Count == 0)
+            if (inputs is null || inputs.Count == 0)
                 return;
 
             InternalStopwatch watch = new("Populating extras from list");
@@ -173,7 +173,7 @@ namespace SabreTools.DatTools
                 {
                     // Get the list of DatItems for the machine
                     var datItems = datFile.GetItemsForBucketDB(game);
-                    if (datItems == null)
+                    if (datItems is null)
                         continue;
 
                     // Try to get the map values, if possible
@@ -187,7 +187,7 @@ namespace SabreTools.DatTools
                     foreach (var datItem in datItems)
                     {
                         var machine = datFile.GetMachineForItemDB(datItem.Key);
-                        if (machine.Value != null)
+                        if (machine.Value is not null)
                             setter.SetFields(machine.Value);
 
                         setter.SetFields(datItem.Value);

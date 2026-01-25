@@ -1181,9 +1181,9 @@ Some special strings that can be used:
 #endif
 
             // Failure conditions
-            if (Header == null)
+            if (Header is null)
                 return false;
-            if (Modifiers == null)
+            if (Modifiers is null)
                 return false;
 
             return true;
@@ -1464,9 +1464,9 @@ Some special strings that can be used:
             datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, GetString(DescriptionStringValue));
             datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.EmailKey, GetString(EmailStringValue));
             datHeader.SetFieldValue<string?>(DatHeader.FileNameKey, GetString(FilenameStringValue));
-            datHeader.SetFieldValue<MergingFlag>(Data.Models.Metadata.Header.ForceMergingKey, GetString(ForceMergingStringValue).AsMergingFlag());
-            datHeader.SetFieldValue<NodumpFlag>(Data.Models.Metadata.Header.ForceNodumpKey, GetString(ForceNodumpStringValue).AsNodumpFlag());
-            datHeader.SetFieldValue<PackingFlag>(Data.Models.Metadata.Header.ForceNodumpKey, GetString(ForcePackingStringValue).AsPackingFlag());
+            datHeader.SetFieldValue(Data.Models.Metadata.Header.ForceMergingKey, GetString(ForceMergingStringValue).AsMergingFlag());
+            datHeader.SetFieldValue(Data.Models.Metadata.Header.ForceNodumpKey, GetString(ForceNodumpStringValue).AsNodumpFlag());
+            datHeader.SetFieldValue(Data.Models.Metadata.Header.ForceNodumpKey, GetString(ForcePackingStringValue).AsPackingFlag());
             datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.HeaderKey, GetString(HeaderStringValue));
             datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.HomepageKey, GetString(HomepageStringValue));
             datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, GetString(NameStringValue));

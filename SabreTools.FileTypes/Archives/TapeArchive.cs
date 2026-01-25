@@ -51,7 +51,7 @@ namespace SabreTools.FileTypes.Archives
             bool encounteredErrors = true;
 
             // If we have an invalid file
-            if (Filename == null)
+            if (Filename is null)
                 return true;
 
             try
@@ -87,7 +87,7 @@ namespace SabreTools.FileTypes.Archives
         {
             // Try to extract a stream using the given information
             var stream = GetEntryStream(entryName, out string? realEntry);
-            if (stream == null || realEntry == null)
+            if (stream is null || realEntry is null)
                 return null;
 
             // If the stream and the entry name are both non-null, we write to file
@@ -98,7 +98,7 @@ namespace SabreTools.FileTypes.Archives
 
             // Now open and write the file if possible
             FileStream fs = File.Create(realEntry);
-            if (fs != null)
+            if (fs is not null)
             {
                 if (stream.CanSeek)
                     stream.Seek(0, SeekOrigin.Begin);
@@ -139,7 +139,7 @@ namespace SabreTools.FileTypes.Archives
                 foreach (TarArchiveEntry entry in ta.Entries)
                 {
                     // Skip invalid entries
-                    if (entry?.Key == null || !entry.IsComplete)
+                    if (entry?.Key is null || !entry.IsComplete)
                         continue;
 
                     // Skip directory entries
@@ -187,7 +187,7 @@ namespace SabreTools.FileTypes.Archives
                 foreach (TarArchiveEntry entry in ta.Entries)
                 {
                     // Skip invalid entries
-                    if (entry == null || entry.IsDirectory)
+                    if (entry is null || entry.IsDirectory)
                         continue;
 
                     // Create a blank item for the entry
@@ -242,11 +242,11 @@ namespace SabreTools.FileTypes.Archives
                 string? lastTarEntry = null;
                 foreach (TarArchiveEntry entry in tarEntries)
                 {
-                    if (entry?.Key == null)
+                    if (entry?.Key is null)
                         continue;
 
                     // If the current is a superset of last, we skip it
-                    if (lastTarEntry != null && lastTarEntry.StartsWith(entry.Key))
+                    if (lastTarEntry is not null && lastTarEntry.StartsWith(entry.Key))
                     {
                         // No-op
                     }
@@ -305,7 +305,7 @@ namespace SabreTools.FileTypes.Archives
             string tempFile = Path.Combine(outDir, $"tmp{Guid.NewGuid()}");
 
             // If either input is null or empty, return
-            if (stream == null || baseFile == null || baseFile.Filename == null)
+            if (stream is null || baseFile is null || baseFile.Filename is null)
                 return success;
 
             // If the stream is not readable, return
@@ -360,7 +360,7 @@ namespace SabreTools.FileTypes.Archives
                     for (int i = 0; i < entries.Count; i++)
                     {
                         var entry = entries[i];
-                        if (entry == null)
+                        if (entry is null)
                             continue;
 
                         inputIndexMap.Add(entry, i);
@@ -449,7 +449,7 @@ namespace SabreTools.FileTypes.Archives
             string tempFile = Path.Combine(outDir, $"tmp{Guid.NewGuid()}");
 
             // If either list of roms is null or empty, return
-            if (files == null || baseFiles == null || files.Count == 0 || baseFiles.Count == 0)
+            if (files is null || baseFiles is null || files.Count == 0 || baseFiles.Count == 0)
                 return false;
 
             // If the number of inputs is less than the number of available roms, return
@@ -535,7 +535,7 @@ namespace SabreTools.FileTypes.Archives
                     for (int i = 0; i < entries.Count; i++)
                     {
                         var entry = entries[i];
-                        if (entry == null)
+                        if (entry is null)
                             continue;
 
                         inputIndexMap.Add(entry, i);

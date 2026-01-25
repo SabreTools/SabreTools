@@ -73,6 +73,8 @@ namespace SabreTools.Core.Filter
             {
                 GroupType.AND => MatchesAnd(dictionaryBase),
                 GroupType.OR => MatchesOr(dictionaryBase),
+
+                GroupType.NONE => false,
                 _ => false,
             };
         }
@@ -129,6 +131,7 @@ namespace SabreTools.Core.Filter
 
         #region Helpers
 
+#pragma warning disable IDE0051
         /// <summary>
         /// Derive a group type from the input string, if possible
         /// </summary>
@@ -145,7 +148,9 @@ namespace SabreTools.Core.Filter
                 _ => GroupType.NONE,
             };
         }
+#pragma warning restore IDE0051
 
+#pragma warning disable IDE0051
         /// <summary>
         /// Parse an input string into a filter group
         /// </summary>
@@ -168,6 +173,7 @@ namespace SabreTools.Core.Filter
                 // - Invalid FilterObjects(?)
             }
         }
+#pragma warning restore IDE0051
 
         /// <summary>
         /// Tokenize an input string for parsing
@@ -175,7 +181,7 @@ namespace SabreTools.Core.Filter
         private static string[] Tokenize(string? input)
         {
             // Null inputs are ignored
-            if (input == null)
+            if (input is null)
                 return [];
 
             // Split the string into parseable pieces

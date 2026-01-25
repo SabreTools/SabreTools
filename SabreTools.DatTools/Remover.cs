@@ -68,7 +68,7 @@ namespace SabreTools.DatTools
         public void PopulateExclusionsFromList(List<string>? fields)
         {
             // If the list is null or empty, just return
-            if (fields == null || fields.Count == 0)
+            if (fields is null || fields.Count == 0)
                 return;
 
             var watch = new InternalStopwatch("Populating removals from list");
@@ -146,7 +146,7 @@ namespace SabreTools.DatTools
         public void RemoveHeaderFields(DatHeader? datHeader)
         {
             // If we have an invalid input, return
-            if (datHeader == null || HeaderFieldNames.Count == 0)
+            if (datHeader is null || HeaderFieldNames.Count == 0)
                 return;
 
             foreach (var fieldName in HeaderFieldNames)
@@ -162,13 +162,13 @@ namespace SabreTools.DatTools
         public void RemoveItemFields(ItemDictionary? itemDictionary)
         {
             // If we have an invalid input, return
-            if (itemDictionary == null || (MachineFieldNames.Count == 0 && ItemFieldNames.Count == 0))
+            if (itemDictionary is null || (MachineFieldNames.Count == 0 && ItemFieldNames.Count == 0))
                 return;
 
             foreach (var key in itemDictionary.SortedKeys)
             {
                 List<DatItem>? items = itemDictionary.GetItemsForBucket(key);
-                if (items == null)
+                if (items is null)
                     continue;
 
                 for (int j = 0; j < items.Count; j++)
@@ -189,7 +189,7 @@ namespace SabreTools.DatTools
         public void RemoveItemFieldsDB(ItemDictionaryDB? itemDictionary)
         {
             // If we have an invalid input, return
-            if (itemDictionary == null || (MachineFieldNames.Count == 0 && ItemFieldNames.Count == 0))
+            if (itemDictionary is null || (MachineFieldNames.Count == 0 && ItemFieldNames.Count == 0))
                 return;
 
             // Handle machine removals
@@ -202,7 +202,7 @@ namespace SabreTools.DatTools
             foreach (var key in itemDictionary.SortedKeys)
             {
                 var items = itemDictionary.GetItemsForBucket(key);
-                if (items == null)
+                if (items is null)
                     continue;
 
                 foreach (var item in items.Values)
@@ -218,7 +218,7 @@ namespace SabreTools.DatTools
         internal void RemoveFields(Machine? machine)
         {
             // If we have an invalid input, return
-            if (machine == null || MachineFieldNames.Count == 0)
+            if (machine is null || MachineFieldNames.Count == 0)
                 return;
 
             foreach (var fieldName in MachineFieldNames)
@@ -233,18 +233,18 @@ namespace SabreTools.DatTools
         /// <param name="datItem">DatItem to remove fields from</param>
         internal void RemoveFields(DatItem? datItem)
         {
-            if (datItem == null)
+            if (datItem is null)
                 return;
 
             #region Common
 
             // If there are no field names, return
-            if (ItemFieldNames == null || ItemFieldNames.Count == 0)
+            if (ItemFieldNames is null || ItemFieldNames.Count == 0)
                 return;
 
             // If there are no field names for this type or generic, return
             string? itemType = datItem.GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey).AsItemType().AsStringValue();
-            if (itemType == null || (!ItemFieldNames.ContainsKey(itemType) && !ItemFieldNames.ContainsKey("item")))
+            if (itemType is null || (!ItemFieldNames.ContainsKey(itemType) && !ItemFieldNames.ContainsKey("item")))
                 return;
 
             // Get the combined list of fields to remove
@@ -268,6 +268,7 @@ namespace SabreTools.DatTools
                 datItem.RemoveField(datItemField);
             }
 
+#pragma warning disable IDE0010
             // Handle nested removals
             switch (datItem)
             {
@@ -284,6 +285,7 @@ namespace SabreTools.DatTools
                 case Rom rom: RemoveNestedFields(rom); break;
                 case Slot slot: RemoveNestedFields(slot); break;
             }
+#pragma warning restore IDE0010
 
             #endregion
         }
@@ -383,7 +385,7 @@ namespace SabreTools.DatTools
             }
 
             var part = dipSwitch.GetFieldValue<Part?>(DipSwitch.PartKey);
-            if (part != null)
+            if (part is not null)
                 RemoveFields(part);
         }
 
@@ -407,11 +409,11 @@ namespace SabreTools.DatTools
         private void RemoveNestedFields(Disk disk)
         {
             var diskArea = disk.GetFieldValue<DiskArea?>(Disk.DiskAreaKey);
-            if (diskArea != null)
+            if (diskArea is not null)
                 RemoveFields(diskArea);
 
             var part = disk.GetFieldValue<Part?>(Disk.PartKey);
-            if (part != null)
+            if (part is not null)
                 RemoveFields(part);
         }
 
@@ -461,11 +463,11 @@ namespace SabreTools.DatTools
         private void RemoveNestedFields(Rom rom)
         {
             var dataArea = rom.GetFieldValue<DataArea?>(Rom.DataAreaKey);
-            if (dataArea != null)
+            if (dataArea is not null)
                 RemoveFields(dataArea);
 
             var part = rom.GetFieldValue<Part?>(Rom.PartKey);
-            if (part != null)
+            if (part is not null)
                 RemoveFields(part);
         }
 

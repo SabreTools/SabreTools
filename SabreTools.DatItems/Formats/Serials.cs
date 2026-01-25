@@ -108,7 +108,7 @@ namespace SabreTools.DatItems.Formats
         /// </summary>
         public Serials()
         {
-            SetFieldValue<ItemType>(Data.Models.Metadata.DatItem.TypeKey, ItemType);
+            SetFieldValue(Data.Models.Metadata.DatItem.TypeKey, ItemType);
         }
 
         #endregion
@@ -135,10 +135,10 @@ namespace SabreTools.DatItems.Formats
                 MediaStamp = this.MediaStamp,
                 BoxBarcode = this.BoxBarcode,
             };
-            serials.SetFieldValue<DupeType>(DatItem.DupeTypeKey, GetFieldValue<DupeType>(DatItem.DupeTypeKey));
-            serials.SetFieldValue<Machine>(DatItem.MachineKey, GetMachine());
-            serials.SetFieldValue<bool?>(DatItem.RemoveKey, GetBoolFieldValue(DatItem.RemoveKey));
-            serials.SetFieldValue<Source?>(DatItem.SourceKey, GetFieldValue<Source?>(DatItem.SourceKey));
+            serials.SetFieldValue(DupeTypeKey, GetFieldValue<DupeType>(DupeTypeKey));
+            serials.SetFieldValue(MachineKey, GetMachine());
+            serials.SetFieldValue(RemoveKey, GetBoolFieldValue(RemoveKey));
+            serials.SetFieldValue<Source?>(SourceKey, GetFieldValue<Source?>(SourceKey));
             serials.SetFieldValue<string?>(Data.Models.Metadata.DatItem.TypeKey, GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey).AsItemType().AsStringValue());
 
             return serials;
@@ -159,7 +159,7 @@ namespace SabreTools.DatItems.Formats
             Serials? newOther = other as Serials;
 
             // If the Serials information matches
-            return (DigitalSerial1 == newOther!.DigitalSerial1
+            return DigitalSerial1 == newOther!.DigitalSerial1
                 && DigitalSerial2 == newOther.DigitalSerial2
                 && MediaSerial1 == newOther.MediaSerial1
                 && MediaSerial2 == newOther.MediaSerial2
@@ -172,7 +172,7 @@ namespace SabreTools.DatItems.Formats
                 && ChipSerial == newOther.ChipSerial
                 && BoxSerial == newOther.BoxSerial
                 && MediaStamp == newOther.MediaStamp
-                && BoxBarcode == newOther.BoxBarcode);
+                && BoxBarcode == newOther.BoxBarcode;
         }
 
         #endregion

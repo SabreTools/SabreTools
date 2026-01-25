@@ -141,7 +141,7 @@ namespace SabreTools.DatTools
             BaseArchive? archive = FileTypeTool.CreateArchiveType(item);
 
             // Process archives according to flags
-            if (archive != null)
+            if (archive is not null)
             {
                 // Set the archive flags
                 archive.SetHashTypes(_hashes);
@@ -172,7 +172,7 @@ namespace SabreTools.DatTools
                     var extracted = archive.GetChildren();
 
                     // If we have internal items to process, do so
-                    if (extracted != null)
+                    if (extracted is not null)
                         ProcessArchive(datFile, item, basePath, extracted);
 
                     // Now find all folders that are empty, if we are supposed to
@@ -217,7 +217,7 @@ namespace SabreTools.DatTools
             BaseFile? baseFile = gzarc.GetTorrentGZFileInfo();
 
             // If the rom is valid, add it
-            if (baseFile != null && baseFile.Filename != null)
+            if (baseFile is not null && baseFile.Filename is not null)
             {
                 // Add the list if it doesn't exist already
                 Rom rom = baseFile.ConvertToRom();
@@ -255,7 +255,7 @@ namespace SabreTools.DatTools
             foreach (var baseFile in extracted)
             {
                 DatItem? datItem = DatItemTool.CreateDatItem(baseFile);
-                if (datItem == null)
+                if (datItem is null)
                     continue;
 
                 ProcessFileHelper(datFile, item, datItem, basePath, parent);
@@ -283,7 +283,7 @@ namespace SabreTools.DatTools
 #endif
 
             // Now get all blank folders from the archive
-            if (archive != null)
+            if (archive is not null)
                 empties = archive.GetEmptyFolders();
 
             // Add add all of the found empties to the DAT
@@ -324,7 +324,7 @@ namespace SabreTools.DatTools
                 // If we have a SuperDAT, we want anything that's not the base path as the game, and the file as the rom
                 if (datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.TypeKey) == "SuperDAT")
                 {
-                    if (basePath != null)
+                    if (basePath is not null)
 #if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
                         gamename = fulldir[(basePath.Length + 1)..];
 #else
@@ -339,7 +339,7 @@ namespace SabreTools.DatTools
                 // Otherwise, we want just the top level folder as the game, and the file as everything else
                 else
                 {
-                    if (basePath != null)
+                    if (basePath is not null)
                     {
 #if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
                         gamename = fulldir[(basePath.Length + 1)..].Split(Path.DirectorySeparatorChar)[0];
@@ -386,7 +386,7 @@ namespace SabreTools.DatTools
             var header = datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.HeaderKey);
             BaseFile? baseFile = FileTypeTool.GetInfo(item, _hashes, header);
             DatItem? datItem = DatItemTool.CreateDatItem(baseFile, _treatAsFile);
-            if (datItem != null)
+            if (datItem is not null)
                 ProcessFileHelper(datFile, item, datItem, basePath, string.Empty);
         }
 
@@ -408,7 +408,7 @@ namespace SabreTools.DatTools
             try
             {
                 // If the basepath doesn't end with a directory separator, add it
-                if (basepath != null && !basepath.EndsWith(Path.DirectorySeparatorChar.ToString()))
+                if (basepath is not null && !basepath.EndsWith(Path.DirectorySeparatorChar.ToString()))
                     basepath += Path.DirectorySeparatorChar.ToString();
 
                 // Make sure we have the full item path
@@ -461,13 +461,13 @@ namespace SabreTools.DatTools
                 {
 #if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
                     machineName = item[(basepath?.Length ?? 0)..].Split(Path.DirectorySeparatorChar)[0];
-                    if (basepath != null)
+                    if (basepath is not null)
                         itemName = item[Path.Combine(basepath, machineName).Length..];
                     else
                         itemName = item[machineName.Length..];
 #else
                     machineName = item.Remove(0, basepath?.Length ?? 0).Split(Path.DirectorySeparatorChar)[0];
-                    if (basepath != null)
+                    if (basepath is not null)
                         itemName = item.Remove(0, Path.Combine(basepath, machineName).Length);
                     else
                         itemName = item.Remove(0, machineName.Length);

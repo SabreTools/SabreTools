@@ -21,7 +21,7 @@ namespace SabreTools.DatFiles.Formats
         /// <param name="datFile">Parent DatFile to copy from</param>
         public DosCenter(DatFile? datFile) : base(datFile)
         {
-            Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, DatFormat.DOSCenter);
+            Header.SetFieldValue(DatHeader.DatFormatKey, DatFormat.DOSCenter);
         }
 
         /// <inheritdoc/>
@@ -33,10 +33,11 @@ namespace SabreTools.DatFiles.Formats
             if (string.IsNullOrEmpty(datItem.GetName()))
                 missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
+#pragma warning disable IDE0010
             switch (datItem)
             {
                 case Rom rom:
-                    if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) == null || rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) < 0)
+                    if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) is null || rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) < 0)
                         missingFields.Add(Data.Models.Metadata.Rom.SizeKey);
                     // if (string.IsNullOrEmpty(rom.Date))
                     //     missingFields.Add(Data.Models.Metadata.Rom.DateKey);
@@ -46,6 +47,7 @@ namespace SabreTools.DatFiles.Formats
                     //     missingFields.Add(Data.Models.Metadata.Rom.SHA1Key);
                     break;
             }
+#pragma warning restore IDE0010
 
             return missingFields;
         }

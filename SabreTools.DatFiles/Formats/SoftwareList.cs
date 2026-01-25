@@ -18,7 +18,7 @@ namespace SabreTools.DatFiles.Formats
         /// <remarks>
         /// TODO: See if there's an updated DTD and then check for required fields
         /// </remarks>
-        private const string SoftwareListDTD = @"<!ELEMENT softwarelist (notes?, software+)>
+        internal const string SoftwareListDTD = @"<!ELEMENT softwarelist (notes?, software+)>
 	<!ATTLIST softwarelist name CDATA #REQUIRED>
 	<!ATTLIST softwarelist description CDATA #IMPLIED>
 	<!ELEMENT notes (#PCDATA)>
@@ -96,7 +96,7 @@ namespace SabreTools.DatFiles.Formats
         /// <param name="datFile">Parent DatFile to copy from</param>
         public SoftwareList(DatFile? datFile) : base(datFile)
         {
-            Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, DatFormat.SoftwareList);
+            Header.SetFieldValue(DatHeader.DatFormatKey, DatFormat.SoftwareList);
         }
 
         /// <inheritdoc/>
@@ -104,6 +104,7 @@ namespace SabreTools.DatFiles.Formats
         {
             List<string> missingFields = [];
 
+#pragma warning disable IDE0010
             switch (datItem)
             {
                 case DipSwitch dipSwitch:
@@ -119,6 +120,7 @@ namespace SabreTools.DatFiles.Formats
                         if (string.IsNullOrEmpty(dipSwitch.GetFieldValue<Part?>(DipSwitch.PartKey)!.GetStringFieldValue(Data.Models.Metadata.Part.InterfaceKey)))
                             missingFields.Add(Data.Models.Metadata.Part.InterfaceKey);
                     }
+
                     if (string.IsNullOrEmpty(dipSwitch.GetName()))
                         missingFields.Add(Data.Models.Metadata.DipSwitch.NameKey);
                     if (string.IsNullOrEmpty(dipSwitch.GetStringFieldValue(Data.Models.Metadata.DipSwitch.TagKey)))
@@ -128,9 +130,9 @@ namespace SabreTools.DatFiles.Formats
                     if (dipSwitch.ValuesSpecified)
                     {
                         var dipValues = dipSwitch.GetFieldValue<DipValue[]?>(Data.Models.Metadata.DipSwitch.DipValueKey);
-                        if (Array.Find(dipValues!, dv => string.IsNullOrEmpty(dv.GetName())) != null)
+                        if (Array.Find(dipValues!, dv => string.IsNullOrEmpty(dv.GetName())) is not null)
                             missingFields.Add(Data.Models.Metadata.DipValue.NameKey);
-                        if (Array.Find(dipValues!, dv => string.IsNullOrEmpty(dv.GetStringFieldValue(Data.Models.Metadata.DipValue.ValueKey))) != null)
+                        if (Array.Find(dipValues!, dv => string.IsNullOrEmpty(dv.GetStringFieldValue(Data.Models.Metadata.DipValue.ValueKey))) is not null)
                             missingFields.Add(Data.Models.Metadata.DipValue.ValueKey);
                     }
 
@@ -149,6 +151,7 @@ namespace SabreTools.DatFiles.Formats
                         if (string.IsNullOrEmpty(disk.GetFieldValue<Part?>(Disk.PartKey)!.GetStringFieldValue(Data.Models.Metadata.Part.InterfaceKey)))
                             missingFields.Add(Data.Models.Metadata.Part.InterfaceKey);
                     }
+
                     if (!disk.DiskAreaSpecified)
                     {
                         missingFields.Add(Data.Models.Metadata.DiskArea.NameKey);
@@ -158,6 +161,7 @@ namespace SabreTools.DatFiles.Formats
                         if (string.IsNullOrEmpty(disk.GetFieldValue<DiskArea?>(Disk.DiskAreaKey)!.GetName()))
                             missingFields.Add(Data.Models.Metadata.DiskArea.NameKey);
                     }
+
                     if (string.IsNullOrEmpty(disk.GetName()))
                         missingFields.Add(Data.Models.Metadata.Disk.NameKey);
                     break;
@@ -180,6 +184,7 @@ namespace SabreTools.DatFiles.Formats
                         if (string.IsNullOrEmpty(rom.GetFieldValue<Part?>(Rom.PartKey)!.GetStringFieldValue(Data.Models.Metadata.Part.InterfaceKey)))
                             missingFields.Add(Data.Models.Metadata.Part.InterfaceKey);
                     }
+
                     if (!rom.DataAreaSpecified)
                     {
                         missingFields.Add(Data.Models.Metadata.DataArea.NameKey);
@@ -189,9 +194,10 @@ namespace SabreTools.DatFiles.Formats
                     {
                         if (string.IsNullOrEmpty(rom.GetFieldValue<DataArea?>(Rom.DataAreaKey)!.GetName()))
                             missingFields.Add(Data.Models.Metadata.DataArea.NameKey);
-                        if (rom.GetFieldValue<DataArea?>(Rom.DataAreaKey)!.GetInt64FieldValue(Data.Models.Metadata.DataArea.SizeKey) == null)
+                        if (rom.GetFieldValue<DataArea?>(Rom.DataAreaKey)!.GetInt64FieldValue(Data.Models.Metadata.DataArea.SizeKey) is null)
                             missingFields.Add(Data.Models.Metadata.DataArea.SizeKey);
                     }
+
                     break;
 
                 case SharedFeat sharedFeat:
@@ -199,6 +205,7 @@ namespace SabreTools.DatFiles.Formats
                         missingFields.Add(Data.Models.Metadata.SharedFeat.NameKey);
                     break;
             }
+#pragma warning restore IDE0010
 
             return missingFields;
         }

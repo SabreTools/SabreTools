@@ -29,12 +29,12 @@ namespace SabreTools.DatItems.Test
             public TestDatItem(string? nameKey) => _nameKey = nameKey;
 
             /// <inheritdoc/>
-            public override string? GetName() => _nameKey != null ? _internal.ReadString(_nameKey) : null;
+            public override string? GetName() => _nameKey is not null ? _internal.ReadString(_nameKey) : null;
 
             /// <inheritdoc/>
             public override void SetName(string? name)
             {
-                if (_nameKey != null)
+                if (_nameKey is not null)
                     _internal[_nameKey] = name;
             }
         }

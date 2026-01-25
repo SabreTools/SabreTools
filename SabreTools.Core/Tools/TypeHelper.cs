@@ -14,11 +14,11 @@ namespace SabreTools.Core.Tools
         /// </summary>
         public static string[]? GetConstants(Type? type)
         {
-            if (type == null)
+            if (type is null)
                 return null;
 
             var fields = type.GetFields(BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy);
-            if (fields == null)
+            if (fields is null)
                 return null;
 
             FieldInfo[] noFilterFields = Array.FindAll(fields,
@@ -48,14 +48,14 @@ namespace SabreTools.Core.Tools
                 }
                 catch (ReflectionTypeLoadException rtle)
                 {
-                    assemblyTypes = Array.FindAll(rtle.Types ?? [], t => t != null);
+                    assemblyTypes = Array.FindAll(rtle.Types ?? [], t => t is not null);
                 }
 
                 // Loop through all types
                 foreach (Type? type in assemblyTypes)
                 {
                     // If the type is invalid
-                    if (type == null)
+                    if (type is null)
                         continue;
 
                     // If the type isn't a class or doesn't implement the interface
@@ -64,7 +64,7 @@ namespace SabreTools.Core.Tools
 
                     // Get the XML type name
                     string? elementName = GetXmlRootAttributeElementName(type);
-                    if (elementName != null)
+                    if (elementName is not null)
                         typeNames.Add(elementName);
                 }
             }
@@ -91,14 +91,14 @@ namespace SabreTools.Core.Tools
                 }
                 catch (ReflectionTypeLoadException rtle)
                 {
-                    assemblyTypes = Array.FindAll(rtle.Types ?? [], t => t != null);
+                    assemblyTypes = Array.FindAll(rtle.Types ?? [], t => t is not null);
                 }
 
                 // Loop through all types
                 foreach (Type? type in assemblyTypes)
                 {
                     // If the type is invalid
-                    if (type == null)
+                    if (type is null)
                         continue;
 
                     // If the type isn't a class or doesn't implement the interface
@@ -107,7 +107,7 @@ namespace SabreTools.Core.Tools
 
                     // Get the XML type name
                     string? elementName = GetXmlRootAttributeElementName(type);
-                    if (elementName == null)
+                    if (elementName is null)
                         continue;
 
                     // If the name matches
@@ -124,7 +124,7 @@ namespace SabreTools.Core.Tools
         /// </summary>
         public static string? GetXmlRootAttributeElementName(Type? type)
         {
-            if (type == null)
+            if (type is null)
                 return null;
 
 #if NET20 || NET35 || NET40

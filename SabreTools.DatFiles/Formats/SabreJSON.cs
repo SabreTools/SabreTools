@@ -28,7 +28,7 @@ namespace SabreTools.DatFiles.Formats
         /// <param name="datFile">Parent DatFile to copy from</param>
         public SabreJSON(DatFile? datFile) : base(datFile)
         {
-            Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, DatFormat.SabreJSON);
+            Header.SetFieldValue(DatHeader.DatFormatKey, DatFormat.SabreJSON);
         }
 
         /// <inheritdoc/>
@@ -47,7 +47,7 @@ namespace SabreTools.DatFiles.Formats
             // long sourceIndex = AddSourceDB(source);
 
             // If we got a null reader, just return
-            if (jtr == null)
+            if (jtr is null)
                 return;
 
             // Otherwise, read the file to the end
@@ -98,7 +98,7 @@ namespace SabreTools.DatFiles.Formats
         private void ReadHeader(JsonTextReader jtr)
         {
             // If the reader is invalid, skip
-            if (jtr == null)
+            if (jtr is null)
                 return;
 
             // Read in the header and apply any new fields
@@ -119,7 +119,7 @@ namespace SabreTools.DatFiles.Formats
         private void ReadMachines(JsonTextReader jtr, bool statsOnly, Source source, long sourceIndex, FilterRunner? filterRunner)
         {
             // If the reader is invalid, skip
-            if (jtr == null)
+            if (jtr is null)
                 return;
 
             // Read in the machine array
@@ -145,7 +145,7 @@ namespace SabreTools.DatFiles.Formats
         private void ReadMachine(JObject machineObj, bool statsOnly, Source source, long sourceIndex, FilterRunner? filterRunner)
         {
             // If object is invalid, skip it
-            if (machineObj == null)
+            if (machineObj is null)
                 return;
 
             // Prepare internal variables
@@ -156,12 +156,12 @@ namespace SabreTools.DatFiles.Formats
                 machine = machineObj["machine"]?.ToObject<Machine>();
 
             // If the machine doesn't pass the filter
-            if (machine != null && filterRunner != null && !machine.PassesFilter(filterRunner))
+            if (machine is not null && filterRunner is not null && !machine.PassesFilter(filterRunner))
                 return;
 
             // Add the machine to the dictionary
             // long machineIndex = -1;
-            // if (machine != null)
+            // if (machine is not null)
             //     machineIndex = AddMachineDB(machine);
 
             // Read items, if possible
@@ -201,7 +201,7 @@ namespace SabreTools.DatFiles.Formats
             FilterRunner? filterRunner)
         {
             // If the array is invalid, skip
-            if (itemsArr == null)
+            if (itemsArr is null)
                 return;
 
             // Loop through each datitem object and process
@@ -235,7 +235,7 @@ namespace SabreTools.DatFiles.Formats
             FilterRunner? filterRunner)
         {
             // If we have an empty item, skip it
-            if (itemObj == null)
+            if (itemObj is null)
                 return;
 
             // Prepare internal variables
@@ -245,9 +245,10 @@ namespace SabreTools.DatFiles.Formats
             if (itemObj.ContainsKey("datitem"))
             {
                 JToken? datItemObj = itemObj["datitem"];
-                if (datItemObj == null)
+                if (datItemObj is null)
                     return;
 
+#pragma warning disable IDE0010
                 switch (datItemObj.Value<string>("type").AsItemType())
                 {
                     case ItemType.Adjuster:
@@ -377,13 +378,14 @@ namespace SabreTools.DatFiles.Formats
                         datItem = datItemObj.ToObject<SourceDetails>();
                         break;
                 }
+#pragma warning restore IDE0010
             }
 
             // If we got a valid datitem, copy machine info and add
-            if (datItem != null)
+            if (datItem is not null)
             {
                 // If the item doesn't pass the filter
-                if (filterRunner != null && !datItem.PassesFilter(filterRunner))
+                if (filterRunner is not null && !datItem.PassesFilter(filterRunner))
                     return;
 
                 datItem.CopyMachineInformation(machine);
@@ -402,7 +404,7 @@ namespace SabreTools.DatFiles.Formats
                 FileStream fs = System.IO.File.Create(outfile);
 
                 // If we get back null for some reason, just log and return
-                if (fs == null)
+                if (fs is null)
                 {
                     _logger.Warning($"File '{outfile}' could not be created for writing! Please check to see if the file is writable");
                     return false;
@@ -439,11 +441,11 @@ namespace SabreTools.DatFiles.Formats
                         DatItem datItem = datItems[index];
 
                         // If we have a different game and we're not at the start of the list, output the end of last item
-                        if (lastgame != null && !string.Equals(lastgame, datItem.GetMachine()!.GetName(), StringComparison.OrdinalIgnoreCase))
+                        if (lastgame is not null && !string.Equals(lastgame, datItem.GetMachine()!.GetName(), StringComparison.OrdinalIgnoreCase))
                             WriteEndGame(jtw);
 
                         // If we have a new game, output the beginning of the new item
-                        if (lastgame == null || !string.Equals(lastgame, datItem.GetMachine()!.GetName(), StringComparison.OrdinalIgnoreCase))
+                        if (lastgame is null || !string.Equals(lastgame, datItem.GetMachine()!.GetName(), StringComparison.OrdinalIgnoreCase))
                             WriteStartGame(jtw, datItem);
 
                         // Check for a "null" item
@@ -483,7 +485,7 @@ namespace SabreTools.DatFiles.Formats
                 FileStream fs = System.IO.File.Create(outfile);
 
                 // If we get back null for some reason, just log and return
-                if (fs == null)
+                if (fs is null)
                 {
                     _logger.Warning($"File '{outfile}' could not be created for writing! Please check to see if the file is writable");
                     return false;
@@ -508,7 +510,7 @@ namespace SabreTools.DatFiles.Formats
                 {
                     // If this machine doesn't contain any writable items, skip
                     var itemsDict = GetItemsForBucketDB(key, filter: true);
-                    if (itemsDict == null || !ContainsWritable([.. itemsDict.Values]))
+                    if (itemsDict is null || !ContainsWritable([.. itemsDict.Values]))
                         continue;
 
                     // Resolve the names in the block
@@ -520,11 +522,11 @@ namespace SabreTools.DatFiles.Formats
                         var machine = GetMachineForItemDB(kvp.Key);
 
                         // If we have a different game and we're not at the start of the list, output the end of last item
-                        if (lastgame != null && !string.Equals(lastgame, machine.Value!.GetName(), StringComparison.OrdinalIgnoreCase))
+                        if (lastgame is not null && !string.Equals(lastgame, machine.Value!.GetName(), StringComparison.OrdinalIgnoreCase))
                             WriteEndGame(jtw);
 
                         // If we have a new game, output the beginning of the new item
-                        if (lastgame == null || !string.Equals(lastgame, machine.Value!.GetName(), StringComparison.OrdinalIgnoreCase))
+                        if (lastgame is null || !string.Equals(lastgame, machine.Value!.GetName(), StringComparison.OrdinalIgnoreCase))
                             WriteStartGame(jtw, kvp.Value);
 
                         // Check for a "null" item
@@ -700,13 +702,13 @@ namespace SabreTools.DatFiles.Formats
             protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
             {
                 return base.CreateProperties(type, memberSerialization)
-                    .Where(p => p != null)
+                    .Where(p => p is not null)
                     .OrderBy(p => BaseTypesAndSelf(p.DeclaringType).Count())
                     .ToList();
 
                 static IEnumerable<Type?> BaseTypesAndSelf(Type? t)
                 {
-                    while (t != null)
+                    while (t is not null)
                     {
                         yield return t;
                         t = t.BaseType;

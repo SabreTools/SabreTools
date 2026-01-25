@@ -32,7 +32,7 @@ namespace SabreTools.DatItems.Formats
             get
             {
                 var conditions = GetFieldValue<Condition[]?>(Data.Models.Metadata.DipSwitch.ConditionKey);
-                return conditions != null && conditions.Length > 0;
+                return conditions is not null && conditions.Length > 0;
             }
         }
 
@@ -42,7 +42,7 @@ namespace SabreTools.DatItems.Formats
             get
             {
                 var locations = GetFieldValue<DipLocation[]?>(Data.Models.Metadata.DipSwitch.DipLocationKey);
-                return locations != null && locations.Length > 0;
+                return locations is not null && locations.Length > 0;
             }
         }
 
@@ -52,7 +52,7 @@ namespace SabreTools.DatItems.Formats
             get
             {
                 var values = GetFieldValue<DipValue[]?>(Data.Models.Metadata.DipSwitch.DipValueKey);
-                return values != null && values.Length > 0;
+                return values is not null && values.Length > 0;
             }
         }
 
@@ -61,8 +61,8 @@ namespace SabreTools.DatItems.Formats
         {
             get
             {
-                var part = GetFieldValue<Part?>(DipSwitch.PartKey);
-                return part != null
+                var part = GetFieldValue<Part?>(PartKey);
+                return part is not null
                     && (!string.IsNullOrEmpty(part.GetName())
                         || !string.IsNullOrEmpty(part.GetStringFieldValue(Data.Models.Metadata.Part.InterfaceKey)));
             }
@@ -77,23 +77,23 @@ namespace SabreTools.DatItems.Formats
         public DipSwitch(Data.Models.Metadata.DipSwitch item) : base(item)
         {
             // Process flag values
-            if (GetBoolFieldValue(Data.Models.Metadata.DipSwitch.DefaultKey) != null)
+            if (GetBoolFieldValue(Data.Models.Metadata.DipSwitch.DefaultKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.DipSwitch.DefaultKey, GetBoolFieldValue(Data.Models.Metadata.DipSwitch.DefaultKey).FromYesNo());
 
             // Handle subitems
             var condition = item.Read<Data.Models.Metadata.Condition>(Data.Models.Metadata.DipSwitch.ConditionKey);
-            if (condition != null)
+            if (condition is not null)
                 SetFieldValue<Condition?>(Data.Models.Metadata.DipSwitch.ConditionKey, new Condition(condition));
 
             var dipLocations = item.ReadItemArray<Data.Models.Metadata.DipLocation>(Data.Models.Metadata.DipSwitch.DipLocationKey);
-            if (dipLocations != null)
+            if (dipLocations is not null)
             {
                 DipLocation[] dipLocationItems = Array.ConvertAll(dipLocations, dipLocation => new DipLocation(dipLocation));
                 SetFieldValue<DipLocation[]?>(Data.Models.Metadata.DipSwitch.DipLocationKey, dipLocationItems);
             }
 
             var dipValues = item.ReadItemArray<Data.Models.Metadata.DipValue>(Data.Models.Metadata.DipSwitch.DipValueKey);
-            if (dipValues != null)
+            if (dipValues is not null)
             {
                 DipValue[] dipValueItems = Array.ConvertAll(dipValues, dipValue => new DipValue(dipValue));
                 SetFieldValue<DipValue[]?>(Data.Models.Metadata.DipSwitch.DipValueKey, dipValueItems);
@@ -102,7 +102,7 @@ namespace SabreTools.DatItems.Formats
 
         public DipSwitch(Data.Models.Metadata.DipSwitch item, Machine machine, Source source) : this(item)
         {
-            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            SetFieldValue<Source?>(SourceKey, source);
             CopyMachineInformation(machine);
         }
 
@@ -116,18 +116,18 @@ namespace SabreTools.DatItems.Formats
             var dipSwitchItem = base.GetInternalClone();
 
             var condition = GetFieldValue<Condition?>(Data.Models.Metadata.DipSwitch.ConditionKey);
-            if (condition != null)
+            if (condition is not null)
                 dipSwitchItem[Data.Models.Metadata.DipSwitch.ConditionKey] = condition.GetInternalClone();
 
             var dipLocations = GetFieldValue<DipLocation[]?>(Data.Models.Metadata.DipSwitch.DipLocationKey);
-            if (dipLocations != null)
+            if (dipLocations is not null)
             {
                 Data.Models.Metadata.DipLocation[] dipLocationItems = Array.ConvertAll(dipLocations, dipLocation => dipLocation.GetInternalClone());
                 dipSwitchItem[Data.Models.Metadata.DipSwitch.DipLocationKey] = dipLocationItems;
             }
 
             var dipValues = GetFieldValue<DipValue[]?>(Data.Models.Metadata.DipSwitch.DipValueKey);
-            if (dipValues != null)
+            if (dipValues is not null)
             {
                 Data.Models.Metadata.DipValue[] dipValueItems = Array.ConvertAll(dipValues, dipValue => dipValue.GetInternalClone());
                 dipSwitchItem[Data.Models.Metadata.DipSwitch.DipValueKey] = dipValueItems;

@@ -24,33 +24,33 @@ namespace SabreTools.DatItems.Formats
         public Driver(Data.Models.Metadata.Driver item) : base(item)
         {
             // Process flag values
-            if (GetStringFieldValue(Data.Models.Metadata.Driver.CocktailKey) != null)
+            if (GetStringFieldValue(Data.Models.Metadata.Driver.CocktailKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.Driver.CocktailKey, GetStringFieldValue(Data.Models.Metadata.Driver.CocktailKey).AsSupportStatus().AsStringValue());
-            if (GetStringFieldValue(Data.Models.Metadata.Driver.ColorKey) != null)
+            if (GetStringFieldValue(Data.Models.Metadata.Driver.ColorKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.Driver.ColorKey, GetStringFieldValue(Data.Models.Metadata.Driver.ColorKey).AsSupportStatus().AsStringValue());
-            if (GetStringFieldValue(Data.Models.Metadata.Driver.EmulationKey) != null)
+            if (GetStringFieldValue(Data.Models.Metadata.Driver.EmulationKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.Driver.EmulationKey, GetStringFieldValue(Data.Models.Metadata.Driver.EmulationKey).AsSupportStatus().AsStringValue());
-            if (GetBoolFieldValue(Data.Models.Metadata.Driver.IncompleteKey) != null)
+            if (GetBoolFieldValue(Data.Models.Metadata.Driver.IncompleteKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.Driver.IncompleteKey, GetBoolFieldValue(Data.Models.Metadata.Driver.IncompleteKey).FromYesNo());
-            if (GetBoolFieldValue(Data.Models.Metadata.Driver.NoSoundHardwareKey) != null)
+            if (GetBoolFieldValue(Data.Models.Metadata.Driver.NoSoundHardwareKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.Driver.NoSoundHardwareKey, GetBoolFieldValue(Data.Models.Metadata.Driver.NoSoundHardwareKey).FromYesNo());
-            if (GetInt64FieldValue(Data.Models.Metadata.Driver.PaletteSizeKey) != null)
+            if (GetInt64FieldValue(Data.Models.Metadata.Driver.PaletteSizeKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.Driver.PaletteSizeKey, GetInt64FieldValue(Data.Models.Metadata.Driver.PaletteSizeKey).ToString());
-            if (GetBoolFieldValue(Data.Models.Metadata.Driver.RequiresArtworkKey) != null)
+            if (GetBoolFieldValue(Data.Models.Metadata.Driver.RequiresArtworkKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.Driver.RequiresArtworkKey, GetBoolFieldValue(Data.Models.Metadata.Driver.RequiresArtworkKey).FromYesNo());
-            if (GetStringFieldValue(Data.Models.Metadata.Driver.SaveStateKey) != null)
+            if (GetStringFieldValue(Data.Models.Metadata.Driver.SaveStateKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.Driver.SaveStateKey, GetStringFieldValue(Data.Models.Metadata.Driver.SaveStateKey).AsSupported().AsStringValue(useSecond: true));
-            if (GetStringFieldValue(Data.Models.Metadata.Driver.SoundKey) != null)
+            if (GetStringFieldValue(Data.Models.Metadata.Driver.SoundKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.Driver.SoundKey, GetStringFieldValue(Data.Models.Metadata.Driver.SoundKey).AsSupportStatus().AsStringValue());
-            if (GetStringFieldValue(Data.Models.Metadata.Driver.StatusKey) != null)
+            if (GetStringFieldValue(Data.Models.Metadata.Driver.StatusKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.Driver.StatusKey, GetStringFieldValue(Data.Models.Metadata.Driver.StatusKey).AsSupportStatus().AsStringValue());
-            if (GetBoolFieldValue(Data.Models.Metadata.Driver.UnofficialKey) != null)
+            if (GetBoolFieldValue(Data.Models.Metadata.Driver.UnofficialKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.Driver.UnofficialKey, GetBoolFieldValue(Data.Models.Metadata.Driver.UnofficialKey).FromYesNo());
         }
 
         public Driver(Data.Models.Metadata.Driver item, Machine machine, Source source) : this(item)
         {
-            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            SetFieldValue<Source?>(SourceKey, source);
             CopyMachineInformation(machine);
         }
 

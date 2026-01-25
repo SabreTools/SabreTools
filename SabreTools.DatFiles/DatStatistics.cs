@@ -124,7 +124,7 @@ namespace SabreTools.DatFiles
                     case Disk disk:
                         AddItemStatistics(disk);
                         break;
-                    case DatItems.Formats.File file:
+                    case File file:
                         AddItemStatistics(file);
                         break;
                     case Media media:
@@ -132,6 +132,8 @@ namespace SabreTools.DatFiles
                         break;
                     case Rom rom:
                         AddItemStatistics(rom);
+                        break;
+                    default:
                         break;
                 }
             }
@@ -155,6 +157,7 @@ namespace SabreTools.DatFiles
                 // Increment the item count for the type
                 AddItemCount(item.ReadString(Data.Models.Metadata.DatItem.TypeKey).AsItemType());
 
+#pragma warning disable IDE0010
                 // Some item types require special processing
                 switch (item)
                 {
@@ -168,6 +171,7 @@ namespace SabreTools.DatFiles
                         AddItemStatistics(rom);
                         break;
                 }
+#pragma warning restore IDE0010
             }
         }
 
@@ -213,10 +217,10 @@ namespace SabreTools.DatFiles
         {
             lock (_hashCounts)
             {
-                if (!_hashCounts.ContainsKey(hashType))
+                if (!_hashCounts.TryGetValue(hashType, out long value))
                     return 0;
 
-                return _hashCounts[hashType];
+                return value;
             }
         }
 
@@ -229,10 +233,10 @@ namespace SabreTools.DatFiles
         {
             lock (_itemCounts)
             {
-                if (!_itemCounts.ContainsKey(itemType))
+                if (!_itemCounts.TryGetValue(itemType, out long value))
                     return 0;
 
-                return _itemCounts[itemType];
+                return value;
             }
         }
 
@@ -245,10 +249,10 @@ namespace SabreTools.DatFiles
         {
             lock (_statusCounts)
             {
-                if (!_statusCounts.ContainsKey(itemStatus))
+                if (!_statusCounts.TryGetValue(itemStatus, out long value))
                     return 0;
 
-                return _statusCounts[itemStatus];
+                return value;
             }
         }
 
@@ -259,7 +263,7 @@ namespace SabreTools.DatFiles
         public void RemoveItemStatistics(DatItem item)
         {
             // If we have a null item, we can't do anything
-            if (item == null)
+            if (item is null)
                 return;
 
             lock (statsLock)
@@ -274,13 +278,14 @@ namespace SabreTools.DatFiles
                 // Decrement the item count for the type
                 RemoveItemCount(item.GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey).AsItemType());
 
+#pragma warning disable IDE0010
                 // Some item types require special processing
                 switch (item)
                 {
                     case Disk disk:
                         RemoveItemStatistics(disk);
                         break;
-                    case DatItems.Formats.File file:
+                    case File file:
                         RemoveItemStatistics(file);
                         break;
                     case Media media:
@@ -290,6 +295,7 @@ namespace SabreTools.DatFiles
                         RemoveItemStatistics(rom);
                         break;
                 }
+#pragma warning restore IDE0010
             }
         }
 
@@ -300,7 +306,7 @@ namespace SabreTools.DatFiles
         public void RemoveItemStatistics(Data.Models.Metadata.DatItem item)
         {
             // If we have a null item, we can't do anything
-            if (item == null)
+            if (item is null)
                 return;
 
             lock (statsLock)
@@ -315,6 +321,7 @@ namespace SabreTools.DatFiles
                 // Decrement the item count for the type
                 RemoveItemCount(item.ReadString(Data.Models.Metadata.DatItem.TypeKey).AsItemType());
 
+#pragma warning disable IDE0010
                 // Some item types require special processing
                 switch (item)
                 {
@@ -328,6 +335,7 @@ namespace SabreTools.DatFiles
                         RemoveItemStatistics(rom);
                         break;
                 }
+#pragma warning restore IDE0010
             }
         }
 
@@ -422,7 +430,7 @@ namespace SabreTools.DatFiles
         /// Add to the statistics for a given File
         /// </summary>
         /// <param name="file">Item to add info from</param>
-        private void AddItemStatistics(DatItems.Formats.File file)
+        private void AddItemStatistics(File file)
         {
             TotalSize += file.Size ?? 0;
             AddHashCount(HashType.CRC32, string.IsNullOrEmpty(file.CRC) ? 0 : 1);
@@ -605,7 +613,7 @@ namespace SabreTools.DatFiles
         /// Remove from the statistics given a File
         /// </summary>
         /// <param name="file">Item to remove info for</param>
-        private void RemoveItemStatistics(DatItems.Formats.File file)
+        private void RemoveItemStatistics(File file)
         {
             TotalSize -= file.Size ?? 0;
             RemoveHashCount(HashType.CRC32, string.IsNullOrEmpty(file.CRC) ? 0 : 1);

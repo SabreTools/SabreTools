@@ -53,7 +53,7 @@ namespace SabreTools.DatItems.Formats
         public string? CRC
         {
             get { return _crc.ToHexString(); }
-            set { _crc = (value == "null" ? ZeroHash.CRC32Arr : TextHelper.NormalizeCRC32(value).FromHexString()); }
+            set { _crc = value == "null" ? ZeroHash.CRC32Arr : TextHelper.NormalizeCRC32(value).FromHexString(); }
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace SabreTools.DatItems.Formats
         /// </summary>
         public File()
         {
-            SetFieldValue<ItemType>(Data.Models.Metadata.DatItem.TypeKey, ItemType);
+            SetFieldValue(Data.Models.Metadata.DatItem.TypeKey, ItemType);
         }
 
         #endregion
@@ -122,10 +122,10 @@ namespace SabreTools.DatItems.Formats
                 _sha256 = this._sha256,
                 Format = this.Format,
             };
-            file.SetFieldValue<DupeType>(DatItem.DupeTypeKey, GetFieldValue<DupeType>(DatItem.DupeTypeKey));
-            file.SetFieldValue<Machine>(DatItem.MachineKey, GetMachine()!.Clone() as Machine ?? new Machine());
-            file.SetFieldValue<bool?>(DatItem.RemoveKey, GetBoolFieldValue(DatItem.RemoveKey));
-            file.SetFieldValue<Source?>(DatItem.SourceKey, GetFieldValue<Source?>(DatItem.SourceKey));
+            file.SetFieldValue(DupeTypeKey, GetFieldValue<DupeType>(DupeTypeKey));
+            file.SetFieldValue(MachineKey, GetMachine()!.Clone() as Machine ?? new Machine());
+            file.SetFieldValue(RemoveKey, GetBoolFieldValue(RemoveKey));
+            file.SetFieldValue<Source?>(SourceKey, GetFieldValue<Source?>(SourceKey));
 
             return file;
         }
@@ -139,16 +139,16 @@ namespace SabreTools.DatItems.Formats
             var rom = new Rom();
 
             rom.SetName($"{Id}.{Extension}");
-            rom.SetFieldValue<long?>(Data.Models.Metadata.Rom.SizeKey, Size);
+            rom.SetFieldValue(Data.Models.Metadata.Rom.SizeKey, Size);
             rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, CRC);
             rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.MD5Key, MD5);
             rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA1Key, SHA1);
             rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA256Key, SHA256);
 
-            rom.SetFieldValue<DupeType>(DatItem.DupeTypeKey, GetFieldValue<DupeType>(DatItem.DupeTypeKey));
-            rom.SetFieldValue<Machine>(DatItem.MachineKey, GetMachine()?.Clone() as Machine);
-            rom.SetFieldValue<bool?>(DatItem.RemoveKey, GetBoolFieldValue(DatItem.RemoveKey));
-            rom.SetFieldValue<Source?>(DatItem.SourceKey, GetFieldValue<Source?>(DatItem.SourceKey));
+            rom.SetFieldValue(DupeTypeKey, GetFieldValue<DupeType>(DupeTypeKey));
+            rom.SetFieldValue(MachineKey, GetMachine()?.Clone() as Machine);
+            rom.SetFieldValue(RemoveKey, GetBoolFieldValue(RemoveKey));
+            rom.SetFieldValue<Source?>(SourceKey, GetFieldValue<Source?>(SourceKey));
 
             return rom;
         }
@@ -176,7 +176,7 @@ namespace SabreTools.DatItems.Formats
             }
 
             // If we have a file that has no known size, rely on the hashes only
-            else if (Size == null && HashMatch(newOther!))
+            else if (Size is null && HashMatch(newOther!))
             {
                 dupefound = true;
             }
@@ -196,7 +196,7 @@ namespace SabreTools.DatItems.Formats
         /// <param name="other">File to fill information from</param>
         public void FillMissingInformation(File other)
         {
-            if (Size == null && other.Size != null)
+            if (Size is null && other.Size is not null)
                 Size = other.Size;
 
             if (_crc.IsNullOrEmpty() && !other._crc.IsNullOrEmpty())
@@ -283,6 +283,7 @@ namespace SabreTools.DatItems.Formats
             // Set the output key as the default blank string
             string? key;
 
+#pragma warning disable IDE0010
             // Now determine what the key should be based on the bucketedBy value
             switch (bucketedBy)
             {
@@ -306,6 +307,7 @@ namespace SabreTools.DatItems.Formats
                 default:
                     return base.GetKey(bucketedBy, machine, source, lower, norename);
             }
+#pragma warning restore IDE0010
 
             // Double and triple check the key for corner cases
             key ??= string.Empty;

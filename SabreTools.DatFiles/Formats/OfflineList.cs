@@ -21,7 +21,7 @@ namespace SabreTools.DatFiles.Formats
         /// <param name="datFile">Parent DatFile to copy from</param>
         public OfflineList(DatFile? datFile) : base(datFile)
         {
-            Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, DatFormat.OfflineList);
+            Header.SetFieldValue(DatHeader.DatFormatKey, DatFormat.OfflineList);
         }
 
         /// <inheritdoc/>
@@ -29,15 +29,17 @@ namespace SabreTools.DatFiles.Formats
         {
             List<string> missingFields = [];
 
+#pragma warning disable IDE0010
             switch (datItem)
             {
                 case Rom rom:
-                    if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) == null || rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) < 0)
+                    if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) is null || rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) < 0)
                         missingFields.Add(Data.Models.Metadata.Rom.SizeKey);
                     if (string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.CRCKey)))
                         missingFields.Add(Data.Models.Metadata.Rom.CRCKey);
                     break;
             }
+#pragma warning restore IDE0010
 
             return missingFields;
         }

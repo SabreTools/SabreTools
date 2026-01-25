@@ -227,14 +227,14 @@ namespace SabreTools.DatFiles
                 long? size = rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey);
 
                 // If we have the case where there is SHA-1 and nothing else, we don't fill in any other part of the data
-                if (size == null && !string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA1Key)))
+                if (size is null && !string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA1Key)))
                 {
                     // No-op, just catch it so it doesn't go further
                     //logger.Verbose($"{Header.GetStringFieldValue(DatHeader.FileNameKey)}: Entry with only SHA-1 found - '{rom.GetName()}'");
                 }
 
                 // If we have a rom and it's missing size AND the hashes match a 0-byte file, fill in the rest of the info
-                else if ((size == 0 || size == null)
+                else if ((size == 0 || size is null)
                     && (string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.CRCKey)) || rom.HasZeroHash()))
                 {
                     rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SizeKey, Constants.SizeZero.ToString());
@@ -252,7 +252,7 @@ namespace SabreTools.DatFiles
                 }
 
                 // If the file has no size and it's not the above case, skip and log
-                else if (rom.GetStringFieldValue(Data.Models.Metadata.Rom.StatusKey).AsItemStatus() != ItemStatus.Nodump && (size == 0 || size == null))
+                else if (rom.GetStringFieldValue(Data.Models.Metadata.Rom.StatusKey).AsItemStatus() != ItemStatus.Nodump && (size == 0 || size is null))
                 {
                     //logger.Verbose($"{Header.GetStringFieldValue(DatHeader.FileNameKey)}: Incomplete entry for '{rom.GetName()}' will be output as nodump");
                     rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.StatusKey, ItemStatus.Nodump.AsStringValue());
@@ -260,7 +260,7 @@ namespace SabreTools.DatFiles
 
                 // If the file has a size but aboslutely no hashes, skip and log
                 else if (rom.GetStringFieldValue(Data.Models.Metadata.Rom.StatusKey).AsItemStatus() != ItemStatus.Nodump
-                    && size != null && size > 0
+                    && size is not null && size > 0
                     && !rom.HasHashes())
                 {
                     //logger.Verbose($"{Header.GetStringFieldValue(DatHeader.FileNameKey)}: Incomplete entry for '{rom.GetName()}' will be output as nodump");
@@ -323,7 +323,7 @@ namespace SabreTools.DatFiles
             foreach (long itemIndex in itemIndices)
             {
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-                if (!_items.TryGetValue(itemIndex, out var datItem) || datItem == null)
+                if (!_items.TryGetValue(itemIndex, out var datItem) || datItem is null)
                     continue;
 #else
                 var datItem = _items[itemIndex];
@@ -346,7 +346,7 @@ namespace SabreTools.DatFiles
         /// </summary>
         public Dictionary<long, DatItem> GetItemsForBucket(string? bucketName, bool filter = false)
         {
-            if (bucketName == null)
+            if (bucketName is null)
                 return [];
 
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
@@ -364,14 +364,14 @@ namespace SabreTools.DatFiles
             {
                 // Ignore missing IDs
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-                if (!_items.TryGetValue(itemId, out var datItem) || datItem == null)
+                if (!_items.TryGetValue(itemId, out var datItem) || datItem is null)
                     continue;
 #else
                 if (!_items.ContainsKey(itemId))
                     continue;
 
                 var datItem = _items[itemId];
-                if (datItem == null)
+                if (datItem is null)
                     continue;
 #endif
 
@@ -515,13 +515,13 @@ namespace SabreTools.DatFiles
             var list = _buckets[key];
             _buckets.Remove(key);
 #endif
-            if (list == null)
+            if (list is null)
                 return removed;
 
             foreach (var index in list)
             {
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-                if (!_items.TryGetValue(index, out var datItem) || datItem == null)
+                if (!_items.TryGetValue(index, out var datItem) || datItem is null)
                     continue;
 #else
                 if (!_items.ContainsKey(index))
@@ -554,7 +554,7 @@ namespace SabreTools.DatFiles
 #endif
 
             // Remove statistics, if possible
-            if (datItem != null)
+            if (datItem is not null)
                 DatStatistics.RemoveItemStatistics(datItem);
 
             // Remove the machine mapping
@@ -734,7 +734,7 @@ namespace SabreTools.DatFiles
             DupeType output = 0x00;
 
             // If either item is null
-            if (selfItem == null || lastItem == null)
+            if (selfItem is null || lastItem is null)
                 return output;
 
             // If we don't have a duplicate at all, return none
@@ -839,7 +839,7 @@ namespace SabreTools.DatFiles
 
             // If the key doesn't exist
             var roms = GetItemsForBucket(key);
-            if (roms == null || roms.Count == 0)
+            if (roms is null || roms.Count == 0)
                 return false;
 
             // Try to find duplicates
@@ -853,7 +853,7 @@ namespace SabreTools.DatFiles
         private List<KeyValuePair<long, DatItem>> Merge(List<KeyValuePair<long, DatItem>> itemMappings)
         {
             // Check for null or blank roms first
-            if (itemMappings == null || itemMappings.Count == 0)
+            if (itemMappings is null || itemMappings.Count == 0)
                 return [];
 
             // Create output list
@@ -920,7 +920,7 @@ namespace SabreTools.DatFiles
                 else if (datItem is Rom romItem && savedItem is Rom savedRom)
                     savedRom.FillMissingInformation(romItem);
 
-                savedItem.SetFieldValue<DupeType>(DatItem.DupeTypeKey, dupetype);
+                savedItem.SetFieldValue(DatItem.DupeTypeKey, dupetype);
 
                 // Get the sources associated with the items
                 var savedSource = _sources[_itemToSourceMapping[savedIndex]];
@@ -1030,14 +1030,14 @@ namespace SabreTools.DatFiles
         private string GetBucketKey(long itemIndex, ItemKey bucketBy, bool lower, bool norename)
         {
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            if (!_items.TryGetValue(itemIndex, out var datItem) || datItem == null)
+            if (!_items.TryGetValue(itemIndex, out var datItem) || datItem is null)
                 return string.Empty;
 #else
             if (!_items.ContainsKey(itemIndex))
                 return string.Empty;
 
             var datItem = _items[itemIndex];
-            if (datItem == null)
+            if (datItem is null)
                 return string.Empty;
 #endif
 
@@ -1098,7 +1098,7 @@ namespace SabreTools.DatFiles
                 EnsureBucketingKey(bucketKey);
 
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-                if (!_buckets.TryGetValue(bucketKey, out var bucket) || bucket == null)
+                if (!_buckets.TryGetValue(bucketKey, out var bucket) || bucket is null)
                     return;
 
                 bucket.Add(itemIndex);
@@ -1129,7 +1129,7 @@ namespace SabreTools.DatFiles
 #else
                 var itemIndices = _buckets[bucketKeys[i]];
 #endif
-                if (itemIndices == null || itemIndices.Count == 0)
+                if (itemIndices is null || itemIndices.Count == 0)
                 {
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     _buckets.TryRemove(bucketKeys[i], out _);
@@ -1245,13 +1245,13 @@ namespace SabreTools.DatFiles
             DatStatistics.ResetStatistics();
 
             // If there are no items
-            if (_items == null || _items.Count == 0)
+            if (_items is null || _items.Count == 0)
                 return;
 
             // Loop through and add
             foreach (var item in _items.Values)
             {
-                if (item == null)
+                if (item is null)
                     continue;
 
                 DatStatistics.AddItemStatistics(item);

@@ -186,7 +186,7 @@ namespace SabreTools.DatTools.Test
         public void ParseIntoTest(string? filename, DatFormat datFormat, int totalCount)
         {
             // For all filenames, add the local path for test data
-            if (filename != null)
+            if (filename is not null)
                 filename = Path.Combine(Environment.CurrentDirectory, "TestData", filename);
             else
                 filename = string.Empty;
@@ -235,7 +235,7 @@ namespace SabreTools.DatTools.Test
         public void ParseStatisticsTest(string? filename, DatFormat datFormat, int totalCount)
         {
             // For all filenames, add the local path for test data
-            if (filename != null)
+            if (filename is not null)
                 filename = Path.Combine(Environment.CurrentDirectory, "TestData", filename);
 
             var datFile = Parser.ParseStatistics(filename, new FilterRunner(Array.Empty<string>()), throwOnError: true);

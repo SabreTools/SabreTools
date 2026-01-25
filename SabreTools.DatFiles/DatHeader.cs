@@ -35,7 +35,7 @@ namespace SabreTools.DatFiles
             get
             {
                 var canOpen = GetStringArrayFieldValue(Data.Models.Metadata.Header.CanOpenKey);
-                return canOpen != null && canOpen.Length > 0;
+                return canOpen is not null && canOpen.Length > 0;
             }
         }
 
@@ -44,7 +44,7 @@ namespace SabreTools.DatFiles
         {
             get
             {
-                return GetFieldValue<Data.Models.OfflineList.Images?>(Data.Models.Metadata.Header.ImagesKey) != null;
+                return GetFieldValue<Data.Models.OfflineList.Images?>(Data.Models.Metadata.Header.ImagesKey) is not null;
             }
         }
 
@@ -53,7 +53,7 @@ namespace SabreTools.DatFiles
         {
             get
             {
-                return GetFieldValue<Data.Models.OfflineList.Infos?>(Data.Models.Metadata.Header.InfosKey) != null;
+                return GetFieldValue<Data.Models.OfflineList.Infos?>(Data.Models.Metadata.Header.InfosKey) is not null;
             }
         }
 
@@ -62,7 +62,7 @@ namespace SabreTools.DatFiles
         {
             get
             {
-                return GetFieldValue<Data.Models.OfflineList.NewDat?>(Data.Models.Metadata.Header.NewDatKey) != null;
+                return GetFieldValue<Data.Models.OfflineList.NewDat?>(Data.Models.Metadata.Header.NewDatKey) is not null;
             }
         }
 
@@ -71,7 +71,7 @@ namespace SabreTools.DatFiles
         {
             get
             {
-                return GetFieldValue<Data.Models.OfflineList.Search?>(Data.Models.Metadata.Header.SearchKey) != null;
+                return GetFieldValue<Data.Models.OfflineList.Search?>(Data.Models.Metadata.Header.SearchKey) is not null;
             }
         }
 
@@ -88,7 +88,7 @@ namespace SabreTools.DatFiles
 
             // Get all fields to automatically copy without processing
             var nonItemFields = TypeHelper.GetConstants(typeof(Data.Models.Metadata.Header));
-            if (nonItemFields != null)
+            if (nonItemFields is not null)
             {
                 // Populate the internal machine from non-filter fields
                 foreach (string fieldName in nonItemFields)
@@ -100,7 +100,7 @@ namespace SabreTools.DatFiles
 
             // Get all fields specific to the DatFiles implementation
             var nonStandardFields = TypeHelper.GetConstants(typeof(DatHeader));
-            if (nonStandardFields != null)
+            if (nonStandardFields is not null)
             {
                 // Populate the internal machine from filter fields
                 foreach (string fieldName in nonStandardFields)
@@ -139,8 +139,7 @@ namespace SabreTools.DatFiles
         {
             var header = new DatHeader();
 
-            header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey,
-                GetFieldValue<DatFormat>(DatHeader.DatFormatKey));
+            header.SetFieldValue(DatFormatKey, GetFieldValue<DatFormat>(DatFormatKey));
 
             return header;
         }
@@ -189,7 +188,7 @@ namespace SabreTools.DatFiles
         public override bool Equals(ModelBackedItem? other)
         {
             // If other is null
-            if (other == null)
+            if (other is null)
                 return false;
 
             // If the type is mismatched
@@ -204,7 +203,7 @@ namespace SabreTools.DatFiles
         public override bool Equals(ModelBackedItem<Data.Models.Metadata.Header>? other)
         {
             // If other is null
-            if (other == null)
+            if (other is null)
                 return false;
 
             // If the type is mismatched

@@ -21,7 +21,7 @@ namespace SabreTools.DatItems.Formats
             get
             {
                 var conditions = GetFieldValue<Condition[]?>(Data.Models.Metadata.Adjuster.ConditionKey);
-                return conditions != null && conditions.Length > 0;
+                return conditions is not null && conditions.Length > 0;
             }
         }
 
@@ -34,18 +34,18 @@ namespace SabreTools.DatItems.Formats
         public Adjuster(Data.Models.Metadata.Adjuster item) : base(item)
         {
             // Process flag values
-            if (GetBoolFieldValue(Data.Models.Metadata.Adjuster.DefaultKey) != null)
+            if (GetBoolFieldValue(Data.Models.Metadata.Adjuster.DefaultKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.Adjuster.DefaultKey, GetBoolFieldValue(Data.Models.Metadata.Adjuster.DefaultKey).FromYesNo());
 
             // Handle subitems
             var condition = item.Read<Data.Models.Metadata.Condition>(Data.Models.Metadata.Adjuster.ConditionKey);
-            if (condition != null)
+            if (condition is not null)
                 SetFieldValue(Data.Models.Metadata.Adjuster.ConditionKey, new Condition(condition));
         }
 
         public Adjuster(Data.Models.Metadata.Adjuster item, Machine machine, Source source) : this(item)
         {
-            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            SetFieldValue<Source?>(SourceKey, source);
             CopyMachineInformation(machine);
         }
 
@@ -59,7 +59,7 @@ namespace SabreTools.DatItems.Formats
             var adjusterItem = base.GetInternalClone();
 
             var condition = GetFieldValue<Condition?>(Data.Models.Metadata.Adjuster.ConditionKey);
-            if (condition != null)
+            if (condition is not null)
                 adjusterItem[Data.Models.Metadata.Adjuster.ConditionKey] = condition.GetInternalClone();
 
             return adjusterItem;

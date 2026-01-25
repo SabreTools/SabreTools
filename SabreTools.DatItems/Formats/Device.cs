@@ -23,7 +23,7 @@ namespace SabreTools.DatItems.Formats
             get
             {
                 var instances = GetFieldValue<Instance[]?>(Data.Models.Metadata.Device.InstanceKey);
-                return instances != null && instances.Length > 0;
+                return instances is not null && instances.Length > 0;
             }
         }
 
@@ -33,7 +33,7 @@ namespace SabreTools.DatItems.Formats
             get
             {
                 var extensions = GetFieldValue<Extension[]?>(Data.Models.Metadata.Device.ExtensionKey);
-                return extensions != null && extensions.Length > 0;
+                return extensions is not null && extensions.Length > 0;
             }
         }
 
@@ -46,18 +46,18 @@ namespace SabreTools.DatItems.Formats
         public Device(Data.Models.Metadata.Device item) : base(item)
         {
             // Process flag values
-            if (GetBoolFieldValue(Data.Models.Metadata.Device.MandatoryKey) != null)
+            if (GetBoolFieldValue(Data.Models.Metadata.Device.MandatoryKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.Device.MandatoryKey, GetBoolFieldValue(Data.Models.Metadata.Device.MandatoryKey).FromYesNo());
-            if (GetStringFieldValue(Data.Models.Metadata.Device.DeviceTypeKey) != null)
+            if (GetStringFieldValue(Data.Models.Metadata.Device.DeviceTypeKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.Device.DeviceTypeKey, GetStringFieldValue(Data.Models.Metadata.Device.DeviceTypeKey).AsDeviceType().AsStringValue());
 
             // Handle subitems
             var instance = item.Read<Data.Models.Metadata.Instance>(Data.Models.Metadata.Device.InstanceKey);
-            if (instance != null)
+            if (instance is not null)
                 SetFieldValue<Instance?>(Data.Models.Metadata.Device.InstanceKey, new Instance(instance));
 
             var extensions = item.ReadItemArray<Data.Models.Metadata.Extension>(Data.Models.Metadata.Device.ExtensionKey);
-            if (extensions != null)
+            if (extensions is not null)
             {
                 Extension[] extensionItems = Array.ConvertAll(extensions, extension => new Extension(extension));
                 SetFieldValue<Extension[]?>(Data.Models.Metadata.Device.ExtensionKey, extensionItems);
@@ -66,7 +66,7 @@ namespace SabreTools.DatItems.Formats
 
         public Device(Data.Models.Metadata.Device item, Machine machine, Source source) : this(item)
         {
-            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            SetFieldValue<Source?>(SourceKey, source);
             CopyMachineInformation(machine);
         }
 
@@ -80,11 +80,11 @@ namespace SabreTools.DatItems.Formats
             var deviceItem = base.GetInternalClone();
 
             var instance = GetFieldValue<Instance?>(Data.Models.Metadata.Device.InstanceKey);
-            if (instance != null)
+            if (instance is not null)
                 deviceItem[Data.Models.Metadata.Device.InstanceKey] = instance.GetInternalClone();
 
             var extensions = GetFieldValue<Extension[]?>(Data.Models.Metadata.Device.ExtensionKey);
-            if (extensions != null)
+            if (extensions is not null)
             {
                 Data.Models.Metadata.Extension[] extensionItems = Array.ConvertAll(extensions, extension => extension.GetInternalClone());
                 deviceItem[Data.Models.Metadata.Device.ExtensionKey] = extensionItems;

@@ -60,7 +60,7 @@ namespace SabreTools.DatFiles
         {
             // Normalize the input value
             value = value?.ToLowerInvariant();
-            if (value == null)
+            if (value is null)
                 return default;
 
             // Try to get the value from the mappings
@@ -80,7 +80,7 @@ namespace SabreTools.DatFiles
         {
             // Normalize the input value
             value = value?.ToLowerInvariant();
-            if (value == null)
+            if (value is null)
                 return default;
 
             // Try to get the value from the mappings
@@ -100,7 +100,7 @@ namespace SabreTools.DatFiles
         {
             // Normalize the input value
             value = value?.ToLowerInvariant();
-            if (value == null)
+            if (value is null)
                 return default;
 
             // Try to get the value from the mappings

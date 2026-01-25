@@ -23,13 +23,13 @@ namespace SabreTools.DatItems.Formats
         public Condition(Data.Models.Metadata.Condition item) : base(item)
         {
             // Process flag values
-            if (GetStringFieldValue(Data.Models.Metadata.Condition.RelationKey) != null)
+            if (GetStringFieldValue(Data.Models.Metadata.Condition.RelationKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.Condition.RelationKey, GetStringFieldValue(Data.Models.Metadata.Condition.RelationKey).AsRelation().AsStringValue());
         }
 
         public Condition(Data.Models.Metadata.Condition item, Machine machine, Source source) : this(item)
         {
-            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            SetFieldValue<Source?>(SourceKey, source);
             CopyMachineInformation(machine);
         }
 

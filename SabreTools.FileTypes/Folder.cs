@@ -69,7 +69,7 @@ namespace SabreTools.FileTypes
         public bool CopyAll(string outDir)
         {
             // If we have an invalid filename
-            if (Filename == null)
+            if (Filename is null)
                 return false;
 
             // Copy all files from the current folder to the output directory recursively
@@ -135,7 +135,7 @@ namespace SabreTools.FileTypes
             string? realentry = null;
 
             // If we have an invalid filename
-            if (Filename == null)
+            if (Filename is null)
                 return null;
 
             // Copy single file from the current folder to the output directory, if exists
@@ -174,7 +174,7 @@ namespace SabreTools.FileTypes
             realEntry = null;
 
             // If we have an invalid filename
-            if (Filename == null)
+            if (Filename is null)
                 return null;
 
             // Copy single file from the current folder to the output directory, if exists
@@ -222,11 +222,11 @@ namespace SabreTools.FileTypes
         public List<BaseFile>? GetChildren()
         {
             // If we have an invalid filename
-            if (Filename == null)
+            if (Filename is null)
                 return null;
 
             // If we already have children
-            if (_children != null && _children.Count > 0)
+            if (_children is not null && _children.Count > 0)
                 return _children;
 
             // Build the child item list
@@ -234,7 +234,7 @@ namespace SabreTools.FileTypes
             foreach (string file in IOExtensions.SafeEnumerateFiles(Filename, "*", SearchOption.TopDirectoryOnly))
             {
                 BaseFile? nf = FileTypeTool.GetInfo(file, _hashTypes);
-                if (nf != null)
+                if (nf is not null)
                     _children.Add(nf);
             }
 
@@ -278,7 +278,7 @@ namespace SabreTools.FileTypes
         public bool Write(Stream? stream, string outDir, BaseFile? baseFile)
         {
             // If either input is null or empty, return
-            if (stream == null || baseFile == null || baseFile.Filename == null)
+            if (stream is null || baseFile is null || baseFile.Filename is null)
                 return false;
 
             // If the stream is not readable, return
@@ -309,12 +309,12 @@ namespace SabreTools.FileTypes
             {
                 // If the full output path doesn't exist, create it
                 string? dir = Path.GetDirectoryName(fileName);
-                if (dir != null && !Directory.Exists(dir))
+                if (dir is not null && !Directory.Exists(dir))
                     Directory.CreateDirectory(dir);
 
                 // Overwrite output files by default
                 outputStream = File.Create(fileName);
-                if (outputStream == null)
+                if (outputStream is null)
                     return false;
 
                 if (stream.CanSeek)

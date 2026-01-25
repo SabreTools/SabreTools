@@ -24,13 +24,13 @@ namespace SabreTools.DatItems.Formats
         public SlotOption(Data.Models.Metadata.SlotOption item) : base(item)
         {
             // Process flag values
-            if (GetBoolFieldValue(Data.Models.Metadata.SlotOption.DefaultKey) != null)
+            if (GetBoolFieldValue(Data.Models.Metadata.SlotOption.DefaultKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.SlotOption.DefaultKey, GetBoolFieldValue(Data.Models.Metadata.SlotOption.DefaultKey).FromYesNo());
         }
 
         public SlotOption(Data.Models.Metadata.SlotOption item, Machine machine, Source source) : this(item)
         {
-            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            SetFieldValue<Source?>(SourceKey, source);
             CopyMachineInformation(machine);
         }
 

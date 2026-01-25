@@ -119,7 +119,7 @@ namespace SabreTools.DatTools
 
                 // Get the extension path for the hash
                 string? subpath = Utilities.GetDepotPath(hash, datFile.Modifiers.InputDepot?.Depth ?? 0);
-                if (subpath == null)
+                if (subpath is null)
                     continue;
 
                 // Find the first depot that includes the hash
@@ -134,7 +134,7 @@ namespace SabreTools.DatTools
                 }
 
                 // If we didn't find a path, then we continue
-                if (foundpath == null)
+                if (foundpath is null)
                     continue;
 
                 // If we have a path, we want to try to get the rom information
@@ -142,12 +142,12 @@ namespace SabreTools.DatTools
                 BaseFile? fileinfo = archive.GetTorrentGZFileInfo();
 
                 // If the file information is null, then we continue
-                if (fileinfo == null)
+                if (fileinfo is null)
                     continue;
 
                 // If there are no items in the hash, we continue
                 var items = datFile.GetItemsForBucket(hash);
-                if (items == null || items.Count == 0)
+                if (items is null || items.Count == 0)
                     continue;
 
                 // Otherwise, we rebuild that file to all locations that we need to
@@ -258,7 +258,6 @@ namespace SabreTools.DatTools
             if (outputFormat == OutputFormat.Folder && forcePacking != PackingFlag.None)
                 outputFormat = GetOutputFormat(forcePacking);
 
-
             #endregion
 
             bool success = true;
@@ -332,7 +331,7 @@ namespace SabreTools.DatTools
             TreatAsFile asFile)
         {
             // If we somehow have a null filename, return
-            if (file == null)
+            if (file is null)
                 return false;
 
             // Set the deletion variables
@@ -351,20 +350,20 @@ namespace SabreTools.DatTools
 
             // Now get all extracted items from the archive
             HashType[] hashTypes = quickScan ? [HashType.CRC32] : [HashType.CRC32, HashType.MD5, HashType.SHA1];
-            if (archive != null)
+            if (archive is not null)
             {
                 archive.SetHashTypes(hashTypes);
                 entries = archive.GetChildren();
             }
 
             // If the entries list is null, we encountered an error or have a file and should scan externally
-            if (entries == null && System.IO.File.Exists(file))
+            if (entries is null && System.IO.File.Exists(file))
             {
                 BaseFile? internalFileInfo = FileTypeTool.GetInfo(file, hashTypes);
 
                 // Create the correct DatItem
                 DatItem? internalDatItem;
-                if (internalFileInfo == null)
+                if (internalFileInfo is null)
                     internalDatItem = null;
 #if NET20 || NET35
                 else if (internalFileInfo is FileTypes.Aaru.AaruFormat && (asFile & TreatAsFile.AaruFormat) == 0)
@@ -381,7 +380,7 @@ namespace SabreTools.DatTools
                 else
                     internalDatItem = internalFileInfo.ConvertToRom();
 
-                if (internalDatItem != null)
+                if (internalDatItem is not null)
                 {
                     usedExternally = RebuildIndividualFile(datFile,
                         internalDatItem,
@@ -394,12 +393,12 @@ namespace SabreTools.DatTools
                 }
             }
             // Otherwise, loop through the entries and try to match
-            else if (entries != null)
+            else if (entries is not null)
             {
                 foreach (BaseFile entry in entries)
                 {
                     DatItem? internalDatItem = DatItemTool.CreateDatItem(entry);
-                    if (internalDatItem == null)
+                    if (internalDatItem is null)
                         continue;
 
                     usedInternally |= RebuildIndividualFile(datFile,
@@ -464,7 +463,7 @@ namespace SabreTools.DatTools
             string crc = (datItem as Rom)!.GetStringFieldValue(Data.Models.Metadata.Rom.CRCKey) ?? string.Empty;
 
             // Try to get the stream for the file
-            if (!GetFileStream(datItem, file, isZip, out Stream? fileStream) || fileStream == null)
+            if (!GetFileStream(datItem, file, isZip, out Stream? fileStream) || fileStream is null)
                 return false;
 
             // If either we have duplicates or we're filtering
@@ -514,7 +513,7 @@ namespace SabreTools.DatTools
                 {
                     // If we don't have a proper machine
                     var machine = item.GetMachine();
-                    if (machine?.GetName() == null)
+                    if (machine?.GetName() is null)
                         continue;
 
                     // If we should check for the items in the machine
@@ -535,19 +534,19 @@ namespace SabreTools.DatTools
                 fileStream.Dispose();
 
                 // Delete the file if a temp file was created
-                if (tempFile != null && System.IO.File.Exists(tempFile))
+                if (tempFile is not null && System.IO.File.Exists(tempFile))
                     System.IO.File.Delete(tempFile);
             }
 
             // Now we want to take care of headers, if applicable
-            if (datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.HeaderKey) != null)
+            if (datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.HeaderKey) is not null)
             {
                 // Check to see if we have a matching header first
                 SkipperMatch.Init();
                 Rule rule = SkipperMatch.GetMatchingRule(fileStream, Path.GetFileNameWithoutExtension(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.HeaderKey)!));
 
                 // If there's a match, create the new file to write
-                if (rule.Tests != null && rule.Tests.Length != 0)
+                if (rule.Tests is not null && rule.Tests.Length != 0)
                 {
                     // If the file could be transformed correctly
                     MemoryStream transformStream = new();
@@ -636,7 +635,7 @@ namespace SabreTools.DatTools
                 item.GetMachine()!.SetName(Path.GetFileNameWithoutExtension(item.GetName()));
 
                 // If we are coming from an archive, set the correct machine name
-                if (machinename != null)
+                if (machinename is not null)
                 {
                     item.GetMachine()!.SetFieldValue<string?>(Data.Models.Metadata.Machine.DescriptionKey, machinename);
                     item.GetMachine()!.SetName(machinename);
@@ -653,6 +652,7 @@ namespace SabreTools.DatTools
             }
         }
 
+#pragma warning disable IDE0051
         /// <summary>
         /// Get the rebuild state for a given item
         /// </summary>
@@ -699,7 +699,7 @@ namespace SabreTools.DatTools
                 long machineIndex = datFile.AddMachineDB(machine);
 
                 // If we are coming from an archive, set the correct machine name
-                if (machinename != null)
+                if (machinename is not null)
                 {
                     machine.SetFieldValue<string?>(Data.Models.Metadata.Machine.DescriptionKey, machinename);
                     machine.SetName(machinename);
@@ -716,6 +716,7 @@ namespace SabreTools.DatTools
                 return false;
             }
         }
+#pragma warning restore IDE0051
 
         /// <summary>
         /// Rebuild from TorrentGzip to TorrentGzip
@@ -732,7 +733,7 @@ namespace SabreTools.DatTools
             // If we have a very specific TGZ->TGZ case, just copy it accordingly
             GZipArchive tgz = new(file);
             BaseFile? tgzRom = tgz.GetTorrentGZFileInfo();
-            if (isZip == false && tgzRom != null && (outputFormat == OutputFormat.TorrentGzip || outputFormat == OutputFormat.TorrentGzipRomba))
+            if (isZip == false && tgzRom is not null && (outputFormat == OutputFormat.TorrentGzip || outputFormat == OutputFormat.TorrentGzipRomba))
             {
                 _staticLogger.User($"Matches found for '{Path.GetFileName(datItem.GetName() ?? string.Empty)}', rebuilding accordingly...");
 
@@ -745,7 +746,7 @@ namespace SabreTools.DatTools
 
                 // Make sure the output folder is created
                 string? dir = Path.GetDirectoryName(outDir);
-                if (dir != null)
+                if (dir is not null)
                     Directory.CreateDirectory(dir);
 
                 // Now copy the file over
@@ -778,7 +779,7 @@ namespace SabreTools.DatTools
             // If we have a very specific TGZ->TGZ case, just copy it accordingly
             XZArchive txz = new(file);
             BaseFile? txzRom = txz.GetTorrentXZFileInfo();
-            if (isZip == false && txzRom != null && (outputFormat == OutputFormat.TorrentXZ || outputFormat == OutputFormat.TorrentXZRomba))
+            if (isZip == false && txzRom is not null && (outputFormat == OutputFormat.TorrentXZ || outputFormat == OutputFormat.TorrentXZRomba))
             {
                 _staticLogger.User($"Matches found for '{Path.GetFileName(datItem.GetName() ?? string.Empty)}', rebuilding accordingly...");
 
@@ -791,7 +792,7 @@ namespace SabreTools.DatTools
 
                 // Make sure the output folder is created
                 string? dir = Path.GetDirectoryName(outDir);
-                if (dir != null)
+                if (dir is not null)
                     Directory.CreateDirectory(dir);
 
                 // Now copy the file over
@@ -823,10 +824,10 @@ namespace SabreTools.DatTools
             stream = null;
 
             // If we have a zipfile, extract the stream to memory
-            if (isZip != null)
+            if (isZip is not null)
             {
                 BaseArchive? archive = FileTypeTool.CreateArchiveType(file);
-                if (archive == null)
+                if (archive is null)
                     return false;
 
                 try
@@ -848,7 +849,7 @@ namespace SabreTools.DatTools
             }
 
             // If the stream is null, then continue
-            if (stream == null)
+            if (stream is null)
                 return false;
 
             // Seek to the beginning of the stream

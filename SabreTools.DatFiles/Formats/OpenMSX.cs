@@ -14,7 +14,7 @@ namespace SabreTools.DatFiles.Formats
         /// <summary>
         /// DTD for original openMSX DATs
         /// </summary>
-        private const string OpenMSXDTD = @"<!ELEMENT softwaredb (person*)>
+        internal const string OpenMSXDTD = @"<!ELEMENT softwaredb (person*)>
 <!ELEMENT software (title, genmsxid?, system, company,year,country,dump)>
 <!ELEMENT title (#PCDATA)>
 <!ELEMENT genmsxid (#PCDATA)>
@@ -25,7 +25,7 @@ namespace SabreTools.DatFiles.Formats
 <!ELEMENT dump (#PCDATA)>
 ";
 
-        private const string OpenMSXCredits = @"<!-- Credits -->
+        internal const string OpenMSXCredits = @"<!-- Credits -->
 <![CDATA[
 The softwaredb.xml file contains information about rom mapper types
 
@@ -60,7 +60,7 @@ The softwaredb.xml file contains information about rom mapper types
         /// <param name="datFile">Parent DatFile to copy from</param>
         public OpenMSX(DatFile? datFile) : base(datFile)
         {
-            Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, DatFormat.OpenMSX);
+            Header.SetFieldValue(DatHeader.DatFormatKey, DatFormat.OpenMSX);
         }
 
         /// <inheritdoc/>
@@ -72,6 +72,7 @@ The softwaredb.xml file contains information about rom mapper types
             if (string.IsNullOrEmpty(datItem.GetName()))
                 missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
+#pragma warning disable IDE0010
             switch (datItem)
             {
                 case Rom rom:
@@ -79,6 +80,7 @@ The softwaredb.xml file contains information about rom mapper types
                         missingFields.Add(Data.Models.Metadata.Rom.SHA1Key);
                     break;
             }
+#pragma warning restore IDE0010
 
             return missingFields;
         }

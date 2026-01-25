@@ -31,7 +31,11 @@ namespace SabreTools
         public static void Main(string[] args)
         {
             // Reformat the arguments, if needed
+#if NETCOREAPP
+            if (Array.Exists(args, a => a.Contains('"')))
+#else
             if (Array.Exists(args, a => a.Contains("\"")))
+#endif
                 args = ReformatArguments(args);
 
             // Credits take precidence over all
@@ -53,7 +57,7 @@ namespace SabreTools
 
             // Get the associated feature
             var topLevel = _commands.GetTopLevel(featureName);
-            if (topLevel == null || topLevel is not Feature feature)
+            if (topLevel is null || topLevel is not Feature feature)
             {
                 Console.WriteLine($"'{featureName}' is not valid feature flag");
                 _commands.OutputFeatureHelp(featureName);

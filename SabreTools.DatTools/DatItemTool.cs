@@ -82,9 +82,9 @@ namespace SabreTools.DatTools
         /// </summary>
         /// <param name="baseFile">BaseFile to convert</param>
         /// <returns>File containing original BaseFile information</returns>
-        public static DatItems.Formats.File ConvertToFile(this BaseFile baseFile)
+        public static File ConvertToFile(this BaseFile baseFile)
         {
-            var file = new DatItems.Formats.File
+            var file = new File
             {
                 CRC = baseFile.CRC.ToHexString(),
                 MD5 = baseFile.MD5.ToHexString(),
@@ -92,7 +92,7 @@ namespace SabreTools.DatTools
                 SHA256 = baseFile.SHA256.ToHexString()
             };
 
-            file.SetFieldValue<ItemType>(Data.Models.Metadata.DatItem.TypeKey, ItemType.File);
+            file.SetFieldValue(Data.Models.Metadata.DatItem.TypeKey, ItemType.File);
             file.SetFieldValue<DupeType>(DatItem.DupeTypeKey, 0x00);
 
             return file;
@@ -150,7 +150,7 @@ namespace SabreTools.DatTools
             rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA384Key, baseFile.SHA384.ToHexString());
             rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA512Key, baseFile.SHA512.ToHexString());
             rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SizeKey, baseFile.Size.ToString());
-            if (baseFile.SpamSum != null)
+            if (baseFile.SpamSum is not null)
                 rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SpamSumKey, System.Text.Encoding.UTF8.GetString(baseFile.SpamSum));
 
             rom.RemoveField(Data.Models.Metadata.Rom.StatusKey);
@@ -168,7 +168,7 @@ namespace SabreTools.DatTools
         {
             string? machineName = null;
             var machine = disk.GetMachine();
-            if (machine != null)
+            if (machine is not null)
                 machineName = machine.GetName();
 
             return new CHDFile()
@@ -187,11 +187,11 @@ namespace SabreTools.DatTools
         /// </summary>
         /// <param name="file">File to convert</param>
         /// <returns>BaseFile containing original File information</returns>
-        public static BaseFile ConvertToBaseFile(this DatItems.Formats.File file)
+        public static BaseFile ConvertToBaseFile(this File file)
         {
             string? machineName = null;
             var machine = file.GetMachine();
-            if (machine != null)
+            if (machine is not null)
                 machineName = machine.GetName();
 
             return new BaseFile()
@@ -213,7 +213,7 @@ namespace SabreTools.DatTools
         {
             string? machineName = null;
             var machine = media.GetMachine();
-            if (machine != null)
+            if (machine is not null)
                 machineName = machine.GetName();
 
             return new AaruFormat()
@@ -240,7 +240,7 @@ namespace SabreTools.DatTools
         {
             string? machineName = null;
             var machine = rom.GetMachine();
-            if (machine != null)
+            if (machine is not null)
                 machineName = machine.GetName();
 
             string? spamSum = rom.GetStringFieldValue(Data.Models.Metadata.Rom.SpamSumKey);
@@ -260,7 +260,7 @@ namespace SabreTools.DatTools
                 SHA256 = rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA256Key).FromHexString(),
                 SHA384 = rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA384Key).FromHexString(),
                 SHA512 = rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA512Key).FromHexString(),
-                SpamSum = spamSum != null ? System.Text.Encoding.UTF8.GetBytes(spamSum) : null,
+                SpamSum = spamSum is not null ? System.Text.Encoding.UTF8.GetBytes(spamSum) : null,
             };
         }
 

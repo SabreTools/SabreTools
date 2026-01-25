@@ -84,7 +84,7 @@ namespace SabreTools.Core
 
             // Try to parse directly
             double? doubleValue = _internal.ReadDouble(fieldName);
-            if (doubleValue != null)
+            if (doubleValue is not null)
                 return doubleValue;
 
             // Try to parse from the string
@@ -105,7 +105,7 @@ namespace SabreTools.Core
 
             // Try to parse directly
             long? longValue = _internal.ReadLong(fieldName);
-            if (longValue != null)
+            if (longValue is not null)
                 return longValue;
 
             // Try to parse from the string
@@ -153,7 +153,7 @@ namespace SabreTools.Core
         public bool SetFieldValue<U>(string fieldName, U? value)
         {
             // Invalid field cannot be processed
-            if (fieldName == null)
+            if (fieldName is null)
                 return false;
 
             // Set the value based on the type
@@ -196,7 +196,7 @@ namespace SabreTools.Core
         public bool ReplaceField(ModelBackedItem<T>? from, string fieldName)
         {
             // If the items or field name are missing, we can't do anything
-            if (from?._internal == null || string.IsNullOrEmpty(fieldName))
+            if (from?._internal is null || string.IsNullOrEmpty(fieldName))
                 return false;
 
             // If the types of the items are not the same, we can't do anything
@@ -223,12 +223,12 @@ namespace SabreTools.Core
 
             // Retrieve the list of valid fields for the item
             var constants = TypeHelper.GetConstants(_internal.GetType());
-            if (constants == null)
+            if (constants is null)
                 return false;
 
             // Get the value that matches the field name provided
             string? realField = Array.Find(constants, c => string.Equals(c, fieldName, StringComparison.OrdinalIgnoreCase));
-            if (realField == null)
+            if (realField is null)
                 return false;
 
             // Set the field with the new value

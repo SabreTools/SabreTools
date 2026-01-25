@@ -22,7 +22,7 @@ namespace SabreTools.DatFiles.Formats
         /// <param name="datFile">Parent DatFile to copy from</param>
         public Missfile(DatFile? datFile) : base(datFile)
         {
-            Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, DatFormat.MissFile);
+            Header.SetFieldValue(DatHeader.DatFormatKey, DatFormat.MissFile);
         }
 
         /// <inheritdoc/>
@@ -53,7 +53,7 @@ namespace SabreTools.DatFiles.Formats
                 FileStream fs = File.Create(outfile);
 
                 // If we get back null for some reason, just log and return
-                if (fs == null)
+                if (fs is null)
                 {
                     _logger.Warning($"File '{outfile}' could not be created for writing! Please check to see if the file is writable");
                     return false;
@@ -114,7 +114,7 @@ namespace SabreTools.DatFiles.Formats
                 FileStream fs = File.Create(outfile);
 
                 // If we get back null for some reason, just log and return
-                if (fs == null)
+                if (fs is null)
                 {
                     _logger.Warning($"File '{outfile}' could not be created for writing! Please check to see if the file is writable");
                     return false;
@@ -130,7 +130,7 @@ namespace SabreTools.DatFiles.Formats
                 {
                     // If this machine doesn't contain any writable items, skip
                     var itemsDict = GetItemsForBucketDB(key, filter: true);
-                    if (itemsDict == null || !ContainsWritable([.. itemsDict.Values]))
+                    if (itemsDict is null || !ContainsWritable([.. itemsDict.Values]))
                         continue;
 
                     // Resolve the names in the block

@@ -70,7 +70,7 @@ namespace SabreTools.DatItems
         public bool? Crc { get; set; } = null;
 
         [JsonIgnore]
-        public bool CrcSpecified { get { return Crc != null; } }
+        public bool CrcSpecified { get { return Crc is not null; } }
 
         /// <summary>
         /// Machine relations

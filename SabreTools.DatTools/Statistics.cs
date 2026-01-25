@@ -62,7 +62,7 @@ namespace SabreTools.DatTools
                 string? thisdir = Path.GetDirectoryName(file.CurrentPath);
 
                 // If we don't have the first file and the directory has changed, show the previous directory stats and reset
-                if (lastdir != null && thisdir != lastdir && single)
+                if (lastdir is not null && thisdir != lastdir && single)
                 {
 #if NET20 || NET35
                     dirStats.DisplayName = $"DIR: {lastdir}";

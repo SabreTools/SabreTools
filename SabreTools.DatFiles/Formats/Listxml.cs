@@ -16,7 +16,7 @@ namespace SabreTools.DatFiles.Formats
         /// <summary>
         /// DTD for original MAME XML DATs
         /// </summary>
-        private const string MAMEDTD = @"<!DOCTYPE mame [
+        internal const string MAMEDTD = @"<!DOCTYPE mame [
 <!ELEMENT mame (machine+)>
 	<!ATTLIST mame build CDATA #IMPLIED>
 	<!ATTLIST mame debug (yes|no) ""no"">
@@ -216,7 +216,7 @@ namespace SabreTools.DatFiles.Formats
         /// <param name="datFile">Parent DatFile to copy from</param>
         public Listxml(DatFile? datFile) : base(datFile)
         {
-            Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, DatFormat.Listxml);
+            Header.SetFieldValue(DatHeader.DatFormatKey, DatFormat.Listxml);
         }
 
         /// <inheritdoc/>
@@ -232,7 +232,7 @@ namespace SabreTools.DatFiles.Formats
                 // Deserialize the input file
                 var mame = new Serialization.Readers.Listxml().Deserialize(filename);
                 Data.Models.Metadata.MetadataFile? metadata;
-                if (mame == null)
+                if (mame is null)
                 {
                     var m1 = new Serialization.Readers.M1().Deserialize(filename);
                     metadata = new Serialization.CrossModel.M1().Serialize(m1);
@@ -256,6 +256,8 @@ namespace SabreTools.DatFiles.Formats
         protected internal override List<string>? GetMissingRequiredFields(DatItem datItem)
         {
             List<string> missingFields = [];
+
+#pragma warning disable IDE0010
             switch (datItem)
             {
                 case BiosSet biosset:
@@ -268,13 +270,14 @@ namespace SabreTools.DatFiles.Formats
                 case Rom rom:
                     if (string.IsNullOrEmpty(rom.GetName()))
                         missingFields.Add(Data.Models.Metadata.Rom.NameKey);
-                    if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) == null || rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) < 0)
+                    if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) is null || rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) < 0)
                         missingFields.Add(Data.Models.Metadata.Rom.SizeKey);
                     if (string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.CRCKey))
                         && string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA1Key)))
                     {
                         missingFields.Add(Data.Models.Metadata.Rom.SHA1Key);
                     }
+
                     break;
 
                 case Disk disk:
@@ -285,6 +288,7 @@ namespace SabreTools.DatFiles.Formats
                     {
                         missingFields.Add(Data.Models.Metadata.Disk.SHA1Key);
                     }
+
                     break;
 
                 case DeviceRef deviceref:
@@ -307,17 +311,17 @@ namespace SabreTools.DatFiles.Formats
                 case Display display:
                     if (display.GetStringFieldValue(Data.Models.Metadata.Display.DisplayTypeKey).AsDisplayType() == DisplayType.NULL)
                         missingFields.Add(Data.Models.Metadata.Display.DisplayTypeKey);
-                    if (display.GetDoubleFieldValue(Data.Models.Metadata.Display.RefreshKey) == null)
+                    if (display.GetDoubleFieldValue(Data.Models.Metadata.Display.RefreshKey) is null)
                         missingFields.Add(Data.Models.Metadata.Display.RefreshKey);
                     break;
 
                 case Sound sound:
-                    if (sound.GetInt64FieldValue(Data.Models.Metadata.Sound.ChannelsKey) == null)
+                    if (sound.GetInt64FieldValue(Data.Models.Metadata.Sound.ChannelsKey) is null)
                         missingFields.Add(Data.Models.Metadata.Sound.ChannelsKey);
                     break;
 
                 case Input input:
-                    if (input.GetInt64FieldValue(Data.Models.Metadata.Input.PlayersKey) == null)
+                    if (input.GetInt64FieldValue(Data.Models.Metadata.Input.PlayersKey) is null)
                         missingFields.Add(Data.Models.Metadata.Input.PlayersKey);
                     break;
 
@@ -385,6 +389,7 @@ namespace SabreTools.DatFiles.Formats
                         missingFields.Add(Data.Models.Metadata.RamOption.NameKey);
                     break;
             }
+#pragma warning restore IDE0010
 
             return missingFields;
         }

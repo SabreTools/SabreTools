@@ -12,12 +12,12 @@ namespace SabreTools.Core.Tools
         public static MappingAttribute? GetAttribute(T? value)
         {
             // Null value in, null value out
-            if (value == null)
+            if (value is null)
                 return null;
 
             // Current enumeration type
             var enumType = typeof(T);
-            if (Nullable.GetUnderlyingType(enumType) != null)
+            if (Nullable.GetUnderlyingType(enumType) is not null)
                 enumType = Nullable.GetUnderlyingType(enumType);
 
             // If the value returns a null on ToString, just return null
@@ -27,17 +27,17 @@ namespace SabreTools.Core.Tools
 
             // Get the member info array
             var memberInfos = enumType?.GetMember(valueStr);
-            if (memberInfos == null)
+            if (memberInfos is null)
                 return null;
 
             // Get the enum value info from the array, if possible
             var enumValueMemberInfo = Array.Find(memberInfos, m => m.DeclaringType == enumType);
-            if (enumValueMemberInfo == null)
+            if (enumValueMemberInfo is null)
                 return null;
 
             // Try to get the relevant attribute
             var attributes = enumValueMemberInfo.GetCustomAttributes(typeof(MappingAttribute), true);
-            if (attributes == null || attributes.Length == 0)
+            if (attributes is null || attributes.Length == 0)
                 return null;
 
             // Return the first attribute, if possible

@@ -26,7 +26,7 @@ namespace SabreTools.DatFiles.Formats
         /// <param name="datFile">Parent DatFile to copy from</param>
         public SabreXML(DatFile? datFile) : base(datFile)
         {
-            Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, DatFormat.SabreXML);
+            Header.SetFieldValue(DatHeader.DatFormatKey, DatFormat.SabreXML);
         }
 
         /// <inheritdoc/>
@@ -53,7 +53,7 @@ namespace SabreTools.DatFiles.Formats
             long sourceIndex = AddSourceDB(source);
 
             // If we got a null reader, just return
-            if (xtr == null)
+            if (xtr is null)
                 return;
 
             // Otherwise, read the file to the end
@@ -118,7 +118,7 @@ namespace SabreTools.DatFiles.Formats
             FilterRunner? filterRunner)
         {
             // If the reader is invalid, skip
-            if (xtr == null)
+            if (xtr is null)
                 return;
 
             // Prepare internal variables
@@ -143,10 +143,10 @@ namespace SabreTools.DatFiles.Formats
                         machine = xs?.Deserialize(xtr.ReadSubtree()) as Machine;
 
                         // If the machine doesn't pass the filter
-                        if (machine != null && filterRunner != null && !machine.PassesFilter(filterRunner))
+                        if (machine is not null && filterRunner is not null && !machine.PassesFilter(filterRunner))
                             machine = null;
 
-                        if (machine != null)
+                        if (machine is not null)
                             machineIndex = AddMachineDB(machine);
 
                         xtr.Skip();
@@ -190,7 +190,7 @@ namespace SabreTools.DatFiles.Formats
             FilterRunner? filterRunner)
         {
             // If the reader is invalid, skip
-            if (xtr == null)
+            if (xtr is null)
                 return;
 
             // Otherwise, read the items
@@ -211,7 +211,7 @@ namespace SabreTools.DatFiles.Formats
                         if (xs.Deserialize(xtr.ReadSubtree()) is DatItem item)
                         {
                             // If the item doesn't pass the filter
-                            if (filterRunner != null && !item.PassesFilter(filterRunner))
+                            if (filterRunner is not null && !item.PassesFilter(filterRunner))
                             {
                                 xtr.Skip();
                                 break;
@@ -222,6 +222,7 @@ namespace SabreTools.DatFiles.Formats
                             AddItem(item, statsOnly);
                             // AddItemDB(item, machineIndex, sourceIndex, statsOnly);
                         }
+
                         xtr.Skip();
                         break;
                     default:
@@ -240,7 +241,7 @@ namespace SabreTools.DatFiles.Formats
                 FileStream fs = File.Create(outfile);
 
                 // If we get back null for some reason, just log and return
-                if (fs == null)
+                if (fs is null)
                 {
                     _logger.Warning($"File '{outfile}' could not be created for writing! Please check to see if the file is writable");
                     return false;
@@ -276,11 +277,11 @@ namespace SabreTools.DatFiles.Formats
                         DatItem datItem = datItems[index];
 
                         // If we have a different game and we're not at the start of the list, output the end of last item
-                        if (lastgame != null && !string.Equals(lastgame, datItem.GetMachine()!.GetName(), StringComparison.OrdinalIgnoreCase))
+                        if (lastgame is not null && !string.Equals(lastgame, datItem.GetMachine()!.GetName(), StringComparison.OrdinalIgnoreCase))
                             WriteEndGame(xtw);
 
                         // If we have a new game, output the beginning of the new item
-                        if (lastgame == null || !string.Equals(lastgame, datItem.GetMachine()!.GetName(), StringComparison.OrdinalIgnoreCase))
+                        if (lastgame is null || !string.Equals(lastgame, datItem.GetMachine()!.GetName(), StringComparison.OrdinalIgnoreCase))
                             WriteStartGame(xtw, datItem);
 
                         // Check for a "null" item
@@ -322,7 +323,7 @@ namespace SabreTools.DatFiles.Formats
                 FileStream fs = File.Create(outfile);
 
                 // If we get back null for some reason, just log and return
-                if (fs == null)
+                if (fs is null)
                 {
                     _logger.Warning($"File '{outfile}' could not be created for writing! Please check to see if the file is writable");
                     return false;
@@ -346,7 +347,7 @@ namespace SabreTools.DatFiles.Formats
                 {
                     // If this machine doesn't contain any writable items, skip
                     var itemsDict = GetItemsForBucketDB(key, filter: true);
-                    if (itemsDict == null || !ContainsWritable([.. itemsDict.Values]))
+                    if (itemsDict is null || !ContainsWritable([.. itemsDict.Values]))
                         continue;
 
                     // Resolve the names in the block
@@ -358,11 +359,11 @@ namespace SabreTools.DatFiles.Formats
                         var machine = GetMachineForItemDB(kvp.Key);
 
                         // If we have a different game and we're not at the start of the list, output the end of last item
-                        if (lastgame != null && !string.Equals(lastgame, machine.Value!.GetName(), StringComparison.OrdinalIgnoreCase))
+                        if (lastgame is not null && !string.Equals(lastgame, machine.Value!.GetName(), StringComparison.OrdinalIgnoreCase))
                             WriteEndGame(xtw);
 
                         // If we have a new game, output the beginning of the new item
-                        if (lastgame == null || !string.Equals(lastgame, machine.Value!.GetName(), StringComparison.OrdinalIgnoreCase))
+                        if (lastgame is null || !string.Equals(lastgame, machine.Value!.GetName(), StringComparison.OrdinalIgnoreCase))
                             WriteStartGame(xtw, kvp.Value);
 
                         // Check for a "null" item

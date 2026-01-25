@@ -145,7 +145,7 @@ namespace SabreTools.DatItems.Formats
         /// </summary>
         public SourceDetails()
         {
-            SetFieldValue<ItemType>(Data.Models.Metadata.DatItem.TypeKey, ItemType.SourceDetails);
+            SetFieldValue(Data.Models.Metadata.DatItem.TypeKey, ItemType.SourceDetails);
         }
 
         #endregion
@@ -178,10 +178,10 @@ namespace SabreTools.DatItems.Formats
                 Link2 = this.Link2,
                 Link3 = this.Link3,
             };
-            sourceDetails.SetFieldValue<DupeType>(DatItem.DupeTypeKey, GetFieldValue<DupeType>(DatItem.DupeTypeKey));
-            sourceDetails.SetFieldValue<Machine>(DatItem.MachineKey, GetMachine());
-            sourceDetails.SetFieldValue<bool?>(DatItem.RemoveKey, GetBoolFieldValue(DatItem.RemoveKey));
-            sourceDetails.SetFieldValue<Source?>(DatItem.SourceKey, GetFieldValue<Source?>(DatItem.SourceKey));
+            sourceDetails.SetFieldValue(DupeTypeKey, GetFieldValue<DupeType>(DupeTypeKey));
+            sourceDetails.SetFieldValue(MachineKey, GetMachine());
+            sourceDetails.SetFieldValue(RemoveKey, GetBoolFieldValue(RemoveKey));
+            sourceDetails.SetFieldValue<Source?>(SourceKey, GetFieldValue<Source?>(SourceKey));
             sourceDetails.SetFieldValue<string?>(Data.Models.Metadata.DatItem.TypeKey, GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey).AsItemType().AsStringValue());
 
             return sourceDetails;
@@ -202,7 +202,7 @@ namespace SabreTools.DatItems.Formats
             SourceDetails? newOther = other as SourceDetails;
 
             // If the Details information matches
-            return (Id == newOther!.Id
+            return Id == newOther!.Id
                 && Section == newOther.Section
                 && RomInfo == newOther.RomInfo
                 && DDate == newOther.DDate
@@ -222,7 +222,7 @@ namespace SabreTools.DatItems.Formats
                 && Comment2 == newOther.Comment2
                 && Link1 == newOther.Link1
                 && Link2 == newOther.Link2
-                && Link3 == newOther.Link3);
+                && Link3 == newOther.Link3;
         }
 
         #endregion

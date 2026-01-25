@@ -24,7 +24,7 @@ namespace SabreTools.DatItems.Formats
         /// </summary>
         public Blank()
         {
-            SetFieldValue<ItemType>(Data.Models.Metadata.DatItem.TypeKey, ItemType);
+            SetFieldValue(Data.Models.Metadata.DatItem.TypeKey, ItemType);
         }
 
         #endregion
@@ -35,9 +35,9 @@ namespace SabreTools.DatItems.Formats
         public override object Clone()
         {
             var blank = new Blank();
-            blank.SetFieldValue<Machine>(DatItem.MachineKey, GetMachine());
-            blank.SetFieldValue<bool?>(DatItem.RemoveKey, GetBoolFieldValue(DatItem.RemoveKey));
-            blank.SetFieldValue<Source?>(DatItem.SourceKey, GetFieldValue<Source?>(DatItem.SourceKey));
+            blank.SetFieldValue(MachineKey, GetMachine());
+            blank.SetFieldValue(RemoveKey, GetBoolFieldValue(RemoveKey));
+            blank.SetFieldValue<Source?>(SourceKey, GetFieldValue<Source?>(SourceKey));
             blank.SetFieldValue<string?>(Data.Models.Metadata.DatItem.TypeKey, GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey).AsItemType().AsStringValue());
 
             return blank;
@@ -51,7 +51,7 @@ namespace SabreTools.DatItems.Formats
         public override bool Equals(ModelBackedItem? other)
         {
             // If other is null
-            if (other == null)
+            if (other is null)
                 return false;
 
             // If the type is mismatched
@@ -66,7 +66,7 @@ namespace SabreTools.DatItems.Formats
         public override bool Equals(ModelBackedItem<Data.Models.Metadata.DatItem>? other)
         {
             // If other is null
-            if (other == null)
+            if (other is null)
                 return false;
 
             // If the type is mismatched

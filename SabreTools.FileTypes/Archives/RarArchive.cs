@@ -45,7 +45,7 @@ namespace SabreTools.FileTypes.Archives
             bool encounteredErrors = true;
 
             // If we have an invalid file
-            if (Filename == null)
+            if (Filename is null)
                 return true;
 
             try
@@ -81,7 +81,7 @@ namespace SabreTools.FileTypes.Archives
         {
             // Try to extract a stream using the given information
             var stream = GetEntryStream(entryName, out string? realEntry);
-            if (stream == null || realEntry == null)
+            if (stream is null || realEntry is null)
                 return null;
 
             // If the stream and the entry name are both non-null, we write to file
@@ -92,7 +92,7 @@ namespace SabreTools.FileTypes.Archives
 
             // Now open and write the file if possible
             FileStream fs = File.Create(realEntry);
-            if (fs != null)
+            if (fs is not null)
             {
                 if (stream.CanSeek)
                     stream.Seek(0, SeekOrigin.Begin);
@@ -125,7 +125,7 @@ namespace SabreTools.FileTypes.Archives
             realEntry = null;
 
             // If we have an invalid file
-            if (Filename == null)
+            if (Filename is null)
                 return null;
 
 #if NET462_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
@@ -137,7 +137,7 @@ namespace SabreTools.FileTypes.Archives
                 foreach (RarArchiveEntry entry in ra.Entries)
                 {
                     // Skip invalid entries
-                    if (entry?.Key == null || !entry.IsComplete)
+                    if (entry?.Key is null || !entry.IsComplete)
                         continue;
 
                     // Skip directory entries
@@ -177,7 +177,7 @@ namespace SabreTools.FileTypes.Archives
         {
 #if NET462_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             // If we have an invalid file
-            if (Filename == null)
+            if (Filename is null)
                 return null;
 
             List<BaseFile> found = [];
@@ -189,7 +189,7 @@ namespace SabreTools.FileTypes.Archives
                 foreach (RarArchiveEntry entry in ra.Entries)
                 {
                     // Skip invalid entries
-                    if (entry == null || entry.IsDirectory)
+                    if (entry is null || entry.IsDirectory)
                         continue;
 
                     // Create a blank item for the entry
@@ -238,7 +238,7 @@ namespace SabreTools.FileTypes.Archives
             List<string> empties = [];
 
             // If we have an invalid file
-            if (Filename == null)
+            if (Filename is null)
                 return empties;
 
             try
@@ -248,11 +248,11 @@ namespace SabreTools.FileTypes.Archives
                 string? lastRarEntry = null;
                 foreach (RarArchiveEntry entry in rarEntries)
                 {
-                    if (entry?.Key == null)
+                    if (entry?.Key is null)
                         continue;
 
                     // If the current is a superset of last, we skip it
-                    if (lastRarEntry != null && lastRarEntry.StartsWith(entry.Key))
+                    if (lastRarEntry is not null && lastRarEntry.StartsWith(entry.Key))
                     {
                         // No-op
                     }

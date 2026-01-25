@@ -9,10 +9,10 @@ namespace SabreTools.Core.Tools
         #region Byte (1000-based) size comparisons
 
         private const long KiloByte = 1000;
-        private readonly static long MegaByte = (long)Math.Pow(KiloByte, 2);
-        private readonly static long GigaByte = (long)Math.Pow(KiloByte, 3);
-        private readonly static long TeraByte = (long)Math.Pow(KiloByte, 4);
-        private readonly static long PetaByte = (long)Math.Pow(KiloByte, 5);
+        private static readonly long MegaByte = (long)Math.Pow(KiloByte, 2);
+        private static readonly long GigaByte = (long)Math.Pow(KiloByte, 3);
+        private static readonly long TeraByte = (long)Math.Pow(KiloByte, 4);
+        private static readonly long PetaByte = (long)Math.Pow(KiloByte, 5);
 
         // The following are too big to be represented in Int64
         // private readonly static long ExaByte = (long)Math.Pow(KiloByte, 6);
@@ -24,10 +24,10 @@ namespace SabreTools.Core.Tools
         #region Byte (1024-based) size comparisons
 
         private const long KibiByte = 1024;
-        private readonly static long MibiByte = (long)Math.Pow(KibiByte, 2);
-        private readonly static long GibiByte = (long)Math.Pow(KibiByte, 3);
-        private readonly static long TibiByte = (long)Math.Pow(KibiByte, 4);
-        private readonly static long PibiByte = (long)Math.Pow(KibiByte, 5);
+        private static readonly long MibiByte = (long)Math.Pow(KibiByte, 2);
+        private static readonly long GibiByte = (long)Math.Pow(KibiByte, 3);
+        private static readonly long TibiByte = (long)Math.Pow(KibiByte, 4);
+        private static readonly long PibiByte = (long)Math.Pow(KibiByte, 5);
 
         // The following are too big to be represented in Int64
         // private readonly static long ExiByte = (long)Math.Pow(KibiByte, 6);
@@ -181,7 +181,7 @@ namespace SabreTools.Core.Tools
         public static string GetBytesReadable(long input)
         {
             // Get absolute value
-            long absolute_i = (input < 0 ? -input : input);
+            long absolute_i = input < 0 ? -input : input;
 
             // Determine the suffix and readable value
             string suffix;
@@ -189,27 +189,27 @@ namespace SabreTools.Core.Tools
             if (absolute_i >= 0x1000_0000_0000_0000) // Exabyte
             {
                 suffix = "EB";
-                readable = (input >> 50);
+                readable = input >> 50;
             }
             else if (absolute_i >= 0x4_0000_0000_0000) // Petabyte
             {
                 suffix = "PB";
-                readable = (input >> 40);
+                readable = input >> 40;
             }
             else if (absolute_i >= 0x100_0000_0000) // Terabyte
             {
                 suffix = "TB";
-                readable = (input >> 30);
+                readable = input >> 30;
             }
             else if (absolute_i >= 0x4000_0000) // Gigabyte
             {
                 suffix = "GB";
-                readable = (input >> 20);
+                readable = input >> 20;
             }
             else if (absolute_i >= 0x10_0000) // Megabyte
             {
                 suffix = "MB";
-                readable = (input >> 10);
+                readable = input >> 10;
             }
             else if (absolute_i >= 0x400) // Kilobyte
             {

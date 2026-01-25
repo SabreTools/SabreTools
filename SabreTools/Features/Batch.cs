@@ -103,7 +103,7 @@ Reset the internal state:           reset();";
 
                     // Read the command in, if possible
                     var command = BatchCommand.Create(line);
-                    if (command == null)
+                    if (command is null)
                     {
                         _logger.User($"Could not process {path} due to the following line: {line}");
                         _logger.User($"Please see the help text for more details about possible commands");
@@ -274,7 +274,7 @@ Reset the internal state:           reset();";
             public override void Process(BatchState batchState)
             {
                 HashType[] hashes = [HashType.CRC32, HashType.MD5, HashType.SHA1];
-                var dfd = new DatTools.DatFromDir(hashes, SkipFileType.None, (TreatAsFile)0x00, addBlanks: false);
+                var dfd = new DatTools.DatFromDir(hashes, SkipFileType.None, 0x00, addBlanks: false);
 
                 // Assume there could be multiple
                 foreach (string input in Arguments)
@@ -326,6 +326,7 @@ Reset the internal state:           reset();";
                     string message = $"{itemFieldString} was an invalid field name";
                     return (false, message);
                 }
+
                 if (!File.Exists(extraFile))
                 {
                     string message = $"{extraFile} was an invalid file name";
@@ -395,12 +396,14 @@ Reset the internal state:           reset();";
                     string message = $"{itemFieldString} was an invalid field name";
                     return (false, message);
                 }
-                if (filterRemove == null)
+
+                if (filterRemove is null)
                 {
                     string message = $"{Arguments[2]} was an invalid true/false value";
                     return (false, message);
                 }
-                if (filterPerMachine == null)
+
+                if (filterPerMachine is null)
                 {
                     string message = $"{Arguments[3]} was an invalid true/false value";
                     return (false, message);
@@ -869,7 +872,7 @@ Reset the internal state:           reset();";
                     overwrite = Arguments[0].AsYesNo();
 
                 // If we had an invalid input, log and continue
-                if (overwrite == null)
+                if (overwrite is null)
                 {
                     string message = $"{Arguments[0]} was an invalid true/false value";
                     return (false, message);

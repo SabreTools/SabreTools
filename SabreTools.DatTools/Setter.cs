@@ -59,7 +59,7 @@ namespace SabreTools.DatTools
         public void PopulateSettersFromList(List<FilterKey> fields, List<string> values)
         {
             // If the list is null or empty, just return
-            if (values == null || values.Count == 0)
+            if (values is null || values.Count == 0)
                 return;
 
             var watch = new InternalStopwatch("Populating setters from list");
@@ -84,7 +84,7 @@ namespace SabreTools.DatTools
         public void PopulateSettersFromDictionary(Dictionary<FilterKey, string>? mappings)
         {
             // If the dictionary is null or empty, just return
-            if (mappings == null || mappings.Count == 0)
+            if (mappings is null || mappings.Count == 0)
                 return;
 
             var watch = new InternalStopwatch("Populating setters from dictionary");
@@ -149,7 +149,7 @@ namespace SabreTools.DatTools
         public void SetFields(Machine? machine)
         {
             // If we have an invalid input, return
-            if (machine == null || MachineFieldMappings.Count == 0)
+            if (machine is null || MachineFieldMappings.Count == 0)
                 return;
 
             foreach (var kvp in MachineFieldMappings)
@@ -165,22 +165,22 @@ namespace SabreTools.DatTools
         public void SetFields(DatItem datItem)
         {
             // If we have an invalid input, return
-            if (datItem == null)
+            if (datItem is null)
                 return;
 
             #region Common
 
             // Handle Machine fields
-            if (MachineFieldMappings.Count > 0 && datItem.GetMachine() != null)
+            if (MachineFieldMappings.Count > 0 && datItem.GetMachine() is not null)
                 SetFields(datItem.GetMachine()!);
 
             // If there are no field names, return
-            if (ItemFieldMappings == null || ItemFieldMappings.Count == 0)
+            if (ItemFieldMappings is null || ItemFieldMappings.Count == 0)
                 return;
 
             // If there are no field names for this type or generic, return
             string? itemType = datItem.GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey).AsItemType().AsStringValue();
-            if (itemType == null || (!ItemFieldMappings.Keys.Any(kvp => kvp.ItemName == itemType) && !ItemFieldMappings.Keys.Any(kvp => kvp.ItemName == "item")))
+            if (itemType is null || (!ItemFieldMappings.Keys.Any(kvp => kvp.ItemName == itemType) && !ItemFieldMappings.Keys.Any(kvp => kvp.ItemName == "item")))
                 return;
 
             // Get the combined list of fields to remove
@@ -189,6 +189,7 @@ namespace SabreTools.DatTools
             {
                 fieldMappings[mapping.Key] = mapping.Value;
             }
+
             foreach (var mapping in ItemFieldMappings.Where(kvp => kvp.Key.ItemName == itemType).ToDictionary(kvp => kvp.Key.FieldName, kvp => kvp.Value))
             {
                 fieldMappings[mapping.Key] = mapping.Value;
@@ -211,6 +212,7 @@ namespace SabreTools.DatTools
                 datItem.SetField(kvp.Key, kvp.Value);
             }
 
+#pragma warning disable IDE0010
             // Handle nested sets
             switch (datItem)
             {
@@ -227,6 +229,7 @@ namespace SabreTools.DatTools
                 case Rom rom: SetNestedFields(rom); break;
                 case Slot slot: SetNestedFields(slot); break;
             }
+#pragma warning restore IDE0010
 
             #endregion
         }
@@ -273,7 +276,7 @@ namespace SabreTools.DatTools
             {
                 foreach (ConfSetting subSetting in configuration.GetFieldValue<ConfSetting[]?>(Data.Models.Metadata.Configuration.ConfSettingKey)!)
                 {
-                    SetFields(subSetting as DatItem);
+                    SetFields(subSetting);
                 }
             }
         }
@@ -342,14 +345,14 @@ namespace SabreTools.DatTools
             {
                 foreach (DipValue subValue in dipSwitch.GetFieldValue<DipValue[]?>(Data.Models.Metadata.DipSwitch.DipValueKey)!)
                 {
-                    SetFields(subValue as DatItem);
+                    SetFields(subValue);
                 }
             }
 
             if (!dipSwitch.PartSpecified)
                 dipSwitch.SetFieldValue<Part?>(DipSwitch.PartKey, new Part());
 
-            SetFields((dipSwitch.GetFieldValue<Part?>(DipSwitch.PartKey) as DatItem)!);
+            SetFields(dipSwitch.GetFieldValue<Part?>(DipSwitch.PartKey)!);
         }
 
         /// <summary>
@@ -376,12 +379,12 @@ namespace SabreTools.DatTools
             if (!disk.DiskAreaSpecified)
                 disk.SetFieldValue<DiskArea?>(Disk.DiskAreaKey, new DiskArea());
 
-            SetFields(disk.GetFieldValue<DiskArea?>(Disk.DiskAreaKey)! as DatItem);
+            SetFields(disk.GetFieldValue<DiskArea?>(Disk.DiskAreaKey)!);
 
             if (!disk.PartSpecified)
                 disk.SetFieldValue<Part?>(Disk.PartKey, new Part());
 
-            SetFields(disk.GetFieldValue<Part?>(Disk.PartKey)! as DatItem);
+            SetFields(disk.GetFieldValue<Part?>(Disk.PartKey)!);
         }
 
         /// <summary>
@@ -438,12 +441,12 @@ namespace SabreTools.DatTools
             if (!rom.DataAreaSpecified)
                 rom.SetFieldValue<DataArea?>(Rom.DataAreaKey, new DataArea());
 
-            SetFields(rom.GetFieldValue<DataArea?>(Rom.DataAreaKey)! as DatItem);
+            SetFields(rom.GetFieldValue<DataArea?>(Rom.DataAreaKey)!);
 
             if (!rom.PartSpecified)
                 rom.SetFieldValue<Part?>(Rom.PartKey, new Part());
 
-            SetFields(rom.GetFieldValue<Part?>(Rom.PartKey)! as DatItem);
+            SetFields(rom.GetFieldValue<Part?>(Rom.PartKey)!);
         }
 
         /// <summary>

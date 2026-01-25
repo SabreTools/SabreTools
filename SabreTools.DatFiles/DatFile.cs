@@ -78,7 +78,7 @@ namespace SabreTools.DatFiles
         public DatFile(DatFile? datFile)
         {
             _logger = new Logger(this);
-            if (datFile != null)
+            if (datFile is not null)
             {
                 Header = (DatHeader)datFile.Header.Clone();
                 Modifiers = (DatModifiers)datFile.Modifiers.Clone();
@@ -152,7 +152,7 @@ namespace SabreTools.DatFiles
         /// <param name="datHeader">Replacement header to be used</param>
         public void SetHeader(DatHeader? datHeader)
         {
-            if (datHeader != null)
+            if (datHeader is not null)
                 Header = (DatHeader)datHeader.Clone();
         }
 
@@ -178,7 +178,7 @@ namespace SabreTools.DatFiles
                     RemoveBucket(key);
 
                 // If there are no non-blank items, remove
-                else if (value.FindIndex(i => i != null && i is not Blank) == -1)
+                else if (value.FindIndex(i => i is not null && i is not Blank) == -1)
                     RemoveBucket(key);
             }
         }
@@ -196,7 +196,7 @@ namespace SabreTools.DatFiles
                     RemoveBucketDB(key);
 
                 // If there are no non-blank items, remove
-                else if (value.FindIndex(i => i != null && i is not Blank) == -1)
+                else if (value.FindIndex(i => i is not null && i is not Blank) == -1)
                     RemoveBucketDB(key);
             }
         }
@@ -550,7 +550,7 @@ namespace SabreTools.DatFiles
                     Modifiers.ReplaceExtension = string.Empty;
 
                 string? dir = Path.GetDirectoryName(name);
-                if (dir != null)
+                if (dir is not null)
                 {
                     dir = dir.TrimStart(Path.DirectorySeparatorChar);
                     name = Path.Combine(dir, Path.GetFileNameWithoutExtension(name) + Modifiers.ReplaceExtension);
@@ -675,7 +675,7 @@ namespace SabreTools.DatFiles
                 return item;
 
             // If the item has a size
-            if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) != null)
+            if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) is not null)
                 return rom;
 
             // If the item CRC isn't "null"
@@ -743,7 +743,7 @@ namespace SabreTools.DatFiles
         /// Get unique duplicate suffix on name collision
         /// </summary>
         /// <returns>String representing the suffix</returns>
-        protected static internal string GetDuplicateSuffix(DatItem datItem)
+        protected internal static string GetDuplicateSuffix(DatItem datItem)
         {
             return datItem switch
             {
@@ -781,7 +781,7 @@ namespace SabreTools.DatFiles
                 DatItem datItem = datItems[i];
 
                 // If we have the first item, we automatically add it
-                if (lastItem == null)
+                if (lastItem is null)
                 {
                     output.Add(datItem);
                     lastItem = datItem;
@@ -822,7 +822,7 @@ namespace SabreTools.DatFiles
                     if (datItemName == lastrenamed)
                     {
                         lastrenamed = datItemName;
-                        datItemName += (lastid == 0 ? string.Empty : "_" + lastid);
+                        datItemName += lastid == 0 ? string.Empty : "_" + lastid;
                         lastid++;
                     }
                     // If we have no conflict, then we want to reset the lastrenamed and id
@@ -878,7 +878,7 @@ namespace SabreTools.DatFiles
             foreach (var datItem in mappings)
             {
                 // If we have the first item, we automatically add it
-                if (lastItem == null)
+                if (lastItem is null)
                 {
                     output.Add(datItem);
                     lastItem = datItem;
@@ -923,7 +923,7 @@ namespace SabreTools.DatFiles
                     if (datItemName == lastrenamed)
                     {
                         lastrenamed = datItemName;
-                        datItemName += (lastid == 0 ? string.Empty : "_" + lastid);
+                        datItemName += lastid == 0 ? string.Empty : "_" + lastid;
                         lastid++;
                     }
                     // If we have no conflict, then we want to reset the lastrenamed and id
@@ -963,7 +963,7 @@ namespace SabreTools.DatFiles
         protected internal bool ShouldIgnore(DatItem? datItem, bool ignoreBlanks)
         {
             // If this is invoked with a null DatItem, we ignore
-            if (datItem == null)
+            if (datItem is null)
             {
                 _logger.Verbose($"Item was skipped because it was null");
                 return true;
@@ -990,7 +990,7 @@ namespace SabreTools.DatFiles
             {
                 // If we have a 0-size or blank rom, then we ignore
                 long? size = rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey);
-                if (size == 0 || size == null)
+                if (size == 0 || size is null)
                 {
                     string itemString = JsonConvert.SerializeObject(datItem, Formatting.None);
                     _logger.Verbose($"Item '{itemString}' was skipped because it had an invalid size");
@@ -1009,7 +1009,7 @@ namespace SabreTools.DatFiles
 
             // If we have an item with missing required fields
             List<string>? missingFields = GetMissingRequiredFields(datItem);
-            if (missingFields != null && missingFields.Count != 0)
+            if (missingFields is not null && missingFields.Count != 0)
             {
                 string itemString = JsonConvert.SerializeObject(datItem, Formatting.None);
 #if NET20 || NET35

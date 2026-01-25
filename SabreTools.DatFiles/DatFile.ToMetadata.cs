@@ -23,12 +23,12 @@ namespace SabreTools.DatFiles
 
             // Convert and assign the header
             var header = Header.GetInternalClone();
-            if (header != null)
+            if (header is not null)
                 metadataFile[Data.Models.Metadata.MetadataFile.HeaderKey] = header;
 
             // Convert and assign the machines
             var machines = ConvertMachines(ignoreblanks);
-            if (machines != null)
+            if (machines is not null)
                 metadataFile[Data.Models.Metadata.MetadataFile.MachineKey] = machines;
 
             return metadataFile;
@@ -48,12 +48,12 @@ namespace SabreTools.DatFiles
 
             // Convert and assign the header
             var header = Header.GetInternalClone();
-            if (header != null)
+            if (header is not null)
                 metadataFile[Data.Models.Metadata.MetadataFile.HeaderKey] = header;
 
             // Convert and assign the machines
             var machines = ConvertMachinesDB(ignoreblanks);
-            if (machines != null)
+            if (machines is not null)
                 metadataFile[Data.Models.Metadata.MetadataFile.MachineKey] = machines;
 
             return metadataFile;
@@ -71,7 +71,7 @@ namespace SabreTools.DatFiles
             foreach (string key in Items.SortedKeys)
             {
                 var items = Items.GetItemsForBucket(key, filter: true);
-                if (items == null || items.Count == 0)
+                if (items is null || items.Count == 0)
                     continue;
 
                 // Create a machine to hold everything
@@ -81,7 +81,7 @@ namespace SabreTools.DatFiles
                 if (machine.ContainsKey(Data.Models.Metadata.Machine.TruripKey))
                 {
                     var trurip = machine.Read<DatItems.Trurip>(Data.Models.Metadata.Machine.TruripKey);
-                    if (trurip != null)
+                    if (trurip is not null)
                     {
                         var truripItem = trurip.ConvertToLogiqx();
                         truripItem.Publisher = machine.ReadString(Data.Models.Metadata.Machine.PublisherKey);
@@ -158,7 +158,7 @@ namespace SabreTools.DatFiles
                             if (dipSwitchContainsPart)
                             {
                                 var partItem = dipSwitchItem.Read<DatItems.Formats.Part>(DatItems.Formats.DipSwitch.PartKey);
-                                if (partItem != null)
+                                if (partItem is not null)
                                     partMappings[partItem.GetInternalClone()] = dipSwitchItem;
                             }
 
@@ -174,16 +174,17 @@ namespace SabreTools.DatFiles
                             if (diskContainsPart && diskContainsDiskArea)
                             {
                                 var partItem = diskItem.Read<DatItems.Formats.Part>(DatItems.Formats.Disk.PartKey);
-                                if (partItem != null)
+                                if (partItem is not null)
                                 {
                                     var partItemInternal = partItem.GetInternalClone();
                                     partMappings[partItemInternal] = diskItem;
 
                                     var diskAreaItem = diskItem.Read<DatItems.Formats.DiskArea>(DatItems.Formats.Disk.DiskAreaKey);
-                                    if (diskAreaItem != null)
+                                    if (diskAreaItem is not null)
                                         diskAreaMappings[partItemInternal] = (diskAreaItem.GetInternalClone(), diskItem);
                                 }
                             }
+
                             break;
                         case DatItems.Formats.Display display:
                             var displayItem = ProcessItem(display, machine);
@@ -225,9 +226,10 @@ namespace SabreTools.DatFiles
                             if (partFeatureContainsPart)
                             {
                                 var partItem = partFeatureItem.Read<DatItems.Formats.Part>(DatItems.Formats.PartFeature.PartKey);
-                                if (partItem != null)
+                                if (partItem is not null)
                                     partMappings[partItem.GetInternalClone()] = partFeatureItem;
                             }
+
                             break;
                         case DatItems.Formats.Port port:
                             var portItem = port.GetInternalClone();
@@ -255,16 +257,17 @@ namespace SabreTools.DatFiles
                             if (romContainsPart && romContainsDataArea)
                             {
                                 var partItem = romItem.Read<DatItems.Formats.Part>(DatItems.Formats.Rom.PartKey);
-                                if (partItem != null)
+                                if (partItem is not null)
                                 {
                                     var partItemInternal = partItem.GetInternalClone();
                                     partMappings[partItemInternal] = romItem;
 
                                     var dataAreaItem = romItem.Read<DatItems.Formats.DataArea>(DatItems.Formats.Rom.DataAreaKey);
-                                    if (dataAreaItem != null)
+                                    if (dataAreaItem is not null)
                                         dataAreaMappings[partItemInternal] = (dataAreaItem.GetInternalClone(), romItem);
                                 }
                             }
+
                             break;
                         case DatItems.Formats.Sample sample:
                             var sampleItem = sample.GetInternalClone();
@@ -309,7 +312,7 @@ namespace SabreTools.DatFiles
 
                         // Get the part name and skip if there's none
                         string? partName = partItem.ReadString(Data.Models.Metadata.Part.NameKey);
-                        if (partName == null)
+                        if (partName is null)
                             continue;
 
                         // Create the part in the dictionary, if needed
@@ -335,7 +338,7 @@ namespace SabreTools.DatFiles
 
                             // Get the data area name and skip if there's none
                             string? dataAreaName = dataArea.ReadString(Data.Models.Metadata.DataArea.NameKey);
-                            if (dataAreaName != null)
+                            if (dataAreaName is not null)
                             {
                                 // Get existing data areas as a list
                                 var dataAreasArr = partItems[partName].Read<Data.Models.Metadata.DataArea[]>(Data.Models.Metadata.Part.DataAreaKey) ?? [];
@@ -392,7 +395,7 @@ namespace SabreTools.DatFiles
 
                             // Get the disk area name and skip if there's none
                             string? diskAreaName = diskArea.ReadString(Data.Models.Metadata.DiskArea.NameKey);
-                            if (diskAreaName != null)
+                            if (diskAreaName is not null)
                             {
                                 // Get existing disk areas as a list
                                 var diskAreasArr = partItems[partName].Read<Data.Models.Metadata.DiskArea[]>(Data.Models.Metadata.Part.DiskAreaKey) ?? [];
@@ -494,7 +497,7 @@ namespace SabreTools.DatFiles
             foreach (string key in ItemsDB.SortedKeys)
             {
                 var items = GetItemsForBucketDB(key, filter: true);
-                if (items == null || items.Count == 0)
+                if (items is null || items.Count == 0)
                     continue;
 
                 // Create a machine to hold everything
@@ -504,7 +507,7 @@ namespace SabreTools.DatFiles
                 if (machine.ContainsKey(Data.Models.Metadata.Machine.TruripKey))
                 {
                     var trurip = machine.Read<DatItems.Trurip>(Data.Models.Metadata.Machine.TruripKey);
-                    if (trurip != null)
+                    if (trurip is not null)
                     {
                         var truripItem = trurip.ConvertToLogiqx();
                         truripItem.Publisher = machine.ReadString(Data.Models.Metadata.Machine.PublisherKey);
@@ -578,7 +581,7 @@ namespace SabreTools.DatFiles
                             if (dipSwitchContainsPart)
                             {
                                 var partItem = dipSwitchItem.Read<DatItems.Formats.Part>(DatItems.Formats.DipSwitch.PartKey);
-                                if (partItem != null)
+                                if (partItem is not null)
                                     partMappings[partItem.GetInternalClone()] = dipSwitchItem;
                             }
 
@@ -594,16 +597,17 @@ namespace SabreTools.DatFiles
                             if (diskContainsPart && diskContainsDiskArea)
                             {
                                 var partItem = diskItem.Read<DatItems.Formats.Part>(DatItems.Formats.Disk.PartKey);
-                                if (partItem != null)
+                                if (partItem is not null)
                                 {
                                     var partItemInternal = partItem.GetInternalClone();
                                     partMappings[partItemInternal] = diskItem;
 
                                     var diskAreaItem = diskItem.Read<DatItems.Formats.DiskArea>(DatItems.Formats.Disk.DiskAreaKey);
-                                    if (diskAreaItem != null)
+                                    if (diskAreaItem is not null)
                                         diskAreaMappings[partItemInternal] = (diskAreaItem.GetInternalClone(), diskItem);
                                 }
                             }
+
                             break;
                         case DatItems.Formats.Display display:
                             var displayItem = ProcessItem(display, machine);
@@ -645,9 +649,10 @@ namespace SabreTools.DatFiles
                             if (partFeatureContainsPart)
                             {
                                 var partItem = partFeatureItem.Read<DatItems.Formats.Part>(DatItems.Formats.PartFeature.PartKey);
-                                if (partItem != null)
+                                if (partItem is not null)
                                     partMappings[partItem.GetInternalClone()] = partFeatureItem;
                             }
+
                             break;
                         case DatItems.Formats.Port port:
                             var portItem = port.GetInternalClone();
@@ -675,16 +680,17 @@ namespace SabreTools.DatFiles
                             if (romContainsPart && romContainsDataArea)
                             {
                                 var partItem = romItem.Read<DatItems.Formats.Part>(DatItems.Formats.Rom.PartKey);
-                                if (partItem != null)
+                                if (partItem is not null)
                                 {
                                     var partItemInternal = partItem.GetInternalClone();
                                     partMappings[partItemInternal] = romItem;
 
                                     var dataAreaItem = romItem.Read<DatItems.Formats.DataArea>(DatItems.Formats.Rom.DataAreaKey);
-                                    if (dataAreaItem != null)
+                                    if (dataAreaItem is not null)
                                         dataAreaMappings[partItemInternal] = (dataAreaItem.GetInternalClone(), romItem);
                                 }
                             }
+
                             break;
                         case DatItems.Formats.Sample sample:
                             var sampleItem = sample.GetInternalClone();
@@ -729,7 +735,7 @@ namespace SabreTools.DatFiles
 
                         // Get the part name and skip if there's none
                         string? partName = partItem.ReadString(Data.Models.Metadata.Part.NameKey);
-                        if (partName == null)
+                        if (partName is null)
                             continue;
 
                         // Create the part in the dictionary, if needed
@@ -755,7 +761,7 @@ namespace SabreTools.DatFiles
 
                             // Get the data area name and skip if there's none
                             string? dataAreaName = dataArea.ReadString(Data.Models.Metadata.DataArea.NameKey);
-                            if (dataAreaName != null)
+                            if (dataAreaName is not null)
                             {
                                 // Get existing data areas as a list
                                 var dataAreasArr = partItems[partName].Read<Data.Models.Metadata.DataArea[]>(Data.Models.Metadata.Part.DataAreaKey) ?? [];
@@ -812,7 +818,7 @@ namespace SabreTools.DatFiles
 
                             // Get the disk area name and skip if there's none
                             string? diskAreaName = diskArea.ReadString(Data.Models.Metadata.DiskArea.NameKey);
-                            if (diskAreaName != null)
+                            if (diskAreaName is not null)
                             {
                                 // Get existing disk areas as a list
                                 var diskAreasArr = partItems[partName].Read<Data.Models.Metadata.DiskArea[]>(Data.Models.Metadata.Part.DiskAreaKey) ?? [];
@@ -977,7 +983,7 @@ namespace SabreTools.DatFiles
                     dumpRom[Data.Models.Metadata.Dump.RomKey] = rom;
 
                     var romOriginal = romItem.Read<DatItems.Formats.Original>("ORIGINAL");
-                    if (romOriginal != null)
+                    if (romOriginal is not null)
                     {
                         var newOriginal = new Data.Models.Metadata.Original
                         {
@@ -1005,7 +1011,7 @@ namespace SabreTools.DatFiles
                     dumpMegaRom[Data.Models.Metadata.Dump.MegaRomKey] = megaRom;
 
                     var megaRomOriginal = romItem.Read<DatItems.Formats.Original>("ORIGINAL");
-                    if (megaRomOriginal != null)
+                    if (megaRomOriginal is not null)
                     {
                         var newOriginal = new Data.Models.Metadata.Original
                         {
@@ -1033,7 +1039,7 @@ namespace SabreTools.DatFiles
                     dumpSccPlusCart[Data.Models.Metadata.Dump.RomKey] = sccPlusCart;
 
                     var sccPlusCartOriginal = romItem.Read<DatItems.Formats.Original>("ORIGINAL");
-                    if (sccPlusCartOriginal != null)
+                    if (sccPlusCartOriginal is not null)
                     {
                         var newOriginal = new Data.Models.Metadata.Original
                         {
@@ -1056,7 +1062,7 @@ namespace SabreTools.DatFiles
         /// </summary>
         private static void EnsureMachineKey<T>(Data.Models.Metadata.Machine machine, string key)
         {
-            if (machine.Read<T[]?>(key) == null)
+            if (machine.Read<T[]?>(key) is null)
 #if NET20 || NET35 || NET40 || NET452
                 machine[key] = new T[0];
 #else
@@ -1071,7 +1077,7 @@ namespace SabreTools.DatFiles
         {
             // Get the existing array
             var arr = machine.Read<T[]>(key);
-            if (arr == null)
+            if (arr is null)
                 return;
 
             // Trim all null fields
@@ -1091,7 +1097,7 @@ namespace SabreTools.DatFiles
             string[] fieldNames = [.. obj.Keys];
             foreach (string fieldName in fieldNames)
             {
-                if (obj[fieldName] == null)
+                if (obj[fieldName] is null)
                     obj.Remove(fieldName);
             }
         }

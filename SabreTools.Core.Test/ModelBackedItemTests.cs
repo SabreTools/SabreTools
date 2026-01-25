@@ -26,7 +26,7 @@ namespace SabreTools.Core.Test
             public override bool Equals(ModelBackedItem? other)
             {
                 // If other is null
-                if (other == null)
+                if (other is null)
                     return false;
 
                 // If the type is mismatched
@@ -41,7 +41,7 @@ namespace SabreTools.Core.Test
             public override bool Equals(ModelBackedItem<TestDictionaryBase>? other)
             {
                 // If other is null
-                if (other == null)
+                if (other is null)
                     return false;
 
                 // If the type is mismatched
@@ -66,7 +66,7 @@ namespace SabreTools.Core.Test
             public override bool Equals(ModelBackedItem? other)
             {
                 // If other is null
-                if (other == null)
+                if (other is null)
                     return false;
 
                 // If the type is mismatched
@@ -81,7 +81,7 @@ namespace SabreTools.Core.Test
             public override bool Equals(ModelBackedItem<TestDictionaryBase>? other)
             {
                 // If other is null
-                if (other == null)
+                if (other is null)
                     return false;
 
                 // If the type is mismatched

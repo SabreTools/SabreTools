@@ -67,7 +67,7 @@ namespace SabreTools.Core.Filter
             bool foundRootFolder = false;
 
             // If we got a null reader, just return
-            if (ir == null)
+            if (ir is null)
                 return false;
 
             // Otherwise, read the file to the end
@@ -106,7 +106,7 @@ namespace SabreTools.Core.Filter
                             value = "true";
 
                         // Add the new mapping
-                        if (machineName != null && value != null)
+                        if (machineName is not null && value is not null)
                             Mappings[machineName] = value;
                     }
                 }

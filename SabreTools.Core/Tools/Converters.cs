@@ -39,18 +39,18 @@ namespace SabreTools.Core.Tools
                 foreach (T? value in values)
                 {
                     // If the value is null
-                    if (value == null)
+                    if (value is null)
                         continue;
 
                     // Try to get the mapping attribute
                     MappingAttribute? attr = AttributeHelper<T>.GetAttribute(value);
-                    if (attr?.Mappings == null || attr.Mappings.Length == 0)
+                    if (attr?.Mappings is null || attr.Mappings.Length == 0)
                         continue;
 
                     // Loop through the mappings and add each
                     foreach (string mapString in attr.Mappings)
                     {
-                        if (mapString != null)
+                        if (mapString is not null)
                             mappings[mapString] = value;
                     }
                 }
@@ -102,12 +102,12 @@ namespace SabreTools.Core.Tools
                 foreach (T? value in values)
                 {
                     // If the value is null
-                    if (value == null)
+                    if (value is null)
                         continue;
 
                     // Try to get the mapping attribute
                     MappingAttribute? attr = AttributeHelper<T>.GetAttribute(value);
-                    if (attr?.Mappings == null || attr.Mappings.Length == 0)
+                    if (attr?.Mappings is null || attr.Mappings.Length == 0)
                         continue;
 
                     // Use either the first or second item in the list

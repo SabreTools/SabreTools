@@ -35,8 +35,8 @@ namespace SabreTools.DatItems.Formats
         {
             get
             {
-                var diskArea = GetFieldValue<DiskArea?>(Disk.DiskAreaKey);
-                return diskArea != null && !string.IsNullOrEmpty(diskArea.GetName());
+                var diskArea = GetFieldValue<DiskArea?>(DiskAreaKey);
+                return diskArea is not null && !string.IsNullOrEmpty(diskArea.GetName());
             }
         }
 
@@ -45,8 +45,8 @@ namespace SabreTools.DatItems.Formats
         {
             get
             {
-                var part = GetFieldValue<Part?>(Disk.PartKey);
-                return part != null
+                var part = GetFieldValue<Part?>(PartKey);
+                return part is not null
                     && (!string.IsNullOrEmpty(part.GetName())
                         || !string.IsNullOrEmpty(part.GetStringFieldValue(Data.Models.Metadata.Part.InterfaceKey)));
             }
@@ -58,32 +58,32 @@ namespace SabreTools.DatItems.Formats
 
         public Disk() : base()
         {
-            SetFieldValue<DupeType>(DatItem.DupeTypeKey, 0x00);
+            SetFieldValue<DupeType>(DupeTypeKey, 0x00);
             SetFieldValue<string?>(Data.Models.Metadata.Disk.StatusKey, ItemStatus.None.AsStringValue());
         }
 
         public Disk(Data.Models.Metadata.Disk item) : base(item)
         {
-            SetFieldValue<DupeType>(DatItem.DupeTypeKey, 0x00);
+            SetFieldValue<DupeType>(DupeTypeKey, 0x00);
 
             // Process flag values
-            if (GetBoolFieldValue(Data.Models.Metadata.Disk.OptionalKey) != null)
+            if (GetBoolFieldValue(Data.Models.Metadata.Disk.OptionalKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.Disk.OptionalKey, GetBoolFieldValue(Data.Models.Metadata.Disk.OptionalKey).FromYesNo());
-            if (GetStringFieldValue(Data.Models.Metadata.Disk.StatusKey) != null)
+            if (GetStringFieldValue(Data.Models.Metadata.Disk.StatusKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.Disk.StatusKey, GetStringFieldValue(Data.Models.Metadata.Disk.StatusKey).AsItemStatus().AsStringValue());
-            if (GetBoolFieldValue(Data.Models.Metadata.Disk.WritableKey) != null)
+            if (GetBoolFieldValue(Data.Models.Metadata.Disk.WritableKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.Disk.WritableKey, GetBoolFieldValue(Data.Models.Metadata.Disk.WritableKey).FromYesNo());
 
             // Process hash values
-            if (GetStringFieldValue(Data.Models.Metadata.Disk.MD5Key) != null)
+            if (GetStringFieldValue(Data.Models.Metadata.Disk.MD5Key) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.Disk.MD5Key, TextHelper.NormalizeMD5(GetStringFieldValue(Data.Models.Metadata.Disk.MD5Key)));
-            if (GetStringFieldValue(Data.Models.Metadata.Disk.SHA1Key) != null)
+            if (GetStringFieldValue(Data.Models.Metadata.Disk.SHA1Key) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.Disk.SHA1Key, TextHelper.NormalizeSHA1(GetStringFieldValue(Data.Models.Metadata.Disk.SHA1Key)));
         }
 
         public Disk(Data.Models.Metadata.Disk item, Machine machine, Source source) : this(item)
         {
-            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            SetFieldValue<Source?>(SourceKey, source);
             CopyMachineInformation(machine);
         }
 
@@ -100,8 +100,8 @@ namespace SabreTools.DatItems.Formats
             var rom = new Rom(_internal.ConvertToRom()!);
 
             // Create a DataArea if there was an existing DiskArea
-            var diskArea = GetFieldValue<DiskArea?>(Disk.DiskAreaKey);
-            if (diskArea != null)
+            var diskArea = GetFieldValue<DiskArea?>(DiskAreaKey);
+            if (diskArea is not null)
             {
                 var dataArea = new DataArea();
 
@@ -111,11 +111,11 @@ namespace SabreTools.DatItems.Formats
                 rom.SetFieldValue<DataArea?>(Rom.DataAreaKey, dataArea);
             }
 
-            rom.SetFieldValue<DupeType>(DatItem.DupeTypeKey, GetFieldValue<DupeType>(DatItem.DupeTypeKey));
-            rom.SetFieldValue<Machine>(DatItem.MachineKey, GetMachine()?.Clone() as Machine);
-            rom.SetFieldValue<Part>(Rom.PartKey, GetFieldValue<Part>(Disk.PartKey)?.Clone() as Part);
-            rom.SetFieldValue<bool?>(DatItem.RemoveKey, GetBoolFieldValue(DatItem.RemoveKey));
-            rom.SetFieldValue<Source?>(DatItem.SourceKey, GetFieldValue<Source?>(DatItem.SourceKey)?.Clone() as Source);
+            rom.SetFieldValue(DupeTypeKey, GetFieldValue<DupeType>(DupeTypeKey));
+            rom.SetFieldValue(MachineKey, GetMachine()?.Clone() as Machine);
+            rom.SetFieldValue(Rom.PartKey, GetFieldValue<Part>(PartKey)?.Clone() as Part);
+            rom.SetFieldValue(RemoveKey, GetBoolFieldValue(RemoveKey));
+            rom.SetFieldValue<Source?>(SourceKey, GetFieldValue<Source?>(SourceKey)?.Clone() as Source);
 
             return rom;
         }
@@ -153,6 +153,7 @@ namespace SabreTools.DatItems.Formats
             // Set the output key as the default blank string
             string? key;
 
+#pragma warning disable IDE0010
             // Now determine what the key should be based on the bucketedBy value
             switch (bucketedBy)
             {
@@ -168,6 +169,7 @@ namespace SabreTools.DatItems.Formats
                 default:
                     return base.GetKey(bucketedBy, machine, source, lower, norename);
             }
+#pragma warning restore IDE0010
 
             // Double and triple check the key for corner cases
             key ??= string.Empty;

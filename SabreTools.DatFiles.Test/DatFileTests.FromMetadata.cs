@@ -102,14 +102,14 @@ namespace SabreTools.DatFiles.Test
             Disk? disk = Array.Find(datItems, item => item is Disk disk && !disk.DiskAreaSpecified && !disk.PartSpecified) as Disk;
             ValidateDisk(disk);
 
-            Display? display = Array.Find(datItems, item => item is Display display && display.GetInt64FieldValue(Data.Models.Metadata.Video.AspectXKey) == null) as Display;
+            Display? display = Array.Find(datItems, item => item is Display display && display.GetInt64FieldValue(Data.Models.Metadata.Video.AspectXKey) is null) as Display;
             ValidateDisplay(display);
 
             Driver? driver = Array.Find(datItems, item => item is Driver) as Driver;
             ValidateDriver(driver);
 
             // All other fields are tested separately
-            Rom? dump = Array.Find(datItems, item => item is Rom rom && rom.GetStringFieldValue(Data.Models.Metadata.Rom.OpenMSXMediaType) != null) as Rom;
+            Rom? dump = Array.Find(datItems, item => item is Rom rom && rom.GetStringFieldValue(Data.Models.Metadata.Rom.OpenMSXMediaType) is not null) as Rom;
             Assert.NotNull(dump);
             Assert.Equal("rom", dump.GetStringFieldValue(Data.Models.Metadata.Rom.OpenMSXMediaType));
 
@@ -159,7 +159,7 @@ namespace SabreTools.DatFiles.Test
             Release? release = Array.Find(datItems, item => item is Release) as Release;
             ValidateRelease(release);
 
-            Rom? rom = Array.Find(datItems, item => item is Rom rom && !rom.DataAreaSpecified && !rom.PartSpecified && rom.GetStringFieldValue(Data.Models.Metadata.Rom.OpenMSXMediaType) == null) as Rom;
+            Rom? rom = Array.Find(datItems, item => item is Rom rom && !rom.DataAreaSpecified && !rom.PartSpecified && rom.GetStringFieldValue(Data.Models.Metadata.Rom.OpenMSXMediaType) is null) as Rom;
             ValidateRom(rom);
 
             Sample? sample = Array.Find(datItems, item => item is Sample) as Sample;
@@ -177,7 +177,7 @@ namespace SabreTools.DatFiles.Test
             Sound? sound = Array.Find(datItems, item => item is Sound) as Sound;
             ValidateSound(sound);
 
-            Display? video = Array.Find(datItems, item => item is Display display && display.GetInt64FieldValue(Data.Models.Metadata.Video.AspectXKey) != null) as Display;
+            Display? video = Array.Find(datItems, item => item is Display display && display.GetInt64FieldValue(Data.Models.Metadata.Video.AspectXKey) is not null) as Display;
             ValidateVideo(video);
         }
 

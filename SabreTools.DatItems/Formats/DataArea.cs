@@ -24,17 +24,17 @@ namespace SabreTools.DatItems.Formats
         public DataArea(Data.Models.Metadata.DataArea item) : base(item)
         {
             // Process flag values
-            if (GetStringFieldValue(Data.Models.Metadata.DataArea.EndiannessKey) != null)
+            if (GetStringFieldValue(Data.Models.Metadata.DataArea.EndiannessKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.DataArea.EndiannessKey, GetStringFieldValue(Data.Models.Metadata.DataArea.EndiannessKey).AsEndianness().AsStringValue());
-            if (GetInt64FieldValue(Data.Models.Metadata.DataArea.SizeKey) != null)
+            if (GetInt64FieldValue(Data.Models.Metadata.DataArea.SizeKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.DataArea.SizeKey, GetInt64FieldValue(Data.Models.Metadata.DataArea.SizeKey).ToString());
-            if (GetInt64FieldValue(Data.Models.Metadata.DataArea.WidthKey) != null)
+            if (GetInt64FieldValue(Data.Models.Metadata.DataArea.WidthKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.DataArea.WidthKey, GetInt64FieldValue(Data.Models.Metadata.DataArea.WidthKey).ToString());
         }
 
         public DataArea(Data.Models.Metadata.DataArea item, Machine machine, Source source) : this(item)
         {
-            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            SetFieldValue<Source?>(SourceKey, source);
             CopyMachineInformation(machine);
         }
 

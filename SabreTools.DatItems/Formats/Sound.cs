@@ -23,13 +23,13 @@ namespace SabreTools.DatItems.Formats
         public Sound(Data.Models.Metadata.Sound item) : base(item)
         {
             // Process flag values
-            if (GetInt64FieldValue(Data.Models.Metadata.Sound.ChannelsKey) != null)
+            if (GetInt64FieldValue(Data.Models.Metadata.Sound.ChannelsKey) is not null)
                 SetFieldValue<string?>(Data.Models.Metadata.Sound.ChannelsKey, GetInt64FieldValue(Data.Models.Metadata.Sound.ChannelsKey).ToString());
         }
 
         public Sound(Data.Models.Metadata.Sound item, Machine machine, Source source) : this(item)
         {
-            SetFieldValue<Source?>(DatItem.SourceKey, source);
+            SetFieldValue<Source?>(SourceKey, source);
             CopyMachineInformation(machine);
         }
 

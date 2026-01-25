@@ -63,7 +63,7 @@ namespace SabreTools.FileTypes.Archives
             bool encounteredErrors = true;
 
             // If we have an invalid file
-            if (Filename == null)
+            if (Filename is null)
                 return true;
 
             try
@@ -99,7 +99,7 @@ namespace SabreTools.FileTypes.Archives
         {
             // Try to extract a stream using the given information
             var stream = GetEntryStream(entryName, out string? realEntry);
-            if (stream == null || realEntry == null)
+            if (stream is null || realEntry is null)
                 return null;
 
             // If the stream and the entry name are both non-null, we write to file
@@ -110,7 +110,7 @@ namespace SabreTools.FileTypes.Archives
 
             // Now open and write the file if possible
             FileStream fs = File.Create(realEntry);
-            if (fs != null)
+            if (fs is not null)
             {
                 if (stream.CanSeek)
                     stream.Seek(0, SeekOrigin.Begin);
@@ -143,7 +143,7 @@ namespace SabreTools.FileTypes.Archives
             realEntry = null;
 
             // If we have an invalid file
-            if (Filename == null)
+            if (Filename is null)
                 return null;
 
 #if NET462_OR_GREATER || NETCOREAPP
@@ -175,7 +175,7 @@ namespace SabreTools.FileTypes.Archives
         public override List<BaseFile>? GetChildren()
         {
             // If we have children cached already
-            if (_children != null && _children.Count > 0)
+            if (_children is not null && _children.Count > 0)
                 return _children;
 
 #if NET462_OR_GREATER || NETCOREAPP
@@ -185,7 +185,7 @@ namespace SabreTools.FileTypes.Archives
             BaseFile? possibleTxz = GetTorrentXZFileInfo();
 
             // If it was, then add it to the outputs and continue
-            if (possibleTxz != null && possibleTxz.Filename != null)
+            if (possibleTxz is not null && possibleTxz.Filename is not null)
             {
                 _children.Add(possibleTxz);
                 return _children;
@@ -244,7 +244,7 @@ namespace SabreTools.FileTypes.Archives
         public override bool IsStandardized()
         {
             // Check for the file existing first
-            if (Filename == null || !File.Exists(Filename))
+            if (Filename is null || !File.Exists(Filename))
                 return false;
 
             string datum = Path.GetFileName(Filename).ToLowerInvariant();
@@ -266,7 +266,7 @@ namespace SabreTools.FileTypes.Archives
         public BaseFile? GetTorrentXZFileInfo()
         {
             // Check for the file existing first
-            if (Filename == null || !File.Exists(Filename))
+            if (Filename is null || !File.Exists(Filename))
                 return null;
 
             string datum = Path.GetFileName(Filename).ToLowerInvariant();
@@ -317,7 +317,7 @@ namespace SabreTools.FileTypes.Archives
             bool success = false;
 
             // If the stream is not readable, return
-            if (stream == null || !stream.CanRead)
+            if (stream is null || !stream.CanRead)
                 return success;
 
             // Make sure the output directory exists

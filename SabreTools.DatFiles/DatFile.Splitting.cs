@@ -270,13 +270,13 @@ namespace SabreTools.DatFiles
 
                 // Get the machine
                 var machine = items[0].GetMachine();
-                if (machine == null)
+                if (machine is null)
                     continue;
 
                 // Get the cloneof parent items
                 string? cloneOf = machine.GetStringFieldValue(Data.Models.Metadata.Machine.CloneOfKey);
                 List<DatItem> parentItems = GetItemsForBucket(cloneOf);
-                if (cloneOf == null)
+                if (cloneOf is null)
                     continue;
 
                 // Otherwise, move the items from the current game to a subfolder of the parent game
@@ -301,7 +301,7 @@ namespace SabreTools.DatFiles
                         string? mergeTag = disk.GetStringFieldValue(Data.Models.Metadata.Disk.MergeKey);
 
                         // If the merge tag exists and the parent already contains it, skip
-                        if (mergeTag != null && GetItemsForBucket(cloneOf)
+                        if (mergeTag is not null && GetItemsForBucket(cloneOf)
                             .FindAll(i => i is Disk)
                             .ConvertAll(i => (i as Disk)!.GetName())
                             .Contains(mergeTag))
@@ -310,7 +310,7 @@ namespace SabreTools.DatFiles
                         }
 
                         // If the merge tag exists but the parent doesn't contain it, add to parent
-                        else if (mergeTag != null && !GetItemsForBucket(cloneOf)
+                        else if (mergeTag is not null && !GetItemsForBucket(cloneOf)
                             .FindAll(i => i is Disk)
                             .ConvertAll(i => (i as Disk)!.GetName())
                             .Contains(mergeTag))
@@ -320,7 +320,7 @@ namespace SabreTools.DatFiles
                         }
 
                         // If there is no merge tag, add to parent
-                        else if (mergeTag == null && !GetItemsForBucket(cloneOf)
+                        else if (mergeTag is null && !GetItemsForBucket(cloneOf)
                             .FindAll(i => i is Disk)
                             .ConvertAll(i => (i as Disk)!.GetName())
                             .Contains(disk.GetName()))
@@ -336,7 +336,7 @@ namespace SabreTools.DatFiles
                         string? mergeTag = rom.GetStringFieldValue(Data.Models.Metadata.Rom.MergeKey);
 
                         // If the merge tag exists and the parent already contains it, skip
-                        if (mergeTag != null && GetItemsForBucket(cloneOf)
+                        if (mergeTag is not null && GetItemsForBucket(cloneOf)
                             .FindAll(i => i is Rom)
                             .ConvertAll(i => (i as Rom)!.GetName())
                             .Contains(mergeTag))
@@ -345,7 +345,7 @@ namespace SabreTools.DatFiles
                         }
 
                         // If the merge tag exists but the parent doesn't contain it, add to subfolder of parent
-                        else if (mergeTag != null && !GetItemsForBucket(cloneOf)
+                        else if (mergeTag is not null && !GetItemsForBucket(cloneOf)
                             .FindAll(i => i is Rom)
                             .ConvertAll(i => (i as Rom)!.GetName())
                             .Contains(mergeTag))
@@ -405,7 +405,7 @@ namespace SabreTools.DatFiles
 
                 // Get the machine for the first item
                 var machine = GetMachineForItemDB(items.First().Key);
-                if (machine.Value == null)
+                if (machine.Value is null)
                     continue;
 
                 // Get the clone parent
@@ -415,7 +415,7 @@ namespace SabreTools.DatFiles
 
                 // Get the clone parent machine
                 var cloneOfMachine = ItemsDB.GetMachine(cloneOf);
-                if (cloneOfMachine.Value == null)
+                if (cloneOfMachine.Value is null)
                     continue;
 
                 items = GetItemsForBucketDB(bucket);
@@ -438,7 +438,7 @@ namespace SabreTools.DatFiles
                         string? mergeTag = disk.GetStringFieldValue(Data.Models.Metadata.Disk.MergeKey);
 
                         // If the merge tag exists and the parent already contains it, skip
-                        if (mergeTag != null && GetItemsForBucketDB(cloneOf).Values
+                        if (mergeTag is not null && GetItemsForBucketDB(cloneOf).Values
                             .Where(i => i is Disk)
                             .Select(i => (i as Disk)!.GetName())
                             .Contains(mergeTag))
@@ -447,7 +447,7 @@ namespace SabreTools.DatFiles
                         }
 
                         // If the merge tag exists but the parent doesn't contain it, add to parent
-                        else if (mergeTag != null && !GetItemsForBucketDB(cloneOf).Values
+                        else if (mergeTag is not null && !GetItemsForBucketDB(cloneOf).Values
                             .Where(i => i is Disk)
                             .Select(i => (i as Disk)!.GetName())
                             .Contains(mergeTag))
@@ -457,7 +457,7 @@ namespace SabreTools.DatFiles
                         }
 
                         // If there is no merge tag, add to parent
-                        else if (mergeTag == null && !GetItemsForBucketDB(cloneOf).Values
+                        else if (mergeTag is null && !GetItemsForBucketDB(cloneOf).Values
                             .Where(i => i is Disk)
                             .Select(i => (i as Disk)!.GetName())
                             .Contains(disk.GetName()))
@@ -473,7 +473,7 @@ namespace SabreTools.DatFiles
                         string? mergeTag = rom.GetStringFieldValue(Data.Models.Metadata.Rom.MergeKey);
 
                         // If the merge tag exists and the parent already contains it, skip
-                        if (mergeTag != null && GetItemsForBucketDB(cloneOf).Values
+                        if (mergeTag is not null && GetItemsForBucketDB(cloneOf).Values
                             .Where(i => i is Rom)
                             .Select(i => (i as Rom)!.GetName())
                             .Contains(mergeTag))
@@ -482,7 +482,7 @@ namespace SabreTools.DatFiles
                         }
 
                         // If the merge tag exists but the parent doesn't contain it, add to subfolder of parent
-                        else if (mergeTag != null && !GetItemsForBucketDB(cloneOf).Values
+                        else if (mergeTag is not null && !GetItemsForBucketDB(cloneOf).Values
                             .Where(i => i is Rom)
                             .Select(i => (i as Rom)!.GetName())
                             .Contains(mergeTag))
@@ -540,7 +540,7 @@ namespace SabreTools.DatFiles
 
                 // Get the machine
                 var machine = items[0].GetMachine();
-                if (machine == null)
+                if (machine is null)
                     continue;
 
                 // Get the cloneof parent items
@@ -594,7 +594,7 @@ namespace SabreTools.DatFiles
 
                 // Get the machine for the first item in the list
                 var machine = GetMachineForItemDB(items.First().Key);
-                if (machine.Value == null)
+                if (machine.Value is null)
                     continue;
 
                 // Get the clone parent
@@ -620,7 +620,7 @@ namespace SabreTools.DatFiles
 
                 // Get the parent machine
                 var parentMachine = GetMachineForItemDB(GetItemsForBucketDB(cloneOf).First().Key);
-                if (parentMachine.Value == null)
+                if (parentMachine.Value is null)
                     continue;
 
                 // Now we want to get the parent romof tag and put it in each of the items
@@ -629,7 +629,7 @@ namespace SabreTools.DatFiles
                 foreach (var key in items.Keys)
                 {
                     var itemMachine = GetMachineForItemDB(key);
-                    if (itemMachine.Value == null)
+                    if (itemMachine.Value is null)
                         continue;
 
                     // TODO: Remove merge tags here
@@ -817,7 +817,7 @@ namespace SabreTools.DatFiles
 
                 // Get the machine for the first item
                 var machine = GetMachineForItemDB(items.First().Key);
-                if (machine.Value == null)
+                if (machine.Value is null)
                     continue;
 
                 // If the machine (is/is not) a device, we want to continue
@@ -850,7 +850,7 @@ namespace SabreTools.DatFiles
                     foreach (string? deviceReference in deviceReferences)
                     {
                         // If the device reference is invalid
-                        if (deviceReference == null)
+                        if (deviceReference is null)
                             continue;
 
                         // If the machine doesn't exist then we continue
@@ -865,7 +865,7 @@ namespace SabreTools.DatFiles
 
                         // Set new machine information and add to the current machine
                         var copyFrom = GetMachineForItemDB(items.First().Key);
-                        if (copyFrom.Value == null)
+                        if (copyFrom.Value is null)
                             continue;
 
                         foreach (var item in devItems.Values)
@@ -904,7 +904,7 @@ namespace SabreTools.DatFiles
                     foreach (string? slotOption in slotOptions)
                     {
                         // If the slot option is invalid
-                        if (slotOption == null)
+                        if (slotOption is null)
                             continue;
 
                         // If the machine doesn't exist then we continue
@@ -921,7 +921,7 @@ namespace SabreTools.DatFiles
 
                         // Set new machine information and add to the current machine
                         var copyFrom = GetMachineForItemDB(GetItemsForBucketDB(bucket).First().Key);
-                        if (copyFrom.Value == null)
+                        if (copyFrom.Value is null)
                             continue;
 
                         foreach (var item in slotItems.Values)
@@ -979,7 +979,7 @@ namespace SabreTools.DatFiles
 
                 // Get the machine
                 var machine = items[0].GetMachine();
-                if (machine == null)
+                if (machine is null)
                     continue;
 
                 // Get the romof parent items
@@ -1022,7 +1022,7 @@ namespace SabreTools.DatFiles
 
                 // Get the machine for the first item
                 var machine = GetMachineForItemDB(items.First().Key);
-                if (machine.Value == null)
+                if (machine.Value is null)
                     continue;
 
                 // Get the romof parent items
@@ -1074,7 +1074,7 @@ namespace SabreTools.DatFiles
 
                 // Get the machine
                 var machine = items[0].GetMachine();
-                if (machine == null)
+                if (machine is null)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
@@ -1124,7 +1124,7 @@ namespace SabreTools.DatFiles
 
                 // Get the machine
                 var machine = GetMachineForItemDB(items.First().Key);
-                if (machine.Value == null)
+                if (machine.Value is null)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
@@ -1169,7 +1169,7 @@ namespace SabreTools.DatFiles
 
                 // Get the machine
                 var machine = items[0].GetMachine();
-                if (machine == null)
+                if (machine is null)
                     continue;
 
                 // Get the cloneof parent items
@@ -1223,13 +1223,13 @@ namespace SabreTools.DatFiles
 
                 // Get the machine for the first item
                 var machine = GetMachineForItemDB(items.First().Key);
-                if (machine.Value == null)
+                if (machine.Value is null)
                     continue;
 
                 // Get the cloneof parent items
                 string? cloneOf = machine.Value.GetStringFieldValue(Data.Models.Metadata.Machine.CloneOfKey);
                 Dictionary<long, DatItem> parentItems = GetItemsForBucketDB(cloneOf);
-                if (parentItems == null || parentItems.Count == 0)
+                if (parentItems is null || parentItems.Count == 0)
                     continue;
 
                 // If the parent exists and has items, we remove the parent items from the current game
@@ -1245,14 +1245,14 @@ namespace SabreTools.DatFiles
                 // Now we want to get the parent romof tag and put it in each of the remaining items
                 items = GetItemsForBucketDB(bucket);
                 machine = GetMachineForItemDB(GetItemsForBucketDB(cloneOf).First().Key);
-                if (machine.Value == null)
+                if (machine.Value is null)
                     continue;
 
                 string? romof = machine.Value.GetStringFieldValue(Data.Models.Metadata.Machine.RomOfKey);
                 foreach (var item in items)
                 {
                     machine = GetMachineForItemDB(item.Key);
-                    if (machine.Value == null)
+                    if (machine.Value is null)
                         continue;
 
                     machine.Value.SetFieldValue<string?>(Data.Models.Metadata.Machine.RomOfKey, romof);
@@ -1279,7 +1279,7 @@ namespace SabreTools.DatFiles
 
                 // Get the machine
                 var machine = items[0].GetMachine();
-                if (machine == null)
+                if (machine is null)
                     continue;
 
                 // Get the romof parent items
@@ -1326,7 +1326,7 @@ namespace SabreTools.DatFiles
 
                 // Get the machine for the item
                 var machine = GetMachineForItemDB(items.First().Key);
-                if (machine.Value == null)
+                if (machine.Value is null)
                     continue;
 
                 // Get the romof parent items
@@ -1365,7 +1365,7 @@ namespace SabreTools.DatFiles
             {
                 // If the bucket has no items in it
                 var items = GetItemsForBucket(bucket);
-                if (items == null || items.Count == 0)
+                if (items is null || items.Count == 0)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
@@ -1379,7 +1379,7 @@ namespace SabreTools.DatFiles
 
                     // Get the machine
                     var machine = item.GetMachine();
-                    if (machine == null)
+                    if (machine is null)
                         continue;
 
                     machine.SetFieldValue<string?>(Data.Models.Metadata.Machine.CloneOfKey, null);
@@ -1411,7 +1411,7 @@ namespace SabreTools.DatFiles
             {
                 // TODO: Remove merge tags here
                 // Get the machine
-                if (machine.Value == null)
+                if (machine.Value is null)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else

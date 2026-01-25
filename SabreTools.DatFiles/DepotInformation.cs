@@ -46,7 +46,7 @@ namespace SabreTools.DatFiles
             Depth = depth;
 
             // Limit depth value
-            if (Depth == Int32.MinValue)
+            if (Depth == int.MinValue)
                 Depth = 4;
             else if (Depth < 0)
                 Depth = 0;

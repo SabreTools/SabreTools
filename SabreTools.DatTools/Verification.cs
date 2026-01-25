@@ -66,14 +66,14 @@ namespace SabreTools.DatTools
 
                 // Get the extension path for the hash
                 string? subpath = Utilities.GetDepotPath(hash, datFile.Modifiers.InputDepot?.Depth ?? 0);
-                if (subpath == null)
+                if (subpath is null)
                     continue;
 
                 // Find the first depot that includes the hash
                 string? foundpath = null;
                 foreach (string directory in directories)
                 {
-                    if (System.IO.File.Exists(Path.Combine(directory, subpath)))
+                    if (File.Exists(Path.Combine(directory, subpath)))
                     {
                         foundpath = Path.Combine(directory, subpath);
                         break;
@@ -81,7 +81,7 @@ namespace SabreTools.DatTools
                 }
 
                 // If we didn't find a path, then we continue
-                if (foundpath == null)
+                if (foundpath is null)
                     continue;
 
                 // If we have a path, we want to try to get the rom information
@@ -89,7 +89,7 @@ namespace SabreTools.DatTools
                 BaseFile? fileinfo = tgz.GetTorrentGZFileInfo();
 
                 // If the file information is null, then we continue
-                if (fileinfo == null)
+                if (fileinfo is null)
                     continue;
 
                 // Now we want to remove all duplicates from the DAT
@@ -151,14 +151,14 @@ namespace SabreTools.DatTools
 
                 // Get the extension path for the hash
                 string? subpath = Utilities.GetDepotPath(hash, datFile.Modifiers.InputDepot?.Depth ?? 0);
-                if (subpath == null)
+                if (subpath is null)
                     continue;
 
                 // Find the first depot that includes the hash
                 string? foundpath = null;
                 foreach (string directory in directories)
                 {
-                    if (System.IO.File.Exists(Path.Combine(directory, subpath)))
+                    if (File.Exists(Path.Combine(directory, subpath)))
                     {
                         foundpath = Path.Combine(directory, subpath);
                         break;
@@ -166,7 +166,7 @@ namespace SabreTools.DatTools
                 }
 
                 // If we didn't find a path, then we continue
-                if (foundpath == null)
+                if (foundpath is null)
                     continue;
 
                 // If we have a path, we want to try to get the rom information
@@ -174,7 +174,7 @@ namespace SabreTools.DatTools
                 BaseFile? fileinfo = tgz.GetTorrentGZFileInfo();
 
                 // If the file information is null, then we continue
-                if (fileinfo == null)
+                if (fileinfo is null)
                     continue;
 
                 // Now we want to remove all duplicates from the DAT
@@ -222,7 +222,7 @@ namespace SabreTools.DatTools
             foreach (string key in datFile.Items.SortedKeys)
             {
                 List<DatItem>? items = datFile.GetItemsForBucket(key);
-                if (items == null)
+                if (items is null)
                     continue;
 
                 for (int i = 0; i < items.Count; i++)
@@ -273,7 +273,7 @@ namespace SabreTools.DatTools
             foreach (string key in keys)
             {
                 var items = datFile.ItemsDB.GetItemsForBucket(key);
-                if (items == null)
+                if (items is null)
                     continue;
 
                 foreach (var item in items)

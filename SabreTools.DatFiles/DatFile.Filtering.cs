@@ -110,7 +110,7 @@ namespace SabreTools.DatFiles
 #endif
             {
                 var items = GetItemsForBucket(key);
-                if (items == null)
+                if (items is null)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
@@ -121,13 +121,13 @@ namespace SabreTools.DatFiles
                 {
                     // Get the current machine
                     var machine = item.GetMachine();
-                    if (machine == null)
+                    if (machine is null)
                         continue;
 
                     // Get the values to check against
                     string? machineName = machine.GetName();
                     string? machineDesc = machine.GetStringFieldValue(Data.Models.Metadata.Machine.DescriptionKey);
-                    if (machineName == null || machineDesc == null)
+                    if (machineName is null || machineDesc is null)
                         continue;
 
                     // Adjust the description
@@ -162,13 +162,13 @@ namespace SabreTools.DatFiles
             foreach (var machine in GetMachinesDB())
             {
                 // Get the current machine
-                if (machine.Value == null)
+                if (machine.Value is null)
                     continue;
 
                 // Get the values to check against
                 string? machineName = machine.Value.GetName();
                 string? machineDesc = machine.Value.GetStringFieldValue(Data.Models.Metadata.Machine.DescriptionKey);
-                if (machineName == null || machineDesc == null)
+                if (machineName is null || machineDesc is null)
                     continue;
 
                 // Adjust the description
@@ -192,7 +192,7 @@ namespace SabreTools.DatFiles
         private void ExecuteFiltersImpl(FilterRunner filterRunner)
         {
 #if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            Parallel.ForEach(Items.SortedKeys, Core.Globals.ParallelOptions, key =>
+            Parallel.ForEach(Items.SortedKeys, Globals.ParallelOptions, key =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(Items.SortedKeys, key =>
 #else
@@ -240,7 +240,7 @@ namespace SabreTools.DatFiles
         private void ExecuteFilterOnBucket(FilterRunner filterRunner, string bucketName)
         {
             List<DatItem>? items = GetItemsForBucket(bucketName);
-            if (items == null)
+            if (items is null)
                 return;
 
             // Filter all items in the current key
@@ -260,7 +260,7 @@ namespace SabreTools.DatFiles
         private void ExecuteFilterOnBucketDB(FilterRunner filterRunner, string bucketName)
         {
             var items = GetItemsForBucketDB(bucketName);
-            if (items == null)
+            if (items is null)
                 return;
 
             // Filter all items in the current key
@@ -333,7 +333,7 @@ namespace SabreTools.DatFiles
                 // Get machine information
                 Machine? machine = item.GetMachine();
                 string? machineName = machine?.GetName()?.ToLowerInvariant();
-                if (machine == null || machineName == null)
+                if (machine is null || machineName is null)
                     continue;
 
                 // Get the string values
@@ -406,13 +406,13 @@ namespace SabreTools.DatFiles
             Dictionary<string, List<string>> parents = [];
             foreach (var machine in GetMachinesDB())
             {
-                if (machine.Value == null)
+                if (machine.Value is null)
                     continue;
 
                 // Get machine information
                 Machine? machineObj = machine.Value;
                 string? machineName = machineObj?.GetName()?.ToLowerInvariant();
-                if (machineObj == null || machineName == null)
+                if (machineObj is null || machineName is null)
                     continue;
 
                 // Get the string values
@@ -490,7 +490,7 @@ namespace SabreTools.DatFiles
 #endif
             {
                 var items = GetItemsForBucket(key);
-                if (items == null)
+                if (items is null)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
@@ -517,19 +517,19 @@ namespace SabreTools.DatFiles
         {
             // If the item name is null
             string? itemName = datItem.GetName();
-            if (itemName == null)
+            if (itemName is null)
                 return;
 
             // Get the current machine
             var machine = datItem.GetMachine();
-            if (machine == null)
+            if (machine is null)
                 return;
 
             // Clone current machine to avoid conflict
             machine = (Machine)machine.Clone();
 
             // Reassign the item to the new machine
-            datItem.SetFieldValue<Machine>(DatItem.MachineKey, machine);
+            datItem.SetFieldValue(DatItem.MachineKey, machine);
 
             // Remove extensions from File and Rom items
             if (datItem is DatItems.Formats.File || datItem is Rom)
@@ -567,7 +567,7 @@ namespace SabreTools.DatFiles
 #endif
             {
                 var items = GetItemsForBucketDB(key);
-                if (items == null)
+                if (items is null)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
@@ -594,18 +594,18 @@ namespace SabreTools.DatFiles
         {
             // If the item name is null
             string? itemName = datItem.Value.GetName();
-            if (datItem.Key < 0 || itemName == null)
+            if (datItem.Key < 0 || itemName is null)
                 return;
 
             // Get the current machine
             var machine = GetMachineForItemDB(datItem.Key);
-            if (machine.Value == null)
+            if (machine.Value is null)
                 return;
 
             // Clone current machine to avoid conflict
             long newMachineIndex = AddMachineDB((Machine)machine.Value.Clone());
             machine = new KeyValuePair<long, Machine?>(newMachineIndex, ItemsDB.GetMachine(newMachineIndex));
-            if (machine.Value == null)
+            if (machine.Value is null)
                 return;
 
             // Reassign the item to the new machine
@@ -647,7 +647,7 @@ namespace SabreTools.DatFiles
 #endif
             {
                 var items = GetItemsForBucket(key);
-                if (items == null)
+                if (items is null)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
@@ -658,17 +658,17 @@ namespace SabreTools.DatFiles
                 {
                     // Get the current machine
                     var machine = item.GetMachine();
-                    if (machine == null)
+                    if (machine is null)
                         continue;
 
                     // Get the values to check against
                     string? machineName = machine.GetName();
                     string? machineDesc = machine.GetStringFieldValue(Data.Models.Metadata.Machine.DescriptionKey);
 
-                    if (machineName != null && Regex.IsMatch(machineName, SceneNamePattern))
+                    if (machineName is not null && Regex.IsMatch(machineName, SceneNamePattern))
                         item.GetMachine()!.SetName(Regex.Replace(machineName, SceneNamePattern, "$2"));
 
-                    if (machineDesc != null && Regex.IsMatch(machineDesc, SceneNamePattern))
+                    if (machineDesc is not null && Regex.IsMatch(machineDesc, SceneNamePattern))
                         item.GetMachine()!.SetFieldValue<string?>(Data.Models.Metadata.Machine.DescriptionKey, Regex.Replace(machineDesc, SceneNamePattern, "$2"));
                 }
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
@@ -686,7 +686,7 @@ namespace SabreTools.DatFiles
         {
             // Now process all of the machines
 #if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            Parallel.ForEach(GetMachinesDB(), Core.Globals.ParallelOptions, machine =>
+            Parallel.ForEach(GetMachinesDB(), Globals.ParallelOptions, machine =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(GetMachinesDB(), machine =>
 #else
@@ -694,7 +694,7 @@ namespace SabreTools.DatFiles
 #endif
             {
                 // Get the current machine
-                if (machine.Value == null)
+                if (machine.Value is null)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
@@ -705,10 +705,10 @@ namespace SabreTools.DatFiles
                 string? machineName = machine.Value.GetName();
                 string? machineDesc = machine.Value.GetStringFieldValue(Data.Models.Metadata.Machine.DescriptionKey);
 
-                if (machineName != null && Regex.IsMatch(machineName, SceneNamePattern))
+                if (machineName is not null && Regex.IsMatch(machineName, SceneNamePattern))
                     machine.Value.SetName(Regex.Replace(machineName, SceneNamePattern, "$2"));
 
-                if (machineDesc != null && Regex.IsMatch(machineDesc, SceneNamePattern))
+                if (machineDesc is not null && Regex.IsMatch(machineDesc, SceneNamePattern))
                     machine.Value.SetFieldValue<string?>(Data.Models.Metadata.Machine.DescriptionKey, Regex.Replace(machineDesc, SceneNamePattern, "$2"));
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
@@ -732,7 +732,7 @@ namespace SabreTools.DatFiles
 #endif
             {
                 var items = GetItemsForBucket(key);
-                if (items == null)
+                if (items is null)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
@@ -743,7 +743,7 @@ namespace SabreTools.DatFiles
                 {
                     // Get the current machine
                     var machine = item.GetMachine();
-                    if (machine == null)
+                    if (machine is null)
                         continue;
 
                     // Get the values to check against
@@ -753,19 +753,19 @@ namespace SabreTools.DatFiles
                     string? sampleOf = machine.GetStringFieldValue(Data.Models.Metadata.Machine.SampleOfKey);
 
                     // Update machine name
-                    if (machineName != null && mapping.ContainsKey(machineName))
+                    if (machineName is not null && mapping.ContainsKey(machineName))
                         machine.SetName(mapping[machineName]);
 
                     // Update cloneof
-                    if (cloneOf != null && mapping.ContainsKey(cloneOf))
+                    if (cloneOf is not null && mapping.ContainsKey(cloneOf))
                         machine.SetFieldValue<string?>(Data.Models.Metadata.Machine.CloneOfKey, mapping[cloneOf]);
 
                     // Update romof
-                    if (romOf != null && mapping.ContainsKey(romOf))
+                    if (romOf is not null && mapping.ContainsKey(romOf))
                         machine.SetFieldValue<string?>(Data.Models.Metadata.Machine.RomOfKey, mapping[romOf]);
 
                     // Update sampleof
-                    if (sampleOf != null && mapping.ContainsKey(sampleOf))
+                    if (sampleOf is not null && mapping.ContainsKey(sampleOf))
                         machine.SetFieldValue<string?>(Data.Models.Metadata.Machine.SampleOfKey, mapping[sampleOf]);
                 }
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
@@ -784,7 +784,7 @@ namespace SabreTools.DatFiles
             foreach (var machine in GetMachinesDB())
             {
                 // Get the current machine
-                if (machine.Value == null)
+                if (machine.Value is null)
                     continue;
 
                 // Get the values to check against
@@ -794,19 +794,19 @@ namespace SabreTools.DatFiles
                 string? sampleOf = machine.Value.GetStringFieldValue(Data.Models.Metadata.Machine.SampleOfKey);
 
                 // Update machine name
-                if (machineName != null && mapping.ContainsKey(machineName))
+                if (machineName is not null && mapping.ContainsKey(machineName))
                     machine.Value.SetName(mapping[machineName]);
 
                 // Update cloneof
-                if (cloneOf != null && mapping.ContainsKey(cloneOf))
+                if (cloneOf is not null && mapping.ContainsKey(cloneOf))
                     machine.Value.SetFieldValue<string?>(Data.Models.Metadata.Machine.CloneOfKey, mapping[cloneOf]);
 
                 // Update romof
-                if (romOf != null && mapping.ContainsKey(romOf))
+                if (romOf is not null && mapping.ContainsKey(romOf))
                     machine.Value.SetFieldValue<string?>(Data.Models.Metadata.Machine.RomOfKey, mapping[romOf]);
 
                 // Update sampleof
-                if (sampleOf != null && mapping.ContainsKey(sampleOf))
+                if (sampleOf is not null && mapping.ContainsKey(sampleOf))
                     machine.Value.SetFieldValue<string?>(Data.Models.Metadata.Machine.SampleOfKey, mapping[sampleOf]);
             }
         }

@@ -69,6 +69,7 @@ namespace SabreTools.DatFiles.Formats
             if (string.IsNullOrEmpty(datItem.GetName()))
                 missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
+#pragma warning disable IDE0010
             switch (datItem)
             {
                 case Disk disk:
@@ -77,6 +78,7 @@ namespace SabreTools.DatFiles.Formats
                     {
                         missingFields.Add(Data.Models.Metadata.Disk.SHA1Key);
                     }
+
                     break;
 
                 case Media media:
@@ -87,10 +89,11 @@ namespace SabreTools.DatFiles.Formats
                     {
                         missingFields.Add(Data.Models.Metadata.Media.SHA1Key);
                     }
+
                     break;
 
                 case Rom rom:
-                    if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) == null || rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) < 0)
+                    if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) is null || rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) < 0)
                         missingFields.Add(Data.Models.Metadata.Rom.SizeKey);
                     if (string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.CRCKey))
                         && string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.MD5Key))
@@ -102,8 +105,10 @@ namespace SabreTools.DatFiles.Formats
                     {
                         missingFields.Add(Data.Models.Metadata.Rom.SHA1Key);
                     }
+
                     break;
             }
+#pragma warning restore IDE0010
 
             return missingFields;
         }
@@ -147,7 +152,7 @@ namespace SabreTools.DatFiles.Formats
         public CommaSeparatedValue(DatFile? datFile) : base(datFile)
         {
             _delim = ',';
-            Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, DatFormat.CSV);
+            Header.SetFieldValue(DatHeader.DatFormatKey, DatFormat.CSV);
         }
     }
 
@@ -163,7 +168,7 @@ namespace SabreTools.DatFiles.Formats
         public SemicolonSeparatedValue(DatFile? datFile) : base(datFile)
         {
             _delim = ';';
-            Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, DatFormat.SSV);
+            Header.SetFieldValue(DatHeader.DatFormatKey, DatFormat.SSV);
         }
     }
 
@@ -179,7 +184,7 @@ namespace SabreTools.DatFiles.Formats
         public TabSeparatedValue(DatFile? datFile) : base(datFile)
         {
             _delim = '\t';
-            Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, DatFormat.TSV);
+            Header.SetFieldValue(DatHeader.DatFormatKey, DatFormat.TSV);
         }
     }
 }

@@ -31,7 +31,7 @@ namespace SabreTools.DatFiles
             FilterRunner? filterRunner)
         {
             // If the metadata file is invalid, we can't do anything
-            if (item == null || item.Count == 0)
+            if (item is null || item.Count == 0)
                 return;
 
             // Create an internal source and add to the dictionary
@@ -40,12 +40,12 @@ namespace SabreTools.DatFiles
 
             // Get the header from the metadata
             var header = item.Read<Data.Models.Metadata.Header>(Data.Models.Metadata.MetadataFile.HeaderKey);
-            if (header != null)
+            if (header is not null)
                 ConvertHeader(header, keep);
 
             // Get the machines from the metadata
             var machines = item.ReadItemArray<Data.Models.Metadata.Machine>(Data.Models.Metadata.MetadataFile.MachineKey);
-            if (machines != null)
+            if (machines is not null)
                 ConvertMachines(machines, source, sourceIndex: 0, statsOnly, filterRunner);
         }
 
@@ -57,7 +57,7 @@ namespace SabreTools.DatFiles
         private void ConvertHeader(Data.Models.Metadata.Header? item, bool keep)
         {
             // If the header is invalid, we can't do anything
-            if (item == null || item.Count == 0)
+            if (item is null || item.Count == 0)
                 return;
 
             // Create an internal header
@@ -67,24 +67,28 @@ namespace SabreTools.DatFiles
             if (item.ContainsKey(Data.Models.Metadata.Header.CanOpenKey))
             {
                 var canOpen = item.Read<Data.Models.OfflineList.CanOpen>(Data.Models.Metadata.Header.CanOpenKey);
-                if (canOpen?.Extension != null)
+                if (canOpen?.Extension is not null)
                     Header.SetFieldValue<string[]?>(Data.Models.Metadata.Header.CanOpenKey, canOpen.Extension);
             }
+
             if (item.ContainsKey(Data.Models.Metadata.Header.ImagesKey))
             {
                 var images = item.Read<Data.Models.OfflineList.Images>(Data.Models.Metadata.Header.ImagesKey);
                 Header.SetFieldValue<Data.Models.OfflineList.Images?>(Data.Models.Metadata.Header.ImagesKey, images);
             }
+
             if (item.ContainsKey(Data.Models.Metadata.Header.InfosKey))
             {
                 var infos = item.Read<Data.Models.OfflineList.Infos>(Data.Models.Metadata.Header.InfosKey);
                 Header.SetFieldValue<Data.Models.OfflineList.Infos?>(Data.Models.Metadata.Header.InfosKey, infos);
             }
+
             if (item.ContainsKey(Data.Models.Metadata.Header.NewDatKey))
             {
                 var newDat = item.Read<Data.Models.OfflineList.NewDat>(Data.Models.Metadata.Header.NewDatKey);
                 Header.SetFieldValue<Data.Models.OfflineList.NewDat?>(Data.Models.Metadata.Header.NewDatKey, newDat);
             }
+
             if (item.ContainsKey(Data.Models.Metadata.Header.SearchKey))
             {
                 var search = item.Read<Data.Models.OfflineList.Search>(Data.Models.Metadata.Header.SearchKey);
@@ -92,27 +96,27 @@ namespace SabreTools.DatFiles
             }
 
             // Selectively set all possible fields -- TODO: Figure out how to make this less manual
-            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.AuthorKey) == null)
+            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.AuthorKey) is null)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.AuthorKey, header.GetStringFieldValue(Data.Models.Metadata.Header.AuthorKey));
             if (Header.GetStringFieldValue(Data.Models.Metadata.Header.BiosModeKey).AsMergingFlag() == MergingFlag.None)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.BiosModeKey, header.GetStringFieldValue(Data.Models.Metadata.Header.BiosModeKey).AsMergingFlag().AsStringValue());
-            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.BuildKey) == null)
+            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.BuildKey) is null)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.BuildKey, header.GetStringFieldValue(Data.Models.Metadata.Header.BuildKey));
-            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.CategoryKey) == null)
+            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.CategoryKey) is null)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.CategoryKey, header.GetStringFieldValue(Data.Models.Metadata.Header.CategoryKey));
-            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.CommentKey) == null)
+            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.CommentKey) is null)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.CommentKey, header.GetStringFieldValue(Data.Models.Metadata.Header.CommentKey));
-            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.DateKey) == null)
+            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.DateKey) is null)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DateKey, header.GetStringFieldValue(Data.Models.Metadata.Header.DateKey));
-            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.DatVersionKey) == null)
+            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.DatVersionKey) is null)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DatVersionKey, header.GetStringFieldValue(Data.Models.Metadata.Header.DatVersionKey));
-            if (Header.GetBoolFieldValue(Data.Models.Metadata.Header.DebugKey) == null)
-                Header.SetFieldValue<bool?>(Data.Models.Metadata.Header.DebugKey, header.GetBoolFieldValue(Data.Models.Metadata.Header.DebugKey));
-            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey) == null)
+            if (Header.GetBoolFieldValue(Data.Models.Metadata.Header.DebugKey) is null)
+                Header.SetFieldValue(Data.Models.Metadata.Header.DebugKey, header.GetBoolFieldValue(Data.Models.Metadata.Header.DebugKey));
+            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey) is null)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey));
-            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.EmailKey) == null)
+            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.EmailKey) is null)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.EmailKey, header.GetStringFieldValue(Data.Models.Metadata.Header.EmailKey));
-            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.EmulatorVersionKey) == null)
+            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.EmulatorVersionKey) is null)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.EmulatorVersionKey, header.GetStringFieldValue(Data.Models.Metadata.Header.EmulatorVersionKey));
             if (Header.GetStringFieldValue(Data.Models.Metadata.Header.ForceMergingKey).AsMergingFlag() == MergingFlag.None)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.ForceMergingKey, header.GetStringFieldValue(Data.Models.Metadata.Header.ForceMergingKey).AsMergingFlag().AsStringValue());
@@ -120,61 +124,61 @@ namespace SabreTools.DatFiles
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.ForceNodumpKey, header.GetStringFieldValue(Data.Models.Metadata.Header.ForceNodumpKey).AsNodumpFlag().AsStringValue());
             if (Header.GetStringFieldValue(Data.Models.Metadata.Header.ForcePackingKey).AsPackingFlag() == PackingFlag.None)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.ForcePackingKey, header.GetStringFieldValue(Data.Models.Metadata.Header.ForcePackingKey).AsPackingFlag().AsStringValue());
-            if (Header.GetBoolFieldValue(Data.Models.Metadata.Header.ForceZippingKey) == null)
-                Header.SetFieldValue<bool?>(Data.Models.Metadata.Header.ForceZippingKey, header.GetBoolFieldValue(Data.Models.Metadata.Header.ForceZippingKey));
-            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.HeaderKey) == null)
+            if (Header.GetBoolFieldValue(Data.Models.Metadata.Header.ForceZippingKey) is null)
+                Header.SetFieldValue(Data.Models.Metadata.Header.ForceZippingKey, header.GetBoolFieldValue(Data.Models.Metadata.Header.ForceZippingKey));
+            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.HeaderKey) is null)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.HeaderKey, header.GetStringFieldValue(Data.Models.Metadata.Header.HeaderKey));
-            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.HomepageKey) == null)
+            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.HomepageKey) is null)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.HomepageKey, header.GetStringFieldValue(Data.Models.Metadata.Header.HomepageKey));
-            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.IdKey) == null)
+            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.IdKey) is null)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.IdKey, header.GetStringFieldValue(Data.Models.Metadata.Header.IdKey));
-            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.ImFolderKey) == null)
+            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.ImFolderKey) is null)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.ImFolderKey, header.GetStringFieldValue(Data.Models.Metadata.Header.ImFolderKey));
-            if (Header.GetBoolFieldValue(Data.Models.Metadata.Header.LockBiosModeKey) == null)
-                Header.SetFieldValue<bool?>(Data.Models.Metadata.Header.LockBiosModeKey, header.GetBoolFieldValue(Data.Models.Metadata.Header.LockBiosModeKey));
-            if (Header.GetBoolFieldValue(Data.Models.Metadata.Header.LockRomModeKey) == null)
-                Header.SetFieldValue<bool?>(Data.Models.Metadata.Header.LockRomModeKey, header.GetBoolFieldValue(Data.Models.Metadata.Header.LockRomModeKey));
-            if (Header.GetBoolFieldValue(Data.Models.Metadata.Header.LockSampleModeKey) == null)
-                Header.SetFieldValue<bool?>(Data.Models.Metadata.Header.LockSampleModeKey, header.GetBoolFieldValue(Data.Models.Metadata.Header.LockSampleModeKey));
-            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.MameConfigKey) == null)
+            if (Header.GetBoolFieldValue(Data.Models.Metadata.Header.LockBiosModeKey) is null)
+                Header.SetFieldValue(Data.Models.Metadata.Header.LockBiosModeKey, header.GetBoolFieldValue(Data.Models.Metadata.Header.LockBiosModeKey));
+            if (Header.GetBoolFieldValue(Data.Models.Metadata.Header.LockRomModeKey) is null)
+                Header.SetFieldValue(Data.Models.Metadata.Header.LockRomModeKey, header.GetBoolFieldValue(Data.Models.Metadata.Header.LockRomModeKey));
+            if (Header.GetBoolFieldValue(Data.Models.Metadata.Header.LockSampleModeKey) is null)
+                Header.SetFieldValue(Data.Models.Metadata.Header.LockSampleModeKey, header.GetBoolFieldValue(Data.Models.Metadata.Header.LockSampleModeKey));
+            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.MameConfigKey) is null)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.MameConfigKey, header.GetStringFieldValue(Data.Models.Metadata.Header.MameConfigKey));
-            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey) == null)
+            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey) is null)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey));
-            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.NotesKey) == null)
+            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.NotesKey) is null)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NotesKey, header.GetStringFieldValue(Data.Models.Metadata.Header.NotesKey));
-            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.PluginKey) == null)
+            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.PluginKey) is null)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.PluginKey, header.GetStringFieldValue(Data.Models.Metadata.Header.PluginKey));
-            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.RefNameKey) == null)
+            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.RefNameKey) is null)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.RefNameKey, header.GetStringFieldValue(Data.Models.Metadata.Header.RefNameKey));
             if (Header.GetStringFieldValue(Data.Models.Metadata.Header.RomModeKey).AsMergingFlag() == MergingFlag.None)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.RomModeKey, header.GetStringFieldValue(Data.Models.Metadata.Header.RomModeKey).AsMergingFlag().AsStringValue());
-            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.RomTitleKey) == null)
+            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.RomTitleKey) is null)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.RomTitleKey, header.GetStringFieldValue(Data.Models.Metadata.Header.RomTitleKey));
-            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.RootDirKey) == null)
+            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.RootDirKey) is null)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.RootDirKey, header.GetStringFieldValue(Data.Models.Metadata.Header.RootDirKey));
             if (Header.GetStringFieldValue(Data.Models.Metadata.Header.SampleModeKey).AsMergingFlag() == MergingFlag.None)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.SampleModeKey, header.GetStringFieldValue(Data.Models.Metadata.Header.SampleModeKey).AsMergingFlag().AsStringValue());
-            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.SchemaLocationKey) == null)
+            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.SchemaLocationKey) is null)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.SchemaLocationKey, header.GetStringFieldValue(Data.Models.Metadata.Header.SchemaLocationKey));
-            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.ScreenshotsHeightKey) == null)
+            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.ScreenshotsHeightKey) is null)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.ScreenshotsHeightKey, header.GetStringFieldValue(Data.Models.Metadata.Header.ScreenshotsHeightKey));
-            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.ScreenshotsWidthKey) == null)
+            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.ScreenshotsWidthKey) is null)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.ScreenshotsWidthKey, header.GetStringFieldValue(Data.Models.Metadata.Header.ScreenshotsWidthKey));
-            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.SystemKey) == null)
+            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.SystemKey) is null)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.SystemKey, header.GetStringFieldValue(Data.Models.Metadata.Header.SystemKey));
-            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.TimestampKey) == null)
+            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.TimestampKey) is null)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.TimestampKey, header.GetStringFieldValue(Data.Models.Metadata.Header.TimestampKey));
-            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.TypeKey) == null)
+            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.TypeKey) is null)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.TypeKey, header.GetStringFieldValue(Data.Models.Metadata.Header.TypeKey));
-            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.UrlKey) == null)
+            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.UrlKey) is null)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.UrlKey, header.GetStringFieldValue(Data.Models.Metadata.Header.UrlKey));
-            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.VersionKey) == null)
+            if (Header.GetStringFieldValue(Data.Models.Metadata.Header.VersionKey) is null)
                 Header.SetFieldValue<string?>(Data.Models.Metadata.Header.VersionKey, header.GetStringFieldValue(Data.Models.Metadata.Header.VersionKey));
 
             // Handle implied SuperDAT
             if (Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey)?.Contains(" - SuperDAT") == true && keep)
             {
-                if (Header.GetStringFieldValue(Data.Models.Metadata.Header.TypeKey) == null)
+                if (Header.GetStringFieldValue(Data.Models.Metadata.Header.TypeKey) is null)
                     Header.SetFieldValue<string?>(Data.Models.Metadata.Header.TypeKey, "SuperDAT");
             }
         }
@@ -194,7 +198,7 @@ namespace SabreTools.DatFiles
             FilterRunner? filterRunner)
         {
             // If the array is invalid, we can't do anything
-            if (items == null || items.Length == 0)
+            if (items is null || items.Length == 0)
                 return;
 
             // Loop through the machines and add
@@ -229,11 +233,11 @@ namespace SabreTools.DatFiles
             FilterRunner? filterRunner)
         {
             // If the machine is invalid, we can't do anything
-            if (item == null || item.Count == 0)
+            if (item is null || item.Count == 0)
                 return;
 
             // If the machine doesn't pass the filter
-            if (filterRunner != null && !filterRunner.Run(item))
+            if (filterRunner is not null && !filterRunner.Run(item))
                 return;
 
             // Create an internal machine and add to the dictionary
@@ -244,7 +248,7 @@ namespace SabreTools.DatFiles
             if (item.ContainsKey(Data.Models.Metadata.Machine.AdjusterKey))
             {
                 var items = item.ReadItemArray<Data.Models.Metadata.Adjuster>(Data.Models.Metadata.Machine.AdjusterKey) ?? [];
-                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                var filtered = filterRunner is null ? items : Array.FindAll(items, i => filterRunner.Run(item));
                 Array.ForEach(filtered, item =>
                 {
                     var datItem = new Adjuster(item, machine, source);
@@ -252,10 +256,11 @@ namespace SabreTools.DatFiles
                     // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
                 });
             }
+
             if (item.ContainsKey(Data.Models.Metadata.Machine.ArchiveKey))
             {
                 var items = item.ReadItemArray<Data.Models.Metadata.Archive>(Data.Models.Metadata.Machine.ArchiveKey) ?? [];
-                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                var filtered = filterRunner is null ? items : Array.FindAll(items, i => filterRunner.Run(item));
                 Array.ForEach(filtered, item =>
                 {
                     var datItem = new Archive(item, machine, source);
@@ -263,10 +268,11 @@ namespace SabreTools.DatFiles
                     // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
                 });
             }
+
             if (item.ContainsKey(Data.Models.Metadata.Machine.BiosSetKey))
             {
                 var items = item.ReadItemArray<Data.Models.Metadata.BiosSet>(Data.Models.Metadata.Machine.BiosSetKey) ?? [];
-                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                var filtered = filterRunner is null ? items : Array.FindAll(items, i => filterRunner.Run(item));
                 Array.ForEach(filtered, item =>
                 {
                     var datItem = new BiosSet(item, machine, source);
@@ -274,10 +280,11 @@ namespace SabreTools.DatFiles
                     // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
                 });
             }
+
             if (item.ContainsKey(Data.Models.Metadata.Machine.ChipKey))
             {
                 var items = item.ReadItemArray<Data.Models.Metadata.Chip>(Data.Models.Metadata.Machine.ChipKey) ?? [];
-                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                var filtered = filterRunner is null ? items : Array.FindAll(items, i => filterRunner.Run(item));
                 Array.ForEach(filtered, item =>
                 {
                     var datItem = new Chip(item, machine, source);
@@ -285,10 +292,11 @@ namespace SabreTools.DatFiles
                     // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
                 });
             }
+
             if (item.ContainsKey(Data.Models.Metadata.Machine.ConfigurationKey))
             {
                 var items = item.ReadItemArray<Data.Models.Metadata.Configuration>(Data.Models.Metadata.Machine.ConfigurationKey) ?? [];
-                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                var filtered = filterRunner is null ? items : Array.FindAll(items, i => filterRunner.Run(item));
                 Array.ForEach(filtered, item =>
                 {
                     var datItem = new Configuration(item, machine, source);
@@ -296,10 +304,11 @@ namespace SabreTools.DatFiles
                     // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
                 });
             }
+
             if (item.ContainsKey(Data.Models.Metadata.Machine.DeviceKey))
             {
                 var items = item.ReadItemArray<Data.Models.Metadata.Device>(Data.Models.Metadata.Machine.DeviceKey) ?? [];
-                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                var filtered = filterRunner is null ? items : Array.FindAll(items, i => filterRunner.Run(item));
                 Array.ForEach(filtered, item =>
                 {
                     var datItem = new Device(item, machine, source);
@@ -307,6 +316,7 @@ namespace SabreTools.DatFiles
                     // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
                 });
             }
+
             if (item.ContainsKey(Data.Models.Metadata.Machine.DeviceRefKey))
             {
                 var items = item.ReadItemArray<Data.Models.Metadata.DeviceRef>(Data.Models.Metadata.Machine.DeviceRefKey) ?? [];
@@ -318,10 +328,11 @@ namespace SabreTools.DatFiles
                     // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
                 });
             }
+
             if (item.ContainsKey(Data.Models.Metadata.Machine.DipSwitchKey))
             {
                 var items = item.ReadItemArray<Data.Models.Metadata.DipSwitch>(Data.Models.Metadata.Machine.DipSwitchKey) ?? [];
-                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                var filtered = filterRunner is null ? items : Array.FindAll(items, i => filterRunner.Run(item));
                 Array.ForEach(filtered, item =>
                 {
                     var datItem = new DipSwitch(item, machine, source);
@@ -329,10 +340,11 @@ namespace SabreTools.DatFiles
                     // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
                 });
             }
+
             if (item.ContainsKey(Data.Models.Metadata.Machine.DiskKey))
             {
                 var items = item.ReadItemArray<Data.Models.Metadata.Disk>(Data.Models.Metadata.Machine.DiskKey) ?? [];
-                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                var filtered = filterRunner is null ? items : Array.FindAll(items, i => filterRunner.Run(item));
                 Array.ForEach(filtered, item =>
                 {
                     var datItem = new Disk(item, machine, source);
@@ -340,10 +352,11 @@ namespace SabreTools.DatFiles
                     // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
                 });
             }
+
             if (item.ContainsKey(Data.Models.Metadata.Machine.DisplayKey))
             {
                 var items = item.ReadItemArray<Data.Models.Metadata.Display>(Data.Models.Metadata.Machine.DisplayKey) ?? [];
-                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                var filtered = filterRunner is null ? items : Array.FindAll(items, i => filterRunner.Run(item));
                 Array.ForEach(filtered, item =>
                 {
                     var datItem = new Display(item, machine, source);
@@ -351,10 +364,11 @@ namespace SabreTools.DatFiles
                     // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
                 });
             }
+
             if (item.ContainsKey(Data.Models.Metadata.Machine.DriverKey))
             {
                 var items = item.ReadItemArray<Data.Models.Metadata.Driver>(Data.Models.Metadata.Machine.DriverKey) ?? [];
-                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                var filtered = filterRunner is null ? items : Array.FindAll(items, i => filterRunner.Run(item));
                 Array.ForEach(filtered, item =>
                 {
                     var datItem = new Driver(item, machine, source);
@@ -362,23 +376,25 @@ namespace SabreTools.DatFiles
                     // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
                 });
             }
+
             if (item.ContainsKey(Data.Models.Metadata.Machine.DumpKey))
             {
                 var items = item.ReadItemArray<Data.Models.Metadata.Dump>(Data.Models.Metadata.Machine.DumpKey) ?? [];
                 for (int i = 0; i < items.Length; i++)
                 {
                     var datItem = new Rom(items[i], machine, source, i);
-                    if (datItem.GetName() != null)
+                    if (datItem.GetName() is not null)
                     {
                         AddItem(datItem, statsOnly);
                         // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
                     }
                 }
             }
+
             if (item.ContainsKey(Data.Models.Metadata.Machine.FeatureKey))
             {
                 var items = item.ReadItemArray<Data.Models.Metadata.Feature>(Data.Models.Metadata.Machine.FeatureKey) ?? [];
-                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                var filtered = filterRunner is null ? items : Array.FindAll(items, i => filterRunner.Run(item));
                 Array.ForEach(filtered, item =>
                 {
                     var datItem = new Feature(item, machine, source);
@@ -386,10 +402,11 @@ namespace SabreTools.DatFiles
                     // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
                 });
             }
+
             if (item.ContainsKey(Data.Models.Metadata.Machine.InfoKey))
             {
                 var items = item.ReadItemArray<Data.Models.Metadata.Info>(Data.Models.Metadata.Machine.InfoKey) ?? [];
-                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                var filtered = filterRunner is null ? items : Array.FindAll(items, i => filterRunner.Run(item));
                 Array.ForEach(filtered, item =>
                 {
                     var datItem = new Info(item, machine, source);
@@ -397,10 +414,11 @@ namespace SabreTools.DatFiles
                     // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
                 });
             }
+
             if (item.ContainsKey(Data.Models.Metadata.Machine.InputKey))
             {
                 var items = item.ReadItemArray<Data.Models.Metadata.Input>(Data.Models.Metadata.Machine.InputKey) ?? [];
-                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                var filtered = filterRunner is null ? items : Array.FindAll(items, i => filterRunner.Run(item));
                 Array.ForEach(filtered, item =>
                 {
                     var datItem = new Input(item, machine, source);
@@ -408,10 +426,11 @@ namespace SabreTools.DatFiles
                     // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
                 });
             }
+
             if (item.ContainsKey(Data.Models.Metadata.Machine.MediaKey))
             {
                 var items = item.ReadItemArray<Data.Models.Metadata.Media>(Data.Models.Metadata.Machine.MediaKey) ?? [];
-                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                var filtered = filterRunner is null ? items : Array.FindAll(items, i => filterRunner.Run(item));
                 Array.ForEach(filtered, item =>
                 {
                     var datItem = new Media(item, machine, source);
@@ -419,15 +438,17 @@ namespace SabreTools.DatFiles
                     // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
                 });
             }
+
             if (item.ContainsKey(Data.Models.Metadata.Machine.PartKey))
             {
                 var items = item.ReadItemArray<Data.Models.Metadata.Part>(Data.Models.Metadata.Machine.PartKey) ?? [];
                 ProcessItems(items, machine, machineIndex: 0, source, sourceIndex, statsOnly, filterRunner);
             }
+
             if (item.ContainsKey(Data.Models.Metadata.Machine.PortKey))
             {
                 var items = item.ReadItemArray<Data.Models.Metadata.Port>(Data.Models.Metadata.Machine.PortKey) ?? [];
-                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                var filtered = filterRunner is null ? items : Array.FindAll(items, i => filterRunner.Run(item));
                 Array.ForEach(filtered, item =>
                 {
                     var datItem = new Port(item, machine, source);
@@ -435,10 +456,11 @@ namespace SabreTools.DatFiles
                     // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
                 });
             }
+
             if (item.ContainsKey(Data.Models.Metadata.Machine.RamOptionKey))
             {
                 var items = item.ReadItemArray<Data.Models.Metadata.RamOption>(Data.Models.Metadata.Machine.RamOptionKey) ?? [];
-                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                var filtered = filterRunner is null ? items : Array.FindAll(items, i => filterRunner.Run(item));
                 Array.ForEach(filtered, item =>
                 {
                     var datItem = new RamOption(item, machine, source);
@@ -446,10 +468,11 @@ namespace SabreTools.DatFiles
                     // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
                 });
             }
+
             if (item.ContainsKey(Data.Models.Metadata.Machine.ReleaseKey))
             {
                 var items = item.ReadItemArray<Data.Models.Metadata.Release>(Data.Models.Metadata.Machine.ReleaseKey) ?? [];
-                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                var filtered = filterRunner is null ? items : Array.FindAll(items, i => filterRunner.Run(item));
                 Array.ForEach(filtered, item =>
                 {
                     var datItem = new Release(item, machine, source);
@@ -457,10 +480,11 @@ namespace SabreTools.DatFiles
                     // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
                 });
             }
+
             if (item.ContainsKey(Data.Models.Metadata.Machine.RomKey))
             {
                 var items = item.ReadItemArray<Data.Models.Metadata.Rom>(Data.Models.Metadata.Machine.RomKey) ?? [];
-                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                var filtered = filterRunner is null ? items : Array.FindAll(items, i => filterRunner.Run(item));
                 Array.ForEach(filtered, item =>
                 {
                     var datItem = new Rom(item, machine, source);
@@ -471,10 +495,11 @@ namespace SabreTools.DatFiles
                     // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
                 });
             }
+
             if (item.ContainsKey(Data.Models.Metadata.Machine.SampleKey))
             {
                 var items = item.ReadItemArray<Data.Models.Metadata.Sample>(Data.Models.Metadata.Machine.SampleKey) ?? [];
-                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                var filtered = filterRunner is null ? items : Array.FindAll(items, i => filterRunner.Run(item));
                 Array.ForEach(filtered, item =>
                 {
                     var datItem = new Sample(item, machine, source);
@@ -482,10 +507,11 @@ namespace SabreTools.DatFiles
                     // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
                 });
             }
+
             if (item.ContainsKey(Data.Models.Metadata.Machine.SharedFeatKey))
             {
                 var items = item.ReadItemArray<Data.Models.Metadata.SharedFeat>(Data.Models.Metadata.Machine.SharedFeatKey) ?? [];
-                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                var filtered = filterRunner is null ? items : Array.FindAll(items, i => filterRunner.Run(item));
                 Array.ForEach(filtered, item =>
                 {
                     var datItem = new SharedFeat(item, machine, source);
@@ -493,6 +519,7 @@ namespace SabreTools.DatFiles
                     // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
                 });
             }
+
             if (item.ContainsKey(Data.Models.Metadata.Machine.SlotKey))
             {
                 var items = item.ReadItemArray<Data.Models.Metadata.Slot>(Data.Models.Metadata.Machine.SlotKey) ?? [];
@@ -504,10 +531,11 @@ namespace SabreTools.DatFiles
                     // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
                 });
             }
+
             if (item.ContainsKey(Data.Models.Metadata.Machine.SoftwareListKey))
             {
                 var items = item.ReadItemArray<Data.Models.Metadata.SoftwareList>(Data.Models.Metadata.Machine.SoftwareListKey) ?? [];
-                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                var filtered = filterRunner is null ? items : Array.FindAll(items, i => filterRunner.Run(item));
                 Array.ForEach(filtered, item =>
                 {
                     var datItem = new SoftwareList(item, machine, source);
@@ -515,10 +543,11 @@ namespace SabreTools.DatFiles
                     // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
                 });
             }
+
             if (item.ContainsKey(Data.Models.Metadata.Machine.SoundKey))
             {
                 var items = item.ReadItemArray<Data.Models.Metadata.Sound>(Data.Models.Metadata.Machine.SoundKey) ?? [];
-                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                var filtered = filterRunner is null ? items : Array.FindAll(items, i => filterRunner.Run(item));
                 Array.ForEach(filtered, item =>
                 {
                     var datItem = new Sound(item, machine, source);
@@ -526,10 +555,11 @@ namespace SabreTools.DatFiles
                     // AddItemDB(datItem, machineIndex, sourceIndex, statsOnly);
                 });
             }
+
             if (item.ContainsKey(Data.Models.Metadata.Machine.VideoKey))
             {
                 var items = item.ReadItemArray<Data.Models.Metadata.Video>(Data.Models.Metadata.Machine.VideoKey) ?? [];
-                var filtered = filterRunner == null ? items : Array.FindAll(items, i => filterRunner.Run(item));
+                var filtered = filterRunner is null ? items : Array.FindAll(items, i => filterRunner.Run(item));
                 Array.ForEach(filtered, item =>
                 {
                     var datItem = new Display(item, machine, source);
@@ -562,13 +592,13 @@ namespace SabreTools.DatFiles
 
                 // Handle subitems
                 var dataAreas = item.ReadItemArray<Data.Models.Metadata.DataArea>(Data.Models.Metadata.Part.DataAreaKey);
-                if (dataAreas != null)
+                if (dataAreas is not null)
                 {
                     foreach (var dataArea in dataAreas)
                     {
                         var dataAreaItem = new DataArea(dataArea, machine, source);
                         var roms = dataArea.ReadItemArray<Data.Models.Metadata.Rom>(Data.Models.Metadata.DataArea.RomKey);
-                        if (roms == null)
+                        if (roms is null)
                             continue;
 
                         // Handle "offset" roms
@@ -576,7 +606,7 @@ namespace SabreTools.DatFiles
                         foreach (var rom in roms)
                         {
                             // If the item doesn't pass the filter
-                            if (filterRunner != null && !filterRunner.Run(rom))
+                            if (filterRunner is not null && !filterRunner.Run(rom))
                                 continue;
 
                             // Convert the item
@@ -585,13 +615,13 @@ namespace SabreTools.DatFiles
 
                             // If the rom is a continue or ignore
                             string? loadFlag = rom.ReadString(Data.Models.Metadata.Rom.LoadFlagKey);
-                            if (loadFlag != null
+                            if (loadFlag is not null
                                 && (loadFlag.Equals("continue", StringComparison.OrdinalIgnoreCase)
                                     || loadFlag.Equals("ignore", StringComparison.OrdinalIgnoreCase)))
                             {
                                 var lastRom = addRoms[addRoms.Count - 1];
                                 long? lastSize = lastRom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey);
-                                lastRom.SetFieldValue<long?>(Data.Models.Metadata.Rom.SizeKey, lastSize + size);
+                                lastRom.SetFieldValue(Data.Models.Metadata.Rom.SizeKey, lastSize + size);
                                 continue;
                             }
 
@@ -611,19 +641,19 @@ namespace SabreTools.DatFiles
                 }
 
                 var diskAreas = item.ReadItemArray<Data.Models.Metadata.DiskArea>(Data.Models.Metadata.Part.DiskAreaKey);
-                if (diskAreas != null)
+                if (diskAreas is not null)
                 {
                     foreach (var diskArea in diskAreas)
                     {
                         var diskAreaitem = new DiskArea(diskArea, machine, source);
                         var disks = diskArea.ReadItemArray<Data.Models.Metadata.Disk>(Data.Models.Metadata.DiskArea.DiskKey);
-                        if (disks == null)
+                        if (disks is null)
                             continue;
 
                         foreach (var disk in disks)
                         {
                             // If the item doesn't pass the filter
-                            if (filterRunner != null && !filterRunner.Run(disk))
+                            if (filterRunner is not null && !filterRunner.Run(disk))
                                 continue;
 
                             var diskItem = new Disk(disk, machine, source);
@@ -637,12 +667,12 @@ namespace SabreTools.DatFiles
                 }
 
                 var dipSwitches = item.ReadItemArray<Data.Models.Metadata.DipSwitch>(Data.Models.Metadata.Part.DipSwitchKey);
-                if (dipSwitches != null)
+                if (dipSwitches is not null)
                 {
                     foreach (var dipSwitch in dipSwitches)
                     {
                         // If the item doesn't pass the filter
-                        if (filterRunner != null && !filterRunner.Run(dipSwitch))
+                        if (filterRunner is not null && !filterRunner.Run(dipSwitch))
                             continue;
 
                         var dipSwitchItem = new DipSwitch(dipSwitch, machine, source);
@@ -654,12 +684,12 @@ namespace SabreTools.DatFiles
                 }
 
                 var partFeatures = item.ReadItemArray<Data.Models.Metadata.Feature>(Data.Models.Metadata.Part.FeatureKey);
-                if (partFeatures != null)
+                if (partFeatures is not null)
                 {
                     foreach (var partFeature in partFeatures)
                     {
                         // If the item doesn't pass the filter
-                        if (filterRunner != null && !filterRunner.Run(partFeature))
+                        if (filterRunner is not null && !filterRunner.Run(partFeature))
                             continue;
 
                         var partFeatureItem = new PartFeature(partFeature);

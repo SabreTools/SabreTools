@@ -106,7 +106,7 @@ namespace SabreTools.Features
                 : $".{Modifiers.ReplaceExtension}";
 
             // If no update fields are set, default to Names
-            if (updateItemFieldNames == null || updateItemFieldNames.Count == 0)
+            if (updateItemFieldNames is null || updateItemFieldNames.Count == 0)
             {
                 updateItemFieldNames = [];
                 updateItemFieldNames["item"] = [Data.Models.Metadata.Rom.NameKey];
@@ -200,7 +200,7 @@ namespace SabreTools.Features
                 InternalStopwatch watch = new("Outputting all individual DATs");
 
 #if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-                Parallel.For(0, inputPaths.Count, Core.Globals.ParallelOptions, j =>
+                Parallel.For(0, inputPaths.Count, Globals.ParallelOptions, j =>
 #elif NET40_OR_GREATER
                 Parallel.For(0, inputPaths.Count, j =>
 #else
@@ -229,7 +229,7 @@ namespace SabreTools.Features
             {
                 // Preprocess the DatHeaders
 #if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-                Parallel.For(0, datHeaders.Count, Core.Globals.ParallelOptions, j =>
+                Parallel.For(0, datHeaders.Count, Globals.ParallelOptions, j =>
 #elif NET40_OR_GREATER
                 Parallel.For(0, datHeaders.Count, j =>
 #else
@@ -264,7 +264,7 @@ namespace SabreTools.Features
 
                 int startIndex = GetBoolean(SkipFirstOutputValue) ? 1 : 0;
 #if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-                Parallel.For(startIndex, inputPaths.Count, Core.Globals.ParallelOptions, j =>
+                Parallel.For(startIndex, inputPaths.Count, Globals.ParallelOptions, j =>
 #elif NET40_OR_GREATER
                 Parallel.For(startIndex, inputPaths.Count, j =>
 #else
@@ -293,7 +293,7 @@ namespace SabreTools.Features
             {
                 // Loop through each input and diff against the base
 #if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-                Parallel.ForEach(inputPaths, Core.Globals.ParallelOptions, inputPath =>
+                Parallel.ForEach(inputPaths, Globals.ParallelOptions, inputPath =>
 #elif NET40_OR_GREATER
                 Parallel.ForEach(inputPaths, inputPath =>
 #else
@@ -333,7 +333,7 @@ namespace SabreTools.Features
             {
                 // Loop through each input and apply the base DatFile
 #if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-                Parallel.ForEach(inputPaths, Core.Globals.ParallelOptions, inputPath =>
+                Parallel.ForEach(inputPaths, Globals.ParallelOptions, inputPath =>
 #elif NET40_OR_GREATER
                 Parallel.ForEach(inputPaths, inputPath =>
 #else
@@ -399,7 +399,7 @@ namespace SabreTools.Features
         private void SetDefaultHeaderValues(DatFile datFile, UpdateMode updateMode, bool noAutomaticDate)
         {
             // Skip running if a required objects are null
-            if (datFile.Header == null || Cleaner == null)
+            if (datFile.Header is null || Cleaner is null)
                 return;
 
             // Skip running for diff against and base replacement
@@ -461,7 +461,7 @@ namespace SabreTools.Features
         {
             // Loop through each input and update
 #if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            Parallel.ForEach(inputPaths, Core.Globals.ParallelOptions, inputPath =>
+            Parallel.ForEach(inputPaths, Globals.ParallelOptions, inputPath =>
 #elif NET40_OR_GREATER
             Parallel.ForEach(inputPaths, inputPath =>
 #else
@@ -491,7 +491,7 @@ namespace SabreTools.Features
                     keep: true,
                     keepext: isSeparatedFile,
                     filterRunner: FilterRunner);
-                datFile.Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, currentFormat);
+                datFile.Header.SetFieldValue(DatHeader.DatFormatKey, currentFormat);
 
                 // Set any missing header values
                 SetDefaultHeaderValues(datFile, updateMode: UpdateMode.None, noAutomaticDate: noAutomaticDate);

@@ -82,7 +82,7 @@ namespace SabreTools.Features
 #endif
                 {
                     (DatFile? extADat, DatFile? extBDat) = DatTools.Splitter.SplitByExtension(internalDat, GetStringList(ExtAListValue), GetStringList(ExtBListValue));
-                    if (extADat != null && extBDat != null)
+                    if (extADat is not null && extBDat is not null)
                     {
                         var watch = new InternalStopwatch("Outputting extension-split DATs");
 

@@ -115,7 +115,7 @@ namespace SabreTools.DatItems.Formats
         /// </summary>
         public ReleaseDetails()
         {
-            SetFieldValue<ItemType>(Data.Models.Metadata.DatItem.TypeKey, ItemType);
+            SetFieldValue(Data.Models.Metadata.DatItem.TypeKey, ItemType);
         }
 
         #endregion
@@ -143,10 +143,10 @@ namespace SabreTools.DatItems.Formats
                 Region = this.Region,
                 Origin = this.Origin,
             };
-            releaseDetails.SetFieldValue<DupeType>(DatItem.DupeTypeKey, GetFieldValue<DupeType>(DatItem.DupeTypeKey));
-            releaseDetails.SetFieldValue<Machine>(DatItem.MachineKey, GetMachine());
-            releaseDetails.SetFieldValue<bool?>(DatItem.RemoveKey, GetBoolFieldValue(DatItem.RemoveKey));
-            releaseDetails.SetFieldValue<Source?>(DatItem.SourceKey, GetFieldValue<Source?>(DatItem.SourceKey));
+            releaseDetails.SetFieldValue(DupeTypeKey, GetFieldValue<DupeType>(DupeTypeKey));
+            releaseDetails.SetFieldValue(MachineKey, GetMachine());
+            releaseDetails.SetFieldValue(RemoveKey, GetBoolFieldValue(RemoveKey));
+            releaseDetails.SetFieldValue<Source?>(SourceKey, GetFieldValue<Source?>(SourceKey));
             releaseDetails.SetFieldValue<string?>(Data.Models.Metadata.DatItem.TypeKey, GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey).AsItemType().AsStringValue());
 
             return releaseDetails;
@@ -167,7 +167,7 @@ namespace SabreTools.DatItems.Formats
             ReleaseDetails? newOther = other as ReleaseDetails;
 
             // If the Details information matches
-            return (Id == newOther!.Id
+            return Id == newOther!.Id
                 && DirName == newOther.DirName
                 && RomInfo == newOther.RomInfo
                 && Category == newOther.Category
@@ -181,7 +181,7 @@ namespace SabreTools.DatItems.Formats
                 && Comment == newOther.Comment
                 && Tool == newOther.Tool
                 && Region == newOther.Region
-                && Origin == newOther.Origin);
+                && Origin == newOther.Origin;
         }
 
         #endregion

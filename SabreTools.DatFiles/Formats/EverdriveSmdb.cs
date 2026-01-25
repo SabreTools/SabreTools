@@ -21,7 +21,7 @@ namespace SabreTools.DatFiles.Formats
         /// <param name="datFile">Parent DatFile to copy from</param>
         public EverdriveSMDB(DatFile? datFile) : base(datFile)
         {
-            Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, DatFormat.EverdriveSMDB);
+            Header.SetFieldValue(DatHeader.DatFormatKey, DatFormat.EverdriveSMDB);
         }
 
         /// <inheritdoc/>
@@ -33,6 +33,7 @@ namespace SabreTools.DatFiles.Formats
             if (string.IsNullOrEmpty(datItem.GetName()))
                 missingFields.Add(Data.Models.Metadata.Rom.NameKey);
 
+#pragma warning disable IDE0010
             switch (datItem)
             {
                 case Rom rom:
@@ -46,6 +47,7 @@ namespace SabreTools.DatFiles.Formats
                         missingFields.Add(Data.Models.Metadata.Rom.CRCKey);
                     break;
             }
+#pragma warning restore IDE0010
 
             return missingFields;
         }

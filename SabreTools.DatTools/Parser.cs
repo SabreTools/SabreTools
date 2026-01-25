@@ -47,6 +47,7 @@ namespace SabreTools.DatTools
         /// <returns>DatFile of the specific internal type that corresponds to the inputs</returns>
         public static DatFile CreateDatFile(DatFormat datFormat, DatFile? baseDat)
         {
+#pragma warning disable IDE0072
             return datFormat switch
             {
                 DatFormat.ArchiveDotOrg => new ArchiveDotOrg(baseDat),
@@ -83,6 +84,7 @@ namespace SabreTools.DatTools
                 // We use new-style Logiqx as a backup for generic DatFile
                 _ => new Logiqx(baseDat, false),
             };
+#pragma warning restore IDE0072
         }
 
         /// <summary>
@@ -136,7 +138,7 @@ namespace SabreTools.DatTools
 
             // Set values back to the header and set bucketing
             datFile.Header.SetFieldValue<string?>(DatHeader.FileNameKey, outputFilename);
-            datFile.Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, datFormat);
+            datFile.Header.SetFieldValue(DatHeader.DatFormatKey, datFormat);
             datFile.Items.SetBucketedBy(ItemKey.Machine); // Setting this because it can reduce issues later
 
             var watch = new InternalStopwatch($"Parsing '{filename}' into internal DAT");
@@ -177,7 +179,7 @@ namespace SabreTools.DatTools
         public static DatFile ParseStatistics(string? filename, FilterRunner? filterRunner = null, bool throwOnError = false)
         {
             // Null filenames are invalid
-            if (filename == null)
+            if (filename is null)
             {
                 DatFile empty = CreateDatFile();
                 empty.Header.RemoveField(DatHeader.DatFormatKey);
@@ -232,7 +234,7 @@ namespace SabreTools.DatTools
                 DatFormat currentFormat = datFiles[i].Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
                 datFiles[i].Header.RemoveField(DatHeader.DatFormatKey);
                 ParseInto(datFiles[i], input.CurrentPath, indexId: i, keep: true, filterRunner: filterRunner);
-                datFiles[i].Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, currentFormat);
+                datFiles[i].Header.SetFieldValue(DatHeader.DatFormatKey, currentFormat);
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
@@ -353,9 +355,10 @@ namespace SabreTools.DatTools
             string? ext = filename.GetNormalizedExtension();
 
             // Check if file exists
-            if (!System.IO.File.Exists(filename))
+            if (!File.Exists(filename))
                 return 0;
 
+#pragma warning disable IDE0010
             // Some formats should only require the extension to know
             switch (ext)
             {
@@ -390,6 +393,7 @@ namespace SabreTools.DatTools
                 case "tsv":
                     return DatFormat.TSV;
             }
+#pragma warning restore IDE0010
 
             // For everything else, we need to read it
             // Get the first two non-whitespace, non-comment lines to check, if possible
@@ -397,7 +401,7 @@ namespace SabreTools.DatTools
 
             try
             {
-                using StreamReader sr = System.IO.File.OpenText(filename);
+                using StreamReader sr = File.OpenText(filename);
                 first = FindNextLine(sr);
                 second = FindNextLine(sr);
             }
@@ -499,7 +503,7 @@ namespace SabreTools.DatTools
             while ((string.IsNullOrEmpty(line) || inComment) && !sr.EndOfStream)
             {
                 // Null lines should not happen
-                if (line == null)
+                if (line is null)
                 {
                     line = sr.ReadLine()?.ToLowerInvariant()?.Trim();
                     continue;
@@ -559,6 +563,7 @@ namespace SabreTools.DatTools
         /// <returns>BaseReport of the specific internal type that corresponds to the inputs</returns>
         public static BaseReport CreateReport(StatReportFormat statReportFormat, List<DatStatistics> statsList)
         {
+#pragma warning disable IDE0072
             return statReportFormat switch
             {
                 StatReportFormat.None => new Reports.Formats.Textfile(statsList),
@@ -571,6 +576,7 @@ namespace SabreTools.DatTools
                 // We use textfile output as a backup for generic BaseReport
                 _ => new Reports.Formats.Textfile(statsList),
             };
+#pragma warning restore IDE0072
         }
 
         #endregion
