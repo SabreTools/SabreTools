@@ -43,10 +43,9 @@ namespace SabreTools.DatTools
 
             // Make sure we have all files and then order them
             List<ParentablePath> files = PathTool.GetFilesOnly(inputs);
-            files = files
+            files = [.. files
                 .OrderBy(i => Path.GetDirectoryName(i.CurrentPath))
-                .ThenBy(i => Path.GetFileName(i.CurrentPath))
-                .ToList();
+                .ThenBy(i => Path.GetFileName(i.CurrentPath))];
 
             // Init total
             DatStatistics totalStats = new("DIR: All DATs", isDirectory: true);

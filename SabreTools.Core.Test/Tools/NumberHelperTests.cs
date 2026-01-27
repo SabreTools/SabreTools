@@ -102,7 +102,7 @@ namespace SabreTools.Core.Test.Tools
         }
 
         #endregion
-    
+
         #region GetBytesReadable
 
         [Theory]

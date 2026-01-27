@@ -238,7 +238,7 @@ namespace SabreTools.FileTypes.Archives
             try
             {
                 TarArchive ta = TarArchive.Open(Filename!, new ReaderOptions { LeaveStreamOpen = false });
-                List<TarArchiveEntry> tarEntries = ta.Entries.OrderBy(e => e.Key ?? string.Empty, new NaturalReversedComparer()).ToList();
+                List<TarArchiveEntry> tarEntries = [.. ta.Entries.OrderBy(e => e.Key ?? string.Empty, new NaturalReversedComparer())];
                 string? lastTarEntry = null;
                 foreach (TarArchiveEntry entry in tarEntries)
                 {
@@ -480,7 +480,7 @@ namespace SabreTools.FileTypes.Archives
                 if (!File.Exists(archiveFileName))
                 {
                     // Map all inputs to index
-                    Dictionary<string, int> inputIndexMap = new();
+                    Dictionary<string, int> inputIndexMap = [];
                     for (int i = 0; i < files.Count; i++)
                     {
                         inputIndexMap.Add(baseFiles[i].Filename!.Replace('\\', '/'), i);

@@ -7,6 +7,7 @@ using SabreTools.DatItems;
 using SabreTools.Hashing;
 using SabreTools.IO.Writers;
 
+#pragma warning disable IDE0290 // Use primary constructor
 namespace SabreTools.Reports.Formats
 {
     /// <summary>

@@ -64,17 +64,21 @@ namespace SabreTools.DatTools.Test
         [Fact]
         public void ReplaceFields_File()
         {
-            var datItem = new File();
-            datItem.CRC = ZeroHash.CRC32Str;
-            datItem.MD5 = ZeroHash.MD5Str;
-            datItem.SHA1 = ZeroHash.SHA1Str;
-            datItem.SHA256 = ZeroHash.SHA256Str;
+            var datItem = new File
+            {
+                CRC = ZeroHash.CRC32Str,
+                MD5 = ZeroHash.MD5Str,
+                SHA1 = ZeroHash.SHA1Str,
+                SHA256 = ZeroHash.SHA256Str
+            };
 
-            var repDatItem = new File();
-            repDatItem.CRC = TextHelper.NormalizeCRC32("deadbeef");
-            repDatItem.MD5 = TextHelper.NormalizeMD5("deadbeef");
-            repDatItem.SHA1 = TextHelper.NormalizeSHA1("deadbeef");
-            repDatItem.SHA256 = TextHelper.NormalizeSHA256("deadbeef");
+            var repDatItem = new File
+            {
+                CRC = TextHelper.NormalizeCRC32("deadbeef"),
+                MD5 = TextHelper.NormalizeMD5("deadbeef"),
+                SHA1 = TextHelper.NormalizeSHA1("deadbeef"),
+                SHA256 = TextHelper.NormalizeSHA256("deadbeef")
+            };
 
             var fields = new Dictionary<string, List<string>>
             {

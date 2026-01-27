@@ -5,6 +5,7 @@ using SabreTools.DatItems;
 using SabreTools.DatItems.Formats;
 using SabreTools.Hashing;
 
+#pragma warning disable IDE0290 // Use primary constructor
 namespace SabreTools.DatFiles.Formats
 {
     /// <summary>

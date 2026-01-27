@@ -16,21 +16,23 @@ namespace SabreTools.DatItems.Test.Formats
 
             Source source = new Source(0, "XXXXXX");
 
-            File file = new File();
-            file.Id = "XXXXXX";
-            file.Extension = "XXXXXX";
-            file.Size = 12345;
-            file.CRC = "DEADBEEF";
-            file.MD5 = "DEADBEEF";
-            file.SHA1 = "DEADBEEF";
-            file.SHA256 = "DEADBEEF";
-            file.Format = "XXXXXX";
+            var file = new File
+            {
+                Id = "XXXXXX",
+                Extension = "XXXXXX",
+                Size = 12345,
+                CRC = "DEADBEEF",
+                MD5 = "DEADBEEF",
+                SHA1 = "DEADBEEF",
+                SHA256 = "DEADBEEF",
+                Format = "XXXXXX"
+            };
             file.SetFieldValue(DatItem.DupeTypeKey, DupeType.All | DupeType.External);
             file.SetFieldValue(DatItem.MachineKey, machine);
             file.SetFieldValue(DatItem.RemoveKey, (bool?)false);
             file.SetFieldValue(DatItem.SourceKey, source);
-            file.SetFieldValue<Machine>(DatItem.MachineKey, machine);
-            file.SetFieldValue<Source>(DatItem.SourceKey, source);
+            file.SetFieldValue(DatItem.MachineKey, machine);
+            file.SetFieldValue(DatItem.SourceKey, source);
 
             Rom actual = file.ConvertToRom();
 

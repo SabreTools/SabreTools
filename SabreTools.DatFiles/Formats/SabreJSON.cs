@@ -128,7 +128,7 @@ namespace SabreTools.DatFiles.Formats
             JArray machineArray = js.Deserialize<JArray>(jtr) ?? [];
 
             // Loop through each machine object and process
-            foreach (JObject machineObj in machineArray)
+            foreach (JObject machineObj in machineArray.Cast<JObject>())
             {
                 ReadMachine(machineObj, statsOnly, source, sourceIndex, filterRunner);
             }
@@ -205,7 +205,7 @@ namespace SabreTools.DatFiles.Formats
                 return;
 
             // Loop through each datitem object and process
-            foreach (JObject itemObj in itemsArr)
+            foreach (JObject itemObj in itemsArr.Cast<JObject>())
             {
                 ReadItem(itemObj, statsOnly, source, sourceIndex, machine, machineIndex, filterRunner);
             }
@@ -701,10 +701,9 @@ namespace SabreTools.DatFiles.Formats
 
             protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
             {
-                return base.CreateProperties(type, memberSerialization)
+                return [.. base.CreateProperties(type, memberSerialization)
                     .Where(p => p is not null)
-                    .OrderBy(p => BaseTypesAndSelf(p.DeclaringType).Count())
-                    .ToList();
+                    .OrderBy(p => BaseTypesAndSelf(p.DeclaringType).Count())];
 
                 static IEnumerable<Type?> BaseTypesAndSelf(Type? t)
                 {

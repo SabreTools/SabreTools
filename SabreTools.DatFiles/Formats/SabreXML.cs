@@ -8,6 +8,7 @@ using System.Xml.Serialization;
 using SabreTools.Core.Filter;
 using SabreTools.DatItems;
 
+#pragma warning disable IDE0060 // Remove unused parameter
 namespace SabreTools.DatFiles.Formats
 {
     /// <summary>

@@ -8,6 +8,8 @@ using SabreTools.Core.Filter;
 using SabreTools.DatItems;
 using SabreTools.DatItems.Formats;
 
+#pragma warning disable IDE0056 // Use index operator
+#pragma warning disable IDE0060 // Remove unused parameter
 namespace SabreTools.DatFiles
 {
     public partial class DatFile

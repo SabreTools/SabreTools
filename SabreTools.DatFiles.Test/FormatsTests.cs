@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using SabreTools.Core.Filter;
 using SabreTools.DatFiles.Formats;
 using SabreTools.DatItems;
 using SabreTools.DatItems.Formats;
@@ -18,7 +17,7 @@ namespace SabreTools.DatFiles.Test
         /// <summary>
         /// All defined item types
         /// </summary>
-        private static readonly ItemType[] AllTypes = Enum.GetValues(typeof(ItemType)) as ItemType[] ?? [];
+        private static readonly ItemType[] AllTypes = Enum.GetValues<ItemType>();
 
         #endregion
 

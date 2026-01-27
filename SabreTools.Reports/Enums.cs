@@ -38,6 +38,6 @@ namespace SabreTools.Reports
         /// </summary>
         TSV = 1 << 4,
 
-        All = Int32.MaxValue,
+        All = int.MaxValue,
     }
 }

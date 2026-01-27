@@ -731,7 +731,7 @@ namespace SabreTools.DatFiles.Test
             Assert.Equal("name", dataArea.ReadString(Data.Models.Metadata.DataArea.NameKey));
             Assert.Equal(12345, dataArea.ReadLong(Data.Models.Metadata.DataArea.SizeKey));
             Assert.Equal(64, dataArea.ReadLong(Data.Models.Metadata.DataArea.WidthKey));
-        
+
             Data.Models.Metadata.Rom[]? roms = dataArea.ReadItemArray<Data.Models.Metadata.Rom>(Data.Models.Metadata.DataArea.RomKey);
             Assert.NotNull(roms);
             Data.Models.Metadata.Rom? rom = Assert.Single(roms);
@@ -826,7 +826,7 @@ namespace SabreTools.DatFiles.Test
         {
             Assert.NotNull(diskArea);
             Assert.Equal("name", diskArea.ReadString(Data.Models.Metadata.DiskArea.NameKey));
-        
+
             Data.Models.Metadata.Disk[]? disks = diskArea.ReadItemArray<Data.Models.Metadata.Disk>(Data.Models.Metadata.DiskArea.DiskKey);
             Assert.NotNull(disks);
             Data.Models.Metadata.Disk? disk = Assert.Single(disks);

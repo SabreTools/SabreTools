@@ -10,6 +10,8 @@ using SabreTools.Hashing;
 using SabreTools.IO;
 using SabreTools.IO.Logging;
 
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
+#pragma warning disable IDE0290 // Use primary constructor
 namespace SabreTools.Features
 {
     // TODO: Should the private classes here be split into a new namespace?

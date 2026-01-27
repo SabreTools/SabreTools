@@ -13,7 +13,7 @@ namespace SabreTools.Core.Test.Tools
         {
             long expected = 2162688;
             DateTime dateTime = new DateTime(1980, 01, 01, 00, 00, 00, 00);
-            long actual =  DateTimeHelper.ConvertToMsDosTimeFormat(dateTime);
+            long actual = DateTimeHelper.ConvertToMsDosTimeFormat(dateTime);
             Assert.Equal(expected, actual);
         }
 
@@ -22,7 +22,7 @@ namespace SabreTools.Core.Test.Tools
         {
             long expected = 673251328;
             DateTime dateTime = new DateTime(2000, 01, 01, 00, 00, 00, 00);
-            long actual =  DateTimeHelper.ConvertToMsDosTimeFormat(dateTime);
+            long actual = DateTimeHelper.ConvertToMsDosTimeFormat(dateTime);
             Assert.Equal(expected, actual);
         }
 
@@ -34,7 +34,7 @@ namespace SabreTools.Core.Test.Tools
         public void ConvertFromMsDosTimeFormat_MinSupported()
         {
             uint msDosDateTime = 2162688;
-            DateTime actual =  DateTimeHelper.ConvertFromMsDosTimeFormat(msDosDateTime);
+            DateTime actual = DateTimeHelper.ConvertFromMsDosTimeFormat(msDosDateTime);
 
             Assert.Equal(1980, actual.Year);
             Assert.Equal(01, actual.Month);
@@ -49,7 +49,7 @@ namespace SabreTools.Core.Test.Tools
         public void ConvertFromMsDosTimeFormat_Y2K()
         {
             uint msDosDateTime = 673251328;
-            DateTime actual =  DateTimeHelper.ConvertFromMsDosTimeFormat(msDosDateTime);
+            DateTime actual = DateTimeHelper.ConvertFromMsDosTimeFormat(msDosDateTime);
 
             Assert.Equal(2000, actual.Year);
             Assert.Equal(01, actual.Month);

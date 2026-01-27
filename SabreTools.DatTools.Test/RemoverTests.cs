@@ -97,7 +97,7 @@ namespace SabreTools.DatTools.Test
             Assert.Empty(remover.MachineFieldNames);
             Assert.Single(remover.ItemFieldNames);
         }
-    
+
         #endregion
 
         #region RemoveFields
@@ -130,7 +130,7 @@ namespace SabreTools.DatTools.Test
 
             Assert.Null(machine.GetName());
         }
-    
+
         #endregion
     }
 }

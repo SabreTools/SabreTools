@@ -897,7 +897,7 @@ namespace SabreTools.DatFiles
                     }
 
                     // Assign the part array to the machine
-                    machine[Data.Models.Metadata.Machine.PartKey] = (Data.Models.Metadata.Part[])[..partItems.Values];
+                    machine[Data.Models.Metadata.Machine.PartKey] = (Data.Models.Metadata.Part[])[.. partItems.Values];
                 }
 
                 // Add the machine to the list

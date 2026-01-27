@@ -3,6 +3,7 @@ using SabreTools.Core.Filter;
 using SabreTools.Data.Models.Metadata;
 using SabreTools.Serialization.Interfaces;
 
+#pragma warning disable IDE0290 // Use primary constructor
 namespace SabreTools.DatFiles.Formats
 {
     /// <summary>

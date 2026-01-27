@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-#if NET462_OR_GREATER || NETCOREAPP
 using SabreTools.Hashing;
-#endif
 using SabreTools.IO.Extensions;
 #if NET462_OR_GREATER || NETCOREAPP
 using SharpCompress.Compressors.Xz;
@@ -250,7 +248,7 @@ namespace SabreTools.FileTypes.Archives
             string datum = Path.GetFileName(Filename).ToLowerInvariant();
 
             // Check if the name is the right length
-            if (!Regex.IsMatch(datum, @"^[0-9a-f]{" + Hashing.Constants.SHA1Length + @"}\.xz"))
+            if (!Regex.IsMatch(datum, @"^[0-9a-f]{" + Constants.SHA1Length + @"}\.xz"))
             {
                 _logger.Warning($"Non SHA-1 filename found, skipping: '{Path.GetFullPath(Filename)}'");
                 return false;
@@ -272,7 +270,7 @@ namespace SabreTools.FileTypes.Archives
             string datum = Path.GetFileName(Filename).ToLowerInvariant();
 
             // Check if the name is the right length
-            if (!Regex.IsMatch(datum, @"^[0-9a-f]{" + Hashing.Constants.SHA1Length + @"}\.xz"))
+            if (!Regex.IsMatch(datum, @"^[0-9a-f]{" + Constants.SHA1Length + @"}\.xz"))
             {
                 _logger.Warning($"Non SHA-1 filename found, skipping: '{Path.GetFullPath(Filename)}'");
                 return null;

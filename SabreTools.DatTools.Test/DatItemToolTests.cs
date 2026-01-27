@@ -282,7 +282,7 @@ namespace SabreTools.DatTools.Test
             string sha1 = TextHelper.NormalizeSHA1("1234abcd")!;
             string sha256 = TextHelper.NormalizeSHA256("1234abcd")!;
 
-            DatItems.Formats.File file = new DatItems.Formats.File
+            File file = new File
             {
                 CRC = crc,
                 MD5 = md5,
@@ -363,7 +363,7 @@ namespace SabreTools.DatTools.Test
             rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA384Key, sha384);
             rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA512Key, sha512);
             rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SpamSumKey, spamSum);
-            rom.SetFieldValue<long>(Data.Models.Metadata.Rom.SizeKey, size);
+            rom.SetFieldValue(Data.Models.Metadata.Rom.SizeKey, size);
 
             BaseFile actual = rom.ConvertToBaseFile();
 

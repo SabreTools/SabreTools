@@ -140,8 +140,7 @@ namespace SabreTools.DatTools.Test
             datHeader.SetFieldValue(DatHeader.DatFormatKey, datFormat);
             datHeader.SetFieldValue<string?>(DatHeader.FileNameKey, "filename");
 
-            DatModifiers datModifiers = new DatModifiers();
-            datModifiers.Quotes = true;
+            var datModifiers = new DatModifiers { Quotes = true };
 
             var datFile = Parser.CreateDatFile(datHeader, datModifiers);
             Assert.Equal(expected, datFile.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey));

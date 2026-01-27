@@ -1,4 +1,3 @@
-using SabreTools.Core.Tools;
 using SabreTools.DatItems;
 using SabreTools.DatItems.Formats;
 using SabreTools.Hashing;
@@ -264,15 +263,16 @@ namespace SabreTools.DatFiles.Test
         /// <summary>
         /// Create a File for testing
         /// </summary>
-        private static DatItems.Formats.File CreateFile()
+        private static File CreateFile()
         {
-            var file = new DatItems.Formats.File();
-
-            file.Size = 1;
-            file.CRC = ZeroHash.CRC32Str;
-            file.MD5 = ZeroHash.MD5Str;
-            file.SHA1 = ZeroHash.SHA1Str;
-            file.SHA256 = ZeroHash.SHA256Str;
+            var file = new File
+            {
+                Size = 1,
+                CRC = ZeroHash.CRC32Str,
+                MD5 = ZeroHash.MD5Str,
+                SHA1 = ZeroHash.SHA1Str,
+                SHA256 = ZeroHash.SHA256Str
+            };
 
             return file;
         }

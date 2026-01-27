@@ -1,4 +1,3 @@
-using SabreTools.Core.Tools;
 using Xunit;
 
 namespace SabreTools.DatItems.Test

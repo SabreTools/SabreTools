@@ -13,6 +13,8 @@ using SabreTools.Core.Filter;
 using SabreTools.DatItems;
 using SabreTools.DatItems.Formats;
 
+#pragma warning disable IDE0057 // Use range operator
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
 namespace SabreTools.DatFiles
 {
     public partial class DatFile

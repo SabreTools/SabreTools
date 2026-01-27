@@ -4,6 +4,7 @@ using System.IO;
 using SabreTools.DatFiles;
 using SabreTools.IO.Logging;
 
+#pragma warning disable IDE0290 // Use primary constructor
 namespace SabreTools.Reports
 {
     /// <summary>

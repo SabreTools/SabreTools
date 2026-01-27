@@ -25,7 +25,7 @@ namespace SabreTools.DatFiles.Test
         [Fact]
         public void ConvertFromMetadata_Empty()
         {
-            Data.Models.Metadata.MetadataFile? item = new Data.Models.Metadata.MetadataFile();
+            Data.Models.Metadata.MetadataFile? item = [];
 
             DatFile datFile = new Formats.Logiqx(null, useGame: false);
             datFile.ConvertFromMetadata(item, "filename", indexId: 0, keep: true, statsOnly: false, filterRunner: null);
@@ -71,9 +71,8 @@ namespace SabreTools.DatFiles.Test
             // ValidateMachine(actualMachine);
 
             // Aggregate for easier validation
-            DatItems.DatItem[] datItems = datFile.Items.SortedKeys
-                .SelectMany(key => datFile.GetItemsForBucket(key))
-                .ToArray();
+            DatItems.DatItem[] datItems = [.. datFile.Items.SortedKeys
+                .SelectMany(key => datFile.GetItemsForBucket(key))];
 
             Adjuster? adjuster = Array.Find(datItems, item => item is Adjuster) as Adjuster;
             ValidateAdjuster(adjuster);
@@ -510,7 +509,7 @@ namespace SabreTools.DatFiles.Test
             {
                 [Data.Models.Metadata.DataArea.EndiannessKey] = "big",
                 [Data.Models.Metadata.DataArea.NameKey] = "name",
-                [Data.Models.Metadata.DataArea.RomKey] = new Data.Models.Metadata.Rom[] { new Data.Models.Metadata.Rom() },
+                [Data.Models.Metadata.DataArea.RomKey] = new Data.Models.Metadata.Rom[] { [] },
                 [Data.Models.Metadata.DataArea.SizeKey] = 12345L,
                 [Data.Models.Metadata.DataArea.WidthKey] = 64,
             };
@@ -536,7 +535,7 @@ namespace SabreTools.DatFiles.Test
         {
             return new Data.Models.Metadata.DiskArea
             {
-                [Data.Models.Metadata.DiskArea.DiskKey] = new Data.Models.Metadata.Disk[] { new Data.Models.Metadata.Disk() },
+                [Data.Models.Metadata.DiskArea.DiskKey] = new Data.Models.Metadata.Disk[] { [] },
                 [Data.Models.Metadata.DiskArea.NameKey] = "name",
             };
         }
@@ -674,7 +673,7 @@ namespace SabreTools.DatFiles.Test
             {
                 [Data.Models.Metadata.Part.DataAreaKey] = new Data.Models.Metadata.DataArea[] { CreateMetadataDataArea() },
                 [Data.Models.Metadata.Part.DiskAreaKey] = new Data.Models.Metadata.DiskArea[] { CreateMetadataDiskArea() },
-                [Data.Models.Metadata.Part.DipSwitchKey] = new Data.Models.Metadata.DipSwitch[] { new Data.Models.Metadata.DipSwitch() },
+                [Data.Models.Metadata.Part.DipSwitchKey] = new Data.Models.Metadata.DipSwitch[] { [] },
                 [Data.Models.Metadata.Part.FeatureKey] = new Data.Models.Metadata.Feature[] { CreateMetadataFeature() },
                 [Data.Models.Metadata.Part.InterfaceKey] = "interface",
                 [Data.Models.Metadata.Part.NameKey] = "name",
@@ -975,6 +974,7 @@ namespace SabreTools.DatFiles.Test
             Assert.Equal("version", datHeader.GetStringFieldValue(Data.Models.Metadata.Header.VersionKey));
         }
 
+#pragma warning disable IDE0051
         private static void ValidateMachine(DatItems.Machine machine)
         {
             Assert.Equal("board", machine.GetStringFieldValue(Data.Models.Metadata.Machine.BoardKey));
@@ -1030,6 +1030,7 @@ namespace SabreTools.DatFiles.Test
             DatItems.Trurip? trurip = machine.GetFieldValue<DatItems.Trurip>(Data.Models.Metadata.Machine.TruripKey);
             ValidateTrurip(trurip);
         }
+#pragma warning restore IDE0051
 
         private static void ValidateAdjuster(Adjuster? adjuster)
         {

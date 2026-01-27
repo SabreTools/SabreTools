@@ -1,5 +1,6 @@
 ﻿using System;
 
+#pragma warning disable IDE0290 // Use primary constructor
 namespace SabreTools.DatItems
 {
     /// <summary>

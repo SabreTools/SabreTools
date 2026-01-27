@@ -26,7 +26,7 @@ namespace SabreTools.Core.Test.Filter
         [Fact]
         public void Header_Missing_False()
         {
-            Header header = new Header();
+            var header = new Header();
             bool actual = _filterRunner.Run(header);
             Assert.False(actual);
         }
@@ -34,7 +34,7 @@ namespace SabreTools.Core.Test.Filter
         [Fact]
         public void Header_Null_False()
         {
-            Header header = new Header { [Header.AuthorKey] = null };
+            var header = new Header { [Header.AuthorKey] = null };
             bool actual = _filterRunner.Run(header);
             Assert.False(actual);
         }
@@ -42,7 +42,7 @@ namespace SabreTools.Core.Test.Filter
         [Fact]
         public void Header_Empty_False()
         {
-            Header header = new Header { [Header.AuthorKey] = "" };
+            var header = new Header { [Header.AuthorKey] = "" };
             bool actual = _filterRunner.Run(header);
             Assert.False(actual);
         }
@@ -50,7 +50,7 @@ namespace SabreTools.Core.Test.Filter
         [Fact]
         public void Header_Incorrect_False()
         {
-            Header header = new Header { [Header.AuthorKey] = "NO_MATCH" };
+            var header = new Header { [Header.AuthorKey] = "NO_MATCH" };
             bool actual = _filterRunner.Run(header);
             Assert.False(actual);
         }
@@ -58,7 +58,7 @@ namespace SabreTools.Core.Test.Filter
         [Fact]
         public void Header_Correct_True()
         {
-            Header header = new Header { [Header.AuthorKey] = "auth" };
+            var header = new Header { [Header.AuthorKey] = "auth" };
             bool actual = _filterRunner.Run(header);
             Assert.True(actual);
         }
@@ -70,7 +70,7 @@ namespace SabreTools.Core.Test.Filter
         [Fact]
         public void Machine_Missing_False()
         {
-            Machine machine = new Machine();
+            var machine = new Machine();
             bool actual = _filterRunner.Run(machine);
             Assert.False(actual);
         }
@@ -78,7 +78,7 @@ namespace SabreTools.Core.Test.Filter
         [Fact]
         public void Machine_Null_False()
         {
-            Machine machine = new Machine { [Machine.DescriptionKey] = null };
+            var machine = new Machine { [Machine.DescriptionKey] = null };
             bool actual = _filterRunner.Run(machine);
             Assert.False(actual);
         }
@@ -86,7 +86,7 @@ namespace SabreTools.Core.Test.Filter
         [Fact]
         public void Machine_Empty_False()
         {
-            Machine machine = new Machine { [Machine.DescriptionKey] = "" };
+            var machine = new Machine { [Machine.DescriptionKey] = "" };
             bool actual = _filterRunner.Run(machine);
             Assert.False(actual);
         }
@@ -94,7 +94,7 @@ namespace SabreTools.Core.Test.Filter
         [Fact]
         public void Machine_Incorrect_False()
         {
-            Machine machine = new Machine { [Machine.DescriptionKey] = "NO_MATCH" };
+            var machine = new Machine { [Machine.DescriptionKey] = "NO_MATCH" };
             bool actual = _filterRunner.Run(machine);
             Assert.False(actual);
         }
@@ -102,7 +102,7 @@ namespace SabreTools.Core.Test.Filter
         [Fact]
         public void Machine_Correct_True()
         {
-            Machine machine = new Machine { [Machine.DescriptionKey] = "desc" };
+            var machine = new Machine { [Machine.DescriptionKey] = "desc" };
             bool actual = _filterRunner.Run(machine);
             Assert.True(actual);
         }
