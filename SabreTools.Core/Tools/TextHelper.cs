@@ -5,6 +5,7 @@ using SabreTools.Hashing;
 
 namespace SabreTools.Core.Tools
 {
+    // TODO: Replace when IO is updated
     public static class TextHelper
     {
         #region Normalization

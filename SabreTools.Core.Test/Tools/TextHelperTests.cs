@@ -3,6 +3,7 @@ using Xunit;
 
 namespace SabreTools.Core.Test.Tools
 {
+    // TODO: Replace when IO is updated
     public class TextHelperTests
     {
         #region NormalizeCharacters
