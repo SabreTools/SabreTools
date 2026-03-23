@@ -8,6 +8,7 @@ namespace SabreTools.Core
 {
     public static class DictionaryBaseExtensions
     {
+        // TODO: Remove when Serialization is updated
         #region Accessors
 
         /// <summary>
@@ -120,6 +121,7 @@ namespace SabreTools.Core
 
         #endregion
 
+        // TODO: Remove when Serialization is updated
         #region Cloning
 
         /// <summary>
@@ -159,6 +161,7 @@ namespace SabreTools.Core
 
         #endregion
 
+        // TODO: Remove when Serialization is updated
         #region Conversion
 
         /// <summary>
@@ -471,6 +474,7 @@ namespace SabreTools.Core
 
         #endregion
 
+        // TODO: Remove when Serialization is updated
         #region Hash Checking
 
         /// <summary>
@@ -872,6 +876,7 @@ namespace SabreTools.Core
 
         #endregion
 
+        // TODO: Remove when Serialization is updated
         #region Information Filling
 
         /// <summary>
@@ -1027,6 +1032,7 @@ namespace SabreTools.Core
 
         #endregion
 
+        // TODO: Remove when Serialization is updated
         #region Reading
 
         /// <summary>

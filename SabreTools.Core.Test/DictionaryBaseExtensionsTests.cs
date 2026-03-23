@@ -6,6 +6,7 @@ namespace SabreTools.Core.Test
 {
     public class DictionaryBaseExtensionsTests
     {
+        // TODO: Remove when Serialization is updated
         #region ConvertToRom
 
         [Fact]
@@ -1087,6 +1088,7 @@ namespace SabreTools.Core.Test
 
         #endregion
 
+        // TODO: Remove when Serialization is updated
         #region HashMatch
 
         [Fact]
@@ -1763,6 +1765,7 @@ namespace SabreTools.Core.Test
 
         #endregion
 
+        // TODO: Remove when Serialization is updated
         #region HasZeroHash
 
         [Fact]
@@ -2227,6 +2230,7 @@ namespace SabreTools.Core.Test
 
         #endregion
 
+        // TODO: Remove when Serialization is updated
         #region FillMissingHashes
 
         [Fact]
