@@ -13,6 +13,7 @@ namespace SabreTools.Core.Tools
         /// <summary>
         /// Determine if two hashes are equal for the purposes of merging
         /// </summary>
+        /// TODO: Remove when Serialization is updated
         public static bool ConditionalHashEquals(byte[]? firstHash, byte[]? secondHash)
         {
             // If either hash is empty, we say they're equal for merging
@@ -30,6 +31,7 @@ namespace SabreTools.Core.Tools
         /// <summary>
         /// Determine if two hashes are equal for the purposes of merging
         /// </summary>
+        /// TODO: Remove when Serialization is updated
         public static bool ConditionalHashEquals(string? firstHash, string? secondHash)
         {
             // If either hash is empty, we say they're equal for merging
