@@ -5,6 +5,7 @@ namespace SabreTools.Core.Test.Tools
 {
     public class UtilitiesTests
     {
+        // TODO: Replace when Serialization is updated
         #region ConditionalHashEquals
 
         [Theory]
