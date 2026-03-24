@@ -581,7 +581,13 @@ namespace SabreTools.DatFiles
         /// <param name="sourceIndex">Index of the Source to use with the converted items</param>
         /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
         /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
-        private void ProcessItems(Data.Models.Metadata.Part[] items, Machine machine, long machineIndex, Source source, long sourceIndex, bool statsOnly, FilterRunner? filterRunner)
+        private void ProcessItems(Data.Models.Metadata.Part[] items,
+            Machine machine,
+            long machineIndex,
+            Source source,
+            long sourceIndex,
+            bool statsOnly,
+            FilterRunner? filterRunner)
         {
             // If the array is null or empty, return without processing
             if (items.Length == 0)
