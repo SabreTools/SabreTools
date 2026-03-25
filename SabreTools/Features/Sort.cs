@@ -98,9 +98,15 @@ namespace SabreTools.Features
             {
                 foreach (ParentablePath datfile in datfilePaths)
                 {
+                    // Tell users if their file doesn't have a recognized extension
+                    if (!Core.Tools.Utilities.HasValidDatExtension(datfile.CurrentPath))
+                    {
+                        _logger.Warning($"'{datfile.CurrentPath} does not have a recognized extension! Skipping...");
+                        continue;
+                    }
+
                     DatFile datdata = Parser.CreateDatFile();
                     datdata.Header.RemoveField(DatHeader.DatFormatKey);
-
                     Parser.ParseInto(datdata,
                         datfile.CurrentPath,
                         indexId: int.MaxValue,
@@ -165,6 +171,13 @@ namespace SabreTools.Features
                 DatFile datdata = Parser.CreateDatFile();
                 foreach (ParentablePath datfile in datfilePaths)
                 {
+                    // Tell users if their file doesn't have a recognized extension
+                    if (!Core.Tools.Utilities.HasValidDatExtension(datfile.CurrentPath))
+                    {
+                        _logger.Warning($"'{datfile.CurrentPath} does not have a recognized extension! Skipping...");
+                        continue;
+                    }
+
                     datdata.Header.RemoveField(DatHeader.DatFormatKey);
                     Parser.ParseInto(datdata,
                         datfile.CurrentPath,

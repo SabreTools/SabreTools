@@ -533,6 +533,13 @@ Reset the internal state:           reset();";
                 // Assume there could be multiple
                 foreach (ParentablePath datFilePath in datFilePaths)
                 {
+                    // Tell users if their file doesn't have a recognized extension
+                    if (!Utilities.HasValidDatExtension(datFilePath.CurrentPath))
+                    {
+                        Console.WriteLine($"'{datFilePath.CurrentPath} does not have a recognized extension! Skipping...");
+                        continue;
+                    }
+
                     Parser.ParseInto(batchState.DatFile,
                         datFilePath.CurrentPath,
                         indexId: batchState.Index++);

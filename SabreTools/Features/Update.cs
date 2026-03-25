@@ -300,13 +300,42 @@ namespace SabreTools.Features
                 foreach (var inputPath in inputPaths)
 #endif
                 {
-                    // Parse the path to a new DatFile
-                    DatFile repDat = Parser.CreateDatFile(Header!, Modifiers);
+                    // Create a new DatFile
+                    DatFile repDat = Parser.CreateDatFile(Header!, Modifiers!);
+                    _logger.User($"Processing '{Path.GetFileName(inputPath.CurrentPath)}'");
+
+                    // Tell users if their file doesn't have a recognized extension
+                    if (!Core.Tools.Utilities.HasValidDatExtension(inputPath.CurrentPath))
+                    {
+                        _logger.Warning($"'{inputPath.CurrentPath} does not have a recognized extension! Skipping...");
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
+                        return;
+#else
+                        continue;
+#endif
+                    }
+
+                    // Check the current format
+                    DatFormat currentFormat = repDat.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
+#if NET20 || NET35
+                    bool isSeparatedFile = (currentFormat & DatFormat.CSV) != 0
+                        || (currentFormat & DatFormat.SSV) != 0
+                        || (currentFormat & DatFormat.TSV) != 0;
+#else
+                    bool isSeparatedFile = currentFormat.HasFlag(DatFormat.CSV)
+                        || currentFormat.HasFlag(DatFormat.SSV)
+                        || currentFormat.HasFlag(DatFormat.TSV);
+#endif
+
+                    // Clear format and parse
+                    repDat.Header.RemoveField(DatHeader.DatFormatKey);
                     Parser.ParseInto(repDat,
                         inputPath.CurrentPath,
                         indexId: 1,
                         keep: true,
+                        keepext: isSeparatedFile,
                         filterRunner: FilterRunner);
+                    repDat.Header.SetFieldValue(DatHeader.DatFormatKey, currentFormat);
 
                     // Perform additional processing steps
                     AdditionalProcessing(repDat);
@@ -340,13 +369,42 @@ namespace SabreTools.Features
                 foreach (var inputPath in inputPaths)
 #endif
                 {
-                    // Parse the path to a new DatFile
-                    DatFile repDat = Parser.CreateDatFile(Header!, Modifiers);
+                    // Create a new DatFile
+                    DatFile repDat = Parser.CreateDatFile(Header!, Modifiers!);
+                    _logger.User($"Processing '{Path.GetFileName(inputPath.CurrentPath)}'");
+
+                    // Tell users if their file doesn't have a recognized extension
+                    if (!Core.Tools.Utilities.HasValidDatExtension(inputPath.CurrentPath))
+                    {
+                        _logger.Warning($"'{inputPath.CurrentPath} does not have a recognized extension! Skipping...");
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
+                        return;
+#else
+                        continue;
+#endif
+                    }
+
+                    // Check the current format
+                    DatFormat currentFormat = repDat.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
+#if NET20 || NET35
+                    bool isSeparatedFile = (currentFormat & DatFormat.CSV) != 0
+                        || (currentFormat & DatFormat.SSV) != 0
+                        || (currentFormat & DatFormat.TSV) != 0;
+#else
+                    bool isSeparatedFile = currentFormat.HasFlag(DatFormat.CSV)
+                        || currentFormat.HasFlag(DatFormat.SSV)
+                        || currentFormat.HasFlag(DatFormat.TSV);
+#endif
+
+                    // Clear format and parse
+                    repDat.Header.RemoveField(DatHeader.DatFormatKey);
                     Parser.ParseInto(repDat,
                         inputPath.CurrentPath,
                         indexId: 1,
                         keep: true,
+                        keepext: isSeparatedFile,
                         filterRunner: FilterRunner);
+                    repDat.Header.SetFieldValue(DatHeader.DatFormatKey, currentFormat);
 
                     // Perform additional processing steps
                     AdditionalProcessing(repDat);
@@ -468,6 +526,17 @@ namespace SabreTools.Features
             foreach (var inputPath in inputPaths)
 #endif
             {
+                // Tell users if their file doesn't have a recognized extension
+                if (!Core.Tools.Utilities.HasValidDatExtension(inputPath.CurrentPath))
+                {
+                    _logger.Warning($"'{inputPath.CurrentPath} does not have a recognized extension! Skipping...");
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
+                    return;
+#else
+                    continue;
+#endif
+                }
+
                 // Create a new base DatFile
                 DatFile datFile = Parser.CreateDatFile(Header!, Modifiers!);
                 _logger.User($"Processing '{Path.GetFileName(inputPath.CurrentPath)}'");

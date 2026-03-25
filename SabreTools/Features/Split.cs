@@ -66,9 +66,19 @@ namespace SabreTools.Features
             // Loop over the input files
             foreach (ParentablePath file in files)
             {
+                // Tell users if their file doesn't have a recognized extension
+                if (!Core.Tools.Utilities.HasValidDatExtension(file.CurrentPath))
+                {
+                    _logger.Warning($"'{file.CurrentPath} does not have a recognized extension! Skipping...");
+                    continue;
+                }
+
                 // Create and fill the new DAT
                 DatFile internalDat = Parser.CreateDatFile(Header!, Modifiers!);
+                DatFormat currentFormat = internalDat.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
+                internalDat.Header.RemoveField(DatHeader.DatFormatKey);
                 Parser.ParseInto(internalDat, file.CurrentPath, filterRunner: FilterRunner);
+                internalDat.Header.SetFieldValue(DatHeader.DatFormatKey, currentFormat);
 
                 // Get the output directory
                 OutputDir = OutputDir.Ensure();

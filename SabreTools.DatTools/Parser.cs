@@ -186,6 +186,16 @@ namespace SabreTools.DatTools
                 return empty;
             }
 
+            // Tell users if their file doesn't have a recognized extension
+            if (!Utilities.HasValidDatExtension(filename))
+            {
+                _staticLogger.Warning($"'{filename} does not have a recognized extension! Skipping...");
+
+                DatFile empty = CreateDatFile();
+                empty.Header.RemoveField(DatHeader.DatFormatKey);
+                return empty;
+            }
+
             DatFile datFile = CreateDatFile();
             datFile.Header.RemoveField(DatHeader.DatFormatKey);
             ParseInto(datFile, filename, statsOnly: true, filterRunner: filterRunner, throwOnError: throwOnError);
@@ -228,6 +238,18 @@ namespace SabreTools.DatTools
             {
                 var input = inputs[i];
                 _staticLogger.User($"Adding DAT: {input.CurrentPath}");
+
+                // Tell users if their file doesn't have a recognized extension
+                if (!Utilities.HasValidDatExtension(input.CurrentPath))
+                {
+                    _staticLogger.Warning($"'{input.CurrentPath} does not have a recognized extension! Skipping...");
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
+                    return;
+#else
+                    continue;
+#endif
+                }
+
                 datFiles[i] = CreateDatFile(datFile.Header.CloneFormat(), datFile.Modifiers);
 
                 // Ensure the format is reset after parsing
