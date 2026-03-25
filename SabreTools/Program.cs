@@ -191,7 +191,7 @@ namespace SabreTools
             commands.Add(new Stats());
             commands.Add(new Update());
             commands.Add(new Verify());
-            commands.Add(new CommandLine.Features.Version());
+            commands.Add(new Features.Version());
 
             return commands;
         }
