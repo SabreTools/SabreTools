@@ -19,7 +19,7 @@ namespace SabreTools.DatTools.Test
         }
 
         [Theory]
-        [InlineData((DatFormat)0x00, DatFormat.Logiqx)]
+        [InlineData((DatFormat)int.MaxValue, DatFormat.Logiqx)]
         [InlineData(DatFormat.Logiqx, DatFormat.Logiqx)]
         [InlineData(DatFormat.LogiqxDeprecated, DatFormat.LogiqxDeprecated)]
         [InlineData(DatFormat.SoftwareList, DatFormat.SoftwareList)]
@@ -59,7 +59,7 @@ namespace SabreTools.DatTools.Test
         }
 
         [Theory]
-        [InlineData((DatFormat)0x00, DatFormat.Logiqx)]
+        [InlineData((DatFormat)int.MaxValue, DatFormat.Logiqx)]
         [InlineData(DatFormat.Logiqx, DatFormat.Logiqx)]
         [InlineData(DatFormat.LogiqxDeprecated, DatFormat.LogiqxDeprecated)]
         [InlineData(DatFormat.SoftwareList, DatFormat.SoftwareList)]
@@ -103,7 +103,7 @@ namespace SabreTools.DatTools.Test
         }
 
         [Theory]
-        [InlineData((DatFormat)0x00, (DatFormat)0x00)] // I think this is a bug
+        [InlineData((DatFormat)int.MaxValue, (DatFormat)int.MaxValue)] // I think this is a bug
         [InlineData(DatFormat.Logiqx, DatFormat.Logiqx)]
         [InlineData(DatFormat.LogiqxDeprecated, DatFormat.LogiqxDeprecated)]
         [InlineData(DatFormat.SoftwareList, DatFormat.SoftwareList)]
