@@ -167,8 +167,12 @@ namespace SabreTools.Features
             {
                 DatFile dupeData = Diffing.Duplicates(userInputDat, inputPaths);
 
+                // Get the current format types
+                DatFormat combinedDatFormat = dupeData.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
+                List<DatFormat> datFormats = combinedDatFormat.SplitFormats();
+
                 InternalStopwatch watch = new("Outputting duplicate DAT");
-                Writer.Write(dupeData, OutputDir, overwrite: false);
+                Writer.Write(dupeData, datFormats, OutputDir, overwrite: false);
                 watch.Stop();
             }
 
@@ -181,8 +185,12 @@ namespace SabreTools.Features
             {
                 DatFile outerDiffData = Diffing.NoDuplicates(userInputDat, inputPaths);
 
+                // Get the current format types
+                DatFormat combinedDatFormat = outerDiffData.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
+                List<DatFormat> datFormats = combinedDatFormat.SplitFormats();
+
                 InternalStopwatch watch = new("Outputting no duplicate DAT");
-                Writer.Write(outerDiffData, OutputDir, overwrite: false);
+                Writer.Write(outerDiffData, datFormats, OutputDir, overwrite: false);
                 watch.Stop();
             }
 
@@ -207,10 +215,13 @@ namespace SabreTools.Features
                 for (int j = 0; j < inputPaths.Count; j++)
 #endif
                 {
-                    string path = inputPaths[j].GetOutputPath(OutputDir, GetBoolean(InplaceValue))!;
+                    // Get the current format types
+                    DatFormat combinedDatFormat = datFiles[j].Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
+                    List<DatFormat> datFormats = combinedDatFormat.SplitFormats();
 
                     // Try to output the file
-                    Writer.Write(datFiles[j], path, overwrite: GetBoolean(InplaceValue));
+                    string path = inputPaths[j].GetOutputPath(OutputDir, GetBoolean(InplaceValue))!;
+                    Writer.Write(datFiles[j], datFormats, path, overwrite: GetBoolean(InplaceValue));
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 });
 #else
@@ -271,10 +282,13 @@ namespace SabreTools.Features
                 for (int j = startIndex; j < inputPaths.Count; j++)
 #endif
                 {
-                    string path = inputPaths[j].GetOutputPath(OutputDir, GetBoolean(InplaceValue))!;
+                    // Get the current format types
+                    DatFormat combinedDatFormat = datFiles[j].Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
+                    List<DatFormat> datFormats = combinedDatFormat.SplitFormats();
 
                     // Try to output the file
-                    Writer.Write(datFiles[j], path, overwrite: GetBoolean(InplaceValue));
+                    string path = inputPaths[j].GetOutputPath(OutputDir, GetBoolean(InplaceValue))!;
+                    Writer.Write(datFiles[j], datFormats, path, overwrite: GetBoolean(InplaceValue));
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 });
 #else
@@ -343,9 +357,13 @@ namespace SabreTools.Features
                     // Now replace the fields from the base DatFile
                     Diffing.Against(userInputDat, repDat, GetBoolean(ByGameValue));
 
+                    // Get the current format types
+                    DatFormat combinedDatFormat = repDat.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
+                    List<DatFormat> datFormats = combinedDatFormat.SplitFormats();
+
                     // Finally output the diffed DatFile
                     string interOutDir = inputPath.GetOutputPath(OutputDir, GetBoolean(InplaceValue))!;
-                    Writer.Write(repDat, interOutDir, overwrite: GetBoolean(InplaceValue));
+                    Writer.Write(repDat, datFormats, interOutDir, overwrite: GetBoolean(InplaceValue));
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 });
 #else
@@ -417,9 +435,13 @@ namespace SabreTools.Features
                         updateItemFieldNames,
                         GetBoolean(OnlySameValue));
 
+                    // Get the current format types
+                    DatFormat combinedDatFormat = repDat.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
+                    List<DatFormat> datFormats = combinedDatFormat.SplitFormats();
+
                     // Finally output the replaced DatFile
                     string interOutDir = inputPath.GetOutputPath(OutputDir, GetBoolean(InplaceValue))!;
-                    Writer.Write(repDat, interOutDir, overwrite: GetBoolean(InplaceValue));
+                    Writer.Write(repDat, datFormats, interOutDir, overwrite: GetBoolean(InplaceValue));
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 });
 #else
@@ -568,11 +590,15 @@ namespace SabreTools.Features
                 // Perform additional processing steps
                 AdditionalProcessing(datFile);
 
+                // Get the current format types
+                DatFormat combinedDatFormat = datFile.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
+                List<DatFormat> datFormats = combinedDatFormat.SplitFormats();
+
                 // Get the correct output path
                 string realOutDir = inputPath.GetOutputPath(OutputDir, inplace)!;
 
                 // Try to output the file, overwriting only if it's not in the current directory
-                Writer.Write(datFile, realOutDir, overwrite: inplace);
+                Writer.Write(datFile, datFormats, realOutDir, overwrite: inplace);
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else

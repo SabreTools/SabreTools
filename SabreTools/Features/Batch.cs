@@ -898,8 +898,12 @@ Reset the internal state:           reset();";
                 if (Arguments.Length == 1)
                     overwrite = Arguments[0].AsYesNo() ?? true;
 
+                // Get the current format types
+                DatFormat combinedDatFormat = batchState.DatFile.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
+                List<DatFormat> datFormats = combinedDatFormat.SplitFormats();
+
                 // Write out the dat with the current state
-                Writer.Write(batchState.DatFile, batchState.OutputDirectory, overwrite: overwrite);
+                Writer.Write(batchState.DatFile, datFormats, batchState.OutputDirectory, overwrite: overwrite);
             }
         }
 

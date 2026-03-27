@@ -120,15 +120,12 @@ namespace SabreTools.DatTools
         /// Create and open an output file for writing direct from a dictionary
         /// </summary>
         /// <param name="datFile">Current DatFile object to write from</param>
+        /// <param name="datFormats">DatFormats to try to output/param>
         /// <param name="outDir">Set the output directory (current directory on null)</param>
         /// <param name="overwrite">True if files should be overwritten, false if they should be renamed instead</param>
         /// <returns>True if the DAT was written correctly, false otherwise</returns>
-        public static bool Write(DatFile datFile, string? outDir, bool overwrite)
-        {
-            DatFormat combinedDatFormat = datFile.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
-            List<DatFormat> datFormats = combinedDatFormat.SplitFormats();
-            return Write(datFile, datFormats, outDir, overwrite, throwOnError: false);
-        }
+        public static bool Write(DatFile datFile, List<DatFormat> datFormats, string? outDir, bool overwrite)
+            => Write(datFile, datFormats, outDir, overwrite, throwOnError: false);
 
         /// <summary>
         /// Create and open an output file for writing direct from a dictionary
