@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using SabreTools.DatFiles;
 using SabreTools.DatTools;
@@ -109,8 +110,12 @@ namespace SabreTools.Features
                     Cleaner!.ApplyCleaning(datdata);
                     Remover!.ApplyRemovals(datdata);
 
+                    // Get the current format types
+                    DatFormat combinedDatFormat = datdata.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
+                    List<DatFormat> datFormats = combinedDatFormat.SplitFormats();
+
                     // Write out the file
-                    Writer.Write(datdata, OutputDir);
+                    Writer.Write(datdata, datFormats, OutputDir);
                 }
                 else
                 {

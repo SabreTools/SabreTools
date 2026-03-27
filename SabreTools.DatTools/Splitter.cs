@@ -616,8 +616,12 @@ namespace SabreTools.DatTools
                 : $"{datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)} ({expName})");
             newDatFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.TypeKey, null);
 
+            // Get the current format types
+            DatFormat combinedDatFormat = newDatFile.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
+            List<DatFormat> datFormats = combinedDatFormat.SplitFormats();
+
             // Write out the temporary DAT to the proper directory
-            Writer.Write(newDatFile, outDir);
+            Writer.Write(newDatFile, datFormats, outDir);
         }
 #pragma warning restore IDE0051
 

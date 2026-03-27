@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using SabreTools.DatFiles;
 using SabreTools.DatTools;
 using SabreTools.FileTypes;
@@ -157,7 +158,12 @@ namespace SabreTools.Features
                         datdata.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, $"fixDAT_{Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey)}");
                         datdata.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, $"fixDAT_{Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)}");
                         datdata.ClearMarked();
-                        Writer.Write(datdata, OutputDir);
+
+                        // Get the current format types
+                        DatFormat combinedDatFormat = datdata.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
+                        List<DatFormat> datFormats = combinedDatFormat.SplitFormats();
+
+                        Writer.Write(datdata, datFormats, OutputDir);
                     }
                 }
             }
@@ -233,7 +239,12 @@ namespace SabreTools.Features
                         $"fixDAT_{Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)}");
 
                     datdata.ClearMarked();
-                    Writer.Write(datdata, OutputDir);
+
+                    // Get the current format types
+                    DatFormat combinedDatFormat = datdata.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
+                    List<DatFormat> datFormats = combinedDatFormat.SplitFormats();
+
+                    Writer.Write(datdata, datFormats, OutputDir);
                 }
             }
 

@@ -96,9 +96,15 @@ namespace SabreTools.Features
                     {
                         var watch = new InternalStopwatch("Outputting extension-split DATs");
 
+                        // Get the current format types
+                        DatFormat extACombinedDatFormat = extADat.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
+                        List<DatFormat> extADatFormats = extACombinedDatFormat.SplitFormats();
+                        DatFormat extBCombinedDatFormat = extBDat.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
+                        List<DatFormat> extBDatFormats = extBCombinedDatFormat.SplitFormats();
+
                         // Output both possible DatFiles
-                        Writer.Write(extADat, OutputDir);
-                        Writer.Write(extBDat, OutputDir);
+                        Writer.Write(extADat, extADatFormats, OutputDir);
+                        Writer.Write(extBDat, extBDatFormats, OutputDir);
 
                         watch.Stop();
                     }
@@ -124,7 +130,11 @@ namespace SabreTools.Features
                     foreach (var itemType in typeDats.Keys)
 #endif
                     {
-                        Writer.Write(typeDats[itemType], OutputDir!);
+                        // Get the current format types
+                        DatFormat combinedDatFormat = typeDats[itemType].Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
+                        List<DatFormat> datFormats = combinedDatFormat.SplitFormats();
+
+                        Writer.Write(typeDats[itemType], datFormats, OutputDir!);
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     });
 #else
@@ -160,9 +170,15 @@ namespace SabreTools.Features
 
                     var watch = new InternalStopwatch("Outputting size-split DATs");
 
+                    // Get the current format types
+                    DatFormat lessThanCombinedDatFormat = lessThan.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
+                    List<DatFormat> lessThanDatFormats = lessThanCombinedDatFormat.SplitFormats();
+                    DatFormat greaterThanCombinedDatFormat = greaterThan.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
+                    List<DatFormat> greaterThanDatFormats = greaterThanCombinedDatFormat.SplitFormats();
+
                     // Output both possible DatFiles
-                    Writer.Write(lessThan, OutputDir);
-                    Writer.Write(greaterThan, OutputDir);
+                    Writer.Write(lessThan, lessThanDatFormats, OutputDir);
+                    Writer.Write(greaterThan, greaterThanDatFormats, OutputDir);
 
                     watch.Stop();
                 }
@@ -188,7 +204,11 @@ namespace SabreTools.Features
                     foreach (var sizedDat in sizedDats)
 #endif
                     {
-                        Writer.Write(sizedDat, OutputDir);
+                        // Get the current format types
+                        DatFormat combinedDatFormat = sizedDat.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
+                        List<DatFormat> datFormats = combinedDatFormat.SplitFormats();
+
+                        Writer.Write(sizedDat, datFormats, OutputDir);
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     });
 #else
@@ -218,7 +238,11 @@ namespace SabreTools.Features
                     foreach (var itemType in typeDats.Keys)
 #endif
                     {
-                        Writer.Write(typeDats[itemType], OutputDir);
+                        // Get the current format types
+                        DatFormat combinedDatFormat = typeDats[itemType].Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
+                        List<DatFormat> datFormats = combinedDatFormat.SplitFormats();
+
+                        Writer.Write(typeDats[itemType], datFormats, OutputDir);
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     });
 #else

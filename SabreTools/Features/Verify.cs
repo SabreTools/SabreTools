@@ -1,4 +1,5 @@
-﻿using SabreTools.DatFiles;
+﻿using System.Collections.Generic;
+using SabreTools.DatFiles;
 using SabreTools.DatTools;
 using SabreTools.Hashing;
 using SabreTools.IO;
@@ -117,9 +118,13 @@ namespace SabreTools.Features
                         //Verification.VerifyGenericDB(datdata, hashOnly);
                     }
 
+                    // Get the current format types
+                    DatFormat combinedDatFormat = datdata.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
+                    List<DatFormat> datFormats = combinedDatFormat.SplitFormats();
+
                     // Now write out if there are any items left
                     Writer.WriteStatsToConsole(datdata);
-                    Writer.Write(datdata, OutputDir!);
+                    Writer.Write(datdata, datFormats, OutputDir!);
                 }
             }
             // Otherwise, process all DATs into the same output
@@ -183,9 +188,13 @@ namespace SabreTools.Features
                     //Verification.VerifyGenericDB(datdata, hashOnly);
                 }
 
+                // Get the current format types
+                DatFormat combinedDatFormat = datdata.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
+                List<DatFormat> datFormats = combinedDatFormat.SplitFormats();
+
                 // Now write out if there are any items left
                 Writer.WriteStatsToConsole(datdata);
-                Writer.Write(datdata, OutputDir!);
+                Writer.Write(datdata, datFormats, OutputDir!);
             }
 
             return true;

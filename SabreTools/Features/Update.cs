@@ -464,7 +464,11 @@ namespace SabreTools.Features
                     MergeSplit.ApplySuperDATDB(userInputDat, inputPaths);
                 }
 
-                Writer.Write(userInputDat, OutputDir);
+                // Get the current format types
+                DatFormat combinedDatFormat = userInputDat.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
+                List<DatFormat> datFormats = combinedDatFormat.SplitFormats();
+
+                Writer.Write(userInputDat, datFormats, OutputDir);
             }
 
             return true;
