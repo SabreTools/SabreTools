@@ -167,9 +167,10 @@ namespace SabreTools.Features
             {
                 DatFile dupeData = Diffing.Duplicates(userInputDat, inputPaths);
 
-                // Get the current format types
-                DatFormat combinedDatFormat = dupeData.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
-                List<DatFormat> datFormats = combinedDatFormat.SplitFormats();
+                // Ensure there are output formats
+                var datFormats = DatFormats;
+                if (datFormats is null || datFormats.Count == 0)
+                    datFormats = [dupeData.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
 
                 InternalStopwatch watch = new("Outputting duplicate DAT");
                 Writer.Write(dupeData, datFormats, OutputDir, overwrite: false);
@@ -185,9 +186,10 @@ namespace SabreTools.Features
             {
                 DatFile outerDiffData = Diffing.NoDuplicates(userInputDat, inputPaths);
 
-                // Get the current format types
-                DatFormat combinedDatFormat = outerDiffData.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
-                List<DatFormat> datFormats = combinedDatFormat.SplitFormats();
+                // Ensure there are output formats
+                var datFormats = DatFormats;
+                if (datFormats is null || datFormats.Count == 0)
+                    datFormats = [outerDiffData.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
 
                 InternalStopwatch watch = new("Outputting no duplicate DAT");
                 Writer.Write(outerDiffData, datFormats, OutputDir, overwrite: false);
@@ -215,9 +217,10 @@ namespace SabreTools.Features
                 for (int j = 0; j < inputPaths.Count; j++)
 #endif
                 {
-                    // Get the current format types
-                    DatFormat combinedDatFormat = datFiles[j].Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
-                    List<DatFormat> datFormats = combinedDatFormat.SplitFormats();
+                    // Ensure there are output formats
+                    var datFormats = DatFormats;
+                    if (datFormats is null || datFormats.Count == 0)
+                        datFormats = [datFiles[j].Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
 
                     // Try to output the file
                     string path = inputPaths[j].GetOutputPath(OutputDir, GetBoolean(InplaceValue))!;
@@ -282,9 +285,10 @@ namespace SabreTools.Features
                 for (int j = startIndex; j < inputPaths.Count; j++)
 #endif
                 {
-                    // Get the current format types
-                    DatFormat combinedDatFormat = datFiles[j].Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
-                    List<DatFormat> datFormats = combinedDatFormat.SplitFormats();
+                    // Ensure there are output formats
+                    var datFormats = DatFormats;
+                    if (datFormats is null || datFormats.Count == 0)
+                        datFormats = [datFiles[j].Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
 
                     // Try to output the file
                     string path = inputPaths[j].GetOutputPath(OutputDir, GetBoolean(InplaceValue))!;
@@ -330,16 +334,9 @@ namespace SabreTools.Features
                     }
 
                     // Check the current format
-                    DatFormat currentFormat = repDat.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
-#if NET20 || NET35
-                    bool isSeparatedFile = (currentFormat & DatFormat.CSV) != 0
-                        || (currentFormat & DatFormat.SSV) != 0
-                        || (currentFormat & DatFormat.TSV) != 0;
-#else
-                    bool isSeparatedFile = currentFormat.HasFlag(DatFormat.CSV)
-                        || currentFormat.HasFlag(DatFormat.SSV)
-                        || currentFormat.HasFlag(DatFormat.TSV);
-#endif
+                    bool isSeparatedFile = DatFormats!.Contains(DatFormat.CSV)
+                        || DatFormats.Contains(DatFormat.SSV)
+                        || DatFormats.Contains(DatFormat.TSV);
 
                     // Clear format and parse
                     repDat.Header.RemoveField(DatHeader.DatFormatKey);
@@ -349,17 +346,17 @@ namespace SabreTools.Features
                         keep: true,
                         keepext: isSeparatedFile,
                         filterRunner: FilterRunner);
-                    repDat.Header.SetFieldValue(DatHeader.DatFormatKey, currentFormat);
+
+                    // Ensure there are output formats
+                    var datFormats = DatFormats;
+                    if (datFormats is null || datFormats.Count == 0)
+                        datFormats = [repDat.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
 
                     // Perform additional processing steps
                     AdditionalProcessing(repDat);
 
                     // Now replace the fields from the base DatFile
                     Diffing.Against(userInputDat, repDat, GetBoolean(ByGameValue));
-
-                    // Get the current format types
-                    DatFormat combinedDatFormat = repDat.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
-                    List<DatFormat> datFormats = combinedDatFormat.SplitFormats();
 
                     // Finally output the diffed DatFile
                     string interOutDir = inputPath.GetOutputPath(OutputDir, GetBoolean(InplaceValue))!;
@@ -403,16 +400,9 @@ namespace SabreTools.Features
                     }
 
                     // Check the current format
-                    DatFormat currentFormat = repDat.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
-#if NET20 || NET35
-                    bool isSeparatedFile = (currentFormat & DatFormat.CSV) != 0
-                        || (currentFormat & DatFormat.SSV) != 0
-                        || (currentFormat & DatFormat.TSV) != 0;
-#else
-                    bool isSeparatedFile = currentFormat.HasFlag(DatFormat.CSV)
-                        || currentFormat.HasFlag(DatFormat.SSV)
-                        || currentFormat.HasFlag(DatFormat.TSV);
-#endif
+                    bool isSeparatedFile = DatFormats!.Contains(DatFormat.CSV)
+                        || DatFormats.Contains(DatFormat.SSV)
+                        || DatFormats.Contains(DatFormat.TSV);
 
                     // Clear format and parse
                     repDat.Header.RemoveField(DatHeader.DatFormatKey);
@@ -422,7 +412,11 @@ namespace SabreTools.Features
                         keep: true,
                         keepext: isSeparatedFile,
                         filterRunner: FilterRunner);
-                    repDat.Header.SetFieldValue(DatHeader.DatFormatKey, currentFormat);
+
+                    // Ensure there are output formats
+                    var datFormats = DatFormats;
+                    if (datFormats is null || datFormats.Count == 0)
+                        datFormats = [repDat.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
 
                     // Perform additional processing steps
                     AdditionalProcessing(repDat);
@@ -434,10 +428,6 @@ namespace SabreTools.Features
                         updateMachineFieldNames,
                         updateItemFieldNames,
                         GetBoolean(OnlySameValue));
-
-                    // Get the current format types
-                    DatFormat combinedDatFormat = repDat.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
-                    List<DatFormat> datFormats = combinedDatFormat.SplitFormats();
 
                     // Finally output the replaced DatFile
                     string interOutDir = inputPath.GetOutputPath(OutputDir, GetBoolean(InplaceValue))!;
@@ -464,9 +454,10 @@ namespace SabreTools.Features
                     MergeSplit.ApplySuperDATDB(userInputDat, inputPaths);
                 }
 
-                // Get the current format types
-                DatFormat combinedDatFormat = userInputDat.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
-                List<DatFormat> datFormats = combinedDatFormat.SplitFormats();
+                // Ensure there are output formats
+                var datFormats = DatFormats;
+                if (datFormats is null || datFormats.Count == 0)
+                    datFormats = [userInputDat.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
 
                 Writer.Write(userInputDat, datFormats, OutputDir);
             }
@@ -568,16 +559,9 @@ namespace SabreTools.Features
                 _logger.User($"Processing '{Path.GetFileName(inputPath.CurrentPath)}'");
 
                 // Check the current format
-                DatFormat currentFormat = datFile.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
-#if NET20 || NET35
-                bool isSeparatedFile = (currentFormat & DatFormat.CSV) != 0
-                    || (currentFormat & DatFormat.SSV) != 0
-                    || (currentFormat & DatFormat.TSV) != 0;
-#else
-                bool isSeparatedFile = currentFormat.HasFlag(DatFormat.CSV)
-                    || currentFormat.HasFlag(DatFormat.SSV)
-                    || currentFormat.HasFlag(DatFormat.TSV);
-#endif
+                bool isSeparatedFile = DatFormats!.Contains(DatFormat.CSV)
+                    || DatFormats.Contains(DatFormat.SSV)
+                    || DatFormats.Contains(DatFormat.TSV);
 
                 // Clear format and parse
                 datFile.Header.RemoveField(DatHeader.DatFormatKey);
@@ -586,17 +570,17 @@ namespace SabreTools.Features
                     keep: true,
                     keepext: isSeparatedFile,
                     filterRunner: FilterRunner);
-                datFile.Header.SetFieldValue(DatHeader.DatFormatKey, currentFormat);
+
+                // Ensure there are output formats
+                var datFormats = DatFormats;
+                if (datFormats is null || datFormats.Count == 0)
+                    datFormats = [datFile.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
 
                 // Set any missing header values
                 SetDefaultHeaderValues(datFile, updateMode: UpdateMode.None, noAutomaticDate: noAutomaticDate);
 
                 // Perform additional processing steps
                 AdditionalProcessing(datFile);
-
-                // Get the current format types
-                DatFormat combinedDatFormat = datFile.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
-                List<DatFormat> datFormats = combinedDatFormat.SplitFormats();
 
                 // Get the correct output path
                 string realOutDir = inputPath.GetOutputPath(OutputDir, inplace)!;

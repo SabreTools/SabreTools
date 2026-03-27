@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using SabreTools.DatFiles;
+﻿using SabreTools.DatFiles;
 using SabreTools.DatTools;
 using SabreTools.Hashing;
 using SabreTools.IO;
@@ -83,6 +82,11 @@ namespace SabreTools.Features
                         keep: true,
                         filterRunner: FilterRunner!);
 
+                    // Ensure there are output formats
+                    var datFormats = DatFormats;
+                    if (datFormats is null || datFormats.Count == 0)
+                        datFormats = [datdata.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
+
                     // Perform additional processing steps
                     Extras!.ApplyExtras(datdata);
                     Extras!.ApplyExtrasDB(datdata);
@@ -118,10 +122,6 @@ namespace SabreTools.Features
                         //Verification.VerifyGenericDB(datdata, hashOnly);
                     }
 
-                    // Get the current format types
-                    DatFormat combinedDatFormat = datdata.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
-                    List<DatFormat> datFormats = combinedDatFormat.SplitFormats();
-
                     // Now write out if there are any items left
                     Writer.WriteStatsToConsole(datdata);
                     Writer.Write(datdata, datFormats, OutputDir!);
@@ -150,6 +150,11 @@ namespace SabreTools.Features
                         keep: true,
                         filterRunner: FilterRunner);
                 }
+
+                // Ensure there are output formats
+                var datFormats = DatFormats;
+                if (datFormats is null || datFormats.Count == 0)
+                    datFormats = [datdata.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
 
                 // Perform additional processing steps
                 Extras!.ApplyExtras(datdata);
@@ -187,10 +192,6 @@ namespace SabreTools.Features
                     Verification.VerifyGeneric(datdata, hashOnly);
                     //Verification.VerifyGenericDB(datdata, hashOnly);
                 }
-
-                // Get the current format types
-                DatFormat combinedDatFormat = datdata.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
-                List<DatFormat> datFormats = combinedDatFormat.SplitFormats();
 
                 // Now write out if there are any items left
                 Writer.WriteStatsToConsole(datdata);

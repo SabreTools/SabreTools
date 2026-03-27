@@ -489,11 +489,12 @@ Reset the internal state:           reset();";
             public override void Process(BatchState batchState)
             {
                 // Assume there could be multiple
-                batchState.DatFile.Header.SetFieldValue<DatFormat>(DatHeader.DatFormatKey, 0x00);
+                batchState.DatFormats = [];
                 foreach (string format in Arguments)
                 {
-                    DatFormat currentFormat = batchState.DatFile.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
-                    batchState.DatFile.Header.SetFieldValue(DatHeader.DatFormatKey, currentFormat | GetDatFormat(format));
+                    DatFormat datFormat = GetDatFormat(format);
+                    if (datFormat != 0x00)
+                        batchState.DatFormats.Add(datFormat);
                 }
             }
         }
@@ -898,9 +899,10 @@ Reset the internal state:           reset();";
                 if (Arguments.Length == 1)
                     overwrite = Arguments[0].AsYesNo() ?? true;
 
-                // Get the current format types
-                DatFormat combinedDatFormat = batchState.DatFile.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
-                List<DatFormat> datFormats = combinedDatFormat.SplitFormats();
+                // Ensure there are output formats
+                var datFormats = batchState.DatFormats;
+                if (datFormats is null || datFormats.Count == 0)
+                    datFormats = [batchState.DatFile.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
 
                 // Write out the dat with the current state
                 Writer.Write(batchState.DatFile, datFormats, batchState.OutputDirectory, overwrite: overwrite);
@@ -917,6 +919,7 @@ Reset the internal state:           reset();";
         private class BatchState
         {
             public DatFile DatFile { get; set; } = Parser.CreateDatFile();
+            public List<DatFormat> DatFormats { get; set; } = [];
             public int Index { get; set; } = 0;
             public string? OutputDirectory { get; set; } = null;
 
