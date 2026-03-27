@@ -63,7 +63,7 @@ namespace SabreTools.DatTools.Test
 
             // Invoke the method
             string outDir = "C:\\Test";
-            var datFormats = Writer.SplitFormats(DatFormat.ALL);
+            var datFormats = DatFormat.ALL.SplitFormats();
             var actual = Writer.CreateOutFileNames(datHeader, datFormats, outDir, overwrite: true);
 
             // Check the normalized results
