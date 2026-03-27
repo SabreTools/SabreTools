@@ -148,10 +148,10 @@ namespace SabreTools.DatTools
             InternalStopwatch watch = new($"Writing out internal dat to '{outDir}'");
 
             // If the DAT has no output format, default to XML
-            if (datFile.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey) == 0)
+            if (datFormats.Count == 0)
             {
                 _staticLogger.Verbose("No DAT format defined, defaulting to XML");
-                datFile.Header.SetFieldValue(DatHeader.DatFormatKey, DatFormat.Logiqx);
+                datFormats = [DatFormat.Logiqx];
             }
 
             // Make sure that the three essential fields are filled in
