@@ -1,11 +1,8 @@
-using System;
-
 namespace SabreTools.Reports
 {
     /// <summary>
     /// Determine which format to output Stats to
     /// </summary>
-    [Flags]
     public enum StatReportFormat
     {
         /// <summary>
