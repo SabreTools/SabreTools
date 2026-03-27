@@ -47,7 +47,6 @@ namespace SabreTools.DatTools
         /// <returns>DatFile of the specific internal type that corresponds to the inputs</returns>
         public static DatFile CreateDatFile(DatFormat datFormat, DatFile? baseDat)
         {
-#pragma warning disable IDE0072
             return datFormat switch
             {
                 DatFormat.ArchiveDotOrg => new ArchiveDotOrg(baseDat),
@@ -84,7 +83,6 @@ namespace SabreTools.DatTools
                 // We use new-style Logiqx as a backup for generic DatFile
                 _ => new Logiqx(baseDat, false),
             };
-#pragma warning restore IDE0072
         }
 
         /// <summary>
