@@ -1154,6 +1154,7 @@ Some special strings that can be used:
             Extras = GetExtras();
             FilterRunner = GetFilterRunner();
             Header = GetDatHeader();
+            DatFormats = GetDatFormats();
             Modifiers = GetDatModifiers();
             OutputDir = GetString(OutputDirStringValue)?.Trim('"');
             Remover = GetRemover();
@@ -1481,7 +1482,6 @@ Some special strings that can be used:
             datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.VersionKey, GetString(VersionStringValue));
 
             bool deprecated = GetBoolean(DeprecatedValue);
-            DatFormats ??= [];
             foreach (string ot in GetStringList(OutputTypeListValue))
             {
                 DatFormat dftemp = GetDatFormat(ot);
@@ -1498,10 +1498,36 @@ Some special strings that can be used:
 
                 // Add both to the header and the format list
                 datHeader.SetFieldValue(DatHeader.DatFormatKey, currentFormat | dftemp);
-                DatFormats.Add(dftemp);
             }
 
             return datHeader;
+        }
+
+        /// <summary>
+        /// Get DatFormats from feature list
+        /// </summary>
+        private List<DatFormat>? GetDatFormats()
+        {
+            bool deprecated = GetBoolean(DeprecatedValue);
+            List<DatFormat> datFormats = [];
+            foreach (string ot in GetStringList(OutputTypeListValue))
+            {
+                DatFormat dftemp = GetDatFormat(ot);
+                if (dftemp == 0x00)
+                {
+                    _logger.Error($"{ot} is not a recognized DAT format");
+                    return null;
+                }
+
+                // Handle deprecated Logiqx
+                if (dftemp == DatFormat.Logiqx && deprecated)
+                    dftemp = DatFormat.LogiqxDeprecated;
+
+                // Add both to the header and the format list
+                datFormats.Add(dftemp);
+            }
+
+            return datFormats;
         }
 
         /// <summary>
