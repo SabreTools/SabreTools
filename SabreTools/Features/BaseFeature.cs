@@ -1466,6 +1466,7 @@ Some special strings that can be used:
         private DatHeader? GetDatHeader()
         {
             var datHeader = new DatHeader();
+
             datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.AuthorKey, GetString(AuthorStringValue));
             datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.CategoryKey, GetString(CategoryStringValue));
             datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.CommentKey, GetString(CommentStringValue));
@@ -1484,25 +1485,6 @@ Some special strings that can be used:
             datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.UrlKey, GetString(UrlStringValue));
             datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.VersionKey, GetString(VersionStringValue));
 
-            bool deprecated = GetBoolean(DeprecatedValue);
-            foreach (string ot in GetStringList(OutputTypeListValue))
-            {
-                DatFormat dftemp = GetDatFormat(ot);
-                if (dftemp == 0x00)
-                {
-                    _logger.Error($"{ot} is not a recognized DAT format");
-                    return null;
-                }
-
-                // Handle deprecated Logiqx
-                DatFormat currentFormat = datHeader.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
-                if (dftemp == DatFormat.Logiqx && deprecated)
-                    dftemp = DatFormat.LogiqxDeprecated;
-
-                // Add both to the header and the format list
-                datHeader.SetFieldValue(DatHeader.DatFormatKey, currentFormat | dftemp);
-            }
-
             return datHeader;
         }
 
@@ -1512,6 +1494,16 @@ Some special strings that can be used:
         private List<DatFormat>? GetDatFormats()
         {
             bool deprecated = GetBoolean(DeprecatedValue);
+            List<string> outputTypes = GetStringList(OutputTypeListValue);
+
+            // Handle "ALL"
+            if (outputTypes.Exists(t => t.Trim().Equals("all", StringComparison.InvariantCultureIgnoreCase)))
+#if NET5_0_OR_GREATER
+                return [.. Enum.GetValues<DatFormat>()];
+#else
+                return [.. Enum.GetValues(typeof(DatFormat)) as DatFormat[] ?? []];
+#endif
+
             HashSet<DatFormat> datFormats = [];
             foreach (string ot in GetStringList(OutputTypeListValue))
             {
@@ -1520,18 +1512,6 @@ Some special strings that can be used:
                 {
                     _logger.Error($"{ot} is not a recognized DAT format");
                     return null;
-                }
-
-                // Handle "ALL" flag
-                if (dftemp == DatFormat.ALL)
-                {
-#if NET5_0_OR_GREATER
-                    List<DatFormat> values = [.. Enum.GetValues<DatFormat>()];
-#else
-                    List<DatFormat> values = [.. Enum.GetValues(typeof(DatFormat)) as DatFormat[] ?? []];
-#endif
-                    values.Remove(DatFormat.ALL);
-                    return values;
                 }
 
                 // Handle deprecated Logiqx
@@ -1679,7 +1659,6 @@ Some special strings that can be used:
         {
             return (input?.Trim().ToLowerInvariant()) switch
             {
-                "all" => DatFormat.ALL,
                 "ado" or "archive" => DatFormat.ArchiveDotOrg,
                 "am" or "attractmode" => DatFormat.AttractMode,
                 "cmp" or "clrmamepro" => DatFormat.ClrMamePro,

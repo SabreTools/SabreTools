@@ -1,4 +1,3 @@
-using System;
 using SabreTools.Core;
 
 namespace SabreTools.DatFiles
@@ -6,7 +5,6 @@ namespace SabreTools.DatFiles
     /// <summary>
     /// DAT output formats
     /// </summary>
-    [Flags]
     public enum DatFormat : ulong
     {
         #region XML Formats
@@ -14,42 +12,42 @@ namespace SabreTools.DatFiles
         /// <summary>
         /// Logiqx XML (using machine)
         /// </summary>
-        Logiqx = 1 << 0,
+        Logiqx,
 
         /// <summary>
         /// Logiqx XML (using game)
         /// </summary>
-        LogiqxDeprecated = 1 << 1,
+        LogiqxDeprecated,
 
         /// <summary>
         /// MAME Softare List XML
         /// </summary>
-        SoftwareList = 1 << 2,
+        SoftwareList,
 
         /// <summary>
         /// MAME Listxml output
         /// </summary>
-        Listxml = 1 << 3,
+        Listxml,
 
         /// <summary>
         /// OfflineList XML
         /// </summary>
-        OfflineList = 1 << 4,
+        OfflineList,
 
         /// <summary>
         /// SabreDAT XML
         /// </summary>
-        SabreXML = 1 << 5,
+        SabreXML,
 
         /// <summary>
         /// openMSX Software List XML
         /// </summary>
-        OpenMSX = 1 << 6,
+        OpenMSX,
 
         /// <summary>
         /// Archive.org file list XML
         /// </summary>
-        ArchiveDotOrg = 1 << 7,
+        ArchiveDotOrg,
 
         #endregion
 
@@ -58,22 +56,22 @@ namespace SabreTools.DatFiles
         /// <summary>
         /// ClrMamePro custom
         /// </summary>
-        ClrMamePro = 1 << 8,
+        ClrMamePro,
 
         /// <summary>
         /// RomCenter INI-based
         /// </summary>
-        RomCenter = 1 << 9,
+        RomCenter,
 
         /// <summary>
         /// DOSCenter custom
         /// </summary>
-        DOSCenter = 1 << 10,
+        DOSCenter,
 
         /// <summary>
         /// AttractMode custom
         /// </summary>
-        AttractMode = 1 << 11,
+        AttractMode,
 
         #endregion
 
@@ -82,37 +80,37 @@ namespace SabreTools.DatFiles
         /// <summary>
         /// ClrMamePro missfile
         /// </summary>
-        MissFile = 1 << 12,
+        MissFile,
 
         /// <summary>
         /// Comma-Separated Values (standardized)
         /// </summary>
-        CSV = 1 << 13,
+        CSV,
 
         /// <summary>
         /// Semicolon-Separated Values (standardized)
         /// </summary>
-        SSV = 1 << 14,
+        SSV,
 
         /// <summary>
         /// Tab-Separated Values (standardized)
         /// </summary>
-        TSV = 1 << 15,
+        TSV,
 
         /// <summary>
         /// MAME Listrom output
         /// </summary>
-        Listrom = 1 << 16,
+        Listrom,
 
         /// <summary>
         /// Everdrive Packs SMDB
         /// </summary>
-        EverdriveSMDB = 1 << 17,
+        EverdriveSMDB,
 
         /// <summary>
         /// SabreJSON
         /// </summary>
-        SabreJSON = 1 << 18,
+        SabreJSON,
 
         #endregion
 
@@ -121,62 +119,59 @@ namespace SabreTools.DatFiles
         /// <summary>
         /// CRC32 hash list
         /// </summary>
-        RedumpSFV = 1 << 19,
+        RedumpSFV,
 
         /// <summary>
         /// MD2 hash list
         /// </summary>
-        RedumpMD2 = 1 << 20,
+        RedumpMD2,
 
         /// <summary>
         /// MD4 hash list
         /// </summary>
-        RedumpMD4 = 1 << 21,
+        RedumpMD4,
 
         /// <summary>
         /// MD5 hash list
         /// </summary>
-        RedumpMD5 = 1 << 22,
+        RedumpMD5,
 
         /// <summary>
         /// RIPEMD128 hash list
         /// </summary>
-        RedumpRIPEMD128 = 1 << 23,
+        RedumpRIPEMD128,
 
         /// <summary>
         /// RIPEMD160 hash list
         /// </summary>
-        RedumpRIPEMD160 = 1 << 24,
+        RedumpRIPEMD160,
 
         /// <summary>
         /// SHA-1 hash list
         /// </summary>
-        RedumpSHA1 = 1 << 25,
+        RedumpSHA1,
 
         /// <summary>
         /// SHA-256 hash list
         /// </summary>
-        RedumpSHA256 = 1 << 26,
+        RedumpSHA256,
 
         /// <summary>
         /// SHA-384 hash list
         /// </summary>
-        RedumpSHA384 = 1 << 27,
+        RedumpSHA384,
 
         /// <summary>
         /// SHA-512 hash list
         /// </summary>
-        RedumpSHA512 = 1 << 28,
+        RedumpSHA512,
 
         /// <summary>
         /// SpamSum hash list
         /// </summary>
-        RedumpSpamSum = 1 << 29,
+        RedumpSpamSum,
 
         #endregion
-
-        // Specialty combinations
-        ALL = ulong.MaxValue,
     }
 
     /// <summary>

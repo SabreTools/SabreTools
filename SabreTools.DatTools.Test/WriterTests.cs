@@ -43,7 +43,6 @@ namespace SabreTools.DatTools.Test
             // Create the empty DatHeader
             var datHeader = new DatHeader();
             datHeader.SetFieldValue<string?>(DatHeader.FileNameKey, "test.dat");
-            datHeader.SetFieldValue(DatHeader.DatFormatKey, datFormat);
 
             // Invoke the method
             string outDir = "C:\\Test";
@@ -64,7 +63,6 @@ namespace SabreTools.DatTools.Test
 
             // Setup output formats
             List<DatFormat> datFormats = [.. Enum.GetValues<DatFormat>()];
-            datFormats.Remove(DatFormat.ALL);
 
             // Invoke the method
             string outDir = "C:\\Test";
