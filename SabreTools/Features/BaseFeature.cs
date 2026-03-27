@@ -1189,6 +1189,8 @@ Some special strings that can be used:
             // Failure conditions
             if (Header is null)
                 return false;
+            if (DatFormats is null)
+                return false;
             if (Modifiers is null)
                 return false;
 
