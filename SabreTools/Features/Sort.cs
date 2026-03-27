@@ -105,9 +105,7 @@ namespace SabreTools.Features
                         continue;
                     }
 
-                    DatFile datdata = Parser.CreateDatFile();
-                    Parser.ParseInto(datdata,
-                        datfile.CurrentPath,
+                    DatFile datdata = Parser.Parse(datfile.CurrentPath,
                         indexId: int.MaxValue,
                         keep: true,
                         filterRunner: FilterRunner);

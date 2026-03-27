@@ -182,7 +182,7 @@ namespace SabreTools.DatTools.Test
         [InlineData("test-sha384.sha384", DatFormat.RedumpSHA384, 1)]
         [InlineData("test-sha512.sha512", DatFormat.RedumpSHA512, 1)]
         [InlineData("test-spamsum.spamsum", DatFormat.RedumpSpamSum, 1)]
-        public void ParseIntoTest(string? filename, DatFormat datFormat, int totalCount)
+        public void ParseTest(string? filename, DatFormat datFormat, int totalCount)
         {
             // For all filenames, add the local path for test data
             if (filename is not null)
@@ -190,9 +190,7 @@ namespace SabreTools.DatTools.Test
             else
                 filename = string.Empty;
 
-            var datFile = Parser.CreateDatFile();
-
-            Parser.ParseInto(datFile, filename, throwOnError: true);
+            var datFile = Parser.Parse(filename, throwOnError: true);
             Assert.Equal(datFormat, datFile.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey));
             Assert.Equal(totalCount, datFile.Items.DatStatistics.TotalCount);
             //Assert.Equal(totalCount, datFile.ItemsDB.DatStatistics.TotalCount);

@@ -115,6 +115,29 @@ namespace SabreTools.DatTools
         /// <summary>
         /// Parse a DAT and return all found games and roms within
         /// </summary>
+        /// <param name="filename">Name of the file to be parsed</param>
+        /// <param name="indexId">Index ID for the DAT</param>
+        /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
+        /// <param name="keepext">True if original extension should be kept, false otherwise (default)</param>
+        /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
+        /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
+        /// <param name="throwOnError">True if the error that is thrown should be thrown back to the caller, false otherwise</param>
+        public static DatFile Parse(string filename,
+            int indexId = 0,
+            bool keep = false,
+            bool keepext = false,
+            bool statsOnly = false,
+            FilterRunner? filterRunner = null,
+            bool throwOnError = false)
+        {
+            DatFile datFile = CreateDatFile();
+            ParseInto(datFile, filename, indexId, keep, keepext, statsOnly, filterRunner, throwOnError);
+            return datFile;
+        }
+
+        /// <summary>
+        /// Parse a DAT and return all found games and roms within
+        /// </summary>
         /// <param name="datFile">Current DatFile object to add to</param>
         /// <param name="filename">Name of the file to be parsed</param>
         /// <param name="indexId">Index ID for the DAT</param>
@@ -200,9 +223,7 @@ namespace SabreTools.DatTools
                 return CreateDatFile();
             }
 
-            DatFile datFile = CreateDatFile();
-            ParseInto(datFile, filename, statsOnly: true, filterRunner: filterRunner, throwOnError: throwOnError);
-            return datFile;
+            return Parse(filename, statsOnly: true, filterRunner: filterRunner, throwOnError: throwOnError);
         }
 
         /// <summary>
