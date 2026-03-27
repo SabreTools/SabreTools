@@ -905,7 +905,7 @@ Reset the internal state:           reset();";
                     datFormats = [batchState.DatFile.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
 
                 // Write out the dat with the current state
-                Writer.Write(batchState.DatFile, datFormats, batchState.OutputDirectory, overwrite: overwrite);
+                batchState.DatFile.Write(datFormats, batchState.OutputDirectory, overwrite: overwrite);
             }
         }
 

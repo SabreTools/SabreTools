@@ -121,7 +121,7 @@ namespace SabreTools.Features
 
                     // Now write out if there are any items left
                     Writer.WriteStatsToConsole(datdata);
-                    Writer.Write(datdata, datFormats, OutputDir!);
+                    datdata.Write(datFormats, OutputDir!);
                 }
             }
             // Otherwise, process all DATs into the same output
@@ -192,7 +192,7 @@ namespace SabreTools.Features
 
                 // Now write out if there are any items left
                 Writer.WriteStatsToConsole(datdata);
-                Writer.Write(datdata, datFormats, OutputDir!);
+                datdata.Write(datFormats, OutputDir!);
             }
 
             return true;

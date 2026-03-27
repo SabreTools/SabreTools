@@ -115,7 +115,7 @@ namespace SabreTools.Features
                         datFormats = [datdata.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
 
                     // Write out the file
-                    Writer.Write(datdata, datFormats, OutputDir);
+                    datdata.Write(datFormats, OutputDir);
                 }
                 else
                 {

@@ -173,7 +173,7 @@ namespace SabreTools.Features
                     datFormats = [dupeData.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
 
                 InternalStopwatch watch = new("Outputting duplicate DAT");
-                Writer.Write(dupeData, datFormats, OutputDir, overwrite: false);
+                dupeData.Write(datFormats, OutputDir, overwrite: false);
                 watch.Stop();
             }
 
@@ -192,7 +192,7 @@ namespace SabreTools.Features
                     datFormats = [outerDiffData.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
 
                 InternalStopwatch watch = new("Outputting no duplicate DAT");
-                Writer.Write(outerDiffData, datFormats, OutputDir, overwrite: false);
+                outerDiffData.Write(datFormats, OutputDir, overwrite: false);
                 watch.Stop();
             }
 
@@ -224,7 +224,7 @@ namespace SabreTools.Features
 
                     // Try to output the file
                     string path = inputPaths[j].GetOutputPath(OutputDir, GetBoolean(InplaceValue))!;
-                    Writer.Write(datFiles[j], datFormats, path, overwrite: GetBoolean(InplaceValue));
+                    datFiles[j].Write(datFormats, path, overwrite: GetBoolean(InplaceValue));
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 });
 #else
@@ -292,7 +292,7 @@ namespace SabreTools.Features
 
                     // Try to output the file
                     string path = inputPaths[j].GetOutputPath(OutputDir, GetBoolean(InplaceValue))!;
-                    Writer.Write(datFiles[j], datFormats, path, overwrite: GetBoolean(InplaceValue));
+                    datFiles[j].Write(datFormats, path, overwrite: GetBoolean(InplaceValue));
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 });
 #else
@@ -360,7 +360,7 @@ namespace SabreTools.Features
 
                     // Finally output the diffed DatFile
                     string interOutDir = inputPath.GetOutputPath(OutputDir, GetBoolean(InplaceValue))!;
-                    Writer.Write(repDat, datFormats, interOutDir, overwrite: GetBoolean(InplaceValue));
+                    repDat.Write(datFormats, interOutDir, overwrite: GetBoolean(InplaceValue));
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 });
 #else
@@ -431,7 +431,7 @@ namespace SabreTools.Features
 
                     // Finally output the replaced DatFile
                     string interOutDir = inputPath.GetOutputPath(OutputDir, GetBoolean(InplaceValue))!;
-                    Writer.Write(repDat, datFormats, interOutDir, overwrite: GetBoolean(InplaceValue));
+                    repDat.Write(datFormats, interOutDir, overwrite: GetBoolean(InplaceValue));
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 });
 #else
@@ -459,7 +459,7 @@ namespace SabreTools.Features
                 if (datFormats is null || datFormats.Count == 0)
                     datFormats = [userInputDat.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
 
-                Writer.Write(userInputDat, datFormats, OutputDir);
+                userInputDat.Write(datFormats, OutputDir);
             }
 
             return true;
@@ -586,7 +586,7 @@ namespace SabreTools.Features
                 string realOutDir = inputPath.GetOutputPath(OutputDir, inplace)!;
 
                 // Try to output the file, overwriting only if it's not in the current directory
-                Writer.Write(datFile, datFormats, realOutDir, overwrite: inplace);
+                datFile.Write(datFormats, realOutDir, overwrite: inplace);
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else

@@ -100,8 +100,8 @@ namespace SabreTools.Features
                         var watch = new InternalStopwatch("Outputting extension-split DATs");
 
                         // Output both possible DatFiles
-                        Writer.Write(extADat, datFormats, OutputDir);
-                        Writer.Write(extBDat, datFormats, OutputDir);
+                        extADat.Write(datFormats, OutputDir);
+                        extBDat.Write(datFormats, OutputDir);
 
                         watch.Stop();
                     }
@@ -127,7 +127,7 @@ namespace SabreTools.Features
                     foreach (var itemType in typeDats.Keys)
 #endif
                     {
-                        Writer.Write(typeDats[itemType], datFormats, OutputDir!);
+                        typeDats[itemType].Write(datFormats, OutputDir!);
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     });
 #else
@@ -164,8 +164,8 @@ namespace SabreTools.Features
                     var watch = new InternalStopwatch("Outputting size-split DATs");
 
                     // Output both possible DatFiles
-                    Writer.Write(lessThan, datFormats, OutputDir);
-                    Writer.Write(greaterThan, datFormats, OutputDir);
+                    lessThan.Write(datFormats, OutputDir);
+                    greaterThan.Write(datFormats, OutputDir);
 
                     watch.Stop();
                 }
@@ -191,7 +191,7 @@ namespace SabreTools.Features
                     foreach (var sizedDat in sizedDats)
 #endif
                     {
-                        Writer.Write(sizedDat, datFormats, OutputDir);
+                        sizedDat.Write(datFormats, OutputDir);
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     });
 #else
@@ -221,7 +221,7 @@ namespace SabreTools.Features
                     foreach (var itemType in typeDats.Keys)
 #endif
                     {
-                        Writer.Write(typeDats[itemType], datFormats, OutputDir);
+                        typeDats[itemType].Write(datFormats, OutputDir);
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     });
 #else

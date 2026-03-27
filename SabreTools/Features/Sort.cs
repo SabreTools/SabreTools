@@ -160,7 +160,7 @@ namespace SabreTools.Features
                         if (datFormats is null || datFormats.Count == 0)
                             datFormats = [datdata.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
 
-                        Writer.Write(datdata, datFormats, OutputDir);
+                        datdata.Write(datFormats, OutputDir);
                     }
                 }
             }
@@ -242,7 +242,7 @@ namespace SabreTools.Features
                     if (datFormats is null || datFormats.Count == 0)
                         datFormats = [datdata.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
 
-                    Writer.Write(datdata, datFormats, OutputDir);
+                    datdata.Write(datFormats, OutputDir);
                 }
             }
 

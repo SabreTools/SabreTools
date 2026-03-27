@@ -16,7 +16,7 @@ namespace SabreTools.DatTools
     /// <summary>
     /// Helper methods for writing from DatFiles
     /// </summary>
-    public class Writer
+    public static class Writer
     {
         #region Private Constants
 
@@ -110,8 +110,8 @@ namespace SabreTools.DatTools
         /// <param name="datFormats">DatFormats to try to output/param>
         /// <param name="outDir">Set the output directory (current directory on null)</param>
         /// <returns>True if the DAT was written correctly, false otherwise</returns>
-        public static bool Write(DatFile datFile, List<DatFormat> datFormats, string? outDir)
-            => Write(datFile, datFormats, outDir, overwrite: true, throwOnError: false);
+        public static bool Write(this DatFile datFile, List<DatFormat> datFormats, string? outDir)
+            => datFile.Write(datFormats, outDir, overwrite: true, throwOnError: false);
 
         /// <summary>
         /// Create and open an output file for writing direct from a dictionary
@@ -121,8 +121,8 @@ namespace SabreTools.DatTools
         /// <param name="outDir">Set the output directory (current directory on null)</param>
         /// <param name="overwrite">True if files should be overwritten, false if they should be renamed instead</param>
         /// <returns>True if the DAT was written correctly, false otherwise</returns>
-        public static bool Write(DatFile datFile, List<DatFormat> datFormats, string? outDir, bool overwrite)
-            => Write(datFile, datFormats, outDir, overwrite, throwOnError: false);
+        public static bool Write(this DatFile datFile, List<DatFormat> datFormats, string? outDir, bool overwrite)
+            => datFile.Write(datFormats, outDir, overwrite, throwOnError: false);
 
         /// <summary>
         /// Create and open an output file for writing direct from a dictionary
@@ -133,7 +133,7 @@ namespace SabreTools.DatTools
         /// <param name="overwrite">True if files should be overwritten, false if they should be renamed instead</param>
         /// <param name="throwOnError">True if the error that is thrown should be thrown back to the caller, false otherwise</param>
         /// <returns>True if the DAT was written correctly, false otherwise</returns>
-        public static bool Write(DatFile datFile, List<DatFormat> datFormats, string? outDir, bool overwrite, bool throwOnError)
+        public static bool Write(this DatFile datFile, List<DatFormat> datFormats, string? outDir, bool overwrite, bool throwOnError)
         {
             // If we have nothing writable, abort
             if (!HasWritable(datFile))
