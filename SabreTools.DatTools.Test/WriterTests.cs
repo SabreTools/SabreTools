@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using SabreTools.DatFiles;
 using Xunit;
 
@@ -59,11 +61,13 @@ namespace SabreTools.DatTools.Test
             // Create the empty DatHeader
             var datHeader = new DatHeader();
             datHeader.SetFieldValue<string?>(DatHeader.FileNameKey, "test.dat");
-            datHeader.SetFieldValue(DatHeader.DatFormatKey, DatFormat.ALL);
+
+            // Setup output formats
+            List<DatFormat> datFormats = [.. Enum.GetValues<DatFormat>()];
+            datFormats.Remove(DatFormat.ALL);
 
             // Invoke the method
             string outDir = "C:\\Test";
-            var datFormats = DatFormat.ALL.SplitFormats();
             var actual = Writer.CreateOutFileNames(datHeader, datFormats, outDir, overwrite: true);
 
             // Check the normalized results

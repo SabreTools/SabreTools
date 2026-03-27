@@ -584,6 +584,7 @@ namespace SabreTools.DatTools
         /// <param name="outDir">Directory to write out to</param>
         /// <param name="shortname">True if short naming scheme should be used, false otherwise</param>
         /// <param name="restore">True if original filenames should be used as the base for output filename, false otherwise</param>
+        /// TODO: Finish implementation of level splitting
         private static void SplitByLevelHelper(DatFile datFile, DatFile newDatFile, string outDir, bool shortname, bool restore)
         {
             // Get the name from the DAT to use separately
@@ -616,12 +617,8 @@ namespace SabreTools.DatTools
                 : $"{datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)} ({expName})");
             newDatFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.TypeKey, null);
 
-            // Get the current format types
-            DatFormat combinedDatFormat = newDatFile.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
-            List<DatFormat> datFormats = combinedDatFormat.SplitFormats();
-
             // Write out the temporary DAT to the proper directory
-            Writer.Write(newDatFile, datFormats, outDir);
+            // Writer.Write(newDatFile, datFormats, outDir);
         }
 #pragma warning restore IDE0051
 

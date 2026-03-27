@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using SabreTools.CommandLine;
 using SabreTools.CommandLine.Inputs;
@@ -1205,7 +1206,7 @@ Some special strings that can be used:
 #if NET20 || NET35 || NET40 || NET452
             string runtimeDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 #else
-            string runtimeDir = System.AppContext.BaseDirectory;
+            string runtimeDir = AppContext.BaseDirectory;
 #endif
 
 #if NET20 || NET35
@@ -1511,7 +1512,7 @@ Some special strings that can be used:
         private List<DatFormat>? GetDatFormats()
         {
             bool deprecated = GetBoolean(DeprecatedValue);
-            List<DatFormat> datFormats = [];
+            HashSet<DatFormat> datFormats = [];
             foreach (string ot in GetStringList(OutputTypeListValue))
             {
                 DatFormat dftemp = GetDatFormat(ot);
@@ -1519,6 +1520,18 @@ Some special strings that can be used:
                 {
                     _logger.Error($"{ot} is not a recognized DAT format");
                     return null;
+                }
+
+                // Handle "ALL" flag
+                if (dftemp == DatFormat.ALL)
+                {
+#if NET5_0_OR_GREATER
+                    List<DatFormat> values = [.. Enum.GetValues<DatFormat>()];
+#else
+                    List<DatFormat> values = [.. Enum.GetValues(typeof(DatFormat)) as DatFormat[] ?? []];
+#endif
+                    values.Remove(DatFormat.ALL);
+                    return values;
                 }
 
                 // Handle deprecated Logiqx
@@ -1529,7 +1542,7 @@ Some special strings that can be used:
                 datFormats.Add(dftemp);
             }
 
-            return datFormats;
+            return [.. datFormats];
         }
 
         /// <summary>
