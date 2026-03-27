@@ -131,7 +131,7 @@ namespace SabreTools.DatTools
         /// <param name="reportName">Name of the output file</param>
         /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
         /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
-        /// <param name="statDatFormat"> Set the statistics output format to use</param>
+        /// <param name="statDatFormats"> Set the statistics output formats to use</param>
         /// <param name="throwOnError">True if the error that is thrown should be thrown back to the caller, false otherwise</param>
         /// <returns>True if the report was written correctly, false otherwise</returns>
         public static bool Write(
@@ -140,14 +140,14 @@ namespace SabreTools.DatTools
             string? outDir,
             bool baddumpCol,
             bool nodumpCol,
-            StatReportFormat statDatFormat,
+            List<StatReportFormat> statDatFormats,
             bool throwOnError = false)
         {
             // If there's no output format, set the default
-            if (statDatFormat == StatReportFormat.None)
+            if (statDatFormats.Count == 0)
             {
                 _staticLogger.Verbose("No report format defined, defaulting to textfile");
-                statDatFormat = StatReportFormat.Textfile;
+                statDatFormats = [StatReportFormat.Textfile];
             }
 
             // Get the proper output file name
@@ -160,7 +160,7 @@ namespace SabreTools.DatTools
             InternalStopwatch watch = new($"Writing out report data to '{outDir}'");
 
             // Get the dictionary of desired output report names
-            Dictionary<StatReportFormat, string> outfiles = CreateOutStatsNames(outDir!, statDatFormat, reportName);
+            Dictionary<StatReportFormat, string> outfiles = CreateOutStatsNames(outDir!, statDatFormats, reportName);
 
             try
             {
@@ -205,10 +205,10 @@ namespace SabreTools.DatTools
         /// Get the proper extension for the stat output format
         /// </summary>
         /// <param name="outDir">Output path to use</param>
-        /// <param name="statDatFormat">StatDatFormat to get the extension for</param>
+        /// <param name="statDatFormats">StatDatFormats to get the extensions for</param>
         /// <param name="reportName">Name of the input file to use</param>
         /// <returns>Dictionary of output formats mapped to file names</returns>
-        private static Dictionary<StatReportFormat, string> CreateOutStatsNames(string outDir, StatReportFormat statDatFormat, string reportName, bool overwrite = true)
+        private static Dictionary<StatReportFormat, string> CreateOutStatsNames(string outDir, List<StatReportFormat> statDatFormats, string reportName, bool overwrite = true)
         {
             Dictionary<StatReportFormat, string> output = [];
 
@@ -223,39 +223,15 @@ namespace SabreTools.DatTools
             // For each output format, get the appropriate stream writer
             output.Add(StatReportFormat.None, CreateOutStatsNamesHelper(outDir, ".null", reportName, overwrite));
 
-#if NET20 || NET35
-            if ((statDatFormat & StatReportFormat.Textfile) != 0)
-#else
-            if (statDatFormat.HasFlag(StatReportFormat.Textfile))
-#endif
+            if (statDatFormats.Contains(StatReportFormat.Textfile))
                 output.Add(StatReportFormat.Textfile, CreateOutStatsNamesHelper(outDir, ".txt", reportName, overwrite));
-
-#if NET20 || NET35
-            if ((statDatFormat & StatReportFormat.CSV) != 0)
-#else
-            if (statDatFormat.HasFlag(StatReportFormat.CSV))
-#endif
+            if (statDatFormats.Contains(StatReportFormat.CSV))
                 output.Add(StatReportFormat.CSV, CreateOutStatsNamesHelper(outDir, ".csv", reportName, overwrite));
-
-#if NET20 || NET35
-            if ((statDatFormat & StatReportFormat.HTML) != 0)
-#else
-            if (statDatFormat.HasFlag(StatReportFormat.HTML))
-#endif
+            if (statDatFormats.Contains(StatReportFormat.HTML))
                 output.Add(StatReportFormat.HTML, CreateOutStatsNamesHelper(outDir, ".html", reportName, overwrite));
-
-#if NET20 || NET35
-            if ((statDatFormat & StatReportFormat.SSV) != 0)
-#else
-            if (statDatFormat.HasFlag(StatReportFormat.SSV))
-#endif
+            if (statDatFormats.Contains(StatReportFormat.SSV))
                 output.Add(StatReportFormat.SSV, CreateOutStatsNamesHelper(outDir, ".ssv", reportName, overwrite));
-
-#if NET20 || NET35
-            if ((statDatFormat & StatReportFormat.TSV) != 0)
-#else
-            if (statDatFormat.HasFlag(StatReportFormat.TSV))
-#endif
+            if (statDatFormats.Contains(StatReportFormat.TSV))
                 output.Add(StatReportFormat.TSV, CreateOutStatsNamesHelper(outDir, ".tsv", reportName, overwrite));
 
             return output;

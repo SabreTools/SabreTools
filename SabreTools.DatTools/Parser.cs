@@ -609,7 +609,6 @@ namespace SabreTools.DatTools
         /// <returns>BaseReport of the specific internal type that corresponds to the inputs</returns>
         public static BaseReport CreateReport(StatReportFormat statReportFormat, List<DatStatistics> statsList)
         {
-#pragma warning disable IDE0072
             return statReportFormat switch
             {
                 StatReportFormat.None => new Reports.Formats.Textfile(statsList),
@@ -622,7 +621,6 @@ namespace SabreTools.DatTools
                 // We use textfile output as a backup for generic BaseReport
                 _ => new Reports.Formats.Textfile(statsList),
             };
-#pragma warning restore IDE0072
         }
 
         #endregion

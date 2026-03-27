@@ -1313,18 +1313,35 @@ Some special strings that can be used:
         }
 
         /// <summary>
-        /// Get StatReportFormat from feature list
+        /// Get StatReportFormats from feature list
         /// </summary>
-        protected StatReportFormat GetStatReportFormat()
+        protected List<StatReportFormat> GetStatReportFormat()
         {
-            StatReportFormat statDatFormat = StatReportFormat.None;
+            List<string> reportTypes = GetStringList(ReportTypeListValue);
 
-            foreach (string rt in GetStringList(ReportTypeListValue))
+            // Handle "ALL"
+            if (reportTypes.Exists(t => t.Trim().Equals("all", StringComparison.InvariantCultureIgnoreCase)))
+#if NET5_0_OR_GREATER
+                return [.. Enum.GetValues<StatReportFormat>()];
+#else
+                return [.. Enum.GetValues(typeof(StatReportFormat)) as StatReportFormat[] ?? []];
+#endif
+
+            HashSet<StatReportFormat> statDatFormats = [];
+            foreach (string rt in reportTypes)
             {
-                statDatFormat |= GetStatReportFormat(rt);
+                StatReportFormat srtemp = GetStatReportFormat(rt);
+                if (srtemp == 0x00)
+                {
+                    _logger.Error($"{rt} is not a recognized report format");
+                    return [];
+                }
+
+                // Add both to the header and the format list
+                statDatFormats.Add(srtemp);
             }
 
-            return statDatFormat;
+            return [.. statDatFormats];
         }
 
         /// <summary>
@@ -1505,7 +1522,7 @@ Some special strings that can be used:
 #endif
 
             HashSet<DatFormat> datFormats = [];
-            foreach (string ot in GetStringList(OutputTypeListValue))
+            foreach (string ot in outputTypes)
             {
                 DatFormat dftemp = GetDatFormat(ot);
                 if (dftemp == 0x00)
@@ -1705,7 +1722,6 @@ Some special strings that can be used:
         {
             return input?.Trim().ToLowerInvariant() switch
             {
-                "all" => StatReportFormat.All,
                 "csv" => StatReportFormat.CSV,
                 "html" => StatReportFormat.HTML,
                 "ssv" => StatReportFormat.SSV,

@@ -11,33 +11,31 @@ namespace SabreTools.Reports
         /// <summary>
         /// Only output to the console
         /// </summary>
-        None = 0x00,
+        None,
 
         /// <summary>
         /// Console-formatted
         /// </summary>
-        Textfile = 1 << 0,
+        Textfile,
 
         /// <summary>
         /// ClrMamePro HTML
         /// </summary>
-        HTML = 1 << 1,
+        HTML,
 
         /// <summary>
         /// Comma-Separated Values (Standardized)
         /// </summary>
-        CSV = 1 << 2,
+        CSV,
 
         /// <summary>
         /// Semicolon-Separated Values (Standardized)
         /// </summary>
-        SSV = 1 << 3,
+        SSV,
 
         /// <summary>
         /// Tab-Separated Values (Standardized)
         /// </summary>
-        TSV = 1 << 4,
-
-        All = int.MaxValue,
+        TSV,
     }
 }
