@@ -75,7 +75,6 @@ namespace SabreTools.Features
 
                     // Parse in from the file
                     DatFile datdata = Parser.CreateDatFile();
-                    datdata.Header.RemoveField(DatHeader.DatFormatKey);
                     Parser.ParseInto(datdata,
                         datfile.CurrentPath,
                         indexId: int.MaxValue,

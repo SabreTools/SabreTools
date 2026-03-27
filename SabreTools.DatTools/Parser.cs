@@ -36,8 +36,13 @@ namespace SabreTools.DatTools
         /// <summary>
         /// Create a generic DatFile to be used
         /// </summary>
-        /// <returns>Empty, default DatFile implementation</returns>
-        public static DatFile CreateDatFile() => CreateDatFile(DatFormat.Logiqx, baseDat: null);
+        /// <returns>Empty, default DatFile implementation with the format key removed</returns>
+        public static DatFile CreateDatFile()
+        {
+            var datFile = CreateDatFile(DatFormat.Logiqx, baseDat: null);
+            datFile.Header.RemoveField(DatHeader.DatFormatKey);
+            return datFile;
+        }
 
         /// <summary>
         /// Create a specific type of DatFile to be used based on a format and a base DAT
@@ -178,24 +183,16 @@ namespace SabreTools.DatTools
         {
             // Null filenames are invalid
             if (filename is null)
-            {
-                DatFile empty = CreateDatFile();
-                empty.Header.RemoveField(DatHeader.DatFormatKey);
-                return empty;
-            }
+                return CreateDatFile();
 
             // Tell users if their file doesn't have a recognized extension
             if (!Utilities.HasValidDatExtension(filename))
             {
                 _staticLogger.Warning($"'{filename} does not have a recognized extension! Skipping...");
-
-                DatFile empty = CreateDatFile();
-                empty.Header.RemoveField(DatHeader.DatFormatKey);
-                return empty;
+                return CreateDatFile();
             }
 
             DatFile datFile = CreateDatFile();
-            datFile.Header.RemoveField(DatHeader.DatFormatKey);
             ParseInto(datFile, filename, statsOnly: true, filterRunner: filterRunner, throwOnError: throwOnError);
             return datFile;
         }

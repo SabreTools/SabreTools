@@ -13,7 +13,7 @@ namespace SabreTools.DatTools.Test
         public void CreateDatFile_Default_Logiqx()
         {
             var datFile = Parser.CreateDatFile();
-            Assert.Equal(DatFormat.Logiqx, datFile.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey));
+            Assert.Equal((DatFormat)0x00, datFile.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey));
             Assert.Equal(0, datFile.Items.DatStatistics.TotalCount);
             Assert.Equal(0, datFile.ItemsDB.DatStatistics.TotalCount);
         }
@@ -191,7 +191,6 @@ namespace SabreTools.DatTools.Test
                 filename = string.Empty;
 
             var datFile = Parser.CreateDatFile();
-            datFile.Header.RemoveField(DatHeader.DatFormatKey);
 
             Parser.ParseInto(datFile, filename, throwOnError: true);
             Assert.Equal(datFormat, datFile.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey));
