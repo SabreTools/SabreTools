@@ -52,7 +52,7 @@ namespace SabreTools.DatTools.Test
         [InlineData(DatFormat.RedumpSpamSum, DatFormat.RedumpSpamSum)]
         public void CreateDatFile_Format_NoBaseDat(DatFormat datFormat, DatFormat expected)
         {
-            var datFile = Parser.CreateDatFile(datFormat, baseDat: null);
+            var datFile = Parser.CreateDatFile(datFormat);
             Assert.Equal(expected, datFile.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey));
             Assert.Equal(0, datFile.Items.DatStatistics.TotalCount);
             Assert.Equal(0, datFile.ItemsDB.DatStatistics.TotalCount);

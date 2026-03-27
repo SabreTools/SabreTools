@@ -39,10 +39,18 @@ namespace SabreTools.DatTools
         /// <returns>Empty, default DatFile implementation with the format key removed</returns>
         public static DatFile CreateDatFile()
         {
-            var datFile = CreateDatFile(DatFormat.Logiqx, baseDat: null);
+            var datFile = CreateDatFile(DatFormat.Logiqx);
             datFile.Header.RemoveField(DatHeader.DatFormatKey);
             return datFile;
         }
+
+        /// <summary>
+        /// Create a specific type of DatFile to be used based on a format
+        /// </summary>
+        /// <param name="datFormat">Format of the DAT to be created</param>
+        /// <returns>DatFile of the specific internal type that corresponds to the inputs</returns>
+        public static DatFile CreateDatFile(DatFormat datFormat)
+            => CreateDatFile(datFormat, baseDat: null);
 
         /// <summary>
         /// Create a specific type of DatFile to be used based on a format and a base DAT
@@ -97,8 +105,8 @@ namespace SabreTools.DatTools
         /// <param name="datModifiers">DatModifiers to get the values from</param>
         public static DatFile CreateDatFile(DatHeader datHeader, DatModifiers datModifiers)
         {
-            DatFormat format = datHeader.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
-            DatFile datFile = CreateDatFile(format, baseDat: null);
+            DatFormat datFormat = datHeader.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
+            DatFile datFile = CreateDatFile(datFormat);
             datFile.SetHeader(datHeader);
             datFile.SetModifiers(datModifiers);
             return datFile;
