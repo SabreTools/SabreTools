@@ -45,7 +45,7 @@ namespace SabreTools.DatTools.Test
 
             // Invoke the method
             string outDir = "C:\\Test";
-            var actual = Writer.CreateOutFileNames(datHeader, outDir, overwrite: true);
+            var actual = Writer.CreateOutFileNames(datHeader, [datFormat], outDir, overwrite: true);
 
             // Check the result
             string expected = $"{outDir}{System.IO.Path.DirectorySeparatorChar}test.{extension}";
@@ -63,7 +63,8 @@ namespace SabreTools.DatTools.Test
 
             // Invoke the method
             string outDir = "C:\\Test";
-            var actual = Writer.CreateOutFileNames(datHeader, outDir, overwrite: true);
+            var datFormats = Writer.SplitFormats(DatFormat.ALL);
+            var actual = Writer.CreateOutFileNames(datHeader, datFormats, outDir, overwrite: true);
 
             // Check the normalized results
             Assert.Equal(30, actual.Count);

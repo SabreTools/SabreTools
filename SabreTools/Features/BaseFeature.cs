@@ -1010,6 +1010,11 @@ Some special strings that can be used:
         public DatHeader? Header { get; set; }
 
         /// <summary>
+        /// Set of all provided formats
+        /// </summary>
+        public List<DatFormat>? DatFormats { get; set; }
+
+        /// <summary>
         /// Pre-configured DatModifiers
         /// </summary>
         /// <remarks>Public because it's an indicator something went wrong</remarks>
@@ -1476,6 +1481,7 @@ Some special strings that can be used:
             datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.VersionKey, GetString(VersionStringValue));
 
             bool deprecated = GetBoolean(DeprecatedValue);
+            DatFormats ??= [];
             foreach (string ot in GetStringList(OutputTypeListValue))
             {
                 DatFormat dftemp = GetDatFormat(ot);
@@ -1488,9 +1494,11 @@ Some special strings that can be used:
                 // Handle deprecated Logiqx
                 DatFormat currentFormat = datHeader.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
                 if (dftemp == DatFormat.Logiqx && deprecated)
-                    datHeader.SetFieldValue(DatHeader.DatFormatKey, currentFormat | DatFormat.LogiqxDeprecated);
-                else
-                    datHeader.SetFieldValue(DatHeader.DatFormatKey, currentFormat | dftemp);
+                    dftemp = DatFormat.LogiqxDeprecated;
+
+                // Add both to the header and the format list
+                datHeader.SetFieldValue(DatHeader.DatFormatKey, currentFormat | dftemp);
+                DatFormats.Add(dftemp);
             }
 
             return datHeader;

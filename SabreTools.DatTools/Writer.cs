@@ -160,8 +160,12 @@ namespace SabreTools.DatTools
             // Output the number of items we're going to be writing
             _staticLogger.User($"A total of {datFile.DatStatistics.TotalCount - datFile.DatStatistics.RemovedCount} items will be written out to '{datFile.Header.GetStringFieldValue(DatHeader.FileNameKey)}'");
 
+            // Get the current format types
+            DatFormat combinedDatFormat = datFile.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
+            List<DatFormat> datFormats = SplitFormats(combinedDatFormat);
+
             // Get the outfile names
-            Dictionary<DatFormat, string> outfiles = CreateOutFileNames(datFile.Header, outDir!, overwrite);
+            Dictionary<DatFormat, string> outfiles = CreateOutFileNames(datFile.Header, datFormats, outDir!, overwrite);
 
             try
             {
@@ -233,10 +237,11 @@ namespace SabreTools.DatTools
         /// Generate a proper outfile name based on a DAT and output directory
         /// </summary>
         /// <param name="datHeader">DatHeader value to pull information from</param>
+        /// <param name="datFormats">DatFormats to try to output/param>
         /// <param name="outDir">Output directory</param>
         /// <param name="overwrite">True if we ignore existing files (default), false otherwise</param>
         /// <returns>Dictionary of output formats mapped to file names</returns>
-        internal static Dictionary<DatFormat, string> CreateOutFileNames(DatHeader datHeader, string outDir, bool overwrite = true)
+        internal static Dictionary<DatFormat, string> CreateOutFileNames(DatHeader datHeader, List<DatFormat> datFormats, string outDir, bool overwrite = true)
         {
             // Create the output dictionary
             Dictionary<DatFormat, string> outfileNames = [];
@@ -254,10 +259,6 @@ namespace SabreTools.DatTools
             if (!outDir.EndsWith(Path.DirectorySeparatorChar.ToString()))
                 outDir += Path.DirectorySeparatorChar;
 
-            // Get the current format types
-            DatFormat datFormat = datHeader.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
-            List<DatFormat> usedFormats = SplitFormats(datFormat);
-
             // Get the extensions from the output type
             List<string> usedExtensions = [];
             foreach (var map in ExtensionMappings)
@@ -267,7 +268,7 @@ namespace SabreTools.DatTools
                 string[] extensions = map.Value;
 
                 // Ignore unused formats
-                if (!usedFormats.Contains(format))
+                if (!datFormats.Contains(format))
                     continue;
 
                 // Get the correct extension, assuming a backup exists
@@ -396,7 +397,7 @@ namespace SabreTools.DatTools
         /// <param name="datFormat">Combined DatFormat value to split</param>
         /// <returns>List representing the individual flag values set</returns>
         /// TODO: Consider making DatFormat a non-flag enum so this doesn't need to happen
-        private static List<DatFormat> SplitFormats(DatFormat datFormat)
+        internal static List<DatFormat> SplitFormats(DatFormat datFormat)
         {
             List<DatFormat> usedFormats = [];
 
