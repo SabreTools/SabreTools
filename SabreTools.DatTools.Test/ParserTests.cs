@@ -150,6 +150,31 @@ namespace SabreTools.DatTools.Test
             Assert.Equal(0, datFile.ItemsDB.DatStatistics.TotalCount);
         }
 
+        #region HasValidDatExtension
+
+        [Theory]
+        [InlineData(null, false)]
+        [InlineData("", false)]
+        [InlineData("no-extension", false)]
+        [InlineData("no-extension.", false)]
+        [InlineData("invalid.ext", false)]
+        [InlineData("invalid..ext", false)]
+        [InlineData("INVALID.EXT", false)]
+        [InlineData("INVALID..EXT", false)]
+        [InlineData(".dat", true)]
+        [InlineData(".DAT", true)]
+        [InlineData("valid_extension.dat", true)]
+        [InlineData("valid_extension..dat", true)]
+        [InlineData("valid_extension.DAT", true)]
+        [InlineData("valid_extension..DAT", true)]
+        public void HasValidDatExtensionTest(string? path, bool expected)
+        {
+            bool actual = Parser.HasValidDatExtension(path);
+            Assert.Equal(expected, actual);
+        }
+
+        #endregion
+
         [Theory]
         [InlineData(null, (DatFormat)0x00, 0)]
         [InlineData("test-logiqx.xml", DatFormat.Logiqx, 6)]

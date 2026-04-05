@@ -99,7 +99,7 @@ namespace SabreTools.Features
                 foreach (ParentablePath datfile in datfilePaths)
                 {
                     // Tell users if their file doesn't have a recognized extension
-                    if (!Core.Tools.Utilities.HasValidDatExtension(datfile.CurrentPath))
+                    if (!Parser.HasValidDatExtension(datfile.CurrentPath))
                     {
                         _logger.Warning($"'{datfile.CurrentPath} does not have a recognized extension! Skipping...");
                         continue;
@@ -175,7 +175,7 @@ namespace SabreTools.Features
                 foreach (ParentablePath datfile in datfilePaths)
                 {
                     // Tell users if their file doesn't have a recognized extension
-                    if (!Core.Tools.Utilities.HasValidDatExtension(datfile.CurrentPath))
+                    if (!Parser.HasValidDatExtension(datfile.CurrentPath))
                     {
                         _logger.Warning($"'{datfile.CurrentPath} does not have a recognized extension! Skipping...");
                         continue;

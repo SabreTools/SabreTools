@@ -323,7 +323,7 @@ namespace SabreTools.Features
                     _logger.User($"Processing '{Path.GetFileName(inputPath.CurrentPath)}'");
 
                     // Tell users if their file doesn't have a recognized extension
-                    if (!Core.Tools.Utilities.HasValidDatExtension(inputPath.CurrentPath))
+                    if (!Parser.HasValidDatExtension(inputPath.CurrentPath))
                     {
                         _logger.Warning($"'{inputPath.CurrentPath} does not have a recognized extension! Skipping...");
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
@@ -389,7 +389,7 @@ namespace SabreTools.Features
                     _logger.User($"Processing '{Path.GetFileName(inputPath.CurrentPath)}'");
 
                     // Tell users if their file doesn't have a recognized extension
-                    if (!Core.Tools.Utilities.HasValidDatExtension(inputPath.CurrentPath))
+                    if (!Parser.HasValidDatExtension(inputPath.CurrentPath))
                     {
                         _logger.Warning($"'{inputPath.CurrentPath} does not have a recognized extension! Skipping...");
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
@@ -544,7 +544,7 @@ namespace SabreTools.Features
 #endif
             {
                 // Tell users if their file doesn't have a recognized extension
-                if (!Core.Tools.Utilities.HasValidDatExtension(inputPath.CurrentPath))
+                if (!Parser.HasValidDatExtension(inputPath.CurrentPath))
                 {
                     _logger.Warning($"'{inputPath.CurrentPath} does not have a recognized extension! Skipping...");
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER

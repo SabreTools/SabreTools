@@ -535,7 +535,7 @@ Reset the internal state:           reset();";
                 foreach (ParentablePath datFilePath in datFilePaths)
                 {
                     // Tell users if their file doesn't have a recognized extension
-                    if (!Utilities.HasValidDatExtension(datFilePath.CurrentPath))
+                    if (!Parser.HasValidDatExtension(datFilePath.CurrentPath))
                     {
                         Console.WriteLine($"'{datFilePath.CurrentPath} does not have a recognized extension! Skipping...");
                         continue;

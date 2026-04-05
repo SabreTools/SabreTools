@@ -6,7 +6,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 #endif
 using SabreTools.Core.Filter;
-using SabreTools.Core.Tools;
 using SabreTools.DatFiles;
 using SabreTools.DatFiles.Formats;
 using SabreTools.DatItems;
@@ -113,6 +112,45 @@ namespace SabreTools.DatTools
         }
 
         /// <summary>
+        /// Get if the given path has a valid DAT extension
+        /// </summary>
+        /// <param name="path">Path to check</param>
+        /// <returns>True if the extension is valid, false otherwise</returns>
+        public static bool HasValidDatExtension(string? path)
+        {
+            // If the path is null or empty, then we return false
+            if (string.IsNullOrEmpty(path))
+                return false;
+
+            // Get the extension from the path, if possible
+            string ext = Path.GetExtension(path).TrimStart('.').ToLowerInvariant();
+
+            // Check against the list of known DAT extensions
+            return ext switch
+            {
+                "csv" => true,
+                "dat" => true,
+                "json" => true,
+                "md2" => true,
+                "md4" => true,
+                "md5" => true,
+                "ripemd128" => true,
+                "ripemd160" => true,
+                "sfv" => true,
+                "sha1" => true,
+                "sha256" => true,
+                "sha384" => true,
+                "sha512" => true,
+                "spamsum" => true,
+                "ssv" => true,
+                "tsv" => true,
+                "txt" => true,
+                "xml" => true,
+                _ => false,
+            };
+        }
+
+        /// <summary>
         /// Parse a DAT and return all found games and roms within
         /// </summary>
         /// <param name="filename">Name of the file to be parsed</param>
@@ -157,7 +195,7 @@ namespace SabreTools.DatTools
             bool throwOnError = false)
         {
             // Check the file extension first as a safeguard
-            if (!Utilities.HasValidDatExtension(filename))
+            if (!HasValidDatExtension(filename))
                 return;
 
             // If the output filename isn't set already, get the internal filename
@@ -217,7 +255,7 @@ namespace SabreTools.DatTools
                 return CreateDatFile();
 
             // Tell users if their file doesn't have a recognized extension
-            if (!Utilities.HasValidDatExtension(filename))
+            if (!HasValidDatExtension(filename))
             {
                 _staticLogger.Warning($"'{filename} does not have a recognized extension! Skipping...");
                 return CreateDatFile();
@@ -264,7 +302,7 @@ namespace SabreTools.DatTools
                 _staticLogger.User($"Adding DAT: {input.CurrentPath}");
 
                 // Tell users if their file doesn't have a recognized extension
-                if (!Utilities.HasValidDatExtension(input.CurrentPath))
+                if (!HasValidDatExtension(input.CurrentPath))
                 {
                     _staticLogger.Warning($"'{input.CurrentPath} does not have a recognized extension! Skipping...");
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
@@ -394,7 +432,7 @@ namespace SabreTools.DatTools
         private static DatFormat GetDatFormat(string filename)
         {
             // Limit the output formats based on extension
-            if (!Utilities.HasValidDatExtension(filename))
+            if (!HasValidDatExtension(filename))
                 return 0;
 
             // Get the extension from the filename

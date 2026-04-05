@@ -67,7 +67,7 @@ namespace SabreTools.Features
             foreach (ParentablePath file in files)
             {
                 // Tell users if their file doesn't have a recognized extension
-                if (!Core.Tools.Utilities.HasValidDatExtension(file.CurrentPath))
+                if (!Parser.HasValidDatExtension(file.CurrentPath))
                 {
                     _logger.Warning($"'{file.CurrentPath} does not have a recognized extension! Skipping...");
                     continue;

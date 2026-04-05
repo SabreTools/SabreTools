@@ -4,7 +4,6 @@ using System.IO;
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
 using System.Threading.Tasks;
 #endif
-using SabreTools.Core.Tools;
 using SabreTools.DatFiles;
 using SabreTools.DatItems;
 using SabreTools.IO.Extensions;
@@ -251,7 +250,7 @@ namespace SabreTools.DatTools
                 : datHeader.GetStringFieldValue(DatHeader.FileNameKey);
 
             // Strip off the extension if it's a holdover from the DAT
-            if (Utilities.HasValidDatExtension(filename))
+            if (Parser.HasValidDatExtension(filename))
                 filename = Path.GetFileNameWithoutExtension(filename);
 
             // Double check the outDir for the end delim
