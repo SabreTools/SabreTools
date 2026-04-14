@@ -1,8 +1,5 @@
 using System.Collections.Generic;
 using System.IO;
-#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-using System.Threading.Tasks;
-#endif
 using SabreTools.Core.Tools;
 using SabreTools.DatFiles;
 using SabreTools.DatItems;
@@ -78,28 +75,15 @@ namespace SabreTools.DatTools
 
             // Now loop through and get only directories from the input paths
             List<string> directories = [];
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            Parallel.ForEach(inputs, Core.Globals.ParallelOptions, input =>
-#elif NET40_OR_GREATER
-            Parallel.ForEach(inputs, input =>
-#else
             foreach (var input in inputs)
-#endif
             {
                 // Add to the list if the input is a directory
                 if (Directory.Exists(input))
                 {
                     _staticLogger.Verbose($"Adding depot: {input}");
-                    lock (directories)
-                    {
-                        directories.Add(input);
-                    }
+                    directories.Add(input);
                 }
-#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            });
-#else
             }
-#endif
 
             // If we don't have any directories, we want to exit
             if (directories.Count == 0)
