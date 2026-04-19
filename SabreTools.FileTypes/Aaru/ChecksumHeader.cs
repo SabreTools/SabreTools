@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using SabreTools.IO.Extensions;
+using SabreTools.Numerics.Extensions;
 
 namespace SabreTools.FileTypes.Aaru
 {

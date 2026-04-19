@@ -6,10 +6,11 @@ using System.Net;
 #endif
 using System.Text;
 using System.Xml;
-using SabreTools.Core.Tools;
-using SabreTools.DatFiles;
-using SabreTools.DatItems;
 using SabreTools.Hashing;
+using SabreTools.Metadata.DatFiles;
+using SabreTools.Text.Extensions;
+using ItemStatus = SabreTools.Data.Models.Metadata.ItemStatus;
+using ItemType = SabreTools.Data.Models.Metadata.ItemType;
 
 #pragma warning disable IDE0290 // Use primary constructor
 namespace SabreTools.Reports.Formats
@@ -199,7 +200,8 @@ body {
         /// </summary>
         /// <param name="xtw">XmlTextWriter to write to</param>
         /// <param name="stat">DatStatistics object to write out</param>
-        /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
+        /// <param name="baddumpCol">True if baddumps should be included in output, false ot
+        /// herwise</param>
         /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
         private static void WriteIndividual(XmlTextWriter xtw, DatStatistics stat, bool baddumpCol, bool nodumpCol)
         {

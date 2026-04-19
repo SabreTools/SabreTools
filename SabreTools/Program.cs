@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using SabreTools.CommandLine;
 using SabreTools.CommandLine.Features;
 using SabreTools.Features;
-using SabreTools.IO.Logging;
+using SabreTools.Logging;
 
 namespace SabreTools
 {

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using SabreTools.DatItems;
-using SabreTools.DatItems.Formats;
+using SabreTools.Metadata.DatItems;
+using SabreTools.Metadata.DatItems.Formats;
 using Xunit;
 
 namespace SabreTools.DatTools.Test
@@ -17,7 +17,7 @@ namespace SabreTools.DatTools.Test
 
             // Setup the remover
             var remover = new Remover();
-            remover.PopulateExclusionsFromList(exclusions);
+            remover.PopulateExclusions(exclusions);
 
             // Check the exclusion lists
             Assert.Empty(remover.HeaderFieldNames);
@@ -33,7 +33,7 @@ namespace SabreTools.DatTools.Test
 
             // Setup the remover
             var remover = new Remover();
-            remover.PopulateExclusionsFromList(exclusions);
+            remover.PopulateExclusions(exclusions);
 
             // Check the exclusion lists
             Assert.Empty(remover.HeaderFieldNames);
@@ -52,7 +52,7 @@ namespace SabreTools.DatTools.Test
 
             // Setup the remover
             var remover = new Remover();
-            remover.PopulateExclusionsFromList(exclusions);
+            remover.PopulateExclusions(exclusions);
 
             // Check the exclusion lists
             Assert.Empty(remover.HeaderFieldNames);
@@ -71,7 +71,7 @@ namespace SabreTools.DatTools.Test
 
             // Setup the remover
             var remover = new Remover();
-            remover.PopulateExclusionsFromList(exclusions);
+            remover.PopulateExclusions(exclusions);
 
             // Check the exclusion lists
             Assert.Empty(remover.HeaderFieldNames);
@@ -90,7 +90,7 @@ namespace SabreTools.DatTools.Test
 
             // Setup the remover
             var remover = new Remover();
-            remover.PopulateExclusionsFromList(exclusions);
+            remover.PopulateExclusions(exclusions);
 
             // Check the exclusion lists
             Assert.Empty(remover.HeaderFieldNames);
@@ -120,15 +120,17 @@ namespace SabreTools.DatTools.Test
         [Fact]
         public void RemoveFields_Machine()
         {
-            var machine = new Machine();
-            machine.SetName("bar");
-            machine.SetFieldValue<string?>(Data.Models.Metadata.Machine.DescriptionKey, "bar");
+            var machine = new Machine
+            {
+                Name = "bar",
+                Description = "bar",
+            };
 
             var remover = new Remover();
             remover.PopulateExclusions("Machine.Name");
             remover.RemoveFields(machine);
 
-            Assert.Null(machine.GetName());
+            Assert.Null(machine.Name);
         }
 
         #endregion

@@ -1,13 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using SabreTools.Core;
-using SabreTools.DatFiles;
 using SabreTools.DatTools;
 using SabreTools.IO;
 using SabreTools.IO.Extensions;
-using SabreTools.IO.Logging;
+using SabreTools.Logging;
+using SabreTools.Metadata.DatFiles;
 
 namespace SabreTools.Features
 {
@@ -109,15 +109,15 @@ namespace SabreTools.Features
             if (updateItemFieldNames is null || updateItemFieldNames.Count == 0)
             {
                 updateItemFieldNames = [];
-                updateItemFieldNames["item"] = [Data.Models.Metadata.Rom.NameKey];
+                updateItemFieldNames["item"] = ["name"];
             }
 
             // Ensure we only have files in the inputs
-            List<ParentablePath> inputPaths = PathTool.GetFilesOnly(Inputs, appendParent: true);
-            List<ParentablePath> basePaths = PathTool.GetFilesOnly(GetStringList(BaseDatListValue));
+            List<ParentablePath> inputPaths = IOExtensions.GetFilesOnly(Inputs, appendParent: true);
+            List<ParentablePath> basePaths = IOExtensions.GetFilesOnly(GetStringList(BaseDatListValue));
 
             // Ensure the output directory
-            OutputDir = OutputDir.Ensure();
+            OutputDir = OutputDir.EnsureDirectory();
 
             // If we're in standard update mode, run through all of the inputs
             if (updateMode == UpdateMode.None)
@@ -170,7 +170,7 @@ namespace SabreTools.Features
                 // Ensure there are output formats
                 var datFormats = DatFormats;
                 if (datFormats is null || datFormats.Count == 0)
-                    datFormats = [dupeData.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
+                    datFormats = [dupeData.Header.DatFormat!.Value];
 
                 InternalStopwatch watch = new("Outputting duplicate DAT");
                 dupeData.Write(datFormats, OutputDir, overwrite: false);
@@ -189,7 +189,7 @@ namespace SabreTools.Features
                 // Ensure there are output formats
                 var datFormats = DatFormats;
                 if (datFormats is null || datFormats.Count == 0)
-                    datFormats = [outerDiffData.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
+                    datFormats = [outerDiffData.Header.DatFormat!.Value];
 
                 InternalStopwatch watch = new("Outputting no duplicate DAT");
                 outerDiffData.Write(datFormats, OutputDir, overwrite: false);
@@ -220,7 +220,7 @@ namespace SabreTools.Features
                     // Ensure there are output formats
                     var datFormats = DatFormats;
                     if (datFormats is null || datFormats.Count == 0)
-                        datFormats = [datFiles[j].Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
+                        datFormats = [datFiles[j].Header.DatFormat!.Value];
 
                     // Try to output the file
                     string path = inputPaths[j].GetOutputPath(OutputDir, GetBoolean(InplaceValue))!;
@@ -261,9 +261,9 @@ namespace SabreTools.Features
                     // Update the naming for the header
                     string innerpost = $" ({j} - {inputPaths[j].GetNormalizedFileName(true)} Only)";
                     datHeaders[j] = userInputDat.Header;
-                    datHeaders[j].SetFieldValue<string?>(DatHeader.FileNameKey, datHeaders[j].GetStringFieldValue(DatHeader.FileNameKey) + innerpost);
-                    datHeaders[j].SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, datHeaders[j].GetStringFieldValue(Data.Models.Metadata.Header.NameKey) + innerpost);
-                    datHeaders[j].SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, datHeaders[j].GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey) + innerpost);
+                    datHeaders[j].FileName = datHeaders[j].FileName + innerpost;
+                    datHeaders[j].Name = datHeaders[j].Name + innerpost;
+                    datHeaders[j].Description = datHeaders[j].Description + innerpost;
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 });
 #else
@@ -288,7 +288,7 @@ namespace SabreTools.Features
                     // Ensure there are output formats
                     var datFormats = DatFormats;
                     if (datFormats is null || datFormats.Count == 0)
-                        datFormats = [datFiles[j].Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
+                        datFormats = [datFiles[j].Header.DatFormat!.Value];
 
                     // Try to output the file
                     string path = inputPaths[j].GetOutputPath(OutputDir, GetBoolean(InplaceValue))!;
@@ -339,7 +339,7 @@ namespace SabreTools.Features
                         || DatFormats.Contains(DatFormat.TSV);
 
                     // Clear format and parse
-                    repDat.Header.RemoveField(DatHeader.DatFormatKey);
+                    repDat.Header.DatFormat = null;
                     Parser.ParseInto(repDat,
                         inputPath.CurrentPath,
                         indexId: 1,
@@ -350,7 +350,7 @@ namespace SabreTools.Features
                     // Ensure there are output formats
                     var datFormats = DatFormats;
                     if (datFormats is null || datFormats.Count == 0)
-                        datFormats = [repDat.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
+                        datFormats = [repDat.Header.DatFormat!.Value];
 
                     // Perform additional processing steps
                     AdditionalProcessing(repDat);
@@ -405,7 +405,7 @@ namespace SabreTools.Features
                         || DatFormats.Contains(DatFormat.TSV);
 
                     // Clear format and parse
-                    repDat.Header.RemoveField(DatHeader.DatFormatKey);
+                    repDat.Header.DatFormat = null;
                     Parser.ParseInto(repDat,
                         inputPath.CurrentPath,
                         indexId: 1,
@@ -416,7 +416,7 @@ namespace SabreTools.Features
                     // Ensure there are output formats
                     var datFormats = DatFormats;
                     if (datFormats is null || datFormats.Count == 0)
-                        datFormats = [repDat.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
+                        datFormats = [repDat.Header.DatFormat!.Value];
 
                     // Perform additional processing steps
                     AdditionalProcessing(repDat);
@@ -448,7 +448,7 @@ namespace SabreTools.Features
 #endif
             {
                 // If we're in SuperDAT mode, prefix all games with their respective DATs
-                if (string.Equals(userInputDat.Header.GetStringFieldValue(Data.Models.Metadata.Header.TypeKey), "SuperDAT", StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(userInputDat.Header.Type, "SuperDAT", StringComparison.OrdinalIgnoreCase))
                 {
                     MergeSplit.ApplySuperDAT(userInputDat, inputPaths);
                     MergeSplit.ApplySuperDATDB(userInputDat, inputPaths);
@@ -457,7 +457,7 @@ namespace SabreTools.Features
                 // Ensure there are output formats
                 var datFormats = DatFormats;
                 if (datFormats is null || datFormats.Count == 0)
-                    datFormats = [userInputDat.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
+                    datFormats = [userInputDat.Header.DatFormat!.Value];
 
                 userInputDat.Write(datFormats, OutputDir);
             }
@@ -491,39 +491,39 @@ namespace SabreTools.Features
 #endif
 
             // Date
-            if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DateKey)))
-                datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DateKey, DateTime.Now.ToString("yyyy-MM-dd"));
+            if (string.IsNullOrEmpty(datFile.Header.Date))
+                datFile.Header.Date = DateTime.Now.ToString("yyyy-MM-dd");
 
             // Name
-            if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey)))
+            if (string.IsNullOrEmpty(datFile.Header.Name))
             {
-                datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, (updateMode != 0 ? "DiffDAT" : "MergeDAT")
-                    + (datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.TypeKey) == "SuperDAT" ? "-SuperDAT" : string.Empty)
-                    + (Cleaner.DedupeRoms != DedupeType.None ? "-deduped" : string.Empty));
+                datFile.Header.Name = (updateMode != 0 ? "DiffDAT" : "MergeDAT")
+                    + (datFile.Header.Type == "SuperDAT" ? "-SuperDAT" : string.Empty)
+                    + (Cleaner.DedupeRoms != DedupeType.None ? "-deduped" : string.Empty);
             }
 
             // Description
-            if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)))
+            if (string.IsNullOrEmpty(datFile.Header.Description))
             {
-                datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, (updateMode != 0 ? "DiffDAT" : "MergeDAT")
-                    + (datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.TypeKey) == "SuperDAT" ? "-SuperDAT" : string.Empty)
-                    + (Cleaner!.DedupeRoms != DedupeType.None ? " - deduped" : string.Empty));
+                datFile.Header.Description = (updateMode != 0 ? "DiffDAT" : "MergeDAT")
+                    + (datFile.Header.Type == "SuperDAT" ? "-SuperDAT" : string.Empty)
+                    + (Cleaner!.DedupeRoms != DedupeType.None ? " - deduped" : string.Empty);
 
                 if (!noAutomaticDate)
-                    datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, $"{datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)} ({datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DateKey)})");
+                    datFile.Header.Description = $"{datFile.Header.Description} ({datFile.Header.Date})";
             }
 
             // Category
-            if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.CategoryKey)) && updateMode != 0)
-                datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.CategoryKey, "DiffDAT");
+            if (string.IsNullOrEmpty(datFile.Header.Category) && updateMode != 0)
+                datFile.Header.Category = "DiffDAT";
 
             // Author
-            if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.AuthorKey)))
-                datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.AuthorKey, $"SabreTools {Globals.Version}");
+            if (string.IsNullOrEmpty(datFile.Header.Author))
+                datFile.Header.Author = $"SabreTools {Globals.Version}";
 
             // Comment
-            if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.CommentKey)))
-                datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.CommentKey, $"Generated by SabreTools {Globals.Version}");
+            if (string.IsNullOrEmpty(datFile.Header.Comment))
+                datFile.Header.Comment = $"Generated by SabreTools {Globals.Version}";
         }
 
         /// <summary>
@@ -564,7 +564,7 @@ namespace SabreTools.Features
                     || DatFormats.Contains(DatFormat.TSV);
 
                 // Clear format and parse
-                datFile.Header.RemoveField(DatHeader.DatFormatKey);
+                datFile.Header.DatFormat = null;
                 Parser.ParseInto(datFile,
                     inputPath.CurrentPath,
                     keep: true,
@@ -574,7 +574,7 @@ namespace SabreTools.Features
                 // Ensure there are output formats
                 var datFormats = DatFormats;
                 if (datFormats is null || datFormats.Count == 0)
-                    datFormats = [datFile.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
+                    datFormats = [datFile.Header.DatFormat!.Value];
 
                 // Set any missing header values
                 SetDefaultHeaderValues(datFile, updateMode: UpdateMode.None, noAutomaticDate: noAutomaticDate);

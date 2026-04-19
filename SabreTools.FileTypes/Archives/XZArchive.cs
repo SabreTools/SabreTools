@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using SabreTools.Hashing;
-using SabreTools.IO.Extensions;
+using SabreTools.Text.Extensions;
 #if NET462_OR_GREATER || NETCOREAPP
+using SabreTools.IO.Extensions;
+using SabreTools.Metadata.DatFiles;
+using SabreTools.Numerics.Extensions;
 using SharpCompress.Compressors.Xz;
 #endif
 
@@ -68,7 +71,7 @@ namespace SabreTools.FileTypes.Archives
             {
                 // Open the input file
                 using var inputFile = File.Open(Filename, FileMode.Open, FileAccess.Read, FileShare.Read);
-                var xz = Serialization.Wrappers.XZ.Create(inputFile);
+                var xz = Wrappers.XZ.Create(inputFile);
 
                 // Write the output file
                 encounteredErrors = !xz.Extract(outDir, includeDebug: false);
@@ -201,8 +204,8 @@ namespace SabreTools.FileTypes.Archives
 
                     using Stream fs = File.Open(Filename!, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                     fs.Seek(-8, SeekOrigin.End);
-                    xzEntryRom.CRC = fs.ReadBytes(4);
-                    Array.Reverse(xzEntryRom.CRC);
+                    xzEntryRom.CRC32 = fs.ReadBytes(4);
+                    Array.Reverse(xzEntryRom.CRC32);
                     xzEntryRom.Size = fs.ReadInt32BigEndian();
                 }
                 // Otherwise, use the stream directly
@@ -248,7 +251,7 @@ namespace SabreTools.FileTypes.Archives
             string datum = Path.GetFileName(Filename).ToLowerInvariant();
 
             // Check if the name is the right length
-            if (!Regex.IsMatch(datum, @"^[0-9a-f]{" + Constants.SHA1Length + @"}\.xz"))
+            if (!Regex.IsMatch(datum, @"^[0-9a-f]{" + HashType.SHA1.ZeroString.Length + @"}\.xz"))
             {
                 _logger.Warning($"Non SHA-1 filename found, skipping: '{Path.GetFullPath(Filename)}'");
                 return false;
@@ -270,7 +273,7 @@ namespace SabreTools.FileTypes.Archives
             string datum = Path.GetFileName(Filename).ToLowerInvariant();
 
             // Check if the name is the right length
-            if (!Regex.IsMatch(datum, @"^[0-9a-f]{" + Constants.SHA1Length + @"}\.xz"))
+            if (!Regex.IsMatch(datum, @"^[0-9a-f]{" + HashType.SHA1.ZeroString.Length + @"}\.xz"))
             {
                 _logger.Warning($"Non SHA-1 filename found, skipping: '{Path.GetFullPath(Filename)}'");
                 return null;
@@ -328,7 +331,8 @@ namespace SabreTools.FileTypes.Archives
             baseFile ??= FileTypeTool.GetInfo(stream, _hashTypes);
 
             // Get the output file name
-            string outfile = Path.Combine(outDir, Core.Tools.Utilities.GetDepotPath(baseFile.SHA1, Depth)!);
+            var depot = new DepotInformation(true, Depth);
+            string outfile = Path.Combine(outDir, depot.GetDepotPath(baseFile.SHA1)!);
             outfile = outfile.Replace(".gz", ".xz");
 
             // Check to see if the folder needs to be created

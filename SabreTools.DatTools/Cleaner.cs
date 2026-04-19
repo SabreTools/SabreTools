@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using SabreTools.Core.Tools;
-using SabreTools.DatFiles;
-using SabreTools.DatItems;
-using SabreTools.IO.Logging;
+using SabreTools.Logging;
+using SabreTools.Metadata.DatFiles;
+using SabreTools.Metadata.DatItems;
+using SabreTools.Text.Extensions;
 
 namespace SabreTools.DatTools
 {
@@ -107,7 +107,7 @@ namespace SabreTools.DatTools
                 // Bucket and dedupe according to the flag
                 if (DedupeRoms == DedupeType.Full)
                 {
-                    datFile.BucketBy(ItemKey.CRC);
+                    datFile.BucketBy(ItemKey.CRC32);
                     datFile.Deduplicate();
                 }
                 else if (DedupeRoms == DedupeType.Game)
@@ -172,7 +172,7 @@ namespace SabreTools.DatTools
                         continue;
 
                     // Get the machine associated with the item, if possible
-                    var machine = item.GetMachine();
+                    var machine = item.Machine;
                     if (machine is null)
                         continue;
 
@@ -202,7 +202,7 @@ namespace SabreTools.DatTools
                         continue;
 
                     // Get the machine associated with the item, if possible
-                    var machine = datFile.GetMachineForItemDB(item.Key);
+                    var machine = datFile.GetMachineDB(item.Value.MachineIndex);
                     if (machine.Value is null)
                         continue;
 
@@ -220,8 +220,8 @@ namespace SabreTools.DatTools
         internal void CleanDatItem(DatItem datItem, Machine machine)
         {
             // Get the fields for processing
-            string? machineName = machine.GetName();
-            string? machineDesc = machine.GetStringFieldValue(Data.Models.Metadata.Machine.DescriptionKey);
+            string? machineName = machine.Name;
+            string? machineDesc = machine.Description;
             string? datItemName = datItem.GetName();
 
             // If we're stripping unicode characters, strip machine name and description
@@ -263,8 +263,8 @@ namespace SabreTools.DatTools
             }
 
             // Set the fields back, if necessary
-            machine.SetName(machineName);
-            machine.SetFieldValue<string?>(Data.Models.Metadata.Machine.DescriptionKey, machineDesc);
+            machine.Name = machineName;
+            machine.Description = machineDesc;
             datItem.SetName(datItemName);
         }
 

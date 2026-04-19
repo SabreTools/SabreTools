@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using SabreTools.Core.Filter;
-using SabreTools.Core.Tools;
-using SabreTools.DatFiles;
+using SabreTools.Data.Extensions;
 using SabreTools.DatTools;
 using SabreTools.Hashing;
 using SabreTools.IO;
-using SabreTools.IO.Logging;
+using SabreTools.IO.Extensions;
+using SabreTools.Logging;
+using SabreTools.Metadata.DatFiles;
+using SabreTools.Metadata.Filter;
+using MergingFlag = SabreTools.Data.Models.Metadata.MergingFlag;
 
 #pragma warning disable IDE0059 // Unnecessary assignment of a value
 #pragma warning disable IDE0290 // Use primary constructor
@@ -286,7 +288,7 @@ Reset the internal state:           reset();";
 
                 // TODO: We might not want to remove dates in the future
                 Remover dfdRemover = new();
-                dfdRemover.PopulateExclusionsFromList(["DatItem.Date"]);
+                dfdRemover.PopulateExclusions(["DatItem.Date"]);
                 dfdRemover.ApplyRemovals(batchState.DatFile);
             }
         }
@@ -529,7 +531,7 @@ Reset the internal state:           reset();";
             public override void Process(BatchState batchState)
             {
                 // Get only files from inputs
-                List<ParentablePath> datFilePaths = PathTool.GetFilesOnly([.. Arguments]);
+                List<ParentablePath> datFilePaths = IOExtensions.GetFilesOnly([.. Arguments]);
 
                 // Assume there could be multiple
                 foreach (ParentablePath datFilePath in datFilePaths)
@@ -725,7 +727,7 @@ Reset the internal state:           reset();";
             public override void Process(BatchState batchState)
             {
                 var remover = new Remover();
-                remover.PopulateExclusionsFromList([.. Arguments]);
+                remover.PopulateExclusions([.. Arguments]);
                 remover.ApplyRemovals(batchState.DatFile);
             }
         }
@@ -826,7 +828,7 @@ Reset the internal state:           reset();";
                 try
                 {
                     var key = new FilterKey(itemFieldString);
-                    if (!string.Equals(key.ItemName, Data.Models.Metadata.MetadataFile.HeaderKey, StringComparison.OrdinalIgnoreCase))
+                    if (!string.Equals(key.ItemName, "header", StringComparison.OrdinalIgnoreCase))
                         throw new Exception();
                 }
                 catch
@@ -902,7 +904,7 @@ Reset the internal state:           reset();";
                 // Ensure there are output formats
                 var datFormats = batchState.DatFormats;
                 if (datFormats is null || datFormats.Count == 0)
-                    datFormats = [batchState.DatFile.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
+                    datFormats = [batchState.DatFile.Header.DatFormat!.Value];
 
                 // Write out the dat with the current state
                 batchState.DatFile.Write(datFormats, batchState.OutputDirectory, overwrite: overwrite);

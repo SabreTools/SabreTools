@@ -3,10 +3,10 @@ using System.IO;
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
 using System.Threading.Tasks;
 #endif
-using SabreTools.DatFiles;
-using SabreTools.DatItems;
+using SabreTools.Metadata.DatFiles;
+using SabreTools.Metadata.DatItems;
 using SabreTools.IO;
-using SabreTools.IO.Logging;
+using SabreTools.Logging;
 
 namespace SabreTools.DatTools
 {
@@ -25,7 +25,7 @@ namespace SabreTools.DatTools
         /// <param name="useGames">True to diff using games, false to use hashes</param>
         public static void Against(DatFile datFile, DatFile intDat, bool useGames)
         {
-            InternalStopwatch watch = new($"Comparing '{intDat.Header.GetStringFieldValue(DatHeader.FileNameKey)}' to base DAT");
+            InternalStopwatch watch = new($"Comparing '{intDat.Header.FileName}' to base DAT");
 
             // For comparison's sake, we want to a the base bucketing
             if (useGames)
@@ -34,7 +34,7 @@ namespace SabreTools.DatTools
             }
             else
             {
-                intDat.BucketBy(ItemKey.CRC);
+                intDat.BucketBy(ItemKey.CRC32);
                 intDat.Deduplicate();
             }
 
@@ -218,20 +218,10 @@ namespace SabreTools.DatTools
                             keepDatItems.Add(datItem);
                     }
 
-                    // Get all existing mappings
-                    List<ItemMappings> currentMappings = keepDatItems.ConvertAll(item =>
-                    {
-                        return new ItemMappings(
-                            item.Value,
-                            intDat.GetMachineForItemDB(item.Key).Key,
-                            intDat.GetSourceForItemDB(item.Key).Key
-                        );
-                    });
-
                     // Now add the new list to the key
                     intDat.RemoveBucketDB(key);
-                    currentMappings.ForEach(map =>
-                        intDat.AddItemDB(map.Item, map.MachineId, map.SourceId, statsOnly: false));
+                    keepDatItems.ForEach(kvp =>
+                        intDat.AddItemDB(kvp.Value, statsOnly: false));
                 }
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
@@ -256,7 +246,7 @@ namespace SabreTools.DatTools
             List<DatFile> outDats = [];
 
             // Ensure the current DatFile is sorted optimally
-            datFile.BucketBy(ItemKey.CRC, norename: false);
+            datFile.BucketBy(ItemKey.CRC32, norename: false);
             datFile.Deduplicate();
 
             // Loop through each of the inputs and get or create a new DatData object
@@ -319,7 +309,7 @@ namespace SabreTools.DatTools
 
                 foreach (DatItem item in items)
                 {
-                    var source = item.GetFieldValue<Source?>(DatItem.SourceKey);
+                    var source = item.Source;
                     if (source is not null && source.Index == index)
                         indexDat.AddItem(item, statsOnly: false);
                 }
@@ -372,14 +362,18 @@ namespace SabreTools.DatTools
 #endif
             {
                 // Get the machine and source index for this item
-                long machineIndex = datFile.GetMachineForItemDB(item.Key).Key;
-                long sourceIndex = datFile.GetSourceForItemDB(item.Key).Key;
+                long machineIndex = item.Value.MachineIndex;
+                long sourceIndex = item.Value.SourceIndex;
 
                 // Get the source associated with the item
                 var source = datFile.ItemsDB.GetSource(sourceIndex);
 
-                if (source is not null && source.Index == index)
-                    indexDat.AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
+                if (source.Value is not null && source.Value.Index == index)
+                {
+                    item.Value.MachineIndex = machineRemapping[machineIndex];
+                    item.Value.SourceIndex = sourceRemapping[sourceIndex];
+                    indexDat.AddItemDB(item.Value, statsOnly: false);
+                }
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
@@ -430,20 +424,20 @@ namespace SabreTools.DatTools
             var watch = new InternalStopwatch("Initializing duplicate DAT");
 
             // Fill in any information not in the base DAT
-            if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(DatHeader.FileNameKey)))
-                datFile.Header.SetFieldValue<string?>(DatHeader.FileNameKey, "All DATs");
+            if (string.IsNullOrEmpty(datFile.Header.FileName))
+                datFile.Header.FileName = "All DATs";
 
-            if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey)))
-                datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, "datFile.All DATs");
+            if (string.IsNullOrEmpty(datFile.Header.Name))
+                datFile.Header.Name = "datFile.All DATs";
 
-            if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)))
-                datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, "datFile.All DATs");
+            if (string.IsNullOrEmpty(datFile.Header.Description))
+                datFile.Header.Description = "datFile.All DATs";
 
             string post = " (Duplicates)";
             DatFile dupeData = Parser.CreateDatFile(datFile.Header, datFile.Modifiers);
-            dupeData.Header.SetFieldValue<string?>(DatHeader.FileNameKey, dupeData.Header.GetStringFieldValue(DatHeader.FileNameKey) + post);
-            dupeData.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, dupeData.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey) + post);
-            dupeData.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, dupeData.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey) + post);
+            dupeData.Header.FileName = dupeData.Header.FileName + post;
+            dupeData.Header.Name = dupeData.Header.Name + post;
+            dupeData.Header.Description = dupeData.Header.Description + post;
             dupeData.ResetDictionary();
 
             watch.Stop();
@@ -480,16 +474,16 @@ namespace SabreTools.DatTools
                 foreach (DatItem item in items)
                 {
 #if NET20 || NET35
-                    if ((item.GetFieldValue<DupeType>(DatItem.DupeTypeKey) & DupeType.External) != 0)
+                    if ((item.DupeType & DupeType.External) != 0)
 #else
-                    if (item.GetFieldValue<DupeType>(DatItem.DupeTypeKey).HasFlag(DupeType.External))
+                    if (item.DupeType.HasFlag(DupeType.External))
 #endif
                     {
                         if (item.Clone() is not DatItem newrom)
                             continue;
 
-                        if (item.GetFieldValue<Source?>(DatItem.SourceKey) is not null)
-                            newrom.GetMachine()!.SetName(newrom.GetMachine()!.GetName() + $" ({Path.GetFileNameWithoutExtension(inputs[item.GetFieldValue<Source?>(DatItem.SourceKey)!.Index].CurrentPath)})");
+                        if (item.Source is not null)
+                            newrom.Machine!.Name = $"{newrom.Machine!.Name} ({Path.GetFileNameWithoutExtension(inputs[item.Source!.Index].CurrentPath)})";
 
                         dupeData.AddItem(newrom, statsOnly: false);
                     }
@@ -542,14 +536,14 @@ namespace SabreTools.DatTools
 #endif
             {
                 // Get the machine and source index for this item
-                long machineIndex = datFile.GetMachineForItemDB(item.Key).Key;
-                long sourceIndex = datFile.GetSourceForItemDB(item.Key).Key;
+                long machineIndex = item.Value.MachineIndex;
+                long sourceIndex = item.Value.SourceIndex;
 
                 // If the current item isn't an external duplicate
 #if NET20 || NET35
-                if ((item.Value.GetFieldValue<DupeType>(DatItem.DupeTypeKey) & DupeType.External) == 0)
+                if ((item.Value.DupeType & DupeType.External) == 0)
 #else
-                if (!item.Value.GetFieldValue<DupeType>(DatItem.DupeTypeKey).HasFlag(DupeType.External))
+                if (!item.Value.DupeType.HasFlag(DupeType.External))
 #endif
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
@@ -559,7 +553,7 @@ namespace SabreTools.DatTools
 
                 // Get the current source and machine
                 var currentSource = sources[sourceIndex];
-                string? currentMachineName = machines[machineIndex].GetName();
+                string? currentMachineName = machines[machineIndex].Name;
                 var currentMachine = datFile.ItemsDB.GetMachine(currentMachineName);
                 if (currentMachine.Value is null)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
@@ -574,12 +568,14 @@ namespace SabreTools.DatTools
                 if (renamedMachine.Value is null)
                 {
                     var newMachine = currentMachine.Value.Clone() as Machine;
-                    newMachine!.SetName(renamedMachineName);
+                    newMachine!.Name = renamedMachineName;
                     long newMachineIndex = dupeData.AddMachineDB(newMachine!);
                     renamedMachine = new KeyValuePair<long, Machine?>(newMachineIndex, newMachine);
                 }
 
-                dupeData.AddItemDB(item.Value, renamedMachine.Key, sourceRemapping[sourceIndex], statsOnly: false);
+                item.Value.MachineIndex = renamedMachine.Key;
+                item.Value.SourceIndex = sourceRemapping[sourceIndex];
+                dupeData.AddItemDB(item.Value, statsOnly: false);
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
@@ -631,14 +627,14 @@ namespace SabreTools.DatTools
             var watch = new InternalStopwatch("Initializing all individual DATs");
 
             // Fill in any information not in the base DAT
-            if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(DatHeader.FileNameKey)))
-                datFile.Header.SetFieldValue<string?>(DatHeader.FileNameKey, "All DATs");
+            if (string.IsNullOrEmpty(datFile.Header.FileName))
+                datFile.Header.FileName = "All DATs";
 
-            if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey)))
-                datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, "All DATs");
+            if (string.IsNullOrEmpty(datFile.Header.Name))
+                datFile.Header.Name = "All DATs";
 
-            if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)))
-                datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, "All DATs");
+            if (string.IsNullOrEmpty(datFile.Header.Description))
+                datFile.Header.Description = "All DATs";
 
             // Loop through each of the inputs and get or create a new DatData object
             DatFile[] outDatsArray = new DatFile[inputs.Count];
@@ -653,9 +649,9 @@ namespace SabreTools.DatTools
             {
                 string innerpost = $" ({j} - {inputs[j].GetNormalizedFileName(true)} Only)";
                 DatFile diffData = Parser.CreateDatFile(datFile.Header, datFile.Modifiers);
-                diffData.Header.SetFieldValue<string?>(DatHeader.FileNameKey, diffData.Header.GetStringFieldValue(DatHeader.FileNameKey) + innerpost);
-                diffData.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, diffData.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey) + innerpost);
-                diffData.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, diffData.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey) + innerpost);
+                diffData.Header.FileName = diffData.Header.FileName + innerpost;
+                diffData.Header.Name = diffData.Header.Name + innerpost;
+                diffData.Header.Description = diffData.Header.Description + innerpost;
                 diffData.ResetDictionary();
                 outDatsArray[j] = diffData;
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
@@ -695,15 +691,15 @@ namespace SabreTools.DatTools
                 // Loop through and add the items correctly
                 foreach (DatItem item in items)
                 {
-                    if (item.GetFieldValue<Source?>(DatItem.SourceKey) is null)
+                    if (item.Source is null)
                         continue;
 
 #if NET20 || NET35
-                    if ((item.GetFieldValue<DupeType>(DatItem.DupeTypeKey) & DupeType.Internal) != 0 || item.GetFieldValue<DupeType>(DatItem.DupeTypeKey) == 0x00)
+                    if ((item.DupeType & DupeType.Internal) != 0 || item.DupeType == 0x00)
 #else
-                    if (item.GetFieldValue<DupeType>(DatItem.DupeTypeKey).HasFlag(DupeType.Internal) || item.GetFieldValue<DupeType>(DatItem.DupeTypeKey) == 0x00)
+                    if (item.DupeType.HasFlag(DupeType.Internal) || item.DupeType == 0x00)
 #endif
-                        outDats[item.GetFieldValue<Source?>(DatItem.SourceKey)!.Index].AddItem(item, statsOnly: false);
+                        outDats[item.Source!.Index].AddItem(item, statsOnly: false);
                 }
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
@@ -762,12 +758,12 @@ namespace SabreTools.DatTools
 #endif
             {
                 // Get the machine and source index for this item
-                long machineIndex = datFile.GetMachineForItemDB(item.Key).Key;
-                long sourceIndex = datFile.GetSourceForItemDB(item.Key).Key;
+                long machineIndex = item.Value.MachineIndex;
+                long sourceIndex = item.Value.SourceIndex;
 
                 // Get the source associated with the item
                 var source = datFile.ItemsDB.GetSource(sourceIndex);
-                if (source is null)
+                if (source.Value is null)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
 #else
@@ -775,11 +771,15 @@ namespace SabreTools.DatTools
 #endif
 
 #if NET20 || NET35
-                if ((item.Value.GetFieldValue<DupeType>(DatItem.DupeTypeKey) & DupeType.Internal) != 0 || item.Value.GetFieldValue<DupeType>(DatItem.DupeTypeKey) == 0x00)
+                if ((item.Value.DupeType & DupeType.Internal) != 0 || item.Value.DupeType == 0x00)
 #else
-                if (item.Value.GetFieldValue<DupeType>(DatItem.DupeTypeKey).HasFlag(DupeType.Internal) || item.Value.GetFieldValue<DupeType>(DatItem.DupeTypeKey) == 0x00)
+                if (item.Value.DupeType.HasFlag(DupeType.Internal) || item.Value.DupeType == 0x00)
 #endif
-                    outDats[source.Index].AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
+                {
+                    item.Value.MachineIndex = machineRemapping[machineIndex];
+                    item.Value.SourceIndex = sourceRemapping[sourceIndex];
+                    outDats[source.Value.Index].AddItemDB(item.Value, statsOnly: false);
+                }
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
@@ -830,20 +830,20 @@ namespace SabreTools.DatTools
             var watch = new InternalStopwatch("Initializing no duplicate DAT");
 
             // Fill in any information not in the base DAT
-            if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(DatHeader.FileNameKey)))
-                datFile.Header.SetFieldValue<string?>(DatHeader.FileNameKey, "All DATs");
+            if (string.IsNullOrEmpty(datFile.Header.FileName))
+                datFile.Header.FileName = "All DATs";
 
-            if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey)))
-                datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, "All DATs");
+            if (string.IsNullOrEmpty(datFile.Header.Name))
+                datFile.Header.Name = "All DATs";
 
-            if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)))
-                datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, "All DATs");
+            if (string.IsNullOrEmpty(datFile.Header.Description))
+                datFile.Header.Description = "All DATs";
 
             string post = " (No Duplicates)";
             DatFile outerDiffData = Parser.CreateDatFile(datFile.Header, datFile.Modifiers);
-            outerDiffData.Header.SetFieldValue<string?>(DatHeader.FileNameKey, outerDiffData.Header.GetStringFieldValue(DatHeader.FileNameKey) + post);
-            outerDiffData.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, outerDiffData.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey) + post);
-            outerDiffData.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, outerDiffData.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey) + post);
+            outerDiffData.Header.FileName = outerDiffData.Header.FileName + post;
+            outerDiffData.Header.Name = outerDiffData.Header.Name + post;
+            outerDiffData.Header.Description = outerDiffData.Header.Description + post;
             outerDiffData.ResetDictionary();
 
             watch.Stop();
@@ -880,15 +880,15 @@ namespace SabreTools.DatTools
                 foreach (DatItem item in items)
                 {
 #if NET20 || NET35
-                    if ((item.GetFieldValue<DupeType>(DatItem.DupeTypeKey) & DupeType.Internal) != 0 || item.GetFieldValue<DupeType>(DatItem.DupeTypeKey) == 0x00)
+                    if ((item.DupeType & DupeType.Internal) != 0 || item.DupeType == 0x00)
 #else
-                    if (item.GetFieldValue<DupeType>(DatItem.DupeTypeKey).HasFlag(DupeType.Internal) || item.GetFieldValue<DupeType>(DatItem.DupeTypeKey) == 0x00)
+                    if (item.DupeType.HasFlag(DupeType.Internal) || item.DupeType == 0x00)
 #endif
                     {
-                        if (item.Clone() is not DatItem newrom || newrom.GetFieldValue<Source?>(DatItem.SourceKey) is null)
+                        if (item.Clone() is not DatItem newrom || newrom.Source is null)
                             continue;
 
-                        newrom.GetMachine()!.SetName(newrom.GetMachine()!.GetName() + $" ({Path.GetFileNameWithoutExtension(inputs[newrom.GetFieldValue<Source?>(DatItem.SourceKey)!.Index].CurrentPath)})");
+                        newrom.Machine!.Name = $"{newrom.Machine!.Name} ({Path.GetFileNameWithoutExtension(inputs[newrom.Source!.Index].CurrentPath)})";
                         outerDiffData.AddItem(newrom, statsOnly: false);
                     }
                 }
@@ -940,14 +940,14 @@ namespace SabreTools.DatTools
 #endif
             {
                 // Get the machine and source index for this item
-                long machineIndex = datFile.GetMachineForItemDB(item.Key).Key;
-                long sourceIndex = datFile.GetSourceForItemDB(item.Key).Key;
+                long machineIndex = item.Value.MachineIndex;
+                long sourceIndex = item.Value.SourceIndex;
 
                 // If the current item isn't a duplicate
 #if NET20 || NET35
-                if ((item.Value.GetFieldValue<DupeType>(DatItem.DupeTypeKey) & DupeType.Internal) == 0 && item.Value.GetFieldValue<DupeType>(DatItem.DupeTypeKey) != 0x00)
+                if ((item.Value.DupeType & DupeType.Internal) == 0 && item.Value.DupeType != 0x00)
 #else
-                if (!item.Value.GetFieldValue<DupeType>(DatItem.DupeTypeKey).HasFlag(DupeType.Internal) && item.Value.GetFieldValue<DupeType>(DatItem.DupeTypeKey) != 0x00)
+                if (!item.Value.DupeType.HasFlag(DupeType.Internal) && item.Value.DupeType != 0x00)
 #endif
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     return;
@@ -957,7 +957,7 @@ namespace SabreTools.DatTools
 
                 // Get the current source and machine
                 var currentSource = sources[sourceIndex];
-                string? currentMachineName = machines[machineIndex].GetName();
+                string? currentMachineName = machines[machineIndex].Name;
                 var currentMachine = datFile.ItemsDB.GetMachine(currentMachineName);
                 if (currentMachine.Value is null)
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
@@ -972,12 +972,14 @@ namespace SabreTools.DatTools
                 if (renamedMachine.Value is null)
                 {
                     var newMachine = currentMachine.Value.Clone() as Machine;
-                    newMachine!.SetName(renamedMachineName);
+                    newMachine!.Name = renamedMachineName;
                     long newMachineIndex = outerDiffData.AddMachineDB(newMachine);
                     renamedMachine = new KeyValuePair<long, Machine?>(newMachineIndex, newMachine);
                 }
 
-                outerDiffData.AddItemDB(item.Value, renamedMachine.Key, sourceRemapping[sourceIndex], statsOnly: false);
+                item.Value.MachineIndex = renamedMachine.Key;
+                item.Value.SourceIndex = sourceRemapping[sourceIndex];
+                outerDiffData.AddItemDB(item.Value, statsOnly: false);
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else

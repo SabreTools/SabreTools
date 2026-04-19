@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using SabreTools.Hashing;
-using SabreTools.IO.Logging;
+using SabreTools.Logging;
 
 namespace SabreTools.FileTypes
 {

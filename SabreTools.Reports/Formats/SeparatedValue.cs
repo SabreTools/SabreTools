@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using SabreTools.DatFiles;
-using SabreTools.DatItems;
 using SabreTools.Hashing;
-using SabreTools.IO.Writers;
+using SabreTools.Metadata.DatFiles;
+using SabreTools.Text.SeparatedValue;
+using ItemStatus = SabreTools.Data.Models.Metadata.ItemStatus;
+using ItemType = SabreTools.Data.Models.Metadata.ItemType;
 
 #pragma warning disable IDE0290 // Use primary constructor
 namespace SabreTools.Reports.Formats
@@ -34,7 +35,7 @@ namespace SabreTools.Reports.Formats
         {
             try
             {
-                SeparatedValueWriter svw = new(stream, Encoding.UTF8)
+                Writer svw = new(stream, Encoding.UTF8)
                 {
                     Separator = _delim,
                     Quotes = true,
@@ -80,10 +81,10 @@ namespace SabreTools.Reports.Formats
         /// <summary>
         /// Write out the header to the stream, if any exists
         /// </summary>
-        /// <param name="svw">SeparatedValueWriter to write to</param>
+        /// <param name="svw">Writer to write to</param>
         /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
         /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
-        private static void WriteHeader(SeparatedValueWriter svw, bool baddumpCol, bool nodumpCol)
+        private static void WriteHeader(Writer svw, bool baddumpCol, bool nodumpCol)
         {
             string[] headers =
             [
@@ -108,11 +109,11 @@ namespace SabreTools.Reports.Formats
         /// <summary>
         /// Write a single set of statistics
         /// </summary>
-        /// <param name="svw">SeparatedValueWriter to write to</param>
+        /// <param name="svw">Writer to write to</param>
         /// <param name="stat">DatStatistics object to write out</param>
         /// <param name="baddumpCol">True if baddumps should be included in output, false otherwise</param>
         /// <param name="nodumpCol">True if nodumps should be included in output, false otherwise</param>
-        private static void WriteIndividual(SeparatedValueWriter svw, DatStatistics stat, bool baddumpCol, bool nodumpCol)
+        private static void WriteIndividual(Writer svw, DatStatistics stat, bool baddumpCol, bool nodumpCol)
         {
             string[] values =
             [
@@ -137,8 +138,8 @@ namespace SabreTools.Reports.Formats
         /// <summary>
         /// Write out the footer-separator to the stream, if any exists
         /// </summary>
-        /// <param name="svw">SeparatedValueWriter to write to</param>
-        private static void WriteFooterSeparator(SeparatedValueWriter svw)
+        /// <param name="svw">Writer to write to</param>
+        private static void WriteFooterSeparator(Writer svw)
         {
             svw.WriteString("\n");
             svw.Flush();

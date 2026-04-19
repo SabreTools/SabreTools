@@ -1,7 +1,7 @@
 using System;
 using System.IO;
-using SabreTools.Core.Filter;
-using SabreTools.DatFiles;
+using SabreTools.Metadata.DatFiles;
+using SabreTools.Metadata.Filter;
 using SabreTools.Reports;
 using Xunit;
 
@@ -10,10 +10,10 @@ namespace SabreTools.DatTools.Test
     public class ParserTests
     {
         [Fact]
-        public void CreateDatFile_Default_Logiqx()
+        public void CreateDatFile_Default_Null()
         {
             var datFile = Parser.CreateDatFile();
-            Assert.Equal((DatFormat)0x00, datFile.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey));
+            Assert.Null(datFile.Header.DatFormat);
             Assert.Equal(0, datFile.Items.DatStatistics.TotalCount);
             Assert.Equal(0, datFile.ItemsDB.DatStatistics.TotalCount);
         }
@@ -53,7 +53,7 @@ namespace SabreTools.DatTools.Test
         public void CreateDatFile_Format_NoBaseDat(DatFormat datFormat, DatFormat expected)
         {
             var datFile = Parser.CreateDatFile(datFormat);
-            Assert.Equal(expected, datFile.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey));
+            Assert.Equal(expected, datFile.Header.DatFormat);
             Assert.Equal(0, datFile.Items.DatStatistics.TotalCount);
             Assert.Equal(0, datFile.ItemsDB.DatStatistics.TotalCount);
         }
@@ -93,11 +93,11 @@ namespace SabreTools.DatTools.Test
         public void CreateDatFile_Format_BaseDat(DatFormat datFormat, DatFormat expected)
         {
             var baseDat = Parser.CreateDatFile();
-            baseDat.Header.SetFieldValue<string?>(DatHeader.FileNameKey, "filename");
+            baseDat.Header.FileName = "filename";
 
             var datFile = Parser.CreateDatFile(datFormat, baseDat);
-            Assert.Equal(expected, datFile.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey));
-            Assert.Equal("filename", datFile.Header.GetFieldValue<string?>(DatHeader.FileNameKey));
+            Assert.Equal(expected, datFile.Header.DatFormat);
+            Assert.Equal("filename", datFile.Header.FileName);
             Assert.Equal(0, datFile.Items.DatStatistics.TotalCount);
             Assert.Equal(0, datFile.ItemsDB.DatStatistics.TotalCount);
         }
@@ -136,15 +136,17 @@ namespace SabreTools.DatTools.Test
         [InlineData(DatFormat.RedumpSpamSum, DatFormat.RedumpSpamSum)]
         public void CreateDatFile_Format_FromHeader(DatFormat datFormat, DatFormat expected)
         {
-            DatHeader datHeader = new DatHeader();
-            datHeader.SetFieldValue(DatHeader.DatFormatKey, datFormat);
-            datHeader.SetFieldValue<string?>(DatHeader.FileNameKey, "filename");
+            DatHeader datHeader = new DatHeader
+            {
+                DatFormat = datFormat,
+                FileName = "filename",
+            };
 
             var datModifiers = new DatModifiers { Quotes = true };
 
             var datFile = Parser.CreateDatFile(datHeader, datModifiers);
-            Assert.Equal(expected, datFile.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey));
-            Assert.Equal("filename", datFile.Header.GetFieldValue<string?>(DatHeader.FileNameKey));
+            Assert.Equal(expected, datFile.Header.DatFormat);
+            Assert.Equal("filename", datFile.Header.FileName);
             Assert.True(datFile.Modifiers.Quotes);
             Assert.Equal(0, datFile.Items.DatStatistics.TotalCount);
             Assert.Equal(0, datFile.ItemsDB.DatStatistics.TotalCount);
@@ -176,11 +178,11 @@ namespace SabreTools.DatTools.Test
         #endregion
 
         [Theory]
-        [InlineData(null, (DatFormat)0x00, 0)]
+        [InlineData(null, null, 0)]
         [InlineData("test-logiqx.xml", DatFormat.Logiqx, 6)]
         //[InlineData(null, DatFormat.LogiqxDeprecated, 0)] // Not parsed separately
         [InlineData("test-softwarelist.xml", DatFormat.SoftwareList, 6)]
-        [InlineData("test-listxml.xml", DatFormat.Listxml, 19)]
+        [InlineData("test-listxml.xml", DatFormat.Listxml, 18)]
         [InlineData("test-offlinelist.xml", DatFormat.OfflineList, 1)]
         //[InlineData(null, DatFormat.SabreXML, 0)] // TODO: Create good-enough test file for this
         [InlineData("test-openmsx.xml", DatFormat.OpenMSX, 3)]
@@ -200,14 +202,14 @@ namespace SabreTools.DatTools.Test
         [InlineData("test-md2.md2", DatFormat.RedumpMD2, 1)]
         [InlineData("test-md4.md4", DatFormat.RedumpMD4, 1)]
         [InlineData("test-md5.md5", DatFormat.RedumpMD5, 1)]
-        // [InlineData("test-ripemd128.ripemd128", DatFormat.RedumpRIPEMD128, 1)] // TODO: Enable when Serialization is updated
-        // [InlineData("test-ripemd160.ripemd160", DatFormat.RedumpRIPEMD160, 1)] // TODO: Enable when Serialization is updated
+        [InlineData("test-ripemd128.ripemd128", DatFormat.RedumpRIPEMD128, 1)]
+        [InlineData("test-ripemd160.ripemd160", DatFormat.RedumpRIPEMD160, 1)]
         [InlineData("test-sha1.sha1", DatFormat.RedumpSHA1, 1)]
         [InlineData("test-sha256.sha256", DatFormat.RedumpSHA256, 1)]
         [InlineData("test-sha384.sha384", DatFormat.RedumpSHA384, 1)]
         [InlineData("test-sha512.sha512", DatFormat.RedumpSHA512, 1)]
         [InlineData("test-spamsum.spamsum", DatFormat.RedumpSpamSum, 1)]
-        public void ParseTest(string? filename, DatFormat datFormat, int totalCount)
+        public void ParseTest(string? filename, DatFormat? datFormat, int totalCount)
         {
             // For all filenames, add the local path for test data
             if (filename is not null)
@@ -216,17 +218,17 @@ namespace SabreTools.DatTools.Test
                 filename = string.Empty;
 
             var datFile = Parser.Parse(filename, throwOnError: true);
-            Assert.Equal(datFormat, datFile.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey));
+            Assert.Equal(datFormat, datFile.Header.DatFormat);
             Assert.Equal(totalCount, datFile.Items.DatStatistics.TotalCount);
             //Assert.Equal(totalCount, datFile.ItemsDB.DatStatistics.TotalCount);
         }
 
         [Theory]
-        [InlineData(null, (DatFormat)0x00, 0)]
+        [InlineData(null, null, 0)]
         [InlineData("test-logiqx.xml", DatFormat.Logiqx, 6)]
         //[InlineData(null, DatFormat.LogiqxDeprecated, 0)] // Not parsed separately
         [InlineData("test-softwarelist.xml", DatFormat.SoftwareList, 6)]
-        [InlineData("test-listxml.xml", DatFormat.Listxml, 19)]
+        [InlineData("test-listxml.xml", DatFormat.Listxml, 18)]
         [InlineData("test-offlinelist.xml", DatFormat.OfflineList, 1)]
         //[InlineData(null, DatFormat.SabreXML, 0)] // TODO: Create good-enough test file for this
         [InlineData("test-openmsx.xml", DatFormat.OpenMSX, 3)]
@@ -246,21 +248,21 @@ namespace SabreTools.DatTools.Test
         [InlineData("test-md2.md2", DatFormat.RedumpMD2, 1)]
         [InlineData("test-md4.md4", DatFormat.RedumpMD4, 1)]
         [InlineData("test-md5.md5", DatFormat.RedumpMD5, 1)]
-        //[InlineData("test-ripemd128.ripemd128", DatFormat.RedumpRIPEMD128, 1)] // TODO: Enable when Serialization is updated
-        //[InlineData("test-ripemd160.ripemd160", DatFormat.RedumpRIPEMD160, 1)] // TODO: Enable when Serialization is updated
+        [InlineData("test-ripemd128.ripemd128", DatFormat.RedumpRIPEMD128, 1)]
+        [InlineData("test-ripemd160.ripemd160", DatFormat.RedumpRIPEMD160, 1)]
         [InlineData("test-sha1.sha1", DatFormat.RedumpSHA1, 1)]
         [InlineData("test-sha256.sha256", DatFormat.RedumpSHA256, 1)]
         [InlineData("test-sha384.sha384", DatFormat.RedumpSHA384, 1)]
         [InlineData("test-sha512.sha512", DatFormat.RedumpSHA512, 1)]
         [InlineData("test-spamsum.spamsum", DatFormat.RedumpSpamSum, 1)]
-        public void ParseStatisticsTest(string? filename, DatFormat datFormat, int totalCount)
+        public void ParseStatisticsTest(string? filename, DatFormat? datFormat, int totalCount)
         {
             // For all filenames, add the local path for test data
             if (filename is not null)
                 filename = Path.Combine(Environment.CurrentDirectory, "TestData", filename);
 
             var datFile = Parser.ParseStatistics(filename, new FilterRunner(Array.Empty<string>()), throwOnError: true);
-            Assert.Equal(datFormat, datFile.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey));
+            Assert.Equal(datFormat, datFile.Header.DatFormat);
             Assert.Equal(totalCount, datFile.Items.DatStatistics.TotalCount);
             //Assert.Equal(totalCount, datFile.ItemsDB.DatStatistics.TotalCount);
         }

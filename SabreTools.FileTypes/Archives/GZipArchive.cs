@@ -6,9 +6,11 @@ using System.Text.RegularExpressions;
 using Compress;
 using Compress.gZip;
 using Compress.Support.Compression.Deflate;
-using SabreTools.Core.Tools;
 using SabreTools.Hashing;
 using SabreTools.IO.Extensions;
+using SabreTools.Metadata.DatFiles;
+using SabreTools.Numerics.Extensions;
+using SabreTools.Text.Extensions;
 
 namespace SabreTools.FileTypes.Archives
 {
@@ -82,7 +84,7 @@ namespace SabreTools.FileTypes.Archives
             {
                 // Open the input file
                 using var inputFile = File.Open(Filename, FileMode.Open, FileAccess.Read, FileShare.Read);
-                var gzip = Serialization.Wrappers.GZip.Create(inputFile);
+                var gzip = Wrappers.GZip.Create(inputFile);
 
                 // Write the output file
                 encounteredErrors = !gzip.Extract(outDir, includeDebug: false);
@@ -218,8 +220,8 @@ namespace SabreTools.FileTypes.Archives
 
                     using Stream stream = File.Open(Filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                     stream.Seek(-8, SeekOrigin.End);
-                    gzipEntryRom.CRC = stream.ReadBytes(4);
-                    Array.Reverse(gzipEntryRom.CRC);
+                    gzipEntryRom.CRC32 = stream.ReadBytes(4);
+                    Array.Reverse(gzipEntryRom.CRC32);
                     gzipEntryRom.Size = stream.ReadInt32BigEndian();
                 }
                 // Otherwise, use the stream directly
@@ -273,7 +275,7 @@ namespace SabreTools.FileTypes.Archives
             }
 
             // Check if the name is the right length
-            if (!Regex.IsMatch(datum, @"^[0-9a-f]{" + Constants.SHA1Length + @"}\.gz"))
+            if (!Regex.IsMatch(datum, @"^[0-9a-f]{" + HashType.SHA1.ZeroString.Length + @"}\.gz"))
             {
                 _logger.Warning($"Non SHA-1 filename found, skipping: '{Path.GetFullPath(Filename)}'");
                 return false;
@@ -332,7 +334,7 @@ namespace SabreTools.FileTypes.Archives
             }
 
             // Check if the name is the right length
-            if (!Regex.IsMatch(datum, @"^[0-9a-f]{" + Constants.SHA1Length + @"}\.gz"))
+            if (!Regex.IsMatch(datum, @"^[0-9a-f]{" + HashType.SHA1.ZeroString.Length + @"}\.gz"))
             {
                 _logger.Warning($"Non SHA-1 filename found, skipping: '{Path.GetFullPath(Filename)}'");
                 return null;
@@ -378,7 +380,7 @@ namespace SabreTools.FileTypes.Archives
             {
                 Filename = Path.GetFileNameWithoutExtension(Filename).ToLowerInvariant(),
                 Size = extractedsize,
-                CRC = headercrc,
+                CRC32 = headercrc,
                 MD5 = headermd5,
                 SHA1 = Path.GetFileNameWithoutExtension(Filename).FromHexString(),
 
@@ -428,7 +430,8 @@ namespace SabreTools.FileTypes.Archives
             baseFile ??= FileTypeTool.GetInfo(stream, _hashTypes);
 
             // Get the output file name
-            string outfile = Path.Combine(outDir, Utilities.GetDepotPath(baseFile.SHA1, Depth) ?? string.Empty);
+            var depot = new DepotInformation(true, Depth);
+            string outfile = Path.Combine(outDir, depot.GetDepotPath(baseFile.SHA1) ?? string.Empty);
 
             // Check to see if the folder needs to be created
             if (!Directory.Exists(Path.GetDirectoryName(outfile)))
@@ -444,7 +447,7 @@ namespace SabreTools.FileTypes.Archives
                 BinaryWriter sw = new(outputStream);
 
                 // Write standard header and TGZ info
-                byte[] data = [.. TorrentGZHeader, .. baseFile!.MD5!, .. baseFile.CRC!];
+                byte[] data = [.. TorrentGZHeader, .. baseFile!.MD5!, .. baseFile.CRC32!];
                 sw.Write(data);
                 sw.Write((ulong)(baseFile.Size ?? 0)); // Long size (Unsigned, Mirrored)
 
@@ -463,7 +466,7 @@ namespace SabreTools.FileTypes.Archives
                 ds.Dispose();
 
                 // Now write the standard footer
-                sw.Write([.. Enumerable.Reverse(baseFile.CRC)]);
+                sw.Write([.. Enumerable.Reverse(baseFile.CRC32)]);
                 sw.Write((uint)(baseFile.Size ?? 0));
 
                 // Dispose of everything

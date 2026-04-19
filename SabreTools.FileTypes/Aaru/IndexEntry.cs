@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using SabreTools.IO.Extensions;
+using SabreTools.Numerics.Extensions;
 
 namespace SabreTools.FileTypes.Aaru
 {
@@ -25,9 +25,9 @@ namespace SabreTools.FileTypes.Aaru
         {
             var indexEntry = new IndexEntry();
 
-            indexEntry.blockType = (AaruBlockType)stream.ReadUInt32();
-            indexEntry.dataType = (AaruDataType)stream.ReadUInt16();
-            indexEntry.offset = stream.ReadUInt64();
+            indexEntry.blockType = (AaruBlockType)stream.ReadUInt32LittleEndian();
+            indexEntry.dataType = (AaruDataType)stream.ReadUInt16LittleEndian();
+            indexEntry.offset = stream.ReadUInt64LittleEndian();
 
             return indexEntry;
         }

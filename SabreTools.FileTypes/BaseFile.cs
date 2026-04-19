@@ -27,7 +27,7 @@
         /// <summary>
         /// CRC32 hash of the file
         /// </summary>
-        public byte[]? CRC { get; set; }
+        public byte[]? CRC32 { get; set; }
 
         /// <summary>
         /// MD2 hash of the file

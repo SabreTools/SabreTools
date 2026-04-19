@@ -5,12 +5,14 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 #endif
-using SabreTools.DatFiles;
-using SabreTools.DatItems;
-using SabreTools.DatItems.Formats;
 using SabreTools.IO.Extensions;
-using SabreTools.IO.Logging;
+using SabreTools.Logging;
+using SabreTools.Metadata.DatFiles;
+using SabreTools.Metadata.DatItems;
+using SabreTools.Metadata.DatItems.Formats;
 using SabreTools.Text.Compare;
+using ItemStatus = SabreTools.Data.Models.Metadata.ItemStatus;
+using ItemType = SabreTools.Data.Models.Metadata.ItemType;
 
 namespace SabreTools.DatTools
 {
@@ -75,15 +77,15 @@ namespace SabreTools.DatTools
             // Set all of the appropriate outputs for each of the subsets
             string extAString = string.Join(",", [.. extA]);
             extADat = Parser.CreateDatFile((DatHeader)datFile.Header.Clone(), datFile.Modifiers);
-            extADat.Header.SetFieldValue<string?>(DatHeader.FileNameKey, extADat.Header.GetStringFieldValue(DatHeader.FileNameKey) + $" ({extAString})");
-            extADat.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, extADat.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey) + $" ({extAString})");
-            extADat.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, extADat.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey) + $" ({extAString})");
+            extADat.Header.FileName = $"{extADat.Header.FileName} ({extAString})";
+            extADat.Header.Name = $"{extADat.Header.Name} ({extAString})";
+            extADat.Header.Description = $"{extADat.Header.Description} ({extAString})";
 
             string extBString = string.Join(",", [.. extB]);
             extBDat = Parser.CreateDatFile((DatHeader)datFile.Header.Clone(), datFile.Modifiers);
-            extBDat.Header.SetFieldValue<string?>(DatHeader.FileNameKey, extBDat.Header.GetStringFieldValue(DatHeader.FileNameKey) + $" ({extBString})");
-            extBDat.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, extBDat.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey) + $" ({extBString})");
-            extBDat.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, extBDat.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey) + $" ({extBString})");
+            extBDat.Header.FileName = $"{extBDat.Header.FileName} ({extBString})";
+            extBDat.Header.Name = $"{extBDat.Header.Name} ({extBString})";
+            extBDat.Header.Description = $"{extBDat.Header.Description} ({extBString})";
         }
 
         /// <summary>
@@ -179,22 +181,25 @@ namespace SabreTools.DatTools
             foreach (var item in datItems)
 #endif
             {
-                // Get the machine and source index for this item
-                long machineIndex = datFile.GetMachineForItemDB(item.Key).Key;
-                long sourceIndex = datFile.GetSourceForItemDB(item.Key).Key;
+                // Set the machine and source index for this item
+                long machineIndex = item.Value.MachineIndex;
+                item.Value.MachineIndex = machineRemapping[machineIndex];
+
+                long sourceIndex = item.Value.SourceIndex;
+                item.Value.SourceIndex = sourceRemapping[sourceIndex];
 
                 if (extA.Contains(item.Value.GetName().GetNormalizedExtension() ?? string.Empty))
                 {
-                    extADat.AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
+                    extADat.AddItemDB(item.Value, statsOnly: false);
                 }
                 else if (extB.Contains(item.Value.GetName().GetNormalizedExtension() ?? string.Empty))
                 {
-                    extBDat.AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
+                    extBDat.AddItemDB(item.Value, statsOnly: false);
                 }
                 else
                 {
-                    extADat.AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
-                    extBDat.AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
+                    extADat.AddItemDB(item.Value, statsOnly: false);
+                    extBDat.AddItemDB(item.Value, statsOnly: false);
                 }
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
@@ -238,17 +243,19 @@ namespace SabreTools.DatTools
             // Create mapping of keys to suffixes
             var mappings = new Dictionary<string, string>
             {
-                [Data.Models.Metadata.Rom.StatusKey] = " (Nodump)",
-                [Data.Models.Metadata.Rom.SHA512Key] = " (SHA-512)",
-                [Data.Models.Metadata.Rom.SHA384Key] = " (SHA-384)",
-                [Data.Models.Metadata.Rom.SHA256Key] = " (SHA-256)",
-                [Data.Models.Metadata.Rom.SHA1Key] = " (SHA-1)",
-                [Data.Models.Metadata.Rom.RIPEMD160Key] = " (RIPEMD160)",
-                [Data.Models.Metadata.Rom.RIPEMD128Key] = " (RIPEMD128)",
-                [Data.Models.Metadata.Rom.MD5Key] = " (MD5)",
-                [Data.Models.Metadata.Rom.MD4Key] = " (MD4)",
-                [Data.Models.Metadata.Rom.MD2Key] = " (MD2)",
-                [Data.Models.Metadata.Rom.CRCKey] = " (CRC)",
+                ["status"] = " (Nodump)",
+                ["sha512"] = " (SHA-512)",
+                ["sha384"] = " (SHA-384)",
+                ["sha256"] = " (SHA-256)",
+                ["sha1"] = " (SHA-1)",
+                ["ripemd160"] = " (RIPEMD160)",
+                ["ripemd128"] = " (RIPEMD128)",
+                ["md5"] = " (MD5)",
+                ["md4"] = " (MD4)",
+                ["md2"] = " (MD2)",
+                ["crc64"] = " (CRC-64)",
+                ["crc32"] = " (CRC-32)",
+                ["crc16"] = " (CRC-16)",
                 ["null"] = " (Other)",
             };
 
@@ -257,9 +264,9 @@ namespace SabreTools.DatTools
             foreach (var kvp in mappings)
             {
                 fieldDats[kvp.Key] = Parser.CreateDatFile((DatHeader)datFile.Header.Clone(), datFile.Modifiers);
-                fieldDats[kvp.Key].Header.SetFieldValue<string?>(DatHeader.FileNameKey, fieldDats[kvp.Key].Header.GetStringFieldValue(DatHeader.FileNameKey) + kvp.Value);
-                fieldDats[kvp.Key].Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, fieldDats[kvp.Key].Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey) + kvp.Value);
-                fieldDats[kvp.Key].Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, fieldDats[kvp.Key].Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey) + kvp.Value);
+                fieldDats[kvp.Key].Header.FileName = fieldDats[kvp.Key].Header.FileName + kvp.Value;
+                fieldDats[kvp.Key].Header.Name = fieldDats[kvp.Key].Header.Name + kvp.Value;
+                fieldDats[kvp.Key].Header.Description = fieldDats[kvp.Key].Header.Description + kvp.Value;
             }
 
             return fieldDats;
@@ -293,52 +300,56 @@ namespace SabreTools.DatTools
                     switch (item)
                     {
                         case Disk disk:
-                            if (disk.GetStringFieldValue(Data.Models.Metadata.Disk.StatusKey).AsItemStatus() == ItemStatus.Nodump)
-                                fieldDats[Data.Models.Metadata.Disk.StatusKey].AddItem(item, statsOnly: false);
-                            else if (!string.IsNullOrEmpty(disk.GetStringFieldValue(Data.Models.Metadata.Disk.SHA1Key)))
-                                fieldDats[Data.Models.Metadata.Disk.SHA1Key].AddItem(item, statsOnly: false);
-                            else if (!string.IsNullOrEmpty(disk.GetStringFieldValue(Data.Models.Metadata.Disk.MD5Key)))
-                                fieldDats[Data.Models.Metadata.Disk.MD5Key].AddItem(item, statsOnly: false);
-                            else if (!string.IsNullOrEmpty(disk.GetStringFieldValue(Data.Models.Metadata.Disk.MD5Key)))
-                                fieldDats[Data.Models.Metadata.Disk.MD5Key].AddItem(item, statsOnly: false);
+                            if (disk.Status == ItemStatus.Nodump)
+                                fieldDats["status"].AddItem(item, statsOnly: false);
+                            else if (!string.IsNullOrEmpty(disk.SHA1))
+                                fieldDats["sha1"].AddItem(item, statsOnly: false);
+                            else if (!string.IsNullOrEmpty(disk.MD5))
+                                fieldDats["md5"].AddItem(item, statsOnly: false);
+                            else if (!string.IsNullOrEmpty(disk.MD5))
+                                fieldDats["md5"].AddItem(item, statsOnly: false);
                             else
                                 fieldDats["null"].AddItem(item, statsOnly: false);
                             break;
 
                         case Media media:
-                            if (!string.IsNullOrEmpty(media.GetStringFieldValue(Data.Models.Metadata.Media.SHA256Key)))
-                                fieldDats[Data.Models.Metadata.Media.SHA256Key].AddItem(item, statsOnly: false);
-                            else if (!string.IsNullOrEmpty(media.GetStringFieldValue(Data.Models.Metadata.Media.SHA1Key)))
-                                fieldDats[Data.Models.Metadata.Media.SHA1Key].AddItem(item, statsOnly: false);
-                            else if (!string.IsNullOrEmpty(media.GetStringFieldValue(Data.Models.Metadata.Media.MD5Key)))
-                                fieldDats[Data.Models.Metadata.Media.MD5Key].AddItem(item, statsOnly: false);
+                            if (!string.IsNullOrEmpty(media.SHA256))
+                                fieldDats["sha256"].AddItem(item, statsOnly: false);
+                            else if (!string.IsNullOrEmpty(media.SHA1))
+                                fieldDats["sha1"].AddItem(item, statsOnly: false);
+                            else if (!string.IsNullOrEmpty(media.MD5))
+                                fieldDats["md5"].AddItem(item, statsOnly: false);
                             else
                                 fieldDats["null"].AddItem(item, statsOnly: false);
                             break;
 
                         case Rom rom:
-                            if (rom.GetStringFieldValue(Data.Models.Metadata.Rom.StatusKey).AsItemStatus() == ItemStatus.Nodump)
-                                fieldDats[Data.Models.Metadata.Rom.StatusKey].AddItem(item, statsOnly: false);
-                            else if (!string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA512Key)))
-                                fieldDats[Data.Models.Metadata.Rom.SHA512Key].AddItem(item, statsOnly: false);
-                            else if (!string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA384Key)))
-                                fieldDats[Data.Models.Metadata.Rom.SHA384Key].AddItem(item, statsOnly: false);
-                            else if (!string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA256Key)))
-                                fieldDats[Data.Models.Metadata.Rom.SHA256Key].AddItem(item, statsOnly: false);
-                            else if (!string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA1Key)))
-                                fieldDats[Data.Models.Metadata.Rom.SHA1Key].AddItem(item, statsOnly: false);
-                            else if (!string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.RIPEMD160Key)))
-                                fieldDats[Data.Models.Metadata.Rom.RIPEMD160Key].AddItem(item, statsOnly: false);
-                            else if (!string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.RIPEMD128Key)))
-                                fieldDats[Data.Models.Metadata.Rom.RIPEMD128Key].AddItem(item, statsOnly: false);
-                            else if (!string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.MD5Key)))
-                                fieldDats[Data.Models.Metadata.Rom.MD5Key].AddItem(item, statsOnly: false);
-                            else if (!string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.MD4Key)))
-                                fieldDats[Data.Models.Metadata.Rom.MD4Key].AddItem(item, statsOnly: false);
-                            else if (!string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.MD2Key)))
-                                fieldDats[Data.Models.Metadata.Rom.MD2Key].AddItem(item, statsOnly: false);
-                            else if (!string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.CRCKey)))
-                                fieldDats[Data.Models.Metadata.Rom.CRCKey].AddItem(item, statsOnly: false);
+                            if (rom.Status == ItemStatus.Nodump)
+                                fieldDats["status"].AddItem(item, statsOnly: false);
+                            else if (!string.IsNullOrEmpty(rom.SHA512))
+                                fieldDats["sha512"].AddItem(item, statsOnly: false);
+                            else if (!string.IsNullOrEmpty(rom.SHA384))
+                                fieldDats["sha384"].AddItem(item, statsOnly: false);
+                            else if (!string.IsNullOrEmpty(rom.SHA256))
+                                fieldDats["sha256"].AddItem(item, statsOnly: false);
+                            else if (!string.IsNullOrEmpty(rom.SHA1))
+                                fieldDats["sha1"].AddItem(item, statsOnly: false);
+                            else if (!string.IsNullOrEmpty(rom.RIPEMD160))
+                                fieldDats["ripemd160"].AddItem(item, statsOnly: false);
+                            else if (!string.IsNullOrEmpty(rom.RIPEMD128))
+                                fieldDats["ripemd128"].AddItem(item, statsOnly: false);
+                            else if (!string.IsNullOrEmpty(rom.MD5))
+                                fieldDats["md5"].AddItem(item, statsOnly: false);
+                            else if (!string.IsNullOrEmpty(rom.MD4))
+                                fieldDats["md4"].AddItem(item, statsOnly: false);
+                            else if (!string.IsNullOrEmpty(rom.MD2))
+                                fieldDats["md2"].AddItem(item, statsOnly: false);
+                            else if (!string.IsNullOrEmpty(rom.CRC64))
+                                fieldDats["crc64"].AddItem(item, statsOnly: false);
+                            else if (!string.IsNullOrEmpty(rom.CRC32))
+                                fieldDats["crc32"].AddItem(item, statsOnly: false);
+                            else if (!string.IsNullOrEmpty(rom.CRC16))
+                                fieldDats["crc16"].AddItem(item, statsOnly: false);
                             else
                                 fieldDats["null"].AddItem(item, statsOnly: false);
                             break;
@@ -373,35 +384,39 @@ namespace SabreTools.DatTools
             // Loop through and add all sources
             foreach (var source in sources)
             {
-                long newSourceIndex = fieldDats[Data.Models.Metadata.Rom.StatusKey].AddSourceDB(source.Value);
+                long newSourceIndex = fieldDats["status"].AddSourceDB(source.Value);
                 sourceRemapping[source.Key] = newSourceIndex;
-                _ = fieldDats[Data.Models.Metadata.Rom.SHA512Key].AddSourceDB(source.Value);
-                _ = fieldDats[Data.Models.Metadata.Rom.SHA384Key].AddSourceDB(source.Value);
-                _ = fieldDats[Data.Models.Metadata.Rom.SHA256Key].AddSourceDB(source.Value);
-                _ = fieldDats[Data.Models.Metadata.Rom.SHA1Key].AddSourceDB(source.Value);
-                _ = fieldDats[Data.Models.Metadata.Rom.RIPEMD160Key].AddSourceDB(source.Value);
-                _ = fieldDats[Data.Models.Metadata.Rom.RIPEMD128Key].AddSourceDB(source.Value);
-                _ = fieldDats[Data.Models.Metadata.Rom.MD5Key].AddSourceDB(source.Value);
-                _ = fieldDats[Data.Models.Metadata.Rom.MD4Key].AddSourceDB(source.Value);
-                _ = fieldDats[Data.Models.Metadata.Rom.MD2Key].AddSourceDB(source.Value);
-                _ = fieldDats[Data.Models.Metadata.Rom.CRCKey].AddSourceDB(source.Value);
+                _ = fieldDats["sha512"].AddSourceDB(source.Value);
+                _ = fieldDats["sha384"].AddSourceDB(source.Value);
+                _ = fieldDats["sha256"].AddSourceDB(source.Value);
+                _ = fieldDats["sha1"].AddSourceDB(source.Value);
+                _ = fieldDats["ripemd160"].AddSourceDB(source.Value);
+                _ = fieldDats["ripemd128"].AddSourceDB(source.Value);
+                _ = fieldDats["md5"].AddSourceDB(source.Value);
+                _ = fieldDats["md4"].AddSourceDB(source.Value);
+                _ = fieldDats["md2"].AddSourceDB(source.Value);
+                _ = fieldDats["crc64"].AddSourceDB(source.Value);
+                _ = fieldDats["crc32"].AddSourceDB(source.Value);
+                _ = fieldDats["crc16"].AddSourceDB(source.Value);
                 _ = fieldDats["null"].AddSourceDB(source.Value);
             }
 
             // Loop through and add all machines
             foreach (var machine in machines)
             {
-                long newMachineIndex = fieldDats[Data.Models.Metadata.Rom.StatusKey].AddMachineDB(machine.Value);
-                _ = fieldDats[Data.Models.Metadata.Rom.SHA512Key].AddMachineDB(machine.Value);
-                _ = fieldDats[Data.Models.Metadata.Rom.SHA384Key].AddMachineDB(machine.Value);
-                _ = fieldDats[Data.Models.Metadata.Rom.SHA256Key].AddMachineDB(machine.Value);
-                _ = fieldDats[Data.Models.Metadata.Rom.SHA1Key].AddMachineDB(machine.Value);
-                _ = fieldDats[Data.Models.Metadata.Rom.RIPEMD128Key].AddMachineDB(machine.Value);
-                _ = fieldDats[Data.Models.Metadata.Rom.RIPEMD160Key].AddMachineDB(machine.Value);
-                _ = fieldDats[Data.Models.Metadata.Rom.MD5Key].AddMachineDB(machine.Value);
-                _ = fieldDats[Data.Models.Metadata.Rom.MD4Key].AddMachineDB(machine.Value);
-                _ = fieldDats[Data.Models.Metadata.Rom.MD2Key].AddMachineDB(machine.Value);
-                _ = fieldDats[Data.Models.Metadata.Rom.CRCKey].AddMachineDB(machine.Value);
+                long newMachineIndex = fieldDats["status"].AddMachineDB(machine.Value);
+                _ = fieldDats["sha512"].AddMachineDB(machine.Value);
+                _ = fieldDats["sha384"].AddMachineDB(machine.Value);
+                _ = fieldDats["sha256"].AddMachineDB(machine.Value);
+                _ = fieldDats["sha1"].AddMachineDB(machine.Value);
+                _ = fieldDats["ripemd128"].AddMachineDB(machine.Value);
+                _ = fieldDats["ripemd160"].AddMachineDB(machine.Value);
+                _ = fieldDats["md5"].AddMachineDB(machine.Value);
+                _ = fieldDats["md4"].AddMachineDB(machine.Value);
+                _ = fieldDats["md2"].AddMachineDB(machine.Value);
+                _ = fieldDats["crc64"].AddMachineDB(machine.Value);
+                _ = fieldDats["crc32"].AddMachineDB(machine.Value);
+                _ = fieldDats["crc16"].AddMachineDB(machine.Value);
                 _ = fieldDats["null"].AddMachineDB(machine.Value);
                 machineRemapping[machine.Key] = newMachineIndex;
             }
@@ -415,62 +430,69 @@ namespace SabreTools.DatTools
             foreach (var item in datItems)
 #endif
             {
-                // Get the machine and source index for this item
-                long machineIndex = datFile.GetMachineForItemDB(item.Key).Key;
-                long sourceIndex = datFile.GetSourceForItemDB(item.Key).Key;
+                // Set the machine and source index for this item
+                long machineIndex = item.Value.MachineIndex;
+                item.Value.MachineIndex = machineRemapping[machineIndex];
+
+                long sourceIndex = item.Value.SourceIndex;
+                item.Value.SourceIndex = sourceRemapping[sourceIndex];
 
                 // Only process Disk, Media, and Rom
                 switch (item.Value)
                 {
                     case Disk disk:
-                        if (disk.GetStringFieldValue(Data.Models.Metadata.Disk.StatusKey).AsItemStatus() == ItemStatus.Nodump)
-                            fieldDats[Data.Models.Metadata.Disk.StatusKey].AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
-                        else if (!string.IsNullOrEmpty(disk.GetStringFieldValue(Data.Models.Metadata.Disk.SHA1Key)))
-                            fieldDats[Data.Models.Metadata.Disk.SHA1Key].AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
-                        else if (!string.IsNullOrEmpty(disk.GetStringFieldValue(Data.Models.Metadata.Disk.MD5Key)))
-                            fieldDats[Data.Models.Metadata.Disk.MD5Key].AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
-                        else if (!string.IsNullOrEmpty(disk.GetStringFieldValue(Data.Models.Metadata.Disk.MD5Key)))
-                            fieldDats[Data.Models.Metadata.Disk.MD5Key].AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
+                        if (disk.Status == ItemStatus.Nodump)
+                            fieldDats["status"].AddItemDB(item.Value, statsOnly: false);
+                        else if (!string.IsNullOrEmpty(disk.SHA1))
+                            fieldDats["sha1"].AddItemDB(item.Value, statsOnly: false);
+                        else if (!string.IsNullOrEmpty(disk.MD5))
+                            fieldDats["md5"].AddItemDB(item.Value, statsOnly: false);
+                        else if (!string.IsNullOrEmpty(disk.MD5))
+                            fieldDats["md5"].AddItemDB(item.Value, statsOnly: false);
                         else
-                            fieldDats["null"].AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
+                            fieldDats["null"].AddItemDB(item.Value, statsOnly: false);
                         break;
 
                     case Media media:
-                        if (!string.IsNullOrEmpty(media.GetStringFieldValue(Data.Models.Metadata.Media.SHA256Key)))
-                            fieldDats[Data.Models.Metadata.Media.SHA256Key].AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
-                        else if (!string.IsNullOrEmpty(media.GetStringFieldValue(Data.Models.Metadata.Media.SHA1Key)))
-                            fieldDats[Data.Models.Metadata.Media.SHA1Key].AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
-                        else if (!string.IsNullOrEmpty(media.GetStringFieldValue(Data.Models.Metadata.Media.MD5Key)))
-                            fieldDats[Data.Models.Metadata.Media.MD5Key].AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
+                        if (!string.IsNullOrEmpty(media.SHA256))
+                            fieldDats["sha256"].AddItemDB(item.Value, statsOnly: false);
+                        else if (!string.IsNullOrEmpty(media.SHA1))
+                            fieldDats["sha1"].AddItemDB(item.Value, statsOnly: false);
+                        else if (!string.IsNullOrEmpty(media.MD5))
+                            fieldDats["md5"].AddItemDB(item.Value, statsOnly: false);
                         else
-                            fieldDats["null"].AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
+                            fieldDats["null"].AddItemDB(item.Value, statsOnly: false);
                         break;
 
                     case Rom rom:
-                        if (rom.GetStringFieldValue(Data.Models.Metadata.Rom.StatusKey).AsItemStatus() == ItemStatus.Nodump)
-                            fieldDats[Data.Models.Metadata.Rom.StatusKey].AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
-                        else if (!string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA512Key)))
-                            fieldDats[Data.Models.Metadata.Rom.SHA512Key].AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
-                        else if (!string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA384Key)))
-                            fieldDats[Data.Models.Metadata.Rom.SHA384Key].AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
-                        else if (!string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA256Key)))
-                            fieldDats[Data.Models.Metadata.Rom.SHA256Key].AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
-                        else if (!string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA1Key)))
-                            fieldDats[Data.Models.Metadata.Rom.SHA1Key].AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
-                        else if (!string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.RIPEMD160Key)))
-                            fieldDats[Data.Models.Metadata.Rom.RIPEMD160Key].AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
-                        else if (!string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.RIPEMD128Key)))
-                            fieldDats[Data.Models.Metadata.Rom.RIPEMD128Key].AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
-                        else if (!string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.MD5Key)))
-                            fieldDats[Data.Models.Metadata.Rom.MD5Key].AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
-                        else if (!string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.MD4Key)))
-                            fieldDats[Data.Models.Metadata.Rom.MD4Key].AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
-                        else if (!string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.MD2Key)))
-                            fieldDats[Data.Models.Metadata.Rom.MD2Key].AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
-                        else if (!string.IsNullOrEmpty(rom.GetStringFieldValue(Data.Models.Metadata.Rom.CRCKey)))
-                            fieldDats[Data.Models.Metadata.Rom.CRCKey].AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
+                        if (rom.Status == ItemStatus.Nodump)
+                            fieldDats["status"].AddItemDB(item.Value, statsOnly: false);
+                        else if (!string.IsNullOrEmpty(rom.SHA512))
+                            fieldDats["sha512"].AddItemDB(item.Value, statsOnly: false);
+                        else if (!string.IsNullOrEmpty(rom.SHA384))
+                            fieldDats["sha384"].AddItemDB(item.Value, statsOnly: false);
+                        else if (!string.IsNullOrEmpty(rom.SHA256))
+                            fieldDats["sha256"].AddItemDB(item.Value, statsOnly: false);
+                        else if (!string.IsNullOrEmpty(rom.SHA1))
+                            fieldDats["sha1"].AddItemDB(item.Value, statsOnly: false);
+                        else if (!string.IsNullOrEmpty(rom.RIPEMD160))
+                            fieldDats["ripemd160"].AddItemDB(item.Value, statsOnly: false);
+                        else if (!string.IsNullOrEmpty(rom.RIPEMD128))
+                            fieldDats["ripemd128"].AddItemDB(item.Value, statsOnly: false);
+                        else if (!string.IsNullOrEmpty(rom.MD5))
+                            fieldDats["md5"].AddItemDB(item.Value, statsOnly: false);
+                        else if (!string.IsNullOrEmpty(rom.MD4))
+                            fieldDats["md4"].AddItemDB(item.Value, statsOnly: false);
+                        else if (!string.IsNullOrEmpty(rom.MD2))
+                            fieldDats["md2"].AddItemDB(item.Value, statsOnly: false);
+                        else if (!string.IsNullOrEmpty(rom.CRC64))
+                            fieldDats["crc64"].AddItemDB(item.Value, statsOnly: false);
+                        else if (!string.IsNullOrEmpty(rom.CRC32))
+                            fieldDats["crc32"].AddItemDB(item.Value, statsOnly: false);
+                        else if (!string.IsNullOrEmpty(rom.CRC16))
+                            fieldDats["crc16"].AddItemDB(item.Value, statsOnly: false);
                         else
-                            fieldDats["null"].AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
+                            fieldDats["null"].AddItemDB(item.Value, statsOnly: false);
                         break;
 
                     default:
@@ -508,7 +530,7 @@ namespace SabreTools.DatTools
 
             // Create a temporary DAT to add things to
             DatFile tempDat = Parser.CreateDatFile(datFile.Header, datFile.Modifiers);
-            tempDat.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, null);
+            tempDat.Header.Name = null;
 
             // Sort the input keys
             List<string> keys = [.. datFile.Items.SortedKeys];
@@ -524,11 +546,11 @@ namespace SabreTools.DatTools
 #endif
             {
                 // Here, the key is the name of the game to be used for comparison
-                if (tempDat.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey) is not null && tempDat.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey) != Path.GetDirectoryName(key))
+                if (tempDat.Header.Name is not null && tempDat.Header.Name != Path.GetDirectoryName(key))
                 {
                     // Reset the DAT for the next items
                     tempDat = Parser.CreateDatFile(datFile.Header, datFile.Modifiers);
-                    tempDat.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, null);
+                    tempDat.Header.Name = null;
                 }
 
                 // Clean the input list and set all games to be pathless
@@ -539,14 +561,14 @@ namespace SabreTools.DatTools
 #else
                     continue;
 #endif
-                items.ForEach(item => item.GetMachine()!.SetName(Path.GetFileName(item.GetMachine()!.GetName())));
-                items.ForEach(item => item.GetMachine()!.SetFieldValue<string?>(Data.Models.Metadata.Machine.DescriptionKey, Path.GetFileName(item.GetMachine()!.GetStringFieldValue(Data.Models.Metadata.Machine.DescriptionKey))));
+                items.ForEach(item => item.Machine!.Name = Path.GetFileName(item.Machine!.Name));
+                items.ForEach(item => item.Machine!.Description = Path.GetFileName(item.Machine!.Description));
 
                 // Now add the game to the output DAT
                 items.ForEach(item => tempDat.AddItem(item, statsOnly: false));
 
                 // Then set the DAT name to be the parent directory name
-                tempDat.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, Path.GetDirectoryName(key));
+                tempDat.Header.Name = Path.GetDirectoryName(key);
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
@@ -588,34 +610,34 @@ namespace SabreTools.DatTools
         private static void SplitByLevelHelper(DatFile datFile, DatFile newDatFile, string outDir, bool shortname, bool restore)
         {
             // Get the name from the DAT to use separately
-            string? name = newDatFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey);
+            string? name = newDatFile.Header.Name;
             string? expName = name?.Replace("/", " - ")?.Replace("\\", " - ");
 
             // Now set the new output values
 #if NET20 || NET35
-            newDatFile.Header.SetFieldValue<string?>(DatHeader.FileNameKey, string.IsNullOrEmpty(name)
-                ? datFile.Header.GetStringFieldValue(DatHeader.FileNameKey)
+            newDatFile.Header.FileName = (string.IsNullOrEmpty(name)
+                ? datFile.Header.FileName
                 : (shortname
                     ? Path.GetFileName(name)
                     : expName
                 ));
 #else
-            newDatFile.Header.SetFieldValue<string?>(DatHeader.FileNameKey, WebUtility.HtmlDecode(string.IsNullOrEmpty(name)
-                ? datFile.Header.GetStringFieldValue(DatHeader.FileNameKey)
+            newDatFile.Header.FileName = WebUtility.HtmlDecode(string.IsNullOrEmpty(name)
+                ? datFile.Header.FileName
                 : (shortname
                     ? Path.GetFileName(name)
                     : expName
                     )
-                ));
+                );
 #endif
-            newDatFile.Header.SetFieldValue<string?>(DatHeader.FileNameKey, restore
-                ? $"{datFile.Header.GetStringFieldValue(DatHeader.FileNameKey)} ({newDatFile.Header.GetStringFieldValue(DatHeader.FileNameKey)})"
-                : newDatFile.Header.GetStringFieldValue(DatHeader.FileNameKey));
-            newDatFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, $"{datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey)} ({expName})");
-            newDatFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey))
-                ? newDatFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey)
-                : $"{datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)} ({expName})");
-            newDatFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.TypeKey, null);
+            newDatFile.Header.FileName = restore
+                ? $"{datFile.Header.FileName} ({newDatFile.Header.FileName})"
+                : newDatFile.Header.FileName;
+            newDatFile.Header.Name = $"{datFile.Header.Name} ({expName})";
+            newDatFile.Header.Name = string.IsNullOrEmpty(datFile.Header.Description)
+                ? newDatFile.Header.Name
+                : $"{datFile.Header.Description} ({expName})";
+            newDatFile.Header.Type = null;
 
             // Write out the temporary DAT to the proper directory
             // Writer.Write(newDatFile, datFormats, outDir);
@@ -659,14 +681,14 @@ namespace SabreTools.DatTools
         private static void SplitBySizeInit(DatFile datFile, long radix, out DatFile lessThan, out DatFile greaterThan)
         {
             lessThan = Parser.CreateDatFile((DatHeader)datFile.Header.Clone(), datFile.Modifiers);
-            lessThan.Header.SetFieldValue<string?>(DatHeader.FileNameKey, lessThan.Header.GetStringFieldValue(DatHeader.FileNameKey) + $" (less than {radix})");
-            lessThan.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, lessThan.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey) + $" (less than {radix})");
-            lessThan.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, lessThan.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey) + $" (less than {radix})");
+            lessThan.Header.FileName = lessThan.Header.FileName + $" (less than {radix})";
+            lessThan.Header.Name = lessThan.Header.Name + $" (less than {radix})";
+            lessThan.Header.Description = lessThan.Header.Description + $" (less than {radix})";
 
             greaterThan = Parser.CreateDatFile((DatHeader)datFile.Header.Clone(), datFile.Modifiers);
-            greaterThan.Header.SetFieldValue<string?>(DatHeader.FileNameKey, greaterThan.Header.GetStringFieldValue(DatHeader.FileNameKey) + $" (equal-greater than {radix})");
-            greaterThan.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, greaterThan.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey) + $" (equal-greater than {radix})");
-            greaterThan.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, greaterThan.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey) + $" (equal-greater than {radix})");
+            greaterThan.Header.FileName = greaterThan.Header.FileName + $" (equal-greater than {radix})";
+            greaterThan.Header.Name = greaterThan.Header.Name + $" (equal-greater than {radix})";
+            greaterThan.Header.Description = greaterThan.Header.Description + $" (equal-greater than {radix})";
         }
 
         /// <summary>
@@ -700,15 +722,15 @@ namespace SabreTools.DatTools
                         lessThan.AddItem(item, statsOnly: false);
 
                     // If the file is a Rom and has no size, put it in the "lesser" dat
-                    else if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) is null)
+                    else if (rom.Size is null)
                         lessThan.AddItem(item, statsOnly: false);
 
                     // If the file is a Rom and less than the radix, put it in the "lesser" dat
-                    else if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) < radix)
+                    else if (rom.Size < radix)
                         lessThan.AddItem(item, statsOnly: false);
 
                     // If the file is a Rom and greater than or equal to the radix, put it in the "greater" dat
-                    else if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) >= radix)
+                    else if (rom.Size >= radix)
                         greaterThan.AddItem(item, statsOnly: false);
                 }
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
@@ -761,25 +783,28 @@ namespace SabreTools.DatTools
             foreach (var item in datItems)
 #endif
             {
-                // Get the machine and source index for this item
-                long machineIndex = datFile.GetMachineForItemDB(item.Key).Key;
-                long sourceIndex = datFile.GetSourceForItemDB(item.Key).Key;
+                // Set the machine and source index for this item
+                long machineIndex = item.Value.MachineIndex;
+                item.Value.MachineIndex = machineRemapping[machineIndex];
+
+                long sourceIndex = item.Value.SourceIndex;
+                item.Value.SourceIndex = sourceRemapping[sourceIndex];
 
                 // If the file is not a Rom, it automatically goes in the "lesser" dat
                 if (item.Value is not Rom rom)
-                    lessThan.AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
+                    lessThan.AddItemDB(item.Value, statsOnly: false);
 
                 // If the file is a Rom and has no size, put it in the "lesser" dat
-                else if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) is null)
-                    lessThan.AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
+                else if (rom.Size is null)
+                    lessThan.AddItemDB(item.Value, statsOnly: false);
 
                 // If the file is a Rom and less than the radix, put it in the "lesser" dat
-                else if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) < radix)
-                    lessThan.AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
+                else if (rom.Size < radix)
+                    lessThan.AddItemDB(item.Value, statsOnly: false);
 
                 // If the file is a Rom and greater than or equal to the radix, put it in the "greater" dat
-                else if (rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) >= radix)
-                    greaterThan.AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
+                else if (rom.Size >= radix)
+                    greaterThan.AddItemDB(item.Value, statsOnly: false);
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
@@ -820,9 +845,9 @@ namespace SabreTools.DatTools
             long currentSize = 0;
             long currentIndex = 0;
             DatFile currentDat = Parser.CreateDatFile((DatHeader)datFile.Header.Clone(), datFile.Modifiers);
-            currentDat.Header.SetFieldValue<string?>(DatHeader.FileNameKey, currentDat.Header.GetStringFieldValue(DatHeader.FileNameKey) + $"_{currentIndex}");
-            currentDat.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, currentDat.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey) + $"_{currentIndex}");
-            currentDat.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, currentDat.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey) + $"_{currentIndex}");
+            currentDat.Header.FileName = currentDat.Header.FileName + $"_{currentIndex}";
+            currentDat.Header.Name = currentDat.Header.Name + $"_{currentIndex}";
+            currentDat.Header.Description = currentDat.Header.Description + $"_{currentIndex}";
 
             // Loop through each machine
             foreach (string machine in keys)
@@ -842,8 +867,8 @@ namespace SabreTools.DatTools
                     if (item is Rom rom)
                     {
                         // TODO: Should there be more than just a log if a single item is larger than the chunksize?
-                        machineSize += rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) ?? 0;
-                        if ((rom.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey) ?? 0) > chunkSize)
+                        machineSize += rom.Size ?? 0;
+                        if ((rom.Size ?? 0) > chunkSize)
                             _staticLogger.Error($"{rom.GetName() ?? string.Empty} in {machine} is larger than {chunkSize}");
                     }
                 }
@@ -863,9 +888,9 @@ namespace SabreTools.DatTools
                     currentSize = 0;
                     currentIndex++;
                     currentDat = Parser.CreateDatFile((DatHeader)datFile.Header.Clone(), datFile.Modifiers);
-                    currentDat.Header.SetFieldValue<string?>(DatHeader.FileNameKey, currentDat.Header.GetStringFieldValue(DatHeader.FileNameKey) + $"_{currentIndex}");
-                    currentDat.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, currentDat.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey) + $"_{currentIndex}");
-                    currentDat.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, currentDat.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey) + $"_{currentIndex}");
+                    currentDat.Header.FileName = currentDat.Header.FileName + $"_{currentIndex}";
+                    currentDat.Header.Name = currentDat.Header.Name + $"_{currentIndex}";
+                    currentDat.Header.Description = currentDat.Header.Description + $"_{currentIndex}";
                 }
 
                 // Add the current machine to the current DatFile
@@ -911,9 +936,9 @@ namespace SabreTools.DatTools
             foreach (ItemType itemType in outputTypes)
             {
                 typeDats[itemType] = Parser.CreateDatFile((DatHeader)datFile.Header.Clone(), datFile.Modifiers);
-                typeDats[itemType].Header.SetFieldValue<string?>(DatHeader.FileNameKey, typeDats[itemType].Header.GetStringFieldValue(DatHeader.FileNameKey) + $" ({itemType})");
-                typeDats[itemType].Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, typeDats[itemType].Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey) + $" ({itemType})");
-                typeDats[itemType].Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, typeDats[itemType].Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey) + $" ({itemType})");
+                typeDats[itemType].Header.FileName = typeDats[itemType].Header.FileName + $" ({itemType})";
+                typeDats[itemType].Header.Name = typeDats[itemType].Header.Name + $" ({itemType})";
+                typeDats[itemType].Header.Description = typeDats[itemType].Header.Description + $" ({itemType})";
             }
 
             // Now populate each of the DAT objects in turn
@@ -967,7 +992,7 @@ namespace SabreTools.DatTools
 
                 foreach (DatItem item in items)
                 {
-                    if (item.GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey).AsItemType() == itemType)
+                    if (item.ItemType == itemType)
                         indexDat.AddItem(item, statsOnly: false);
                 }
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
@@ -1018,12 +1043,15 @@ namespace SabreTools.DatTools
             foreach (var item in datItems)
 #endif
             {
-                // Get the machine and source index for this item
-                long machineIndex = datFile.GetMachineForItemDB(item.Key).Key;
-                long sourceIndex = datFile.GetSourceForItemDB(item.Key).Key;
+                // Set the machine and source index for this item
+                long machineIndex = item.Value.MachineIndex;
+                item.Value.MachineIndex = machineRemapping[machineIndex];
 
-                if (item.Value.GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey).AsItemType() == itemType)
-                    indexDat.AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
+                long sourceIndex = item.Value.SourceIndex;
+                item.Value.SourceIndex = sourceRemapping[sourceIndex];
+
+                if (item.Value.ItemType == itemType)
+                    indexDat.AddItemDB(item.Value, statsOnly: false);
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else

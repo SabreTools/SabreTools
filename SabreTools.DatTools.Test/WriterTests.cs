@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using SabreTools.DatFiles;
+using SabreTools.Metadata.DatFiles;
 using Xunit;
 
 namespace SabreTools.DatTools.Test
@@ -41,8 +41,7 @@ namespace SabreTools.DatTools.Test
         public void CreateOutFileNames_SingleFormat(DatFormat datFormat, string extension)
         {
             // Create the empty DatHeader
-            var datHeader = new DatHeader();
-            datHeader.SetFieldValue<string?>(DatHeader.FileNameKey, "test.dat");
+            var datHeader = new DatHeader { FileName = "test.dat" };
 
             // Invoke the method
             string outDir = "C:\\Test";
@@ -58,8 +57,7 @@ namespace SabreTools.DatTools.Test
         public void CreateOutFileNames_AllFormats()
         {
             // Create the empty DatHeader
-            var datHeader = new DatHeader();
-            datHeader.SetFieldValue<string?>(DatHeader.FileNameKey, "test.dat");
+            var datHeader = new DatHeader { FileName = "test.dat" };
 
             // Setup output formats
             List<DatFormat> datFormats = [.. Enum.GetValues<DatFormat>()];

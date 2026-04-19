@@ -25,7 +25,11 @@
 
     <ItemGroup>
         <ProjectReference Include="..\SabreTools.Core\SabreTools.Core.csproj" />
-        <ProjectReference Include="..\SabreTools.DatFiles\SabreTools.DatFiles.csproj" />
+        <ProjectReference Include="..\SabreTools.Serialization\SabreTools.Serialization\SabreTools.Serialization.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="SabreTools.Hashing" Version="[2.0.0]" />
     </ItemGroup>
 
 </Project>

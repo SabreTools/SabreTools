@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.IO;
-using SabreTools.DatFiles;
 using SabreTools.DatTools;
+using SabreTools.Metadata.DatFiles;
 
 namespace SabreTools.Features
 {
@@ -73,11 +73,11 @@ namespace SabreTools.Features
 
             // Apply the specialized field removals to the cleaner
             if (!addFileDates)
-                Remover!.PopulateExclusionsFromList(["DatItem.Date"]);
+                Remover!.PopulateExclusions(["DatItem.Date"]);
 
             // Create a new DATFromDir object and process the inputs
             DatFile basedat = Parser.CreateDatFile(Header!, Modifiers!);
-            basedat.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DateKey, DateTime.Now.ToString("yyyy-MM-dd"));
+            basedat.Header.Date = DateTime.Now.ToString("yyyy-MM-dd");
 
             // Update the cleaner based on certain flags
             if (addBlankFiles)
@@ -112,7 +112,7 @@ namespace SabreTools.Features
                     // Ensure there are output formats
                     var datFormats = DatFormats;
                     if (datFormats is null || datFormats.Count == 0)
-                        datFormats = [datdata.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
+                        datFormats = [datdata.Header.DatFormat!.Value];
 
                     // Write out the file
                     datdata.Write(datFormats, OutputDir);

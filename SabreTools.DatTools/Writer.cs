@@ -4,11 +4,12 @@ using System.IO;
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
 using System.Threading.Tasks;
 #endif
-using SabreTools.DatFiles;
-using SabreTools.DatItems;
 using SabreTools.IO.Extensions;
-using SabreTools.IO.Logging;
+using SabreTools.Logging;
+using SabreTools.Metadata.DatFiles;
+using SabreTools.Metadata.DatItems;
 using SabreTools.Reports;
+using ItemType = SabreTools.Data.Models.Metadata.ItemType;
 
 namespace SabreTools.DatTools
 {
@@ -142,7 +143,7 @@ namespace SabreTools.DatTools
             }
 
             // Ensure the output directory is set and created
-            outDir = outDir.Ensure(create: true);
+            outDir = outDir.EnsureDirectory(create: true);
 
             InternalStopwatch watch = new($"Writing out internal dat to '{outDir}'");
 
@@ -160,7 +161,7 @@ namespace SabreTools.DatTools
             datFile.BucketBy(ItemKey.Machine);
 
             // Output the number of items we're going to be writing
-            _staticLogger.User($"A total of {datFile.DatStatistics.TotalCount - datFile.DatStatistics.RemovedCount} items will be written out to '{datFile.Header.GetStringFieldValue(DatHeader.FileNameKey)}'");
+            _staticLogger.User($"A total of {datFile.DatStatistics.TotalCount - datFile.DatStatistics.RemovedCount} items will be written out to '{datFile.Header.FileName}'");
 
             // Get the outfile names
             Dictionary<DatFormat, string> outfiles = CreateOutFileNames(datFile.Header, datFormats, outDir!, overwrite);
@@ -220,7 +221,7 @@ namespace SabreTools.DatTools
 
             datFile.BucketBy(ItemKey.Machine, norename: true);
 
-            datFile.DatStatistics.DisplayName = datFile.Header.GetStringFieldValue(DatHeader.FileNameKey);
+            datFile.DatStatistics.DisplayName = datFile.Header.FileName;
             datFile.DatStatistics.MachineCount = datFile.Items.SortedKeys.Length;
 
             List<DatStatistics> statsList =
@@ -245,9 +246,9 @@ namespace SabreTools.DatTools
             Dictionary<DatFormat, string> outfileNames = [];
 
             // Get the filename to use
-            string? filename = string.IsNullOrEmpty(datHeader.GetStringFieldValue(DatHeader.FileNameKey))
-                ? datHeader.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)
-                : datHeader.GetStringFieldValue(DatHeader.FileNameKey);
+            string? filename = string.IsNullOrEmpty(datHeader.FileName)
+                ? datHeader.Description
+                : datHeader.FileName;
 
             // Strip off the extension if it's a holdover from the DAT
             if (Parser.HasValidDatExtension(filename))
@@ -316,50 +317,50 @@ namespace SabreTools.DatTools
         private static void EnsureHeaderFields(DatFile datFile)
         {
             // Empty FileName
-            if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(DatHeader.FileNameKey)))
+            if (string.IsNullOrEmpty(datFile.Header.FileName))
             {
-                if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey)) && string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)))
+                if (string.IsNullOrEmpty(datFile.Header.Name) && string.IsNullOrEmpty(datFile.Header.Description))
                 {
-                    datFile.Header.SetFieldValue<string?>(DatHeader.FileNameKey, "Default");
-                    datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, "Default");
-                    datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, "Default");
+                    datFile.Header.FileName = "Default";
+                    datFile.Header.Name = "Default";
+                    datFile.Header.Description = "Default";
                 }
 
-                else if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey)) && !string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)))
+                else if (string.IsNullOrEmpty(datFile.Header.Name) && !string.IsNullOrEmpty(datFile.Header.Description))
                 {
-                    datFile.Header.SetFieldValue<string?>(DatHeader.FileNameKey, datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey));
-                    datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey));
+                    datFile.Header.FileName = datFile.Header.Description;
+                    datFile.Header.Name = datFile.Header.Description;
                 }
 
-                else if (!string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey)) && string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)))
+                else if (!string.IsNullOrEmpty(datFile.Header.Name) && string.IsNullOrEmpty(datFile.Header.Description))
                 {
-                    datFile.Header.SetFieldValue<string?>(DatHeader.FileNameKey, datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey));
-                    datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey));
+                    datFile.Header.FileName = datFile.Header.Name;
+                    datFile.Header.Description = datFile.Header.Name;
                 }
 
-                else if (!string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey)) && !string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)))
+                else if (!string.IsNullOrEmpty(datFile.Header.Name) && !string.IsNullOrEmpty(datFile.Header.Description))
                 {
-                    datFile.Header.SetFieldValue<string?>(DatHeader.FileNameKey, datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey));
+                    datFile.Header.FileName = datFile.Header.Description;
                 }
             }
 
             // Filled FileName
             else
             {
-                if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey)) && string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)))
+                if (string.IsNullOrEmpty(datFile.Header.Name) && string.IsNullOrEmpty(datFile.Header.Description))
                 {
-                    datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, datFile.Header.GetStringFieldValue(DatHeader.FileNameKey));
-                    datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, datFile.Header.GetStringFieldValue(DatHeader.FileNameKey));
+                    datFile.Header.Name = datFile.Header.FileName;
+                    datFile.Header.Description = datFile.Header.FileName;
                 }
 
-                else if (string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey)) && !string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)))
+                else if (string.IsNullOrEmpty(datFile.Header.Name) && !string.IsNullOrEmpty(datFile.Header.Description))
                 {
-                    datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey));
+                    datFile.Header.Name = datFile.Header.Description;
                 }
 
-                else if (!string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey)) && string.IsNullOrEmpty(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)))
+                else if (!string.IsNullOrEmpty(datFile.Header.Name) && string.IsNullOrEmpty(datFile.Header.Description))
                 {
-                    datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey));
+                    datFile.Header.Description = datFile.Header.Name;
                 }
             }
         }

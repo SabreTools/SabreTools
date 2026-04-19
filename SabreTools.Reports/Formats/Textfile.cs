@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using SabreTools.Core.Tools;
-using SabreTools.DatFiles;
-using SabreTools.DatItems;
 using SabreTools.Hashing;
+using SabreTools.Metadata.DatFiles;
+using SabreTools.Text.Extensions;
+using ItemStatus = SabreTools.Data.Models.Metadata.ItemStatus;
+using ItemType = SabreTools.Data.Models.Metadata.ItemType;
 
 #pragma warning disable IDE0290 // Use primary constructor
 namespace SabreTools.Reports.Formats

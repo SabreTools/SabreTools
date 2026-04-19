@@ -1,12 +1,11 @@
 using System.Collections.Generic;
 using System.IO;
-using SabreTools.Core.Tools;
-using SabreTools.DatFiles;
-using SabreTools.DatItems;
 using SabreTools.FileTypes;
 using SabreTools.FileTypes.Archives;
 using SabreTools.Hashing;
-using SabreTools.IO.Logging;
+using SabreTools.Logging;
+using SabreTools.Metadata.DatFiles;
+using SabreTools.Metadata.DatItems;
 
 namespace SabreTools.DatTools
 {
@@ -59,13 +58,13 @@ namespace SabreTools.DatTools
             foreach (string hash in datFile.Items.SortedKeys)
             {
                 // Pre-empt any issues that could arise from string length
-                if (hash.Length != Constants.SHA1Length)
+                if (hash.Length != HashType.SHA1.ZeroString.Length)
                     continue;
 
                 _staticLogger.User($"Checking hash '{hash}'");
 
                 // Get the extension path for the hash
-                string? subpath = Utilities.GetDepotPath(hash, datFile.Modifiers.InputDepot?.Depth ?? 0);
+                string? subpath = datFile.Modifiers.InputDepot?.GetDepotPath(hash);
                 if (subpath is null)
                     continue;
 
@@ -100,9 +99,9 @@ namespace SabreTools.DatTools
             watch.Stop();
 
             // Set fixdat headers in case of writing out
-            datFile.Header.SetFieldValue<string?>(DatHeader.FileNameKey, $"fixDAT_{datFile.Header.GetStringFieldValue(DatHeader.FileNameKey)}");
-            datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, $"fixDAT_{datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey)}");
-            datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, $"fixDAT_{datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)}");
+            datFile.Header.FileName = $"fixDAT_{datFile.Header.FileName}";
+            datFile.Header.Name = $"fixDAT_{datFile.Header.Name}";
+            datFile.Header.Description = $"fixDAT_{datFile.Header.Description}";
             datFile.ClearMarked();
 
             return success;
@@ -144,13 +143,13 @@ namespace SabreTools.DatTools
             foreach (string hash in keys)
             {
                 // Pre-empt any issues that could arise from string length
-                if (hash.Length != Constants.SHA1Length)
+                if (hash.Length != HashType.SHA1.ZeroString.Length)
                     continue;
 
                 _staticLogger.User($"Checking hash '{hash}'");
 
                 // Get the extension path for the hash
-                string? subpath = Utilities.GetDepotPath(hash, datFile.Modifiers.InputDepot?.Depth ?? 0);
+                string? subpath = datFile.Modifiers.InputDepot?.GetDepotPath(hash);
                 if (subpath is null)
                     continue;
 
@@ -185,9 +184,9 @@ namespace SabreTools.DatTools
             watch.Stop();
 
             // Set fixdat headers in case of writing out
-            datFile.Header.SetFieldValue<string?>(DatHeader.FileNameKey, $"fixDAT_{datFile.Header.GetStringFieldValue(DatHeader.FileNameKey)}");
-            datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, $"fixDAT_{datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey)}");
-            datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, $"fixDAT_{datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)}");
+            datFile.Header.FileName = $"fixDAT_{datFile.Header.FileName}";
+            datFile.Header.Name = $"fixDAT_{datFile.Header.Name}";
+            datFile.Header.Description = $"fixDAT_{datFile.Header.Description}";
             datFile.ClearMarked();
 
             return success;
@@ -209,7 +208,7 @@ namespace SabreTools.DatTools
             datFile.Items.SetBucketedBy(ItemKey.NULL);
             if (hashOnly)
             {
-                datFile.BucketBy(ItemKey.CRC);
+                datFile.BucketBy(ItemKey.CRC32);
                 datFile.Deduplicate();
             }
             else
@@ -228,17 +227,17 @@ namespace SabreTools.DatTools
                 for (int i = 0; i < items.Count; i++)
                 {
                     // Unmatched items will have a source ID of int.MaxValue, remove all others
-                    if (items[i].GetFieldValue<Source?>(DatItem.SourceKey)?.Index != int.MaxValue)
-                        items[i].SetFieldValue<bool?>(DatItem.RemoveKey, true);
+                    if (items[i].Source?.Index != int.MaxValue)
+                        items[i].RemoveFlag = true;
                 }
             }
 
             watch.Stop();
 
             // Set fixdat headers in case of writing out
-            datFile.Header.SetFieldValue<string?>(DatHeader.FileNameKey, $"fixDAT_{datFile.Header.GetStringFieldValue(DatHeader.FileNameKey)}");
-            datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, $"fixDAT_{datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey)}");
-            datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, $"fixDAT_{datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)}");
+            datFile.Header.FileName = $"fixDAT_{datFile.Header.FileName}";
+            datFile.Header.Name = $"fixDAT_{datFile.Header.Name}";
+            datFile.Header.Description = $"fixDAT_{datFile.Header.Description}";
             datFile.ClearMarked();
 
             return success;
@@ -259,7 +258,7 @@ namespace SabreTools.DatTools
             // Force bucketing according to the flags
             if (hashOnly)
             {
-                datFile.BucketBy(ItemKey.CRC);
+                datFile.BucketBy(ItemKey.CRC32);
                 datFile.Deduplicate();
             }
             else
@@ -279,20 +278,20 @@ namespace SabreTools.DatTools
                 foreach (var item in items)
                 {
                     // Get the source associated with the item
-                    var source = datFile.GetSourceForItemDB(item.Key);
+                    var source = datFile.GetSourceDB(item.Value.SourceIndex);
 
                     // Unmatched items will have a source ID of int.MaxValue, remove all others
                     if (source.Value?.Index != int.MaxValue)
-                        item.Value.SetFieldValue<bool?>(DatItem.RemoveKey, true);
+                        item.Value.RemoveFlag = true;
                 }
             }
 
             watch.Stop();
 
             // Set fixdat headers in case of writing out
-            datFile.Header.SetFieldValue<string?>(DatHeader.FileNameKey, $"fixDAT_{datFile.Header.GetStringFieldValue(DatHeader.FileNameKey)}");
-            datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, $"fixDAT_{datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey)}");
-            datFile.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, $"fixDAT_{datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)}");
+            datFile.Header.FileName = $"fixDAT_{datFile.Header.FileName}";
+            datFile.Header.Name = $"fixDAT_{datFile.Header.Name}";
+            datFile.Header.Description = $"fixDAT_{datFile.Header.Description}";
             datFile.ClearMarked();
 
             return success;

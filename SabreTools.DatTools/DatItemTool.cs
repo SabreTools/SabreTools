@@ -1,10 +1,10 @@
-using SabreTools.Core.Tools;
-using SabreTools.DatItems;
-using SabreTools.DatItems.Formats;
+using System.Text;
 using SabreTools.FileTypes;
 using SabreTools.FileTypes.Aaru;
 using SabreTools.FileTypes.CHD;
-using SabreTools.IO.Extensions;
+using SabreTools.Metadata.DatItems;
+using SabreTools.Metadata.DatItems.Formats;
+using SabreTools.Text.Extensions;
 
 namespace SabreTools.DatTools
 {
@@ -62,17 +62,17 @@ namespace SabreTools.DatTools
             disk.SetName(baseFile.Filename);
             if (baseFile is CHDFile chd)
             {
-                disk.SetFieldValue<string?>(Data.Models.Metadata.Disk.MD5Key, chd.InternalMD5.ToHexString());
-                disk.SetFieldValue<string?>(Data.Models.Metadata.Disk.SHA1Key, chd.InternalSHA1.ToHexString());
+                disk.MD5 = chd.InternalMD5.ToHexString();
+                disk.SHA1 = chd.InternalSHA1.ToHexString();
             }
             else
             {
-                disk.SetFieldValue<string?>(Data.Models.Metadata.Disk.MD5Key, baseFile.MD5.ToHexString());
-                disk.SetFieldValue<string?>(Data.Models.Metadata.Disk.SHA1Key, baseFile.SHA1.ToHexString());
+                disk.MD5 = baseFile.MD5.ToHexString();
+                disk.SHA1 = baseFile.SHA1.ToHexString();
             }
 
-            disk.RemoveField(Data.Models.Metadata.Disk.StatusKey);
-            disk.SetFieldValue<DupeType>(DatItem.DupeTypeKey, 0x00);
+            disk.Status = null;
+            disk.DupeType = 0x00;
 
             return disk;
         }
@@ -86,14 +86,12 @@ namespace SabreTools.DatTools
         {
             var file = new File
             {
-                CRC = baseFile.CRC.ToHexString(),
+                CRC = baseFile.CRC32.ToHexString(),
                 MD5 = baseFile.MD5.ToHexString(),
                 SHA1 = baseFile.SHA1.ToHexString(),
-                SHA256 = baseFile.SHA256.ToHexString()
+                SHA256 = baseFile.SHA256.ToHexString(),
+                DupeType = 0x00,
             };
-
-            file.SetFieldValue(Data.Models.Metadata.DatItem.TypeKey, ItemType.File);
-            file.SetFieldValue<DupeType>(DatItem.DupeTypeKey, 0x00);
 
             return file;
         }
@@ -110,20 +108,20 @@ namespace SabreTools.DatTools
             media.SetName(baseFile.Filename);
             if (baseFile is AaruFormat aif)
             {
-                media.SetFieldValue<string?>(Data.Models.Metadata.Media.MD5Key, aif.InternalMD5.ToHexString());
-                media.SetFieldValue<string?>(Data.Models.Metadata.Media.SHA1Key, aif.InternalSHA1.ToHexString());
-                media.SetFieldValue<string?>(Data.Models.Metadata.Media.SHA256Key, aif.InternalSHA256.ToHexString());
-                media.SetFieldValue<string?>(Data.Models.Metadata.Media.SpamSumKey, System.Text.Encoding.UTF8.GetString(aif.InternalSpamSum ?? []));
+                media.MD5 = aif.InternalMD5.ToHexString();
+                media.SHA1 = aif.InternalSHA1.ToHexString();
+                media.SHA256 = aif.InternalSHA256.ToHexString();
+                media.SpamSum = Encoding.UTF8.GetString(aif.InternalSpamSum ?? []);
             }
             else
             {
-                media.SetFieldValue<string?>(Data.Models.Metadata.Media.MD5Key, baseFile.MD5.ToHexString());
-                media.SetFieldValue<string?>(Data.Models.Metadata.Media.SHA1Key, baseFile.SHA1.ToHexString());
-                media.SetFieldValue<string?>(Data.Models.Metadata.Media.SHA256Key, baseFile.SHA256.ToHexString());
-                media.SetFieldValue<string?>(Data.Models.Metadata.Media.SpamSumKey, System.Text.Encoding.UTF8.GetString(baseFile.SpamSum ?? []));
+                media.MD5 = baseFile.MD5.ToHexString();
+                media.SHA1 = baseFile.SHA1.ToHexString();
+                media.SHA256 = baseFile.SHA256.ToHexString();
+                media.SpamSum = Encoding.UTF8.GetString(baseFile.SpamSum ?? []);
             }
 
-            media.SetFieldValue<DupeType>(DatItem.DupeTypeKey, 0x00);
+            media.DupeType = 0x00;
 
             return media;
         }
@@ -138,23 +136,23 @@ namespace SabreTools.DatTools
             var rom = new Rom();
 
             rom.SetName(baseFile.Filename);
-            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.DateKey, baseFile.Date);
-            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, baseFile.CRC.ToHexString());
-            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.MD2Key, baseFile.MD2.ToHexString());
-            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.MD4Key, baseFile.MD4.ToHexString());
-            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.MD5Key, baseFile.MD5.ToHexString());
-            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.RIPEMD128Key, baseFile.RIPEMD128.ToHexString());
-            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.RIPEMD160Key, baseFile.RIPEMD160.ToHexString());
-            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA1Key, baseFile.SHA1.ToHexString());
-            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA256Key, baseFile.SHA256.ToHexString());
-            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA384Key, baseFile.SHA384.ToHexString());
-            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA512Key, baseFile.SHA512.ToHexString());
-            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SizeKey, baseFile.Size.ToString());
+            rom.Date = baseFile.Date;
+            rom.CRC32 = baseFile.CRC32.ToHexString();
+            rom.MD2 = baseFile.MD2.ToHexString();
+            rom.MD4 = baseFile.MD4.ToHexString();
+            rom.MD5 = baseFile.MD5.ToHexString();
+            rom.RIPEMD128 = baseFile.RIPEMD128.ToHexString();
+            rom.RIPEMD160 = baseFile.RIPEMD160.ToHexString();
+            rom.SHA1 = baseFile.SHA1.ToHexString();
+            rom.SHA256 = baseFile.SHA256.ToHexString();
+            rom.SHA384 = baseFile.SHA384.ToHexString();
+            rom.SHA512 = baseFile.SHA512.ToHexString();
+            rom.Size = baseFile.Size;
             if (baseFile.SpamSum is not null)
-                rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SpamSumKey, System.Text.Encoding.UTF8.GetString(baseFile.SpamSum));
+                rom.SpamSum = Encoding.UTF8.GetString(baseFile.SpamSum);
 
-            rom.RemoveField(Data.Models.Metadata.Rom.StatusKey);
-            rom.SetFieldValue<DupeType>(DatItem.DupeTypeKey, 0x00);
+            rom.Status = null;
+            rom.DupeType = 0x00;
 
             return rom;
         }
@@ -167,18 +165,18 @@ namespace SabreTools.DatTools
         public static BaseFile ConvertToBaseFile(this Disk disk)
         {
             string? machineName = null;
-            var machine = disk.GetMachine();
+            var machine = disk.Machine;
             if (machine is not null)
-                machineName = machine.GetName();
+                machineName = machine.Name;
 
             return new CHDFile()
             {
                 Filename = disk.GetName(),
                 Parent = machineName,
-                MD5 = disk.GetStringFieldValue(Data.Models.Metadata.Disk.MD5Key).FromHexString(),
-                InternalMD5 = disk.GetStringFieldValue(Data.Models.Metadata.Disk.MD5Key).FromHexString(),
-                SHA1 = disk.GetStringFieldValue(Data.Models.Metadata.Disk.SHA1Key).FromHexString(),
-                InternalSHA1 = disk.GetStringFieldValue(Data.Models.Metadata.Disk.SHA1Key).FromHexString(),
+                MD5 = disk.MD5.FromHexString(),
+                InternalMD5 = disk.MD5.FromHexString(),
+                SHA1 = disk.SHA1.FromHexString(),
+                InternalSHA1 = disk.SHA1.FromHexString(),
             };
         }
 
@@ -190,14 +188,14 @@ namespace SabreTools.DatTools
         public static BaseFile ConvertToBaseFile(this File file)
         {
             string? machineName = null;
-            var machine = file.GetMachine();
+            var machine = file.Machine;
             if (machine is not null)
-                machineName = machine.GetName();
+                machineName = machine.Name;
 
             return new BaseFile()
             {
                 Parent = machineName,
-                CRC = file.CRC.FromHexString(),
+                CRC32 = file.CRC.FromHexString(),
                 MD5 = file.MD5.FromHexString(),
                 SHA1 = file.SHA1.FromHexString(),
                 SHA256 = file.SHA256.FromHexString(),
@@ -212,22 +210,22 @@ namespace SabreTools.DatTools
         public static BaseFile ConvertToBaseFile(this Media media)
         {
             string? machineName = null;
-            var machine = media.GetMachine();
+            var machine = media.Machine;
             if (machine is not null)
-                machineName = machine.GetName();
+                machineName = machine.Name;
 
             return new AaruFormat()
             {
                 Filename = media.GetName(),
                 Parent = machineName,
-                MD5 = media.GetStringFieldValue(Data.Models.Metadata.Media.MD5Key).FromHexString(),
-                InternalMD5 = media.GetStringFieldValue(Data.Models.Metadata.Media.MD5Key).FromHexString(),
-                SHA1 = media.GetStringFieldValue(Data.Models.Metadata.Media.SHA1Key).FromHexString(),
-                InternalSHA1 = media.GetStringFieldValue(Data.Models.Metadata.Media.SHA1Key).FromHexString(),
-                SHA256 = media.GetStringFieldValue(Data.Models.Metadata.Media.SHA256Key).FromHexString(),
-                InternalSHA256 = media.GetStringFieldValue(Data.Models.Metadata.Media.SHA256Key).FromHexString(),
-                SpamSum = System.Text.Encoding.UTF8.GetBytes(media.GetStringFieldValue(Data.Models.Metadata.Media.SpamSumKey) ?? string.Empty),
-                InternalSpamSum = System.Text.Encoding.UTF8.GetBytes(media.GetStringFieldValue(Data.Models.Metadata.Media.SpamSumKey) ?? string.Empty),
+                MD5 = media.MD5.FromHexString(),
+                InternalMD5 = media.MD5.FromHexString(),
+                SHA1 = media.SHA1.FromHexString(),
+                InternalSHA1 = media.SHA1.FromHexString(),
+                SHA256 = media.SHA256.FromHexString(),
+                InternalSHA256 = media.SHA256.FromHexString(),
+                SpamSum = Encoding.UTF8.GetBytes(media.SpamSum ?? string.Empty),
+                InternalSpamSum = Encoding.UTF8.GetBytes(media.SpamSum ?? string.Empty),
             };
         }
 
@@ -239,28 +237,28 @@ namespace SabreTools.DatTools
         public static BaseFile ConvertToBaseFile(this Rom rom)
         {
             string? machineName = null;
-            var machine = rom.GetMachine();
+            var machine = rom.Machine;
             if (machine is not null)
-                machineName = machine.GetName();
+                machineName = machine.Name;
 
-            string? spamSum = rom.GetStringFieldValue(Data.Models.Metadata.Rom.SpamSumKey);
+            string? spamSum = rom.SpamSum;
             return new BaseFile()
             {
                 Filename = rom.GetName(),
                 Parent = machineName,
-                Date = rom.GetStringFieldValue(Data.Models.Metadata.Rom.DateKey),
-                Size = NumberHelper.ConvertToInt64(rom.GetStringFieldValue(Data.Models.Metadata.Rom.SizeKey)),
-                CRC = rom.GetStringFieldValue(Data.Models.Metadata.Rom.CRCKey).FromHexString(),
-                MD2 = rom.GetStringFieldValue(Data.Models.Metadata.Rom.MD2Key).FromHexString(),
-                MD4 = rom.GetStringFieldValue(Data.Models.Metadata.Rom.MD4Key).FromHexString(),
-                MD5 = rom.GetStringFieldValue(Data.Models.Metadata.Rom.MD5Key).FromHexString(),
-                RIPEMD128 = rom.GetStringFieldValue(Data.Models.Metadata.Rom.RIPEMD128Key).FromHexString(),
-                RIPEMD160 = rom.GetStringFieldValue(Data.Models.Metadata.Rom.RIPEMD160Key).FromHexString(),
-                SHA1 = rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA1Key).FromHexString(),
-                SHA256 = rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA256Key).FromHexString(),
-                SHA384 = rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA384Key).FromHexString(),
-                SHA512 = rom.GetStringFieldValue(Data.Models.Metadata.Rom.SHA512Key).FromHexString(),
-                SpamSum = spamSum is not null ? System.Text.Encoding.UTF8.GetBytes(spamSum) : null,
+                Date = rom.Date,
+                Size = rom.Size,
+                CRC32 = rom.CRC32.FromHexString(),
+                MD2 = rom.MD2.FromHexString(),
+                MD4 = rom.MD4.FromHexString(),
+                MD5 = rom.MD5.FromHexString(),
+                RIPEMD128 = rom.RIPEMD128.FromHexString(),
+                RIPEMD160 = rom.RIPEMD160.FromHexString(),
+                SHA1 = rom.SHA1.FromHexString(),
+                SHA256 = rom.SHA256.FromHexString(),
+                SHA384 = rom.SHA384.FromHexString(),
+                SHA512 = rom.SHA512.FromHexString(),
+                SpamSum = spamSum is not null ? Encoding.UTF8.GetBytes(spamSum) : null,
             };
         }
 

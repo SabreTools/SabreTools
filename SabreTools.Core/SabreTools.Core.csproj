@@ -24,15 +24,17 @@
     <ItemGroup>
         <InternalsVisibleTo Include="SabreTools.Core.Test" />
     </ItemGroup>
+    
+    <ItemGroup>
+        <ProjectReference Include="..\SabreTools.Serialization\SabreTools.Serialization\SabreTools.Serialization.csproj" />
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="MinTasksExtensionsBridge" Version="0.3.4" Condition="$(TargetFramework.StartsWith(`net2`)) OR $(TargetFramework.StartsWith(`net3`)) OR $(TargetFramework.StartsWith(`net40`))" />
         <PackageReference Include="MinThreadingBridge" Version="0.11.4" Condition="$(TargetFramework.StartsWith(`net2`)) OR $(TargetFramework.StartsWith(`net3`)) OR $(TargetFramework.StartsWith(`net40`))" />
-        <PackageReference Include="Net30.LinqBridge" Version="1.6.0" Condition="$(TargetFramework.StartsWith(`net2`))" />
+        <PackageReference Include="Net30.LinqBridge" Version="1.6.0.2" Condition="$(TargetFramework.StartsWith(`net2`))" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-        <PackageReference Include="SabreTools.Hashing" Version="[1.6.0]" />
-        <PackageReference Include="SabreTools.IO" Version="[1.9.0]" />
-        <PackageReference Include="SabreTools.Serialization" Version="[2.2.1]" />
+        <PackageReference Include="SabreTools.IO" Version="[2.0.0]" />
     </ItemGroup>
 
     <ItemGroup>

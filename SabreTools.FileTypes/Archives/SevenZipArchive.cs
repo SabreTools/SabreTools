@@ -7,6 +7,7 @@ using Compress.SevenZip;
 using SabreTools.Core.Tools;
 using SabreTools.Hashing;
 using SabreTools.Text.Compare;
+using SabreTools.Text.Extensions;
 
 namespace SabreTools.FileTypes.Archives
 {
@@ -60,7 +61,7 @@ namespace SabreTools.FileTypes.Archives
             {
                 // Open the input file
                 using var inputFile = File.Open(Filename, FileMode.Open, FileAccess.Read, FileShare.Read);
-                var sevenZip = Serialization.Wrappers.SevenZip.Create(inputFile);
+                var sevenZip = Wrappers.SevenZip.Create(inputFile);
 
                 // Write the output files
                 encounteredErrors = !sevenZip.Extract(outDir, includeDebug: false);
@@ -229,7 +230,7 @@ namespace SabreTools.FileTypes.Archives
                     if (_hashTypes.Length == 1 && _hashTypes[0] == HashType.CRC32)
                     {
                         zipEntryRom.Size = (long)zf.GetLocalFile(i).UncompressedSize;
-                        zipEntryRom.CRC = zf.GetLocalFile(i).CRC;
+                        zipEntryRom.CRC32 = zf.GetLocalFile(i).CRC;
                     }
                     // Otherwise, use the stream directly
                     else
@@ -388,7 +389,7 @@ namespace SabreTools.FileTypes.Archives
                     DateTime dt = DateTime.Now;
                     if (_realDates && !string.IsNullOrEmpty(baseFile.Date) && DateTime.TryParse(baseFile.Date!.Replace('\\', '/'), out dt))
                     {
-                        long msDosDateTime = DateTimeHelper.ConvertToMsDosTimeFormat(dt);
+                        long msDosDateTime = dt.ConvertToMsDosTimeFormat();
                         TimeStamps ts = new() { ModTime = msDosDateTime };
                         zipFile.ZipFileOpenWriteStream(false, false, baseFile.Filename.Replace('\\', '/'), istreamSize, 0, out writeStream, ts);
                     }
@@ -409,7 +410,7 @@ namespace SabreTools.FileTypes.Archives
                         }
                     }
 
-                    zipFile.ZipFileCloseWriteStream(baseFile.CRC!);
+                    zipFile.ZipFileCloseWriteStream(baseFile.CRC32!);
                 }
 
                 // Otherwise, sort the input files and write out in the correct order
@@ -465,7 +466,7 @@ namespace SabreTools.FileTypes.Archives
                             DateTime dt = DateTime.Now;
                             if (_realDates && !string.IsNullOrEmpty(baseFile.Date) && DateTime.TryParse(baseFile.Date!.Replace('\\', '/'), out dt))
                             {
-                                long msDosDateTime = DateTimeHelper.ConvertToMsDosTimeFormat(dt);
+                                long msDosDateTime = dt.ConvertToMsDosTimeFormat();
                                 TimeStamps ts = new() { ModTime = msDosDateTime };
                                 zipFile.ZipFileOpenWriteStream(false, false, baseFile.Filename.Replace('\\', '/'), istreamSize, 0, out writeStream, ts);
                             }
@@ -486,7 +487,7 @@ namespace SabreTools.FileTypes.Archives
                                 }
                             }
 
-                            zipFile.ZipFileCloseWriteStream(baseFile.CRC!);
+                            zipFile.ZipFileCloseWriteStream(baseFile.CRC32!);
                         }
 
                         // Otherwise, copy the file from the old archive
@@ -603,7 +604,7 @@ namespace SabreTools.FileTypes.Archives
                         DateTime dt = DateTime.Now;
                         if (_realDates && !string.IsNullOrEmpty(baseFiles[index].Date) && DateTime.TryParse(baseFiles[index].Date?.Replace('\\', '/'), out dt))
                         {
-                            long msDosDateTime = DateTimeHelper.ConvertToMsDosTimeFormat(dt);
+                            long msDosDateTime = dt.ConvertToMsDosTimeFormat();
                             TimeStamps ts = new() { ModTime = msDosDateTime };
                             zipFile.ZipFileOpenWriteStream(false, false, baseFiles[index].Filename!.Replace('\\', '/')!, istreamSize, 0, out writeStream, ts);
                         }
@@ -622,7 +623,7 @@ namespace SabreTools.FileTypes.Archives
                         }
 
                         freadStream.Dispose();
-                        zipFile.ZipFileCloseWriteStream(baseFiles[index].CRC!);
+                        zipFile.ZipFileCloseWriteStream(baseFiles[index].CRC32!);
                     }
                 }
 
@@ -685,7 +686,7 @@ namespace SabreTools.FileTypes.Archives
                             DateTime dt = DateTime.Now;
                             if (_realDates && !string.IsNullOrEmpty(baseFiles[-index - 1].Date) && DateTime.TryParse(baseFiles[-index - 1].Date?.Replace('\\', '/'), out dt))
                             {
-                                long msDosDateTime = DateTimeHelper.ConvertToMsDosTimeFormat(dt);
+                                long msDosDateTime = dt.ConvertToMsDosTimeFormat();
                                 TimeStamps ts = new() { ModTime = msDosDateTime };
                                 zipFile.ZipFileOpenWriteStream(false, false, baseFiles[-index - 1].Filename!.Replace('\\', '/'), istreamSize, 0, out writeStream, ts);
                             }
@@ -704,7 +705,7 @@ namespace SabreTools.FileTypes.Archives
                             }
 
                             freadStream.Dispose();
-                            zipFile.ZipFileCloseWriteStream(baseFiles[-index - 1].CRC!);
+                            zipFile.ZipFileCloseWriteStream(baseFiles[-index - 1].CRC32!);
                         }
 
                         // Otherwise, copy the file from the old archive

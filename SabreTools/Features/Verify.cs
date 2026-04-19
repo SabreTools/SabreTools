@@ -1,9 +1,9 @@
-﻿using SabreTools.DatFiles;
 using SabreTools.DatTools;
 using SabreTools.Hashing;
 using SabreTools.IO;
 using SabreTools.IO.Extensions;
-using SabreTools.IO.Logging;
+using SabreTools.Logging;
+using SabreTools.Metadata.DatFiles;
 
 namespace SabreTools.Features
 {
@@ -49,7 +49,7 @@ namespace SabreTools.Features
 
             // Get a list of files from the input datfiles
             var datfiles = GetStringList(DatListValue);
-            var datfilePaths = PathTool.GetFilesOnly(datfiles);
+            var datfilePaths = IOExtensions.GetFilesOnly(datfiles);
 
             // Get feature flags
             TreatAsFile treatAsFile = GetTreatAsFile();
@@ -59,7 +59,7 @@ namespace SabreTools.Features
             var dfd = new DatTools.DatFromDir(hashes, SkipFileType.None, treatAsFile, addBlanks: false);
 
             // Ensure the output directory
-            OutputDir = OutputDir.Ensure();
+            OutputDir = OutputDir.EnsureDirectory();
 
             // If we are in individual mode, process each DAT on their own
             if (GetBoolean(IndividualValue))
@@ -82,7 +82,7 @@ namespace SabreTools.Features
                     // Ensure there are output formats
                     var datFormats = DatFormats;
                     if (datFormats is null || datFormats.Count == 0)
-                        datFormats = [datdata.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
+                        datFormats = [datdata.Header.DatFormat!.Value];
 
                     // Perform additional processing steps
                     Extras!.ApplyExtras(datdata);
@@ -97,9 +97,9 @@ namespace SabreTools.Features
                     datdata.Modifiers.InputDepot = inputDepot?.Clone() as DepotInformation;
 
                     // If we have overridden the header skipper, set it now
-                    string? headerSkipper = Header!.GetStringFieldValue(Data.Models.Metadata.Header.HeaderKey);
+                    string? headerSkipper = Header!.HeaderSkipper;
                     if (!string.IsNullOrEmpty(headerSkipper))
-                        datdata.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.HeaderKey, headerSkipper);
+                        datdata.Header.HeaderSkipper = headerSkipper;
 
                     // If we have the depot flag, respect it
                     if (inputDepot?.IsActive ?? false)
@@ -140,7 +140,7 @@ namespace SabreTools.Features
                         continue;
                     }
 
-                    datdata.Header.RemoveField(DatHeader.DatFormatKey);
+                    datdata.Header.DatFormat = null;
                     Parser.ParseInto(datdata,
                         datfile.CurrentPath,
                         int.MaxValue,
@@ -151,7 +151,7 @@ namespace SabreTools.Features
                 // Ensure there are output formats
                 var datFormats = DatFormats;
                 if (datFormats is null || datFormats.Count == 0)
-                    datFormats = [datdata.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
+                    datFormats = [datdata.Header.DatFormat!.Value];
 
                 // Perform additional processing steps
                 Extras!.ApplyExtras(datdata);
@@ -166,9 +166,9 @@ namespace SabreTools.Features
                 datdata.Modifiers.InputDepot = inputDepot?.Clone() as DepotInformation;
 
                 // If we have overridden the header skipper, set it now
-                string? headerSkipper = Header!.GetStringFieldValue(Data.Models.Metadata.Header.HeaderKey);
+                string? headerSkipper = Header!.HeaderSkipper;
                 if (!string.IsNullOrEmpty(headerSkipper))
-                    datdata.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.HeaderKey, headerSkipper);
+                    datdata.Header.HeaderSkipper = headerSkipper;
 
                 watch.Stop();
 

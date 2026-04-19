@@ -52,7 +52,7 @@ namespace SabreTools.FileTypes.Archives
             {
                 // Open the input file
                 using var inputFile = File.Open(Filename, FileMode.Open, FileAccess.Read, FileShare.Read);
-                var rar = Serialization.Wrappers.RAR.Create(inputFile);
+                var rar = Wrappers.RAR.Create(inputFile);
 
                 // Write the output files
                 encounteredErrors = !rar.Extract(outDir, includeDebug: false);
@@ -133,7 +133,7 @@ namespace SabreTools.FileTypes.Archives
             {
                 Stream? stream = null;
 
-                var ra = SharpCompress.Archives.Rar.RarArchive.Open(Filename, new ReaderOptions { LeaveStreamOpen = false, });
+                var ra = (SharpCompress.Archives.Rar.RarArchive)SharpCompress.Archives.Rar.RarArchive.OpenArchive(Filename, new ReaderOptions { LeaveStreamOpen = false });
                 foreach (RarArchiveEntry entry in ra.Entries)
                 {
                     // Skip invalid entries
@@ -185,7 +185,7 @@ namespace SabreTools.FileTypes.Archives
 
             try
             {
-                SharpCompress.Archives.Rar.RarArchive ra = SharpCompress.Archives.Rar.RarArchive.Open(File.Open(Filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
+                var ra = (SharpCompress.Archives.Rar.RarArchive)SharpCompress.Archives.Rar.RarArchive.OpenArchive(File.Open(Filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
                 foreach (RarArchiveEntry entry in ra.Entries)
                 {
                     // Skip invalid entries
@@ -199,7 +199,7 @@ namespace SabreTools.FileTypes.Archives
                     if (_hashTypes.Length == 1 && _hashTypes[0] == HashType.CRC32)
                     {
                         rarEntryRom.Size = entry.Size;
-                        rarEntryRom.CRC = BitConverter.GetBytes(entry.Crc);
+                        rarEntryRom.CRC32 = BitConverter.GetBytes(entry.Crc);
                     }
                     // Otherwise, use the stream directly
                     else
@@ -243,7 +243,7 @@ namespace SabreTools.FileTypes.Archives
 
             try
             {
-                SharpCompress.Archives.Rar.RarArchive ra = SharpCompress.Archives.Rar.RarArchive.Open(Filename, new ReaderOptions { LeaveStreamOpen = false });
+                var ra = (SharpCompress.Archives.Rar.RarArchive)SharpCompress.Archives.Rar.RarArchive.OpenArchive(Filename, new ReaderOptions { LeaveStreamOpen = false });
                 List<RarArchiveEntry> rarEntries = [.. ra.Entries.OrderBy(e => e.Key ?? string.Empty, new NaturalReversedComparer())];
                 string? lastRarEntry = null;
                 foreach (RarArchiveEntry entry in rarEntries)

@@ -1,13 +1,13 @@
 using System.Text;
-using SabreTools.Core.Tools;
-using SabreTools.DatItems;
-using SabreTools.DatItems.Formats;
 using SabreTools.FileTypes;
 using SabreTools.FileTypes.Aaru;
 using SabreTools.FileTypes.Archives;
 using SabreTools.FileTypes.CHD;
-using SabreTools.IO.Extensions;
+using SabreTools.Metadata.DatItems;
+using SabreTools.Metadata.DatItems.Formats;
+using SabreTools.Text.Extensions;
 using Xunit;
+using ItemType = SabreTools.Data.Models.Metadata.ItemType;
 
 namespace SabreTools.DatTools.Test
 {
@@ -48,7 +48,7 @@ namespace SabreTools.DatTools.Test
         {
             var baseFile = CreateBaseFile(fileType);
             var actual = DatItemTool.CreateDatItem(baseFile, asFile);
-            Assert.Equal(expected, actual?.GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey).AsItemType());
+            Assert.Equal(expected, actual?.ItemType);
         }
 
         #endregion
@@ -61,6 +61,7 @@ namespace SabreTools.DatTools.Test
             string filename = "XXXXXX";
             string md5 = TextHelper.NormalizeMD5("1234abcd")!;
             string sha1 = TextHelper.NormalizeSHA1("1234abcd")!;
+
             BaseFile baseFile = new CHDFile
             {
                 Filename = filename,
@@ -72,10 +73,10 @@ namespace SabreTools.DatTools.Test
 
             Disk actual = baseFile.ConvertToDisk();
 
-            Assert.Equal(filename, actual.GetStringFieldValue(Data.Models.Metadata.Disk.NameKey));
-            Assert.Equal(md5, actual.GetStringFieldValue(Data.Models.Metadata.Disk.MD5Key));
-            Assert.Equal(sha1, actual.GetStringFieldValue(Data.Models.Metadata.Disk.SHA1Key));
-            Assert.Equal((DupeType)0x00, actual.GetFieldValue<DupeType>(DatItem.DupeTypeKey));
+            Assert.Equal(filename, actual.Name);
+            Assert.Equal(md5, actual.MD5);
+            Assert.Equal(sha1, actual.SHA1);
+            Assert.Equal((DupeType)0x00, actual.DupeType);
         }
 
         [Fact]
@@ -84,6 +85,7 @@ namespace SabreTools.DatTools.Test
             string filename = "XXXXXX";
             string md5 = TextHelper.NormalizeMD5("1234abcd")!;
             string sha1 = TextHelper.NormalizeSHA1("1234abcd")!;
+
             BaseFile baseFile = new BaseFile
             {
                 Filename = filename,
@@ -93,10 +95,10 @@ namespace SabreTools.DatTools.Test
 
             Disk actual = baseFile.ConvertToDisk();
 
-            Assert.Equal(filename, actual.GetStringFieldValue(Data.Models.Metadata.Disk.NameKey));
-            Assert.Equal(md5, actual.GetStringFieldValue(Data.Models.Metadata.Disk.MD5Key));
-            Assert.Equal(sha1, actual.GetStringFieldValue(Data.Models.Metadata.Disk.SHA1Key));
-            Assert.Equal((DupeType)0x00, actual.GetFieldValue<DupeType>(DatItem.DupeTypeKey));
+            Assert.Equal(filename, actual.Name);
+            Assert.Equal(md5, actual.MD5);
+            Assert.Equal(sha1, actual.SHA1);
+            Assert.Equal((DupeType)0x00, actual.DupeType);
         }
 
         #endregion
@@ -110,9 +112,10 @@ namespace SabreTools.DatTools.Test
             string md5 = TextHelper.NormalizeMD5("1234abcd")!;
             string sha1 = TextHelper.NormalizeSHA1("1234abcd")!;
             string sha256 = TextHelper.NormalizeSHA256("1234abcd")!;
+
             BaseFile baseFile = new BaseFile
             {
-                CRC = crc.FromHexString(),
+                CRC32 = crc.FromHexString(),
                 MD5 = md5.FromHexString(),
                 SHA1 = sha1.FromHexString(),
                 SHA256 = sha256.FromHexString(),
@@ -124,7 +127,7 @@ namespace SabreTools.DatTools.Test
             Assert.Equal(md5, actual.MD5);
             Assert.Equal(sha1, actual.SHA1);
             Assert.Equal(sha256, actual.SHA256);
-            Assert.Equal((DupeType)0x00, actual.GetFieldValue<DupeType>(DatItem.DupeTypeKey));
+            Assert.Equal((DupeType)0x00, actual.DupeType);
         }
 
         #endregion
@@ -139,6 +142,7 @@ namespace SabreTools.DatTools.Test
             string sha1 = TextHelper.NormalizeSHA1("1234abcd")!;
             string sha256 = TextHelper.NormalizeSHA256("1234abcd")!;
             string spamSum = "1234abcd";
+
             BaseFile baseFile = new AaruFormat
             {
                 Filename = filename,
@@ -154,12 +158,12 @@ namespace SabreTools.DatTools.Test
 
             Media actual = baseFile.ConvertToMedia();
 
-            Assert.Equal(filename, actual.GetStringFieldValue(Data.Models.Metadata.Media.NameKey));
-            Assert.Equal(md5, actual.GetStringFieldValue(Data.Models.Metadata.Media.MD5Key));
-            Assert.Equal(sha1, actual.GetStringFieldValue(Data.Models.Metadata.Media.SHA1Key));
-            Assert.Equal(sha256, actual.GetStringFieldValue(Data.Models.Metadata.Media.SHA256Key));
-            Assert.Equal(spamSum, actual.GetStringFieldValue(Data.Models.Metadata.Media.SpamSumKey));
-            Assert.Equal((DupeType)0x00, actual.GetFieldValue<DupeType>(DatItem.DupeTypeKey));
+            Assert.Equal(filename, actual.Name);
+            Assert.Equal(md5, actual.MD5);
+            Assert.Equal(sha1, actual.SHA1);
+            Assert.Equal(sha256, actual.SHA256);
+            Assert.Equal(spamSum, actual.SpamSum);
+            Assert.Equal((DupeType)0x00, actual.DupeType);
         }
 
         [Fact]
@@ -170,6 +174,7 @@ namespace SabreTools.DatTools.Test
             string sha1 = TextHelper.NormalizeSHA1("1234abcd")!;
             string sha256 = TextHelper.NormalizeSHA256("1234abcd")!;
             string spamSum = "1234abcd";
+
             BaseFile baseFile = new BaseFile
             {
                 Filename = filename,
@@ -181,12 +186,12 @@ namespace SabreTools.DatTools.Test
 
             Media actual = baseFile.ConvertToMedia();
 
-            Assert.Equal(filename, actual.GetStringFieldValue(Data.Models.Metadata.Media.NameKey));
-            Assert.Equal(md5, actual.GetStringFieldValue(Data.Models.Metadata.Media.MD5Key));
-            Assert.Equal(sha1, actual.GetStringFieldValue(Data.Models.Metadata.Media.SHA1Key));
-            Assert.Equal(sha256, actual.GetStringFieldValue(Data.Models.Metadata.Media.SHA256Key));
-            Assert.Equal(spamSum, actual.GetStringFieldValue(Data.Models.Metadata.Media.SpamSumKey));
-            Assert.Equal((DupeType)0x00, actual.GetFieldValue<DupeType>(DatItem.DupeTypeKey));
+            Assert.Equal(filename, actual.Name);
+            Assert.Equal(md5, actual.MD5);
+            Assert.Equal(sha1, actual.SHA1);
+            Assert.Equal(sha256, actual.SHA256);
+            Assert.Equal(spamSum, actual.SpamSum);
+            Assert.Equal((DupeType)0x00, actual.DupeType);
         }
 
         #endregion
@@ -198,7 +203,9 @@ namespace SabreTools.DatTools.Test
         {
             string filename = "XXXXXX";
             string date = "XXXXXX";
-            string crc = TextHelper.NormalizeCRC32("1234abcd")!;
+            // string crc16 = TextHelper.NormalizeCRC16("1234abcd")!;
+            string crc32 = TextHelper.NormalizeCRC32("1234abcd")!;
+            // string crc64 = TextHelper.NormalizeCRC64("1234abcd")!;
             string md2 = TextHelper.NormalizeMD2("1234abcd")!;
             string md4 = TextHelper.NormalizeMD4("1234abcd")!;
             string md5 = TextHelper.NormalizeMD5("1234abcd")!;
@@ -210,11 +217,12 @@ namespace SabreTools.DatTools.Test
             string sha512 = TextHelper.NormalizeSHA512("1234abcd")!;
             string spamSum = "1234abcd";
             long size = 12345;
+
             BaseFile baseFile = new BaseFile
             {
                 Filename = filename,
                 Date = date,
-                CRC = crc.FromHexString(),
+                CRC32 = crc32.FromHexString(),
                 MD2 = md2.FromHexString(),
                 MD4 = md4.FromHexString(),
                 MD5 = md5.FromHexString(),
@@ -230,21 +238,21 @@ namespace SabreTools.DatTools.Test
 
             Rom actual = baseFile.ConvertToRom();
 
-            Assert.Equal(filename, actual.GetStringFieldValue(Data.Models.Metadata.Rom.NameKey));
-            Assert.Equal(date, actual.GetStringFieldValue(Data.Models.Metadata.Rom.DateKey));
-            Assert.Equal(crc, actual.GetStringFieldValue(Data.Models.Metadata.Rom.CRCKey));
-            Assert.Equal(md2, actual.GetStringFieldValue(Data.Models.Metadata.Rom.MD2Key));
-            Assert.Equal(md4, actual.GetStringFieldValue(Data.Models.Metadata.Rom.MD4Key));
-            Assert.Equal(md5, actual.GetStringFieldValue(Data.Models.Metadata.Rom.MD5Key));
-            Assert.Equal(ripemd128, actual.GetStringFieldValue(Data.Models.Metadata.Rom.RIPEMD128Key));
-            Assert.Equal(ripemd160, actual.GetStringFieldValue(Data.Models.Metadata.Rom.RIPEMD160Key));
-            Assert.Equal(sha1, actual.GetStringFieldValue(Data.Models.Metadata.Rom.SHA1Key));
-            Assert.Equal(sha256, actual.GetStringFieldValue(Data.Models.Metadata.Rom.SHA256Key));
-            Assert.Equal(sha384, actual.GetStringFieldValue(Data.Models.Metadata.Rom.SHA384Key));
-            Assert.Equal(sha512, actual.GetStringFieldValue(Data.Models.Metadata.Rom.SHA512Key));
-            Assert.Equal(spamSum, actual.GetStringFieldValue(Data.Models.Metadata.Rom.SpamSumKey));
-            Assert.Equal(size, actual.GetInt64FieldValue(Data.Models.Metadata.Rom.SizeKey));
-            Assert.Equal((DupeType)0x00, actual.GetFieldValue<DupeType>(DatItem.DupeTypeKey));
+            Assert.Equal(filename, actual.Name);
+            Assert.Equal(date, actual.Date);
+            Assert.Equal(crc32, actual.CRC32);
+            Assert.Equal(md2, actual.MD2);
+            Assert.Equal(md4, actual.MD4);
+            Assert.Equal(md5, actual.MD5);
+            Assert.Equal(ripemd128, actual.RIPEMD128);
+            Assert.Equal(ripemd160, actual.RIPEMD160);
+            Assert.Equal(sha1, actual.SHA1);
+            Assert.Equal(sha256, actual.SHA256);
+            Assert.Equal(sha384, actual.SHA384);
+            Assert.Equal(sha512, actual.SHA512);
+            Assert.Equal(spamSum, actual.SpamSum);
+            Assert.Equal(size, actual.Size);
+            Assert.Equal((DupeType)0x00, actual.DupeType);
         }
 
         #endregion
@@ -258,10 +266,12 @@ namespace SabreTools.DatTools.Test
             string md5 = TextHelper.NormalizeMD5("1234abcd")!;
             string sha1 = TextHelper.NormalizeSHA1("1234abcd")!;
 
-            Disk disk = new Disk();
-            disk.SetFieldValue<string?>(Data.Models.Metadata.Disk.NameKey, filename);
-            disk.SetFieldValue<string?>(Data.Models.Metadata.Disk.MD5Key, md5);
-            disk.SetFieldValue<string?>(Data.Models.Metadata.Disk.SHA1Key, sha1);
+            Disk disk = new Disk
+            {
+                Name = filename,
+                MD5 = md5,
+                SHA1 = sha1,
+            };
 
             BaseFile actual = disk.ConvertToBaseFile();
             CHDFile? actualChd = actual as CHDFile;
@@ -292,7 +302,7 @@ namespace SabreTools.DatTools.Test
 
             BaseFile actual = file.ConvertToBaseFile();
 
-            Assert.Equal(crc, actual.CRC.ToHexString());
+            Assert.Equal(crc, actual.CRC32.ToHexString());
             Assert.Equal(md5, actual.MD5.ToHexString());
             Assert.Equal(sha1, actual.SHA1.ToHexString());
             Assert.Equal(sha256, actual.SHA256.ToHexString());
@@ -307,12 +317,14 @@ namespace SabreTools.DatTools.Test
             string sha256 = TextHelper.NormalizeSHA256("1234abcd")!;
             string spamSum = "1234abcd";
 
-            Media media = new Media();
-            media.SetFieldValue<string?>(Data.Models.Metadata.Media.NameKey, filename);
-            media.SetFieldValue<string?>(Data.Models.Metadata.Media.MD5Key, md5);
-            media.SetFieldValue<string?>(Data.Models.Metadata.Media.SHA1Key, sha1);
-            media.SetFieldValue<string?>(Data.Models.Metadata.Media.SHA256Key, sha256);
-            media.SetFieldValue<string?>(Data.Models.Metadata.Media.SpamSumKey, spamSum);
+            Media media = new Media
+            {
+                Name = filename,
+                MD5 = md5,
+                SHA1 = sha1,
+                SHA256 = sha256,
+                SpamSum = spamSum,
+            };
 
             BaseFile actual = media.ConvertToBaseFile();
             AaruFormat? actualAif = actual as AaruFormat;
@@ -336,7 +348,9 @@ namespace SabreTools.DatTools.Test
         {
             string filename = "XXXXXX";
             string date = "XXXXXX";
-            string crc = TextHelper.NormalizeCRC32("1234abcd")!;
+            // string crc16 = TextHelper.NormalizeCRC16("1234abcd")!;
+            string crc32 = TextHelper.NormalizeCRC32("1234abcd")!;
+            // string crc64 = TextHelper.NormalizeCRC64("1234abcd")!;
             string md2 = TextHelper.NormalizeMD2("1234abcd")!;
             string md4 = TextHelper.NormalizeMD4("1234abcd")!;
             string md5 = TextHelper.NormalizeMD5("1234abcd")!;
@@ -349,27 +363,29 @@ namespace SabreTools.DatTools.Test
             string spamSum = "1234abcd";
             long size = 12345;
 
-            Rom rom = new Rom();
-            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.NameKey, filename);
-            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.DateKey, date);
-            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, crc);
-            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.MD2Key, md2);
-            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.MD4Key, md4);
-            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.MD5Key, md5);
-            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.RIPEMD128Key, ripemd128);
-            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.RIPEMD160Key, ripemd160);
-            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA1Key, sha1);
-            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA256Key, sha256);
-            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA384Key, sha384);
-            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA512Key, sha512);
-            rom.SetFieldValue<string?>(Data.Models.Metadata.Rom.SpamSumKey, spamSum);
-            rom.SetFieldValue(Data.Models.Metadata.Rom.SizeKey, size);
+            Rom rom = new Rom
+            {
+                Name = filename,
+                Date = date,
+                CRC32 = crc32,
+                MD2 = md2,
+                MD4 = md4,
+                MD5 = md5,
+                RIPEMD128 = ripemd128,
+                RIPEMD160 = ripemd160,
+                SHA1 = sha1,
+                SHA256 = sha256,
+                SHA384 = sha384,
+                SHA512 = sha512,
+                SpamSum = spamSum,
+                Size = size,
+            };
 
             BaseFile actual = rom.ConvertToBaseFile();
 
             Assert.Equal(filename, actual.Filename);
             Assert.Equal(date, actual.Date);
-            Assert.Equal(crc, actual.CRC.ToHexString());
+            Assert.Equal(crc32, actual.CRC32.ToHexString());
             Assert.Equal(md2, actual.MD2.ToHexString());
             Assert.Equal(md4, actual.MD4.ToHexString());
             Assert.Equal(md5, actual.MD5.ToHexString());

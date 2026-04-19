@@ -1,11 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using SabreTools.Core.Tools;
 using SabreTools.Hashing;
-using SabreTools.IO;
 using SabreTools.IO.Extensions;
-using SabreTools.IO.Logging;
+using SabreTools.Logging;
+using SabreTools.Text.Extensions;
 
 namespace SabreTools.FileTypes
 {
@@ -146,7 +145,7 @@ namespace SabreTools.FileTypes
                 Directory.CreateDirectory(outDir);
 
                 // Get all files from the input directory
-                List<string> files = PathTool.GetFilesOrdered(Filename);
+                List<string> files = IOExtensions.GetFilesOrdered(Filename);
 
                 // Now sort through to find the first file that matches
                 string? match = files.Find(s => s.EndsWith(entryName));
@@ -184,7 +183,7 @@ namespace SabreTools.FileTypes
                 Directory.CreateDirectory(Filename);
 
                 // Get all files from the input directory
-                List<string> files = PathTool.GetFilesOrdered(Filename);
+                List<string> files = IOExtensions.GetFilesOrdered(Filename);
 
                 // Now sort through to find the first file that matches
                 string? match = files.Find(s => s.EndsWith(entryName));

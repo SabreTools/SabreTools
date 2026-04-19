@@ -1,17 +1,17 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 #if NET462_OR_GREATER || NETCOREAPP
 using System.Linq;
 using Compress;
-using SabreTools.Core.Tools;
 using SabreTools.Hashing;
 using SabreTools.Text.Compare;
+using SabreTools.Text.Extensions;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Tar;
 using SharpCompress.Common;
 using SharpCompress.Readers;
-using SharpCompress.Writers;
+using SharpCompress.Writers.Tar;
 #endif
 
 namespace SabreTools.FileTypes.Archives
@@ -58,7 +58,7 @@ namespace SabreTools.FileTypes.Archives
             {
                 // Open the input file
                 using var inputFile = File.Open(Filename, FileMode.Open, FileAccess.Read, FileShare.Read);
-                var tar = Serialization.Wrappers.TapeArchive.Create(inputFile);
+                var tar = Wrappers.TapeArchive.Create(inputFile);
 
                 // Write the output files
                 encounteredErrors = !tar.Extract(outDir, includeDebug: false);
@@ -135,7 +135,7 @@ namespace SabreTools.FileTypes.Archives
             {
                 Stream? stream = null;
 
-                var ta = TarArchive.Open(Filename!, new ReaderOptions { LeaveStreamOpen = false, });
+                var ta = (TarArchive)TarArchive.OpenArchive(Filename!, new ReaderOptions { LeaveStreamOpen = false, });
                 foreach (TarArchiveEntry entry in ta.Entries)
                 {
                     // Skip invalid entries
@@ -183,7 +183,7 @@ namespace SabreTools.FileTypes.Archives
 
             try
             {
-                TarArchive ta = TarArchive.Open(File.Open(Filename!, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
+                var ta = (TarArchive)TarArchive.OpenArchive(File.Open(Filename!, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
                 foreach (TarArchiveEntry entry in ta.Entries)
                 {
                     // Skip invalid entries
@@ -197,7 +197,7 @@ namespace SabreTools.FileTypes.Archives
                     if (_hashTypes.Length == 1 && _hashTypes[0] == HashType.CRC32)
                     {
                         tarEntryRom.Size = entry.Size;
-                        tarEntryRom.CRC = BitConverter.GetBytes(entry.Crc);
+                        tarEntryRom.CRC32 = BitConverter.GetBytes(entry.Crc);
                     }
                     // Otherwise, use the stream directly
                     else
@@ -237,7 +237,7 @@ namespace SabreTools.FileTypes.Archives
 
             try
             {
-                TarArchive ta = TarArchive.Open(Filename!, new ReaderOptions { LeaveStreamOpen = false });
+                var ta = (TarArchive)TarArchive.OpenArchive(Filename!, new ReaderOptions { LeaveStreamOpen = false });
                 List<TarArchiveEntry> tarEntries = [.. ta.Entries.OrderBy(e => e.Key ?? string.Empty, new NaturalReversedComparer())];
                 string? lastTarEntry = null;
                 foreach (TarArchiveEntry entry in tarEntries)
@@ -316,8 +316,8 @@ namespace SabreTools.FileTypes.Archives
             string archiveFileName = Path.Combine(outDir, TextHelper.RemovePathUnsafeCharacters(baseFile.Parent) + (baseFile.Parent!.EndsWith(".tar") ? string.Empty : ".tar"));
 
             // Set internal variables
-            TarArchive oldTarFile = TarArchive.Create();
-            TarArchive tarFile = TarArchive.Create();
+            TarArchive oldTarFile = (TarArchive)TarArchive.CreateArchive();
+            TarArchive tarFile = (TarArchive)TarArchive.CreateArchive();
 
             try
             {
@@ -344,7 +344,7 @@ namespace SabreTools.FileTypes.Archives
                 else
                 {
                     // Open the old archive for reading
-                    oldTarFile = TarArchive.Open(archiveFileName);
+                    oldTarFile = (TarArchive)TarArchive.OpenArchive(archiveFileName);
 
                     // Get a list of all current entries
                     List<string> entries = [.. oldTarFile.Entries.Select(i => i.Key)];
@@ -413,7 +413,7 @@ namespace SabreTools.FileTypes.Archives
                 }
 
                 // Close the output tar file
-                tarFile.SaveTo(tempFile, new WriterOptions(CompressionType.None));
+                tarFile.SaveTo(tempFile, new TarWriterOptions(CompressionType.None));
 
                 success = true;
             }
@@ -467,8 +467,8 @@ namespace SabreTools.FileTypes.Archives
             string archiveFileName = Path.Combine(outDir, TextHelper.RemovePathUnsafeCharacters(baseFiles[0].Parent) + (baseFiles[0].Parent!.EndsWith(".tar") ? string.Empty : ".tar"));
 
             // Set internal variables
-            TarArchive oldTarFile = TarArchive.Create();
-            TarArchive tarFile = TarArchive.Create();
+            TarArchive oldTarFile = (TarArchive)TarArchive.CreateArchive();
+            TarArchive tarFile = (TarArchive)TarArchive.CreateArchive();
 
             try
             {
@@ -513,7 +513,7 @@ namespace SabreTools.FileTypes.Archives
                 else
                 {
                     // Open the old archive for reading
-                    oldTarFile = TarArchive.Open(archiveFileName);
+                    oldTarFile = (TarArchive)TarArchive.OpenArchive(archiveFileName);
 
                     // Get a list of all current entries
                     List<string> entries = [.. oldTarFile.Entries.Select(i => i.Key)];
@@ -588,7 +588,7 @@ namespace SabreTools.FileTypes.Archives
                 }
 
                 // Close the output tar file
-                tarFile.SaveTo(tempFile, new WriterOptions(CompressionType.None));
+                tarFile.SaveTo(tempFile, new TarWriterOptions(CompressionType.None));
 
                 success = true;
             }

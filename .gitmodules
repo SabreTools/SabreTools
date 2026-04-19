@@ -1,0 +1,3 @@
+[submodule "SabreTools.Serialization"]
+	path = SabreTools.Serialization
+	url = https://github.com/SabreTools/SabreTools.Serialization.git

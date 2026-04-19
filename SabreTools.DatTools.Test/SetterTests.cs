@@ -1,6 +1,6 @@
-using SabreTools.Core.Filter;
-using SabreTools.DatItems;
-using SabreTools.DatItems.Formats;
+using SabreTools.Metadata.DatItems;
+using SabreTools.Metadata.DatItems.Formats;
+using SabreTools.Metadata.Filter;
 using Xunit;
 
 namespace SabreTools.DatTools.Test
@@ -27,15 +27,17 @@ namespace SabreTools.DatTools.Test
         [Fact]
         public void SetFields_Machine()
         {
-            var machine = new Machine();
-            machine.SetName("bar");
-            machine.SetFieldValue<string?>(Data.Models.Metadata.Machine.DescriptionKey, "bar");
+            var machine = new Machine
+            {
+                Name = "bar",
+                Description = "bar",
+            };
 
             var setter = new Setter();
             setter.PopulateSetters(new FilterKey("machine", "name"), "foo");
             setter.SetFields(machine);
 
-            Assert.Equal("foo", machine.GetName());
+            Assert.Equal("foo", machine.Name);
         }
 
         #endregion

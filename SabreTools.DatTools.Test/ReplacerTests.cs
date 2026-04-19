@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using SabreTools.Core.Tools;
-using SabreTools.DatItems;
-using SabreTools.DatItems.Formats;
 using SabreTools.Hashing;
+using SabreTools.Metadata.DatItems;
+using SabreTools.Metadata.DatItems.Formats;
 using Xunit;
 
 namespace SabreTools.DatTools.Test
@@ -16,19 +15,23 @@ namespace SabreTools.DatTools.Test
         [Fact]
         public void ReplaceFields_Machine()
         {
-            var machine = new Machine();
-            machine.SetName("bar");
-            machine.SetFieldValue<string?>(Data.Models.Metadata.Machine.DescriptionKey, "bar");
+            var machine = new Machine
+            {
+                Name = "bar",
+                Description = "bar",
+            };
 
-            var repMachine = new Machine();
-            machine.SetName("foo");
-            machine.SetFieldValue<string?>(Data.Models.Metadata.Machine.DescriptionKey, "bar");
+            var repMachine = new Machine
+            {
+                Name = "foo",
+                Description = "bar",
+            };
 
-            List<string> fields = [Data.Models.Metadata.Machine.NameKey];
+            List<string> fields = ["name"];
 
             Replacer.ReplaceFields(machine, repMachine, fields, false);
 
-            Assert.Equal("foo", machine.GetName());
+            Assert.Equal("foo", machine.Name);
         }
 
         [Fact]
@@ -36,67 +39,29 @@ namespace SabreTools.DatTools.Test
         {
             var datItem = new Disk();
             datItem.SetName("foo");
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Disk.MD5Key, ZeroHash.MD5Str);
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Disk.SHA1Key, ZeroHash.SHA1Str);
+            datItem.MD5 = HashType.MD5.ZeroString;
+            datItem.SHA1 = HashType.SHA1.ZeroString;
 
             var repDatItem = new Disk();
             repDatItem.SetName("bar");
-            repDatItem.SetFieldValue<string?>(Data.Models.Metadata.Disk.MD5Key, "deadbeef");
-            repDatItem.SetFieldValue<string?>(Data.Models.Metadata.Disk.SHA1Key, "deadbeef");
+            repDatItem.MD5 = "deadbeef";
+            repDatItem.SHA1 = "deadbeef";
 
             var fields = new Dictionary<string, List<string>>
             {
                 ["item"] =
                 [
-                    Data.Models.Metadata.Disk.NameKey,
-                    Data.Models.Metadata.Disk.MD5Key,
-                    Data.Models.Metadata.Disk.SHA1Key,
+                    "name",
+                    "md5",
+                    "sha1",
                 ]
             };
 
             Replacer.ReplaceFields(datItem, repDatItem, fields);
 
             Assert.Equal("bar", datItem.GetName());
-            Assert.Equal("deadbeef", datItem.GetStringFieldValue(Data.Models.Metadata.Disk.MD5Key));
-            Assert.Equal("deadbeef", datItem.GetStringFieldValue(Data.Models.Metadata.Disk.SHA1Key));
-        }
-
-        [Fact]
-        public void ReplaceFields_File()
-        {
-            var datItem = new File
-            {
-                CRC = ZeroHash.CRC32Str,
-                MD5 = ZeroHash.MD5Str,
-                SHA1 = ZeroHash.SHA1Str,
-                SHA256 = ZeroHash.SHA256Str
-            };
-
-            var repDatItem = new File
-            {
-                CRC = TextHelper.NormalizeCRC32("deadbeef"),
-                MD5 = TextHelper.NormalizeMD5("deadbeef"),
-                SHA1 = TextHelper.NormalizeSHA1("deadbeef"),
-                SHA256 = TextHelper.NormalizeSHA256("deadbeef")
-            };
-
-            var fields = new Dictionary<string, List<string>>
-            {
-                ["item"] =
-                [
-                    Data.Models.Metadata.Rom.CRCKey,
-                    Data.Models.Metadata.Rom.MD5Key,
-                    Data.Models.Metadata.Rom.SHA1Key,
-                    Data.Models.Metadata.Rom.SHA256Key,
-                ]
-            };
-
-            Replacer.ReplaceFields(datItem, repDatItem, fields);
-
-            Assert.Equal(TextHelper.NormalizeCRC32("deadbeef"), datItem.CRC);
-            Assert.Equal(TextHelper.NormalizeMD5("deadbeef"), datItem.MD5);
-            Assert.Equal(TextHelper.NormalizeSHA1("deadbeef"), datItem.SHA1);
-            Assert.Equal(TextHelper.NormalizeSHA256("deadbeef"), datItem.SHA256);
+            Assert.Equal("deadbeef", datItem.MD5);
+            Assert.Equal("deadbeef", datItem.SHA1);
         }
 
         [Fact]
@@ -104,37 +69,37 @@ namespace SabreTools.DatTools.Test
         {
             var datItem = new Media();
             datItem.SetName("foo");
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Media.MD5Key, ZeroHash.MD5Str);
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Media.SHA1Key, ZeroHash.SHA1Str);
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Media.SHA256Key, ZeroHash.SHA256Str);
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Media.SpamSumKey, ZeroHash.SpamSumStr);
+            datItem.MD5 = HashType.MD5.ZeroString;
+            datItem.SHA1 = HashType.SHA1.ZeroString;
+            datItem.SHA256 = HashType.SHA256.ZeroString;
+            datItem.SpamSum = HashType.SpamSum.ZeroString;
 
             var repDatItem = new Media();
             repDatItem.SetName("bar");
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Media.MD5Key, "deadbeef");
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Media.SHA1Key, "deadbeef");
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Media.SHA256Key, "deadbeef");
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Media.SpamSumKey, "deadbeef");
+            datItem.MD5 = "deadbeef";
+            datItem.SHA1 = "deadbeef";
+            datItem.SHA256 = "deadbeef";
+            datItem.SpamSum = "deadbeef";
 
             var fields = new Dictionary<string, List<string>>
             {
                 ["item"] =
                 [
-                    Data.Models.Metadata.Media.NameKey,
-                    Data.Models.Metadata.Media.MD5Key,
-                    Data.Models.Metadata.Media.SHA1Key,
-                    Data.Models.Metadata.Media.SHA256Key,
-                    Data.Models.Metadata.Media.SpamSumKey,
+                    "name",
+                    "md5",
+                    "sha1",
+                    "sha256",
+                    "spamsum",
                 ]
             };
 
             Replacer.ReplaceFields(datItem, repDatItem, fields);
 
             Assert.Equal("bar", datItem.GetName());
-            Assert.Equal("deadbeef", datItem.GetStringFieldValue(Data.Models.Metadata.Media.MD5Key));
-            Assert.Equal("deadbeef", datItem.GetStringFieldValue(Data.Models.Metadata.Media.SHA1Key));
-            Assert.Equal("deadbeef", datItem.GetStringFieldValue(Data.Models.Metadata.Media.SHA256Key));
-            Assert.Equal("deadbeef", datItem.GetStringFieldValue(Data.Models.Metadata.Media.SpamSumKey));
+            Assert.Equal("deadbeef", datItem.MD5);
+            Assert.Equal("deadbeef", datItem.SHA1);
+            Assert.Equal("deadbeef", datItem.SHA256);
+            Assert.Equal("deadbeef", datItem.SpamSum);
         }
 
         [Fact]
@@ -142,65 +107,73 @@ namespace SabreTools.DatTools.Test
         {
             var datItem = new Rom();
             datItem.SetName("foo");
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, ZeroHash.CRC32Str);
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.MD2Key, ZeroHash.GetString(HashType.MD2));
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.MD4Key, ZeroHash.GetString(HashType.MD4));
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.MD5Key, ZeroHash.MD5Str);
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.RIPEMD128Key, ZeroHash.GetString(HashType.RIPEMD128));
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.RIPEMD160Key, ZeroHash.GetString(HashType.RIPEMD160));
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA1Key, ZeroHash.SHA1Str);
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA256Key, ZeroHash.SHA256Str);
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA384Key, ZeroHash.SHA384Str);
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA512Key, ZeroHash.SHA512Str);
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.SpamSumKey, ZeroHash.SpamSumStr);
+            datItem.CRC16 = HashType.CRC16.ZeroString;
+            datItem.CRC32 = HashType.CRC32.ZeroString;
+            datItem.CRC64 = HashType.CRC64.ZeroString;
+            datItem.MD2 = HashType.MD2.ZeroString;
+            datItem.MD4 = HashType.MD4.ZeroString;
+            datItem.MD5 = HashType.MD5.ZeroString;
+            datItem.RIPEMD128 = HashType.RIPEMD128.ZeroString;
+            datItem.RIPEMD160 = HashType.RIPEMD160.ZeroString;
+            datItem.SHA1 = HashType.SHA1.ZeroString;
+            datItem.SHA256 = HashType.SHA256.ZeroString;
+            datItem.SHA384 = HashType.SHA384.ZeroString;
+            datItem.SHA512 = HashType.SHA512.ZeroString;
+            datItem.SpamSum = HashType.SpamSum.ZeroString;
 
             var repDatItem = new Rom();
             repDatItem.SetName("bar");
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.CRCKey, "deadbeef");
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.MD2Key, "deadbeef");
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.MD4Key, "deadbeef");
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.MD5Key, "deadbeef");
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.RIPEMD128Key, "deadbeef");
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.RIPEMD160Key, "deadbeef");
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA1Key, "deadbeef");
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA256Key, "deadbeef");
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA384Key, "deadbeef");
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.SHA512Key, "deadbeef");
-            datItem.SetFieldValue<string?>(Data.Models.Metadata.Rom.SpamSumKey, "deadbeef");
+            datItem.CRC16 = "deadbeef";
+            datItem.CRC32 = "deadbeef";
+            datItem.CRC64 = "deadbeef";
+            datItem.MD2 = "deadbeef";
+            datItem.MD4 = "deadbeef";
+            datItem.MD5 = "deadbeef";
+            datItem.RIPEMD128 = "deadbeef";
+            datItem.RIPEMD160 = "deadbeef";
+            datItem.SHA1 = "deadbeef";
+            datItem.SHA256 = "deadbeef";
+            datItem.SHA384 = "deadbeef";
+            datItem.SHA512 = "deadbeef";
+            datItem.SpamSum = "deadbeef";
 
             var fields = new Dictionary<string, List<string>>
             {
                 ["item"] =
                 [
-                    Data.Models.Metadata.Rom.NameKey,
-                    Data.Models.Metadata.Rom.CRCKey,
-                    Data.Models.Metadata.Rom.MD2Key,
-                    Data.Models.Metadata.Rom.MD4Key,
-                    Data.Models.Metadata.Rom.MD5Key,
-                    Data.Models.Metadata.Rom.RIPEMD128Key,
-                    Data.Models.Metadata.Rom.RIPEMD160Key,
-                    Data.Models.Metadata.Rom.SHA1Key,
-                    Data.Models.Metadata.Rom.SHA256Key,
-                    Data.Models.Metadata.Rom.SHA384Key,
-                    Data.Models.Metadata.Rom.SHA512Key,
-                    Data.Models.Metadata.Rom.SpamSumKey,
+                    "name",
+                    "crc16",
+                    "crc32",
+                    "crc64",
+                    "md2",
+                    "md4",
+                    "md5",
+                    "ripemd128",
+                    "ripemd160",
+                    "sha1",
+                    "sha256",
+                    "sha384",
+                    "sha512",
+                    "spamsum",
                 ]
             };
 
             Replacer.ReplaceFields(datItem, repDatItem, fields);
 
             Assert.Equal("bar", datItem.GetName());
-            Assert.Equal("deadbeef", datItem.GetStringFieldValue(Data.Models.Metadata.Rom.CRCKey));
-            Assert.Equal("deadbeef", datItem.GetStringFieldValue(Data.Models.Metadata.Rom.MD2Key));
-            Assert.Equal("deadbeef", datItem.GetStringFieldValue(Data.Models.Metadata.Rom.MD4Key));
-            Assert.Equal("deadbeef", datItem.GetStringFieldValue(Data.Models.Metadata.Rom.MD5Key));
-            Assert.Equal("deadbeef", datItem.GetStringFieldValue(Data.Models.Metadata.Rom.RIPEMD128Key));
-            Assert.Equal("deadbeef", datItem.GetStringFieldValue(Data.Models.Metadata.Rom.RIPEMD160Key));
-            Assert.Equal("deadbeef", datItem.GetStringFieldValue(Data.Models.Metadata.Rom.SHA1Key));
-            Assert.Equal("deadbeef", datItem.GetStringFieldValue(Data.Models.Metadata.Rom.SHA256Key));
-            Assert.Equal("deadbeef", datItem.GetStringFieldValue(Data.Models.Metadata.Rom.SHA384Key));
-            Assert.Equal("deadbeef", datItem.GetStringFieldValue(Data.Models.Metadata.Rom.SHA512Key));
-            Assert.Equal("deadbeef", datItem.GetStringFieldValue(Data.Models.Metadata.Rom.SpamSumKey));
+            Assert.Equal("deadbeef", datItem.CRC16);
+            Assert.Equal("deadbeef", datItem.CRC32);
+            Assert.Equal("deadbeef", datItem.CRC64);
+            Assert.Equal("deadbeef", datItem.MD2);
+            Assert.Equal("deadbeef", datItem.MD4);
+            Assert.Equal("deadbeef", datItem.MD5);
+            Assert.Equal("deadbeef", datItem.RIPEMD128);
+            Assert.Equal("deadbeef", datItem.RIPEMD160);
+            Assert.Equal("deadbeef", datItem.SHA1);
+            Assert.Equal("deadbeef", datItem.SHA256);
+            Assert.Equal("deadbeef", datItem.SHA384);
+            Assert.Equal("deadbeef", datItem.SHA512);
+            Assert.Equal("deadbeef", datItem.SpamSum);
         }
 
         [Fact]
@@ -214,7 +187,7 @@ namespace SabreTools.DatTools.Test
 
             var fields = new Dictionary<string, List<string>>
             {
-                ["item"] = [Data.Models.Metadata.Rom.NameKey]
+                ["item"] = ["name"]
             };
 
             Replacer.ReplaceFields(datItem, repDatItem, fields);

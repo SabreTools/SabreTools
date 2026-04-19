@@ -1,19 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using SabreTools.DatFiles;
-using SabreTools.DatItems;
-using SabreTools.DatItems.Formats;
 using SabreTools.FileTypes;
 using SabreTools.FileTypes.Archives;
 using SabreTools.Hashing;
 using SabreTools.IO.Extensions;
-using SabreTools.IO.Logging;
+using SabreTools.Logging;
+using SabreTools.Metadata.DatFiles;
+using SabreTools.Metadata.DatItems;
+using SabreTools.Metadata.DatItems.Formats;
+using ItemType = SabreTools.Data.Models.Metadata.ItemType;
 
 namespace SabreTools.DatTools
 {
     /// <summary>
-    /// This file represents all methods related to populating a DatFile
+    /// This file represents all methods related to ItemTypepopulating a DatFile
     /// from a set of files and directories
     /// </summary>
     public class DatFromDir
@@ -289,12 +290,11 @@ namespace SabreTools.DatTools
             // Add add all of the found empties to the DAT
             foreach (var empty in empties)
             {
-                var emptyMachine = new Machine();
-                emptyMachine.SetName(item);
+                var emptyMachine = new Machine { Name = item };
 
                 var emptyRom = new Rom();
                 emptyRom.SetName(Path.Combine(empty, "_"));
-                emptyRom.SetFieldValue<Machine?>(DatItem.MachineKey, emptyMachine);
+                emptyRom.Machine = emptyMachine;
 
                 ProcessFileHelper(datFile, item, emptyRom, basePath, parent);
             }
@@ -322,7 +322,7 @@ namespace SabreTools.DatTools
                 string romname = string.Empty;
 
                 // If we have a SuperDAT, we want anything that's not the base path as the game, and the file as the rom
-                if (datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.TypeKey) == "SuperDAT")
+                if (datFile.Header.Type == "SuperDAT")
                 {
                     if (basePath is not null)
 #if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
@@ -362,12 +362,11 @@ namespace SabreTools.DatTools
 
                 _staticLogger.Verbose($"Adding blank empty folder: {gamename}");
 
-                var blankMachine = new Machine();
-                blankMachine.SetName(gamename);
+                var blankMachine = new Machine { Name = gamename };
 
                 var blankRom = new Blank();
                 blankRom.SetName(romname);
-                blankRom.SetFieldValue<Machine?>(DatItem.MachineKey, blankMachine);
+                blankRom.Machine = blankMachine;
 
                 datFile.AddItem(blankRom, statsOnly: false);
             }
@@ -383,7 +382,7 @@ namespace SabreTools.DatTools
         private void ProcessFile(DatFile datFile, string item, string? basePath)
         {
             _staticLogger.Verbose($"'{Path.GetFileName(item)}' treated like a file");
-            var header = datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.HeaderKey);
+            var header = datFile.Header.HeaderSkipper;
             BaseFile? baseFile = FileTypeTool.GetInfo(item, _hashes, header);
             DatItem? datItem = DatItemTool.CreateDatItem(baseFile, _treatAsFile);
             if (datItem is not null)
@@ -402,7 +401,7 @@ namespace SabreTools.DatTools
         {
             // If we didn't get an accepted parsed type somehow, cancel out
             List<ItemType> parsed = [ItemType.Disk, ItemType.File, ItemType.Media, ItemType.Rom];
-            if (!parsed.Contains(datItem.GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey).AsItemType()))
+            if (!parsed.Contains(datItem.ItemType))
                 return;
 
             try
@@ -446,7 +445,7 @@ namespace SabreTools.DatTools
             if (string.IsNullOrEmpty(parent))
             {
                 // If we have a SuperDAT, we want anything that's not the base path as the game, and the file as the rom
-                if (datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.TypeKey) == "SuperDAT")
+                if (datFile.Header.Type == "SuperDAT")
                 {
 #if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
                     machineName = Path.GetDirectoryName(item[(basepath?.Length ?? 0)..]);
@@ -479,7 +478,7 @@ namespace SabreTools.DatTools
             else
             {
                 // If we have a SuperDAT, we want the archive name as the game, and the file as everything else (?)
-                if (datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.TypeKey) == "SuperDAT")
+                if (datFile.Header.Type == "SuperDAT")
                 {
                     machineName = parent;
                     itemName = datItem.GetName();
@@ -504,8 +503,8 @@ namespace SabreTools.DatTools
             }
 
             // Update machine information
-            datItem.GetMachine()!.SetFieldValue<string?>(Data.Models.Metadata.Machine.DescriptionKey, machineName);
-            datItem.GetMachine()!.SetName(machineName);
+            datItem.Machine!.Description = machineName;
+            datItem.Machine!.Name = machineName;
 
             // If we have a Disk, then the ".chd" extension needs to be removed
             if (datItem is Disk && itemName!.EndsWith(".chd"))

@@ -1,10 +1,10 @@
-﻿using System.IO;
-using SabreTools.DatFiles;
+using System.IO;
 using SabreTools.DatTools;
 using SabreTools.FileTypes;
 using SabreTools.IO;
 using SabreTools.IO.Extensions;
-using SabreTools.IO.Logging;
+using SabreTools.Logging;
+using SabreTools.Metadata.DatFiles;
 
 namespace SabreTools.Features
 {
@@ -87,11 +87,11 @@ namespace SabreTools.Features
             }
 
             // Ensure the output directory
-            OutputDir = OutputDir.Ensure();
+            OutputDir = OutputDir.EnsureDirectory();
 
             // Get a list of files from the input datfiles
             var datfiles = GetStringList(DatListValue);
-            var datfilePaths = PathTool.GetFilesOnly(datfiles);
+            var datfilePaths = IOExtensions.GetFilesOnly(datfiles);
 
             // If we are in individual mode, process each DAT on their own, appending the DAT name to the output dir
             if (GetBoolean(IndividualValue))
@@ -119,8 +119,8 @@ namespace SabreTools.Features
                     datdata.Modifiers.OutputDepot = outputDepot?.Clone() as DepotInformation;
 
                     // If we have overridden the header skipper, set it now
-                    if (!string.IsNullOrEmpty(Header!.GetStringFieldValue(Data.Models.Metadata.Header.HeaderKey)))
-                        datdata.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.HeaderKey, Header.GetStringFieldValue(Data.Models.Metadata.Header.HeaderKey));
+                    if (!string.IsNullOrEmpty(Header!.HeaderSkipper))
+                        datdata.Header.HeaderSkipper = Header.HeaderSkipper;
 
                     // If we have the depot flag, respect it
                     bool success;
@@ -128,7 +128,7 @@ namespace SabreTools.Features
                     {
                         success = Rebuilder.RebuildDepot(datdata,
                             Inputs,
-                            Path.Combine(OutputDir!, datdata.Header.GetStringFieldValue(DatHeader.FileNameKey)!),
+                            Path.Combine(OutputDir!, datdata.Header.FileName!),
                             date,
                             delete,
                             inverse,
@@ -138,7 +138,7 @@ namespace SabreTools.Features
                     {
                         success = Rebuilder.RebuildGeneric(datdata,
                             Inputs,
-                            Path.Combine(OutputDir!, datdata.Header.GetStringFieldValue(DatHeader.FileNameKey)!),
+                            Path.Combine(OutputDir!, datdata.Header.FileName!),
                             quickScan,
                             date,
                             delete,
@@ -150,15 +150,15 @@ namespace SabreTools.Features
                     // If we have a success and we're updating the DAT, write it out
                     if (success && updateDat)
                     {
-                        datdata.Header.SetFieldValue<string?>(DatHeader.FileNameKey, $"fixDAT_{Header.GetStringFieldValue(DatHeader.FileNameKey)}");
-                        datdata.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, $"fixDAT_{Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey)}");
-                        datdata.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, $"fixDAT_{Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)}");
+                        datdata.Header.FileName = $"fixDAT_{Header.FileName}";
+                        datdata.Header.Name = $"fixDAT_{Header.Name}";
+                        datdata.Header.Description = $"fixDAT_{Header.Description}";
                         datdata.ClearMarked();
 
                         // Ensure there are output formats
                         var datFormats = DatFormats;
                         if (datFormats is null || datFormats.Count == 0)
-                            datFormats = [datdata.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
+                            datFormats = [datdata.Header.DatFormat!.Value];
 
                         datdata.Write(datFormats, OutputDir);
                     }
@@ -181,7 +181,7 @@ namespace SabreTools.Features
                         continue;
                     }
 
-                    datdata.Header.RemoveField(DatHeader.DatFormatKey);
+                    datdata.Header.DatFormat = null;
                     Parser.ParseInto(datdata,
                         datfile.CurrentPath,
                         indexId: int.MaxValue,
@@ -194,9 +194,9 @@ namespace SabreTools.Features
                 datdata.Modifiers.OutputDepot = outputDepot?.Clone() as DepotInformation;
 
                 // If we have overridden the header skipper, set it now
-                string? headerSkpper = Header!.GetStringFieldValue(Data.Models.Metadata.Header.HeaderKey);
+                string? headerSkpper = Header!.HeaderSkipper;
                 if (!string.IsNullOrEmpty(headerSkpper))
-                    datdata.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.HeaderKey, headerSkpper);
+                    datdata.Header.HeaderSkipper = headerSkpper;
 
                 watch.Stop();
 
@@ -228,19 +228,16 @@ namespace SabreTools.Features
                 // If we have a success and we're updating the DAT, write it out
                 if (success && updateDat)
                 {
-                    datdata.Header.SetFieldValue<string?>(DatHeader.FileNameKey,
-                        $"fixDAT_{Header.GetStringFieldValue(DatHeader.FileNameKey)}");
-                    datdata.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey,
-                        $"fixDAT_{Header.GetStringFieldValue(Data.Models.Metadata.Header.NameKey)}");
-                    datdata.Header.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey,
-                        $"fixDAT_{Header.GetStringFieldValue(Data.Models.Metadata.Header.DescriptionKey)}");
+                    datdata.Header.FileName = $"fixDAT_{Header.FileName}";
+                    datdata.Header.Name = $"fixDAT_{Header.Name}";
+                    datdata.Header.Description = $"fixDAT_{Header.Description}";
 
                     datdata.ClearMarked();
 
                     // Ensure there are output formats
                     var datFormats = DatFormats;
                     if (datFormats is null || datFormats.Count == 0)
-                        datFormats = [datdata.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
+                        datFormats = [datdata.Header.DatFormat!.Value];
 
                     datdata.Write(datFormats, OutputDir);
                 }

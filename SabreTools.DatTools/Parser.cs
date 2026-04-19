@@ -5,13 +5,13 @@ using System.Text.RegularExpressions;
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
 using System.Threading.Tasks;
 #endif
-using SabreTools.Core.Filter;
-using SabreTools.DatFiles;
-using SabreTools.DatFiles.Formats;
-using SabreTools.DatItems;
+using SabreTools.Metadata.Filter;
+using SabreTools.Metadata.DatFiles;
+using SabreTools.Metadata.DatFiles.Formats;
+using SabreTools.Metadata.DatItems;
 using SabreTools.IO;
 using SabreTools.IO.Extensions;
-using SabreTools.IO.Logging;
+using SabreTools.Logging;
 using SabreTools.Reports;
 
 namespace SabreTools.DatTools
@@ -39,7 +39,7 @@ namespace SabreTools.DatTools
         public static DatFile CreateDatFile()
         {
             var datFile = CreateDatFile(DatFormat.Logiqx);
-            datFile.Header.RemoveField(DatHeader.DatFormatKey);
+            datFile.Header.DatFormat = null;
             return datFile;
         }
 
@@ -48,7 +48,7 @@ namespace SabreTools.DatTools
         /// </summary>
         /// <param name="datFormat">Format of the DAT to be created</param>
         /// <returns>DatFile of the specific internal type that corresponds to the inputs</returns>
-        public static DatFile CreateDatFile(DatFormat datFormat)
+        public static DatFile CreateDatFile(DatFormat? datFormat)
             => CreateDatFile(datFormat, baseDat: null);
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace SabreTools.DatTools
         /// <param name="datFormat">Format of the DAT to be created</param>
         /// <param name="baseDat">DatFile containing the information to use in specific operations</param>
         /// <returns>DatFile of the specific internal type that corresponds to the inputs</returns>
-        public static DatFile CreateDatFile(DatFormat datFormat, DatFile? baseDat)
+        public static DatFile CreateDatFile(DatFormat? datFormat, DatFile? baseDat)
         {
             return datFormat switch
             {
@@ -104,7 +104,7 @@ namespace SabreTools.DatTools
         /// <param name="datModifiers">DatModifiers to get the values from</param>
         public static DatFile CreateDatFile(DatHeader datHeader, DatModifiers datModifiers)
         {
-            DatFormat datFormat = datHeader.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
+            DatFormat? datFormat = datHeader.DatFormat;
             DatFile datFile = CreateDatFile(datFormat);
             datFile.SetHeader(datHeader);
             datFile.SetModifiers(datModifiers);
@@ -199,18 +199,17 @@ namespace SabreTools.DatTools
                 return;
 
             // If the output filename isn't set already, get the internal filename
-            string? outputFilename = datFile.Header.GetStringFieldValue(DatHeader.FileNameKey);
+            string? outputFilename = datFile.Header.FileName;
             if (string.IsNullOrEmpty(outputFilename))
                 outputFilename = keepext ? Path.GetFileName(filename) : Path.GetFileNameWithoutExtension(filename);
 
             // If the output type isn't set already, try to derive one
-            DatFormat datFormat = datFile.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
-            if (datFormat == 0)
-                datFormat = GetDatFormat(filename);
+            DatFormat? datFormat = datFile.Header.DatFormat;
+            datFormat ??= GetDatFormat(filename);
 
             // Set values back to the header and set bucketing
-            datFile.Header.SetFieldValue<string?>(DatHeader.FileNameKey, outputFilename);
-            datFile.Header.SetFieldValue(DatHeader.DatFormatKey, datFormat);
+            datFile.Header.FileName = outputFilename;
+            datFile.Header.DatFormat = datFormat;
             datFile.Items.SetBucketedBy(ItemKey.Machine); // Setting this because it can reduce issues later
 
             var watch = new InternalStopwatch($"Parsing '{filename}' into internal DAT");
@@ -315,10 +314,10 @@ namespace SabreTools.DatTools
                 datFiles[i] = CreateDatFile(datFile.Header.CloneFormat(), datFile.Modifiers);
 
                 // Ensure the format is reset after parsing
-                DatFormat currentFormat = datFiles[i].Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey);
-                datFiles[i].Header.RemoveField(DatHeader.DatFormatKey);
+                DatFormat? currentFormat = datFiles[i].Header.DatFormat;
+                datFiles[i].Header.DatFormat = null;
                 ParseInto(datFiles[i], input.CurrentPath, indexId: i, keep: true, filterRunner: filterRunner);
-                datFiles[i].Header.SetFieldValue(DatHeader.DatFormatKey, currentFormat);
+                datFiles[i].Header.DatFormat = currentFormat;
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });
 #else
@@ -403,11 +402,14 @@ namespace SabreTools.DatTools
             foreach (var item in datItems)
 #endif
             {
-                // Get the machine and source index for this item
-                long machineIndex = addFrom.GetMachineForItemDB(item.Key).Key;
-                long sourceIndex = addFrom.GetSourceForItemDB(item.Key).Key;
+                // Set the machine and source index for this item
+                long machineIndex = item.Value.MachineIndex;
+                item.Value.MachineIndex = machineRemapping[machineIndex];
 
-                addTo.AddItemDB(item.Value, machineRemapping[machineIndex], sourceRemapping[sourceIndex], statsOnly: false);
+                long sourceIndex = item.Value.SourceIndex;
+                item.Value.SourceIndex = sourceRemapping[sourceIndex];
+
+                addTo.AddItemDB(item.Value, statsOnly: false);
 
                 // Now remove the key from the source DAT
                 if (delete)

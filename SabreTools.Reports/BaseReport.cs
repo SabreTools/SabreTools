@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using SabreTools.DatFiles;
-using SabreTools.IO.Logging;
+using SabreTools.Logging;
+using SabreTools.Metadata.DatFiles;
 
 #pragma warning disable IDE0290 // Use primary constructor
 namespace SabreTools.Reports

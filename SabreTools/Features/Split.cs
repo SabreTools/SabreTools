@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using SabreTools.DatFiles;
-using SabreTools.DatItems;
 using SabreTools.DatTools;
 using SabreTools.IO;
 using SabreTools.IO.Extensions;
-using SabreTools.IO.Logging;
+using SabreTools.Logging;
+using SabreTools.Metadata.DatFiles;
+using ItemType = SabreTools.Data.Models.Metadata.ItemType;
 
 namespace SabreTools.Features
 {
@@ -61,7 +61,7 @@ namespace SabreTools.Features
             }
 
             // Get only files from the inputs
-            List<ParentablePath> files = PathTool.GetFilesOnly(Inputs, appendParent: true);
+            List<ParentablePath> files = IOExtensions.GetFilesOnly(Inputs, appendParent: true);
 
             // Loop over the input files
             foreach (ParentablePath file in files)
@@ -75,16 +75,16 @@ namespace SabreTools.Features
 
                 // Create and fill the new DAT
                 DatFile internalDat = Parser.CreateDatFile(Header!, Modifiers!);
-                internalDat.Header.RemoveField(DatHeader.DatFormatKey);
+                internalDat.Header.DatFormat = null;
                 Parser.ParseInto(internalDat, file.CurrentPath, filterRunner: FilterRunner);
 
                 // Ensure there are output formats
                 var datFormats = DatFormats;
                 if (datFormats is null || datFormats.Count == 0)
-                    datFormats = [internalDat.Header.GetFieldValue<DatFormat>(DatHeader.DatFormatKey)];
+                    datFormats = [internalDat.Header.DatFormat!.Value];
 
                 // Get the output directory
-                OutputDir = OutputDir.Ensure();
+                OutputDir = OutputDir.EnsureDirectory();
                 OutputDir = file.GetOutputPath(OutputDir, GetBoolean(InplaceValue));
 
                 // Extension splitting

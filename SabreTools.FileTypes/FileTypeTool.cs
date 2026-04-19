@@ -5,8 +5,11 @@ using SabreTools.FileTypes.Archives;
 using SabreTools.FileTypes.CHD;
 using SabreTools.Hashing;
 using SabreTools.IO.Extensions;
-using SabreTools.IO.Logging;
+using SabreTools.Logging;
+using SabreTools.Matching;
+using SabreTools.Numerics.Extensions;
 using SabreTools.Skippers;
+using SabreTools.Text.Extensions;
 
 namespace SabreTools.FileTypes
 {
@@ -93,7 +96,7 @@ namespace SabreTools.FileTypes
                 var baseFile = new BaseFile()
                 {
                     Size = size,
-                    CRC = hashDict.ContainsKey(HashType.CRC32) ? hashDict[HashType.CRC32].FromHexString() : null,
+                    CRC32 = hashDict.ContainsKey(HashType.CRC32) ? hashDict[HashType.CRC32].FromHexString() : null,
                     MD2 = hashDict.ContainsKey(HashType.MD2) ? hashDict[HashType.MD2].FromHexString() : null,
                     MD4 = hashDict.ContainsKey(HashType.MD4) ? hashDict[HashType.MD4].FromHexString() : null,
                     MD5 = hashDict.ContainsKey(HashType.MD5) ? hashDict[HashType.MD5].FromHexString() : null,
@@ -126,7 +129,7 @@ namespace SabreTools.FileTypes
             to.Parent ??= from.Parent;
             to.Date ??= from.Date;
             to.Size ??= from.Size;
-            to.CRC ??= from.CRC;
+            to.CRC32 ??= from.CRC32;
             to.MD2 ??= from.MD2;
             to.MD4 ??= from.MD4;
             to.MD5 ??= from.MD5;

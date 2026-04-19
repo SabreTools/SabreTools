@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using SabreTools.Core.Filter;
-using SabreTools.DatFiles;
-using SabreTools.DatItems;
-using SabreTools.IO.Logging;
+using SabreTools.Logging;
+using SabreTools.Metadata.DatFiles;
+using SabreTools.Metadata.DatItems;
+using SabreTools.Metadata.Filter;
 
 namespace SabreTools.DatTools
 {
@@ -122,12 +122,12 @@ namespace SabreTools.DatTools
 
                     // Create a setter with the new mappings
                     var setter = new Setter();
-                    setter.PopulateSettersFromDictionary(mappings);
+                    setter.PopulateSetters(mappings);
 
                     // Loop through and set the fields accordingly
                     foreach (var datItem in datItems)
                     {
-                        setter.SetFields(datItem.GetMachine());
+                        setter.SetFields(datItem.Machine);
                         setter.SetFields(datItem);
                     }
                 }
@@ -181,12 +181,12 @@ namespace SabreTools.DatTools
 
                     // Create a setter with the new mappings
                     var setter = new Setter();
-                    setter.PopulateSettersFromDictionary(mappings);
+                    setter.PopulateSetters(mappings);
 
                     // Loop through and set the fields accordingly
                     foreach (var datItem in datItems)
                     {
-                        var machine = datFile.GetMachineForItemDB(datItem.Key);
+                        var machine = datFile.GetMachineDB(datItem.Value.MachineIndex);
                         if (machine.Value is not null)
                             setter.SetFields(machine.Value);
 

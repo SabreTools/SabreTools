@@ -4,11 +4,12 @@ using System.IO;
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
 using System.Threading.Tasks;
 #endif
-using SabreTools.Core.Filter;
-using SabreTools.DatFiles;
-using SabreTools.DatItems;
+using SabreTools.Metadata.Filter;
+using SabreTools.Metadata.DatFiles;
+using SabreTools.Metadata.DatItems;
 using SabreTools.IO;
-using SabreTools.IO.Logging;
+using SabreTools.Logging;
+using MergingFlag = SabreTools.Data.Models.Metadata.MergingFlag;
 
 namespace SabreTools.DatTools
 {
@@ -50,7 +51,7 @@ namespace SabreTools.DatTools
             {
                 // If we are using tags from the DAT, set the proper input for split type unless overridden
                 if (useTags && SplitType == MergingFlag.None)
-                    SplitType = datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.ForceMergingKey).AsMergingFlag();
+                    SplitType = datFile.Header.ForceMerging;
 
 #pragma warning disable IDE0010
                 // Run internal splitting
@@ -147,7 +148,7 @@ namespace SabreTools.DatTools
                 foreach (DatItem item in items)
                 {
                     DatItem newItem = item;
-                    var source = newItem.GetFieldValue<Source?>(DatItem.SourceKey);
+                    var source = newItem.Source;
                     if (source is null)
                         continue;
 
@@ -172,7 +173,7 @@ namespace SabreTools.DatTools
                     filename = filename.Remove(0, rootpath.Length);
 #endif
 
-                    var machine = newItem.GetMachine();
+                    var machine = newItem.Machine;
                     if (machine is null)
                         continue;
 
@@ -180,11 +181,11 @@ namespace SabreTools.DatTools
                         + Path.DirectorySeparatorChar
                         + Path.GetFileNameWithoutExtension(filename)
                         + Path.DirectorySeparatorChar
-                        + machine.GetName();
+                        + machine.Name;
                     if (machineName.Length == 0)
                         machineName = "Default";
 
-                    machine.SetName(machineName);
+                    machine.Name = machineName;
 
                     newItems.Add(newItem);
                 }
@@ -224,11 +225,11 @@ namespace SabreTools.DatTools
 
                 foreach (var item in items)
                 {
-                    var source = datFile.GetSourceForItemDB(item.Key);
+                    var source = datFile.GetSourceDB(item.Value.SourceIndex);
                     if (source.Value is null)
                         continue;
 
-                    var machine = datFile.GetMachineForItemDB(item.Key);
+                    var machine = datFile.GetMachineDB(item.Value.MachineIndex);
                     if (machine.Value is null)
                         continue;
 
@@ -257,11 +258,11 @@ namespace SabreTools.DatTools
                         + Path.DirectorySeparatorChar
                         + Path.GetFileNameWithoutExtension(filename)
                         + Path.DirectorySeparatorChar
-                        + machine.Value.GetName();
+                        + machine.Value.Name;
                     if (machineName.Length == 0)
                         machineName = "Default";
 
-                    machine.Value.SetName(machineName);
+                    machine.Value.Name = machineName;
                 }
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });

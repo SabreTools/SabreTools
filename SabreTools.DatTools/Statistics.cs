@@ -6,11 +6,11 @@ using System.Net;
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
 using System.Threading.Tasks;
 #endif
-using SabreTools.Core.Filter;
-using SabreTools.DatFiles;
 using SabreTools.IO;
 using SabreTools.IO.Extensions;
-using SabreTools.IO.Logging;
+using SabreTools.Logging;
+using SabreTools.Metadata.Filter;
+using SabreTools.Metadata.DatFiles;
 using SabreTools.Reports;
 
 namespace SabreTools.DatTools
@@ -42,7 +42,7 @@ namespace SabreTools.DatTools
             List<DatStatistics> stats = [];
 
             // Make sure we have all files and then order them
-            List<ParentablePath> files = PathTool.GetFilesOnly(inputs);
+            List<ParentablePath> files = IOExtensions.GetFilesOnly(inputs);
             files = [.. files
                 .OrderBy(i => Path.GetDirectoryName(i.CurrentPath))
                 .ThenBy(i => Path.GetFileName(i.CurrentPath))];
@@ -86,7 +86,7 @@ namespace SabreTools.DatTools
                 if (single)
                 {
                     DatStatistics individualStats = datdata.DatStatistics;
-                    individualStats.DisplayName = datdata.Header.GetStringFieldValue(DatHeader.FileNameKey);
+                    individualStats.DisplayName = datdata.Header.FileName;
                     individualStats.MachineCount = datdata.Items.SortedKeys.Length;
                     stats.Add(individualStats);
                 }
@@ -155,7 +155,7 @@ namespace SabreTools.DatTools
                 reportName = "report";
 
             // Get the proper output directory name
-            outDir = outDir.Ensure();
+            outDir = outDir.EnsureDirectory();
 
             InternalStopwatch watch = new($"Writing out report data to '{outDir}'");
 

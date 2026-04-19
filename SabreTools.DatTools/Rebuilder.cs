@@ -1,15 +1,17 @@
 using System.Collections.Generic;
 using System.IO;
-using SabreTools.Core.Tools;
-using SabreTools.DatFiles;
-using SabreTools.DatItems;
-using SabreTools.DatItems.Formats;
+using SabreTools.Data.Extensions;
 using SabreTools.FileTypes;
 using SabreTools.FileTypes.Archives;
 using SabreTools.Hashing;
 using SabreTools.IO.Extensions;
-using SabreTools.IO.Logging;
+using SabreTools.Logging;
+using SabreTools.Metadata.DatFiles;
+using SabreTools.Metadata.DatItems;
+using SabreTools.Metadata.DatItems.Formats;
 using SabreTools.Skippers;
+using ItemType = SabreTools.Data.Models.Metadata.ItemType;
+using PackingFlag = SabreTools.Data.Models.Metadata.PackingFlag;
 
 namespace SabreTools.DatTools
 {
@@ -57,10 +59,10 @@ namespace SabreTools.DatTools
             }
 
             // Check that the output directory exists
-            outDir = outDir.Ensure(create: true);
+            outDir = outDir.EnsureDirectory(create: true);
 
             // Now we want to get forcepack flag if it's not overridden
-            PackingFlag forcePacking = datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.ForcePackingKey).AsPackingFlag();
+            PackingFlag forcePacking = datFile.Header.ForcePacking;
             if (outputFormat == OutputFormat.Folder && forcePacking != PackingFlag.None)
                 outputFormat = GetOutputFormat(forcePacking);
 
@@ -96,13 +98,13 @@ namespace SabreTools.DatTools
             foreach (string hash in datFile.Items.SortedKeys)
             {
                 // Pre-empt any issues that could arise from string length
-                if (hash.Length != Constants.SHA1Length)
+                if (hash.Length != HashType.SHA1.ZeroString.Length)
                     continue;
 
                 _staticLogger.User($"Checking hash '{hash}'");
 
                 // Get the extension path for the hash
-                string? subpath = Utilities.GetDepotPath(hash, datFile.Modifiers.InputDepot?.Depth ?? 0);
+                string? subpath = datFile.Modifiers.InputDepot?.GetDepotPath(hash);
                 if (subpath is null)
                     continue;
 
@@ -136,7 +138,7 @@ namespace SabreTools.DatTools
 
                 // Otherwise, we rebuild that file to all locations that we need to
                 bool usedInternally;
-                if (items[0].GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey).AsItemType() == ItemType.Disk)
+                if (items[0].ItemType == ItemType.Disk)
                 {
                     usedInternally = RebuildIndividualFile(datFile,
                         fileinfo.ConvertToDisk(),
@@ -148,7 +150,7 @@ namespace SabreTools.DatTools
                         outputFormat,
                         isZip: false);
                 }
-                else if (items[0].GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey).AsItemType() == ItemType.File)
+                else if (items[0].ItemType == ItemType.File)
                 {
                     usedInternally = RebuildIndividualFile(datFile,
                         fileinfo.ConvertToFile(),
@@ -160,7 +162,7 @@ namespace SabreTools.DatTools
                         outputFormat,
                         isZip: false);
                 }
-                else if (items[0].GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey).AsItemType() == ItemType.Media)
+                else if (items[0].ItemType == ItemType.Media)
                 {
                     usedInternally = RebuildIndividualFile(datFile,
                         fileinfo.ConvertToMedia(),
@@ -238,7 +240,7 @@ namespace SabreTools.DatTools
             }
 
             // Now we want to get forcepack flag if it's not overridden
-            PackingFlag forcePacking = datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.ForcePackingKey).AsPackingFlag();
+            PackingFlag forcePacking = datFile.Header.ForcePacking;
             if (outputFormat == OutputFormat.Folder && forcePacking != PackingFlag.None)
                 outputFormat = GetOutputFormat(forcePacking);
 
@@ -438,13 +440,13 @@ namespace SabreTools.DatTools
             // If we have a Disk, File, or Media, change it into a Rom for later use
             if (datItem is Disk disk)
                 datItem = disk.ConvertToRom();
-            else if (datItem is DatItems.Formats.File fileItem)
+            else if (datItem is Metadata.DatItems.Formats.File fileItem)
                 datItem = fileItem.ConvertToRom();
             else if (datItem is Media media)
                 datItem = media.ConvertToRom();
 
             // Prepopluate a key string
-            string crc = (datItem as Rom)!.GetStringFieldValue(Data.Models.Metadata.Rom.CRCKey) ?? string.Empty;
+            string crc = (datItem as Rom)!.CRC32 ?? string.Empty;
 
             // Try to get the stream for the file
             if (!GetFileStream(datItem, file, isZip, out Stream? fileStream) || fileStream is null)
@@ -481,12 +483,12 @@ namespace SabreTools.DatTools
                     fileStream.Seek(0, SeekOrigin.Begin);
                 }
 
-                _staticLogger.User($"{(inverse ? "No matches" : $"{dupes.Count} Matches")} found for '{Path.GetFileName(datItem.GetName() ?? datItem.GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey).AsItemType().AsStringValue())}', rebuilding accordingly...");
+                _staticLogger.User($"{(inverse ? "No matches" : $"{dupes.Count} Matches")} found for '{Path.GetFileName(datItem.GetName() ?? datItem.ItemType.AsStringValue())}', rebuilding accordingly...");
                 rebuilt = true;
 
                 // Special case for partial packing mode
                 bool shouldCheck = false;
-                if (outputFormat == OutputFormat.Folder && datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.ForcePackingKey).AsPackingFlag() == PackingFlag.Partial)
+                if (outputFormat == OutputFormat.Folder && datFile.Header.ForcePacking == PackingFlag.Partial)
                 {
                     shouldCheck = true;
                     datFile.BucketBy(ItemKey.Machine, lower: false);
@@ -496,12 +498,12 @@ namespace SabreTools.DatTools
                 foreach (DatItem item in dupes)
                 {
                     // If we don't have a proper machine
-                    var machine = item.GetMachine();
-                    if (machine?.GetName() is null)
+                    var machine = item.Machine;
+                    if (machine?.Name is null)
                         continue;
 
                     // If we should check for the items in the machine
-                    var items = datFile.GetItemsForBucket(machine.GetName());
+                    var items = datFile.GetItemsForBucket(machine.Name);
                     if (shouldCheck && items!.Count > 1)
                         outputFormat = OutputFormat.Folder;
                     else if (shouldCheck && items!.Count == 1)
@@ -523,11 +525,11 @@ namespace SabreTools.DatTools
             }
 
             // Now we want to take care of headers, if applicable
-            if (datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.HeaderKey) is not null)
+            if (datFile.Header.HeaderSkipper is not null)
             {
                 // Check to see if we have a matching header first
                 SkipperMatch.Init();
-                Rule rule = SkipperMatch.GetMatchingRule(fileStream, Path.GetFileNameWithoutExtension(datFile.Header.GetStringFieldValue(Data.Models.Metadata.Header.HeaderKey)!));
+                Rule rule = SkipperMatch.GetMatchingRule(fileStream, Path.GetFileNameWithoutExtension(datFile.Header.HeaderSkipper));
 
                 // If there's a match, create the new file to write
                 if (rule.Tests is not null && rule.Tests.Length != 0)
@@ -544,7 +546,7 @@ namespace SabreTools.DatTools
                         if (ShouldRebuild(datFile, headerless, transformStream, inverse: false, forceSorted, out dupes))
                         //if (ShouldRebuildDB(datFile, headerless, transformStream, inverse: false, forceSorted, out dupes))
                         {
-                            _staticLogger.User($"Headerless matches found for '{Path.GetFileName(datItem.GetName() ?? datItem.GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey).AsItemType().AsStringValue())}', rebuilding accordingly...");
+                            _staticLogger.User($"Headerless matches found for '{Path.GetFileName(datItem.GetName() ?? datItem.ItemType.AsStringValue())}', rebuilding accordingly...");
                             rebuilt = true;
 
                             // Now loop through the list and rebuild accordingly
@@ -615,14 +617,14 @@ namespace SabreTools.DatTools
                 // Get the item from the current file
                 HashType[] hashes = [HashType.CRC32, HashType.MD5, HashType.SHA1];
                 Rom item = FileTypeTool.GetInfo(stream, hashes).ConvertToRom();
-                item.GetMachine()!.SetFieldValue<string?>(Data.Models.Metadata.Machine.DescriptionKey, Path.GetFileNameWithoutExtension(item.GetName()));
-                item.GetMachine()!.SetName(Path.GetFileNameWithoutExtension(item.GetName()));
+                item.Machine!.Description = Path.GetFileNameWithoutExtension(item.GetName());
+                item.Machine.Name = Path.GetFileNameWithoutExtension(item.GetName());
 
                 // If we are coming from an archive, set the correct machine name
                 if (machinename is not null)
                 {
-                    item.GetMachine()!.SetFieldValue<string?>(Data.Models.Metadata.Machine.DescriptionKey, machinename);
-                    item.GetMachine()!.SetName(machinename);
+                    item.Machine!.Description = machinename;
+                    item.Machine!.Name = machinename;
                 }
 
                 dupes.Add(item);
@@ -674,23 +676,28 @@ namespace SabreTools.DatTools
 
                 // Get the item from the current file
                 HashType[] hashes = [HashType.CRC32, HashType.MD5, HashType.SHA1];
-                Rom item = FileTypeTool.GetInfo(stream, hashes).ConvertToRom();
+                Rom rom = FileTypeTool.GetInfo(stream, hashes).ConvertToRom();
 
                 // Create a machine for the current item
-                var machine = new Machine();
-                machine.SetFieldValue<string?>(Data.Models.Metadata.Machine.DescriptionKey, Path.GetFileNameWithoutExtension(item.GetName()));
-                machine.SetName(Path.GetFileNameWithoutExtension(item.GetName()));
+                var machine = new Machine
+                {
+                    Description = Path.GetFileNameWithoutExtension(rom.GetName()),
+                    Name = Path.GetFileNameWithoutExtension(rom.GetName()),
+                };
                 long machineIndex = datFile.AddMachineDB(machine);
 
                 // If we are coming from an archive, set the correct machine name
                 if (machinename is not null)
                 {
-                    machine.SetFieldValue<string?>(Data.Models.Metadata.Machine.DescriptionKey, machinename);
-                    machine.SetName(machinename);
+                    machine.Description = machinename;
+                    machine.Name = machinename;
                 }
 
-                long index = datFile.AddItemDB(item, machineIndex, -1, false);
-                dupes[index] = item;
+                rom.MachineIndex = machineIndex;
+                rom.SourceIndex = -1;
+
+                long index = datFile.AddItemDB(rom, false);
+                dupes[index] = rom;
                 return true;
             }
 
@@ -722,9 +729,9 @@ namespace SabreTools.DatTools
                 _staticLogger.User($"Matches found for '{Path.GetFileName(datItem.GetName() ?? string.Empty)}', rebuilding accordingly...");
 
                 // Get the proper output path
-                string sha1 = (datItem as Rom)!.GetStringFieldValue(Data.Models.Metadata.Rom.SHA1Key) ?? string.Empty;
+                string sha1 = (datItem as Rom)!.SHA1 ?? string.Empty;
                 if (outputFormat == OutputFormat.TorrentGzipRomba)
-                    outDir = Path.Combine(outDir, Utilities.GetDepotPath(sha1, datFile.Modifiers.OutputDepot?.Depth ?? 0) ?? string.Empty);
+                    outDir = Path.Combine(outDir, datFile.Modifiers.OutputDepot?.GetDepotPath(sha1) ?? string.Empty);
                 else
                     outDir = Path.Combine(outDir, sha1 + ".gz");
 
@@ -768,9 +775,9 @@ namespace SabreTools.DatTools
                 _staticLogger.User($"Matches found for '{Path.GetFileName(datItem.GetName() ?? string.Empty)}', rebuilding accordingly...");
 
                 // Get the proper output path
-                string sha1 = (datItem as Rom)!.GetStringFieldValue(Data.Models.Metadata.Rom.SHA1Key) ?? string.Empty;
+                string sha1 = (datItem as Rom)!.SHA1 ?? string.Empty;
                 if (outputFormat == OutputFormat.TorrentXZRomba)
-                    outDir = Path.Combine(outDir, Utilities.GetDepotPath(sha1, datFile.Modifiers.OutputDepot?.Depth ?? 0) ?? string.Empty).Replace(".gz", ".xz");
+                    outDir = Path.Combine(outDir, datFile.Modifiers.OutputDepot?.GetDepotPath(sha1) ?? string.Empty).Replace(".gz", ".xz");
                 else
                     outDir = Path.Combine(outDir, sha1 + ".xz");
 
@@ -816,7 +823,7 @@ namespace SabreTools.DatTools
 
                 try
                 {
-                    ItemType itemType = datItem.GetStringFieldValue(Data.Models.Metadata.DatItem.TypeKey).AsItemType();
+                    ItemType itemType = datItem.ItemType;
                     stream = archive.GetEntryStream(datItem.GetName() ?? itemType.AsStringValue() ?? string.Empty, out _);
                 }
                 catch

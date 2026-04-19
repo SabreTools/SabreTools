@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using SabreTools.Hashing;
-using SabreTools.IO.Extensions;
+using SabreTools.Text.Extensions;
 using Xunit;
 
 namespace SabreTools.FileTypes.Test
@@ -25,7 +25,7 @@ namespace SabreTools.FileTypes.Test
 
             Assert.Null(actual.Filename);
             Assert.Null(actual.Size);
-            Assert.Null(actual.CRC);
+            Assert.Null(actual.CRC32);
             Assert.Null(actual.MD5);
             Assert.Null(actual.SHA1);
         }
@@ -38,7 +38,7 @@ namespace SabreTools.FileTypes.Test
 
             Assert.Null(actual.Filename);
             Assert.Null(actual.Size);
-            Assert.Null(actual.CRC);
+            Assert.Null(actual.CRC32);
             Assert.Null(actual.MD5);
             Assert.Null(actual.SHA1);
         }
@@ -51,7 +51,7 @@ namespace SabreTools.FileTypes.Test
 
             Assert.Equal("file-to-hash.bin", actual.Filename);
             Assert.Equal(_expectedSize, actual.Size);
-            Assert.Equal(_expectedCrc, actual.CRC.ToHexString());
+            Assert.Equal(_expectedCrc, actual.CRC32.ToHexString());
             Assert.Equal(_expectedMd5, actual.MD5.ToHexString());
             Assert.Equal(_expectedSha1, actual.SHA1.ToHexString());
         }
@@ -65,7 +65,7 @@ namespace SabreTools.FileTypes.Test
 
             Assert.Equal("file-to-hash.bin", actual.Filename);
             Assert.Equal(_expectedSize, actual.Size);
-            Assert.Equal(_expectedCrc, actual.CRC.ToHexString());
+            Assert.Equal(_expectedCrc, actual.CRC32.ToHexString());
             Assert.Equal(_expectedMd5, actual.MD5.ToHexString());
             Assert.Equal(_expectedSha1, actual.SHA1.ToHexString());
         }
@@ -79,7 +79,7 @@ namespace SabreTools.FileTypes.Test
 
             Assert.Equal("file-to-hash.bin", actual.Filename);
             Assert.Equal(_expectedSize, actual.Size);
-            Assert.Equal(_expectedCrc, actual.CRC.ToHexString());
+            Assert.Equal(_expectedCrc, actual.CRC32.ToHexString());
             Assert.Equal(_expectedMd5, actual.MD5.ToHexString());
             Assert.Equal(_expectedSha1, actual.SHA1.ToHexString());
         }
@@ -93,7 +93,7 @@ namespace SabreTools.FileTypes.Test
 
             Assert.Equal("file-to-hash.bin", actual.Filename);
             Assert.Equal(_expectedSize, actual.Size);
-            Assert.Equal(_expectedCrc, actual.CRC.ToHexString());
+            Assert.Equal(_expectedCrc, actual.CRC32.ToHexString());
             Assert.Equal(_expectedMd5, actual.MD5.ToHexString());
             Assert.Equal(_expectedSha1, actual.SHA1.ToHexString());
         }
@@ -105,7 +105,7 @@ namespace SabreTools.FileTypes.Test
             BaseFile actual = FileTypeTool.GetInfo(input, _defaultHashes);
 
             Assert.Null(actual.Size);
-            Assert.Null(actual.CRC);
+            Assert.Null(actual.CRC32);
             Assert.Null(actual.MD5);
             Assert.Null(actual.SHA1);
         }
@@ -118,7 +118,7 @@ namespace SabreTools.FileTypes.Test
             BaseFile actual = FileTypeTool.GetInfo(input, _defaultHashes);
 
             Assert.Equal(_expectedSize, actual.Size);
-            Assert.Equal(_expectedCrc, actual.CRC.ToHexString());
+            Assert.Equal(_expectedCrc, actual.CRC32.ToHexString());
             Assert.Equal(_expectedMd5, actual.MD5.ToHexString());
             Assert.Equal(_expectedSha1, actual.SHA1.ToHexString());
         }

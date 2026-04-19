@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using SabreTools.CommandLine;
 using SabreTools.CommandLine.Inputs;
-using SabreTools.Core.Filter;
-using SabreTools.DatFiles;
+using SabreTools.Data.Extensions;
 using SabreTools.DatTools;
 using SabreTools.FileTypes;
 using SabreTools.Hashing;
-using SabreTools.IO.Logging;
+using SabreTools.Logging;
+using SabreTools.Metadata.DatFiles;
+using SabreTools.Metadata.Filter;
 using SabreTools.Reports;
+using MergingFlag = SabreTools.Data.Models.Metadata.MergingFlag;
 
 namespace SabreTools.Features
 {
@@ -1372,7 +1374,7 @@ Some special strings that can be used:
                 try
                 {
                     var key = new FilterKey(fieldName);
-                    if (key.ItemName != Data.Models.Metadata.MetadataFile.MachineKey)
+                    if (key.ItemName != "machine")
                         continue;
 
                     updateFields.Add(key.FieldName);
@@ -1395,7 +1397,7 @@ Some special strings that can be used:
                 try
                 {
                     var key = new FilterKey(fieldName);
-                    if (key.ItemName == Data.Models.Metadata.MetadataFile.HeaderKey || key.ItemName == Data.Models.Metadata.MetadataFile.MachineKey)
+                    if (key.ItemName == "header" || key.ItemName == "machine")
                         continue;
 
                     if (!updateFields.ContainsKey(key.ItemName))
@@ -1482,25 +1484,26 @@ Some special strings that can be used:
         /// </summary>
         private DatHeader? GetDatHeader()
         {
-            var datHeader = new DatHeader();
-
-            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.AuthorKey, GetString(AuthorStringValue));
-            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.CategoryKey, GetString(CategoryStringValue));
-            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.CommentKey, GetString(CommentStringValue));
-            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.DateKey, GetString(DateStringValue));
-            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.DescriptionKey, GetString(DescriptionStringValue));
-            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.EmailKey, GetString(EmailStringValue));
-            datHeader.SetFieldValue<string?>(DatHeader.FileNameKey, GetString(FilenameStringValue));
-            datHeader.SetFieldValue(Data.Models.Metadata.Header.ForceMergingKey, GetString(ForceMergingStringValue).AsMergingFlag());
-            datHeader.SetFieldValue(Data.Models.Metadata.Header.ForceNodumpKey, GetString(ForceNodumpStringValue).AsNodumpFlag());
-            datHeader.SetFieldValue(Data.Models.Metadata.Header.ForceNodumpKey, GetString(ForcePackingStringValue).AsPackingFlag());
-            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.HeaderKey, GetString(HeaderStringValue));
-            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.HomepageKey, GetString(HomepageStringValue));
-            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.NameKey, GetString(NameStringValue));
-            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.RootDirKey, GetString(RootStringValue));
-            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.TypeKey, GetBoolean(SuperdatValue) ? "SuperDAT" : null);
-            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.UrlKey, GetString(UrlStringValue));
-            datHeader.SetFieldValue<string?>(Data.Models.Metadata.Header.VersionKey, GetString(VersionStringValue));
+            var datHeader = new DatHeader
+            {
+                Author = GetString(AuthorStringValue),
+                Category = GetString(CategoryStringValue),
+                Comment = GetString(CommentStringValue),
+                Date = GetString(DateStringValue),
+                Description = GetString(DescriptionStringValue),
+                Email = GetString(EmailStringValue),
+                FileName = GetString(FilenameStringValue),
+                ForceMerging = GetString(ForceMergingStringValue).AsMergingFlag(),
+                ForceNodump = GetString(ForceNodumpStringValue).AsNodumpFlag(),
+                ForcePacking = GetString(ForcePackingStringValue).AsPackingFlag(),
+                HeaderSkipper = GetString(HeaderStringValue),
+                Homepage = GetString(HomepageStringValue),
+                Name = GetString(NameStringValue),
+                RootDir = GetString(RootStringValue),
+                Type = GetBoolean(SuperdatValue) ? "SuperDAT" : null,
+                Url = GetString(UrlStringValue),
+                Version = GetString(VersionStringValue),
+            };
 
             return datHeader;
         }
@@ -1624,7 +1627,7 @@ Some special strings that can be used:
 
             // Populate field exclusions
             List<string> exclusionFields = GetStringList(ExcludeFieldListValue);
-            remover.PopulateExclusionsFromList(exclusionFields);
+            remover.PopulateExclusions(exclusionFields);
 
             return remover;
         }
