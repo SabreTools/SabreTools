@@ -1,12 +1,14 @@
 name: Build PR
 
-on: [pull_request]
+on: [ pull_request ]
 
 jobs:
     build:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v5
+              with:
+                  submodules: true
 
             - name: Setup .NET
               uses: actions/setup-dotnet@v5
