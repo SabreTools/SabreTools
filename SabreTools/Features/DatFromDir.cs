@@ -112,7 +112,7 @@ namespace SabreTools.Features
                     // Ensure there are output formats
                     var datFormats = DatFormats;
                     if (datFormats is null || datFormats.Count == 0)
-                        datFormats = [datdata.Header.DatFormat!.Value];
+                        datFormats = [datdata.Header.DatFormat ?? DatFormat.Logiqx];
 
                     // Write out the file
                     datdata.Write(datFormats, OutputDir);

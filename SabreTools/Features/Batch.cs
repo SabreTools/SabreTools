@@ -904,7 +904,7 @@ Reset the internal state:           reset();";
                 // Ensure there are output formats
                 var datFormats = batchState.DatFormats;
                 if (datFormats is null || datFormats.Count == 0)
-                    datFormats = [batchState.DatFile.Header.DatFormat!.Value];
+                    datFormats = [batchState.DatFile.Header.DatFormat ?? DatFormat.Logiqx];
 
                 // Write out the dat with the current state
                 batchState.DatFile.Write(datFormats, batchState.OutputDirectory, overwrite: overwrite);

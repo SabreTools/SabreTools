@@ -158,7 +158,7 @@ namespace SabreTools.Features
                         // Ensure there are output formats
                         var datFormats = DatFormats;
                         if (datFormats is null || datFormats.Count == 0)
-                            datFormats = [datdata.Header.DatFormat!.Value];
+                            datFormats = [datdata.Header.DatFormat ?? DatFormat.Logiqx];
 
                         datdata.Write(datFormats, OutputDir);
                     }
@@ -237,7 +237,7 @@ namespace SabreTools.Features
                     // Ensure there are output formats
                     var datFormats = DatFormats;
                     if (datFormats is null || datFormats.Count == 0)
-                        datFormats = [datdata.Header.DatFormat!.Value];
+                        datFormats = [datdata.Header.DatFormat ?? DatFormat.Logiqx];
 
                     datdata.Write(datFormats, OutputDir);
                 }

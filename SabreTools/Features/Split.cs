@@ -83,7 +83,7 @@ namespace SabreTools.Features
                 // Ensure there are output formats
                 var datFormats = DatFormats;
                 if (datFormats is null || datFormats.Count == 0)
-                    datFormats = [internalDat.Header.DatFormat!.Value];
+                    datFormats = [internalDat.Header.DatFormat ?? DatFormat.Logiqx];
 
                 // Get the output directory
                 OutputDir = OutputDir.EnsureDirectory();

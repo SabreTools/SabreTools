@@ -171,7 +171,7 @@ namespace SabreTools.Features
                 // Ensure there are output formats
                 var datFormats = DatFormats;
                 if (datFormats is null || datFormats.Count == 0)
-                    datFormats = [dupeData.Header.DatFormat!.Value];
+                    datFormats = [dupeData.Header.DatFormat ?? DatFormat.Logiqx];
 
                 InternalStopwatch watch = new("Outputting duplicate DAT");
                 dupeData.Write(datFormats, OutputDir, overwrite: false);
@@ -190,7 +190,7 @@ namespace SabreTools.Features
                 // Ensure there are output formats
                 var datFormats = DatFormats;
                 if (datFormats is null || datFormats.Count == 0)
-                    datFormats = [outerDiffData.Header.DatFormat!.Value];
+                    datFormats = [outerDiffData.Header.DatFormat ?? DatFormat.Logiqx];
 
                 InternalStopwatch watch = new("Outputting no duplicate DAT");
                 outerDiffData.Write(datFormats, OutputDir, overwrite: false);
@@ -219,7 +219,7 @@ namespace SabreTools.Features
                     // Ensure there are output formats
                     var datFormats = DatFormats;
                     if (datFormats is null || datFormats.Count == 0)
-                        datFormats = [datFiles[j].Header.DatFormat!.Value];
+                        datFormats = [datFiles[j].Header.DatFormat ?? DatFormat.Logiqx];
 
                     // Try to output the file
                     string path = inputPaths[j].GetOutputPath(OutputDir, GetBoolean(InplaceValue))!;
@@ -283,7 +283,7 @@ namespace SabreTools.Features
                     // Ensure there are output formats
                     var datFormats = DatFormats;
                     if (datFormats is null || datFormats.Count == 0)
-                        datFormats = [datFiles[j].Header.DatFormat!.Value];
+                        datFormats = [datFiles[j].Header.DatFormat ?? DatFormat.Logiqx];
 
                     // Try to output the file
                     string path = inputPaths[j].GetOutputPath(OutputDir, GetBoolean(InplaceValue))!;
@@ -343,7 +343,7 @@ namespace SabreTools.Features
                     // Ensure there are output formats
                     var datFormats = DatFormats;
                     if (datFormats is null || datFormats.Count == 0)
-                        datFormats = [repDat.Header.DatFormat!.Value];
+                        datFormats = [repDat.Header.DatFormat ?? DatFormat.Logiqx];
 
                     // Perform additional processing steps
                     AdditionalProcessing(repDat);
@@ -407,7 +407,7 @@ namespace SabreTools.Features
                     // Ensure there are output formats
                     var datFormats = DatFormats;
                     if (datFormats is null || datFormats.Count == 0)
-                        datFormats = [repDat.Header.DatFormat!.Value];
+                        datFormats = [repDat.Header.DatFormat ?? DatFormat.Logiqx];
 
                     // Perform additional processing steps
                     AdditionalProcessing(repDat);
@@ -448,7 +448,7 @@ namespace SabreTools.Features
                 // Ensure there are output formats
                 var datFormats = DatFormats;
                 if (datFormats is null || datFormats.Count == 0)
-                    datFormats = [userInputDat.Header.DatFormat!.Value];
+                    datFormats = [userInputDat.Header.DatFormat ?? DatFormat.Logiqx];
 
                 userInputDat.Write(datFormats, OutputDir);
             }
@@ -563,7 +563,7 @@ namespace SabreTools.Features
                 // Ensure there are output formats
                 var datFormats = DatFormats;
                 if (datFormats is null || datFormats.Count == 0)
-                    datFormats = [datFile.Header.DatFormat!.Value];
+                    datFormats = [datFile.Header.DatFormat ?? DatFormat.Logiqx];
 
                 // Set any missing header values
                 SetDefaultHeaderValues(datFile, updateMode: UpdateMode.None, noAutomaticDate: noAutomaticDate);
