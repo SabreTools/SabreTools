@@ -632,15 +632,6 @@ namespace SabreTools.Features
             "Set depth of depot for outputs",
             detailed: "Optionally, set the depth of output depots. Defaults to 4 deep otherwise.");
 
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-        internal const string ThreadsInt32Value = "threads";
-        internal static Int32Input ThreadsInt32Input => new(
-            ThreadsInt32Value,
-            ["-mt", "--threads"],
-            "Amount of threads to use (default = # cores)",
-            detailed: "Optionally, set the number of threads to use for the multithreaded operations. The default is the number of available machine threads; -1 means unlimited threads created.");
-#endif
-
         #endregion
 
         #region Int64 features
@@ -1054,9 +1045,6 @@ Some special strings that can be used:
         {
             Add(ScriptFlag);
             Add(LogLevelStringInput);
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            Add(ThreadsInt32Input);
-#endif
         }
 
         /// <summary>
@@ -1181,13 +1169,6 @@ Some special strings that can be used:
             LoggerImpl.AppendPrefix = true;
             LoggerImpl.ThrowOnError = false;
             LoggerImpl.Start();
-
-            // Set threading flag, if necessary
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            int threadCount = GetInt32(ThreadsInt32Value);
-            if (threadCount > 0)
-                Core.Globals.MaxThreads = threadCount;
-#endif
 
             // Failure conditions
             if (Header is null)

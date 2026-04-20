@@ -128,9 +128,7 @@ namespace SabreTools.DatTools
         /// <param name="inputs">List of inputs to use for renaming</param>
         public static void ApplySuperDAT(DatFile datFile, List<ParentablePath> inputs)
         {
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            Parallel.ForEach(datFile.Items.SortedKeys, Core.Globals.ParallelOptions, key =>
-#elif NET40_OR_GREATER
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(datFile.Items.SortedKeys, key =>
 #else
             foreach (var key in datFile.Items.SortedKeys)
@@ -207,9 +205,7 @@ namespace SabreTools.DatTools
         public static void ApplySuperDATDB(DatFile datFile, List<ParentablePath> inputs)
         {
             List<string> keys = [.. datFile.ItemsDB.SortedKeys];
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            Parallel.ForEach(keys, Core.Globals.ParallelOptions, key =>
-#elif NET40_OR_GREATER
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(keys, key =>
 #else
             foreach (var key in keys)

@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Reflection;
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-using System.Threading.Tasks;
-#endif
 
 namespace SabreTools.Core
 {
@@ -33,21 +30,6 @@ namespace SabreTools.Core
                 }
             }
         }
-
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-        /// <summary>
-        /// Maximum threads to use during parallel operations
-        /// </summary>
-        public static int MaxThreads { get; set; } = Environment.ProcessorCount;
-
-        /// <summary>
-        /// ParallelOptions object for use in parallel operations
-        /// </summary>
-        public static ParallelOptions ParallelOptions => new()
-        {
-            MaxDegreeOfParallelism = MaxThreads
-        };
-#endif
 
         /// <summary>
         /// Readies the console and outputs the header

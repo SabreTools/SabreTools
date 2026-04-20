@@ -8,7 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\SabreTools.Core\SabreTools.Core.csproj" />
         <ProjectReference Include="..\SabreTools.DatTools\SabreTools.DatTools.csproj" />
         <ProjectReference Include="..\SabreTools.Serialization\SabreTools.Serialization\SabreTools.Serialization.csproj" />
     </ItemGroup>

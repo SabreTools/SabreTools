@@ -68,9 +68,7 @@ namespace SabreTools.DatTools
             intDat.BucketBy(ItemKey.CRC32);
 
             // Then we do a hashwise comparison against the base DAT
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            Parallel.ForEach(intDat.Items.SortedKeys, Core.Globals.ParallelOptions, key =>
-#elif NET40_OR_GREATER
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(intDat.Items.SortedKeys, key =>
 #else
             foreach (var key in intDat.Items.SortedKeys)
@@ -129,9 +127,7 @@ namespace SabreTools.DatTools
             intDat.BucketBy(ItemKey.CRC32);
 
             // Then we do a hashwise comparison against the base DAT
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            Parallel.ForEach(intDat.ItemsDB.SortedKeys, Core.Globals.ParallelOptions, key =>
-#elif NET40_OR_GREATER
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(intDat.ItemsDB.SortedKeys, key =>
 #else
             foreach (var key in intDat.ItemsDB.SortedKeys)
@@ -185,9 +181,7 @@ namespace SabreTools.DatTools
             intDat.BucketBy(ItemKey.Machine);
 
             // Then we do a namewise comparison against the base DAT
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            Parallel.ForEach(intDat.Items.SortedKeys, Core.Globals.ParallelOptions, key =>
-#elif NET40_OR_GREATER
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(intDat.Items.SortedKeys, key =>
 #else
             foreach (var key in intDat.Items.SortedKeys)
@@ -247,9 +241,7 @@ namespace SabreTools.DatTools
             intDat.BucketBy(ItemKey.Machine);
 
             // Then we do a namewise comparison against the base DAT
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            Parallel.ForEach(intDat.ItemsDB.SortedKeys, Core.Globals.ParallelOptions, key =>
-#elif NET40_OR_GREATER
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(intDat.ItemsDB.SortedKeys, key =>
 #else
             foreach (var key in intDat.ItemsDB.SortedKeys)

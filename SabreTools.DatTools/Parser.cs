@@ -289,9 +289,7 @@ namespace SabreTools.DatTools
             InternalStopwatch watch = new("Processing individual DATs");
 
             // Parse all of the DATs into their own DatFiles in the array
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            Parallel.For(0, inputs.Count, Core.Globals.ParallelOptions, i =>
-#elif NET40_OR_GREATER
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.For(0, inputs.Count, i =>
 #else
             for (int i = 0; i < inputs.Count; i++)
@@ -394,9 +392,7 @@ namespace SabreTools.DatTools
             }
 
             // Loop through and add the items
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            Parallel.ForEach(datItems, Core.Globals.ParallelOptions, item =>
-#elif NET40_OR_GREATER
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(datItems, item =>
 #else
             foreach (var item in datItems)

@@ -52,9 +52,7 @@ namespace SabreTools.DatTools
         private static void AgainstImpl(DatFile datFile, DatFile intDat, bool useGames)
         {
             // Then we compare against the base DAT
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            Parallel.ForEach(intDat.Items.SortedKeys, Core.Globals.ParallelOptions, key =>
-#elif NET40_OR_GREATER
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(intDat.Items.SortedKeys, key =>
 #else
             foreach (var key in intDat.Items.SortedKeys)
@@ -144,9 +142,7 @@ namespace SabreTools.DatTools
         private static void AgainstDBImpl(DatFile datFile, DatFile intDat, bool useGames)
         {
             // Then we compare against the base DAT
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            Parallel.ForEach(intDat.ItemsDB.SortedKeys, Core.Globals.ParallelOptions, key =>
-#elif NET40_OR_GREATER
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(intDat.ItemsDB.SortedKeys, key =>
 #else
             foreach (var key in intDat.ItemsDB.SortedKeys)
@@ -254,9 +250,7 @@ namespace SabreTools.DatTools
 
             // Create the DatFiles from the set of headers
             DatFile[] outDatsArray = new DatFile[datHeaders.Count];
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            Parallel.For(0, datHeaders.Count, Core.Globals.ParallelOptions, j =>
-#elif NET40_OR_GREATER
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.For(0, datHeaders.Count, j =>
 #else
             for (int j = 0; j < datHeaders.Count; j++)
@@ -289,9 +283,7 @@ namespace SabreTools.DatTools
         private static void FillWithSourceIndex(DatFile datFile, DatFile indexDat, int index)
         {
             // Loop through and add the items for this index to the output
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            Parallel.ForEach(datFile.Items.SortedKeys, Core.Globals.ParallelOptions, key =>
-#elif NET40_OR_GREATER
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(datFile.Items.SortedKeys, key =>
 #else
             foreach (var key in datFile.Items.SortedKeys)
@@ -353,9 +345,7 @@ namespace SabreTools.DatTools
             }
 
             // Loop through and add the items
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            Parallel.ForEach(datItems, Core.Globals.ParallelOptions, item =>
-#elif NET40_OR_GREATER
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(datItems, item =>
 #else
             foreach (var item in datItems)
@@ -452,9 +442,7 @@ namespace SabreTools.DatTools
         /// <param name="dupeData">Duplicate data DatFile</param>
         private static void DuplicatesImpl(DatFile datFile, List<ParentablePath> inputs, DatFile dupeData)
         {
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            Parallel.ForEach(datFile.Items.SortedKeys, Core.Globals.ParallelOptions, key =>
-#elif NET40_OR_GREATER
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(datFile.Items.SortedKeys, key =>
 #else
             foreach (var key in datFile.Items.SortedKeys)
@@ -527,9 +515,7 @@ namespace SabreTools.DatTools
             }
 
             // Loop through and add the items
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            Parallel.ForEach(datItems, Core.Globals.ParallelOptions, item =>
-#elif NET40_OR_GREATER
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(datItems, item =>
 #else
             foreach (var item in datItems)
@@ -639,9 +625,7 @@ namespace SabreTools.DatTools
             // Loop through each of the inputs and get or create a new DatData object
             DatFile[] outDatsArray = new DatFile[inputs.Count];
 
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            Parallel.For(0, inputs.Count, Core.Globals.ParallelOptions, j =>
-#elif NET40_OR_GREATER
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.For(0, inputs.Count, j =>
 #else
             for (int j = 0; j < inputs.Count; j++)
@@ -670,9 +654,7 @@ namespace SabreTools.DatTools
         /// <param name="outDats">Individual data DatFiles</param>
         private static void IndividualsImpl(DatFile datFile, DatFile[] outDats)
         {
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            Parallel.ForEach(datFile.Items.SortedKeys, Core.Globals.ParallelOptions, key =>
-#elif NET40_OR_GREATER
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(datFile.Items.SortedKeys, key =>
 #else
             foreach (var key in datFile.Items.SortedKeys)
@@ -749,9 +731,7 @@ namespace SabreTools.DatTools
             }
 
             // Loop through and add the items
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            Parallel.ForEach(datItems, Core.Globals.ParallelOptions, item =>
-#elif NET40_OR_GREATER
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(datItems, item =>
 #else
             foreach (var item in datItems)
@@ -858,9 +838,7 @@ namespace SabreTools.DatTools
         /// <param name="outerDiffData">No duplicate data DatFile</param>
         private static void NoDuplicatesImpl(DatFile datFile, List<ParentablePath> inputs, DatFile outerDiffData)
         {
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            Parallel.ForEach(datFile.Items.SortedKeys, Core.Globals.ParallelOptions, key =>
-#elif NET40_OR_GREATER
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(datFile.Items.SortedKeys, key =>
 #else
             foreach (var key in datFile.Items.SortedKeys)
@@ -931,9 +909,7 @@ namespace SabreTools.DatTools
             }
 
             // Loop through and add the items
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-            Parallel.ForEach(datItems, Core.Globals.ParallelOptions, item =>
-#elif NET40_OR_GREATER
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             Parallel.ForEach(datItems, item =>
 #else
             foreach (var item in datItems)

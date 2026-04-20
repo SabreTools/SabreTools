@@ -119,9 +119,7 @@ namespace SabreTools.Features
                     var watch = new InternalStopwatch("Outputting hash-split DATs");
 
                     // Loop through each type DatFile
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-                    Parallel.ForEach(typeDats.Keys, Core.Globals.ParallelOptions, itemType =>
-#elif NET40_OR_GREATER
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     Parallel.ForEach(typeDats.Keys, itemType =>
 #else
                     foreach (var itemType in typeDats.Keys)
@@ -183,9 +181,7 @@ namespace SabreTools.Features
                     var watch = new InternalStopwatch("Outputting total-size-split DATs");
 
                     // Loop through each type DatFile
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-                    Parallel.ForEach(sizedDats, Core.Globals.ParallelOptions, sizedDat =>
-#elif NET40_OR_GREATER
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     Parallel.ForEach(sizedDats, sizedDat =>
 #else
                     foreach (var sizedDat in sizedDats)
@@ -213,9 +209,7 @@ namespace SabreTools.Features
                     var watch = new InternalStopwatch("Outputting ItemType DATs");
 
                     // Loop through each type DatFile
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-                    Parallel.ForEach(typeDats.Keys, Core.Globals.ParallelOptions, itemType =>
-#elif NET40_OR_GREATER
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                     Parallel.ForEach(typeDats.Keys, itemType =>
 #else
                     foreach (var itemType in typeDats.Keys)

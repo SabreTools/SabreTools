@@ -165,9 +165,7 @@ namespace SabreTools.DatTools
             try
             {
                 // Write out all required formats
-#if NET452_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
-                Parallel.ForEach(outfiles.Keys, Core.Globals.ParallelOptions, reportFormat =>
-#elif NET40_OR_GREATER
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
                 Parallel.ForEach(outfiles.Keys, reportFormat =>
 #else
                 foreach (var reportFormat in outfiles.Keys)
