@@ -5,14 +5,14 @@ using System.Text.RegularExpressions;
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
 using System.Threading.Tasks;
 #endif
-using SabreTools.Metadata.Filter;
-using SabreTools.Metadata.DatFiles;
-using SabreTools.Metadata.DatFiles.Formats;
-using SabreTools.Metadata.DatItems;
 using SabreTools.IO;
 using SabreTools.IO.Extensions;
 using SabreTools.Logging;
-using SabreTools.Reports;
+using SabreTools.Metadata.DatFiles;
+using SabreTools.Metadata.DatFiles.Formats;
+using SabreTools.Metadata.DatItems;
+using SabreTools.Metadata.Filter;
+using SabreTools.Metadata.Reports;
 
 namespace SabreTools.DatTools
 {
@@ -647,15 +647,15 @@ namespace SabreTools.DatTools
         {
             return statReportFormat switch
             {
-                StatReportFormat.None => new Reports.Formats.Textfile(statsList),
-                StatReportFormat.Textfile => new Reports.Formats.Textfile(statsList),
-                StatReportFormat.CSV => new Reports.Formats.CommaSeparatedValue(statsList),
-                StatReportFormat.HTML => new Reports.Formats.Html(statsList),
-                StatReportFormat.SSV => new Reports.Formats.SemicolonSeparatedValue(statsList),
-                StatReportFormat.TSV => new Reports.Formats.TabSeparatedValue(statsList),
+                StatReportFormat.None => new Metadata.Reports.Formats.Textfile(statsList),
+                StatReportFormat.Textfile => new Metadata.Reports.Formats.Textfile(statsList),
+                StatReportFormat.CSV => new Metadata.Reports.Formats.CommaSeparatedValue(statsList),
+                StatReportFormat.HTML => new Metadata.Reports.Formats.Html(statsList),
+                StatReportFormat.SSV => new Metadata.Reports.Formats.SemicolonSeparatedValue(statsList),
+                StatReportFormat.TSV => new Metadata.Reports.Formats.TabSeparatedValue(statsList),
 
                 // We use textfile output as a backup for generic BaseReport
-                _ => new Reports.Formats.Textfile(statsList),
+                _ => new Metadata.Reports.Formats.Textfile(statsList),
             };
         }
 

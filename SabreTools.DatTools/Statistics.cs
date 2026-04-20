@@ -11,7 +11,7 @@ using SabreTools.IO.Extensions;
 using SabreTools.Logging;
 using SabreTools.Metadata.Filter;
 using SabreTools.Metadata.DatFiles;
-using SabreTools.Reports;
+using SabreTools.Metadata.Reports;
 
 namespace SabreTools.DatTools
 {

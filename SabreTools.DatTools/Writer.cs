@@ -8,7 +8,7 @@ using SabreTools.IO.Extensions;
 using SabreTools.Logging;
 using SabreTools.Metadata.DatFiles;
 using SabreTools.Metadata.DatItems;
-using SabreTools.Reports;
+using SabreTools.Metadata.Reports;
 using ItemType = SabreTools.Data.Models.Metadata.ItemType;
 
 namespace SabreTools.DatTools

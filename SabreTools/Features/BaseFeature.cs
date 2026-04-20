@@ -10,7 +10,7 @@ using SabreTools.Hashing;
 using SabreTools.Logging;
 using SabreTools.Metadata.DatFiles;
 using SabreTools.Metadata.Filter;
-using SabreTools.Reports;
+using SabreTools.Metadata.Reports;
 using MergingFlag = SabreTools.Data.Models.Metadata.MergingFlag;
 
 namespace SabreTools.Features

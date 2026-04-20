@@ -28,7 +28,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\SabreTools.FileTypes\SabreTools.FileTypes.csproj" />
-        <ProjectReference Include="..\SabreTools.Reports\SabreTools.Reports.csproj" />
         <ProjectReference Include="..\SabreTools.Serialization\SabreTools.Serialization\SabreTools.Serialization.csproj" />
     </ItemGroup>
 

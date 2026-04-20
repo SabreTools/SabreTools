@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using SabreTools.Metadata.DatFiles;
 using SabreTools.Metadata.Filter;
-using SabreTools.Reports;
+using SabreTools.Metadata.Reports;
 using Xunit;
 
 namespace SabreTools.DatTools.Test
@@ -268,13 +268,13 @@ namespace SabreTools.DatTools.Test
         }
 
         [Theory]
-        [InlineData(StatReportFormat.None, typeof(Reports.Formats.Textfile))]
-        [InlineData(StatReportFormat.Textfile, typeof(Reports.Formats.Textfile))]
-        [InlineData(StatReportFormat.CSV, typeof(Reports.Formats.CommaSeparatedValue))]
-        [InlineData(StatReportFormat.HTML, typeof(Reports.Formats.Html))]
-        [InlineData(StatReportFormat.SSV, typeof(Reports.Formats.SemicolonSeparatedValue))]
-        [InlineData(StatReportFormat.TSV, typeof(Reports.Formats.TabSeparatedValue))]
-        [InlineData((StatReportFormat)0xFF, typeof(Reports.Formats.Textfile))]
+        [InlineData(StatReportFormat.None, typeof(Metadata.Reports.Formats.Textfile))]
+        [InlineData(StatReportFormat.Textfile, typeof(Metadata.Reports.Formats.Textfile))]
+        [InlineData(StatReportFormat.CSV, typeof(Metadata.Reports.Formats.CommaSeparatedValue))]
+        [InlineData(StatReportFormat.HTML, typeof(Metadata.Reports.Formats.Html))]
+        [InlineData(StatReportFormat.SSV, typeof(Metadata.Reports.Formats.SemicolonSeparatedValue))]
+        [InlineData(StatReportFormat.TSV, typeof(Metadata.Reports.Formats.TabSeparatedValue))]
+        [InlineData((StatReportFormat)0xFF, typeof(Metadata.Reports.Formats.Textfile))]
         public void CreateReportTest(StatReportFormat reportFormat, Type expected)
         {
             var report = Parser.CreateReport(reportFormat, []);

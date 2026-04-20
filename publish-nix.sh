@@ -74,7 +74,6 @@ if [ $NO_BUILD = false ]; then
     dotnet pack SabreTools.DatItems/SabreTools.DatItems.csproj --output $BUILD_FOLDER
     dotnet pack SabreTools.DatTools/SabreTools.DatTools.csproj --output $BUILD_FOLDER
     dotnet pack SabreTools.FileTypes/SabreTools.FileTypes.csproj --output $BUILD_FOLDER
-    dotnet pack SabreTools.Reports/SabreTools.Reports.csproj --output $BUILD_FOLDER
 
     # Build SabreTools
     for FRAMEWORK in "${FRAMEWORKS[@]}"; do
