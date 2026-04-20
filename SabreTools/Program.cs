@@ -85,7 +85,7 @@ namespace SabreTools
             if (!Console.IsOutputRedirected && topLevel is BaseFeature bf && bf.ScriptMode)
             {
                 Console.Clear();
-                Core.Globals.SetConsoleHeader("SabreTools");
+                Globals.SetConsoleHeader("SabreTools");
             }
 #endif
 

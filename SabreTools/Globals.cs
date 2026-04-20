@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Reflection;
 
-namespace SabreTools.Core
+namespace SabreTools
 {
     /// <summary>
     /// Globally-accessible functionality
     /// </summary>
-    public class Globals
+    public static class Globals
     {
         /// <summary>
         /// The current toolset version to be used by all child applications

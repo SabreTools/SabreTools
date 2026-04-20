@@ -1,6 +1,5 @@
 ﻿using System;
 using SabreTools.CommandLine;
-using SabreTools.Core;
 
 namespace SabreTools.Features
 {

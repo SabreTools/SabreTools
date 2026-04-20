@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
 using System.Threading.Tasks;
+#endif
 using SabreTools.DatTools;
 using SabreTools.IO;
 using SabreTools.IO.Extensions;

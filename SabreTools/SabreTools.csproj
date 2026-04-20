@@ -38,7 +38,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\SabreTools.Core\SabreTools.Core.csproj" />
+        <None Update="README.1ST">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="README.DEPRECIATED">
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\SabreTools.DatTools\SabreTools.DatTools.csproj" />
         <ProjectReference Include="..\SabreTools.Serialization\SabreTools.Serialization\SabreTools.Serialization.csproj" />
     </ItemGroup>
