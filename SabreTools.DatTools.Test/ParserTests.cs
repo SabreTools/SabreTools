@@ -181,7 +181,7 @@ namespace SabreTools.DatTools.Test
         [InlineData("test-logiqx.xml", DatFormat.Logiqx, 6)]
         //[InlineData(null, DatFormat.LogiqxDeprecated, 0)] // Not parsed separately
         [InlineData("test-softwarelist.xml", DatFormat.SoftwareList, 6)]
-        [InlineData("test-listxml.xml", DatFormat.Listxml, 18)]
+        [InlineData("test-listxml.xml", DatFormat.Listxml, 19)]
         [InlineData("test-offlinelist.xml", DatFormat.OfflineList, 1)]
         //[InlineData(null, DatFormat.SabreXML, 0)] // TODO: Create good-enough test file for this
         [InlineData("test-openmsx.xml", DatFormat.OpenMSX, 3)]
@@ -227,7 +227,7 @@ namespace SabreTools.DatTools.Test
         [InlineData("test-logiqx.xml", DatFormat.Logiqx, 6)]
         //[InlineData(null, DatFormat.LogiqxDeprecated, 0)] // Not parsed separately
         [InlineData("test-softwarelist.xml", DatFormat.SoftwareList, 6)]
-        [InlineData("test-listxml.xml", DatFormat.Listxml, 18)]
+        [InlineData("test-listxml.xml", DatFormat.Listxml, 19)]
         [InlineData("test-offlinelist.xml", DatFormat.OfflineList, 1)]
         //[InlineData(null, DatFormat.SabreXML, 0)] // TODO: Create good-enough test file for this
         [InlineData("test-openmsx.xml", DatFormat.OpenMSX, 3)]
