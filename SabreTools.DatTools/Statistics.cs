@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using SabreTools.IO;
 using SabreTools.IO.Extensions;
 using SabreTools.Logging;
-using SabreTools.Metadata.Filter;
 using SabreTools.Metadata.DatFiles;
 using SabreTools.Metadata.Reports;
 
@@ -75,12 +74,7 @@ namespace SabreTools.DatTools
 
                 InternalStopwatch watch = new($"Collecting statistics for '{file.CurrentPath}'");
 
-#if NET20 || NET35 || NET40 || NET452
-                var filterRunner = new FilterRunner(new string[0]);
-#else
-                var filterRunner = new FilterRunner(Array.Empty<string>());
-#endif
-                DatFile datdata = Parser.ParseStatistics(file.CurrentPath, filterRunner, throwOnError);
+                DatFile datdata = Parser.ParseStatistics(file.CurrentPath, throwOnError);
 
                 // Add single DAT stats (if asked)
                 if (single)

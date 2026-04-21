@@ -337,8 +337,7 @@ namespace SabreTools.Features
                         inputPath.CurrentPath,
                         indexId: 1,
                         keep: true,
-                        keepext: isSeparatedFile,
-                        filterRunner: FilterRunner);
+                        keepext: isSeparatedFile);
 
                     // Ensure there are output formats
                     var datFormats = DatFormats;
@@ -401,8 +400,7 @@ namespace SabreTools.Features
                         inputPath.CurrentPath,
                         indexId: 1,
                         keep: true,
-                        keepext: isSeparatedFile,
-                        filterRunner: FilterRunner);
+                        keepext: isSeparatedFile);
 
                     // Ensure there are output formats
                     var datFormats = DatFormats;
@@ -557,8 +555,7 @@ namespace SabreTools.Features
                 Parser.ParseInto(datFile,
                     inputPath.CurrentPath,
                     keep: true,
-                    keepext: isSeparatedFile,
-                    filterRunner: FilterRunner);
+                    keepext: isSeparatedFile);
 
                 // Ensure there are output formats
                 var datFormats = DatFormats;
@@ -598,9 +595,9 @@ namespace SabreTools.Features
 #else
             if (updateMode.HasFlag(UpdateMode.DiffAgainst) || updateMode.HasFlag(UpdateMode.BaseReplace))
 #endif
-                return Parser.PopulateUserData(userInputDat, basePaths, FilterRunner!);
+                return Parser.PopulateUserData(userInputDat, basePaths);
             else
-                return Parser.PopulateUserData(userInputDat, inputPaths, FilterRunner!);
+                return Parser.PopulateUserData(userInputDat, inputPaths);
         }
 
         /// <summary>
@@ -611,7 +608,7 @@ namespace SabreTools.Features
         {
             Extras!.ApplyExtras(datFile);
             Extras!.ApplyExtrasDB(datFile);
-            Splitter!.ApplySplitting(datFile, useTags: false, filterRunner: FilterRunner);
+            Splitter!.ApplySplitting(datFile, useTags: false);
             datFile.ExecuteFilters(FilterRunner!);
             Cleaner!.ApplyCleaning(datFile);
             Remover!.ApplyRemovals(datFile);

@@ -102,12 +102,7 @@ namespace SabreTools.Features
                 if (success)
                 {
                     // Perform additional processing steps
-                    Extras!.ApplyExtras(datdata);
-                    Extras!.ApplyExtrasDB(datdata);
-                    Splitter!.ApplySplitting(datdata, useTags: false, filterRunner: FilterRunner);
-                    datdata.ExecuteFilters(FilterRunner!);
-                    Cleaner!.ApplyCleaning(datdata);
-                    Remover!.ApplyRemovals(datdata);
+                    AdditionalProcessing(datdata);
 
                     // Ensure there are output formats
                     var datFormats = DatFormats;
@@ -125,6 +120,20 @@ namespace SabreTools.Features
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Perform additional processing on a given DatFile
+        /// </summary>
+        /// <param name="datFile">DatFile to process</param>
+        private void AdditionalProcessing(DatFile datFile)
+        {
+            Extras!.ApplyExtras(datFile);
+            Extras!.ApplyExtrasDB(datFile);
+            Splitter!.ApplySplitting(datFile, useTags: false);
+            datFile.ExecuteFilters(FilterRunner!);
+            Cleaner!.ApplyCleaning(datFile);
+            Remover!.ApplyRemovals(datFile);
         }
     }
 }

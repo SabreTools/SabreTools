@@ -78,7 +78,9 @@ namespace SabreTools.Features
                 // Create and fill the new DAT
                 DatFile internalDat = Parser.CreateDatFile(Header!, Modifiers!);
                 internalDat.Header.DatFormat = null;
-                Parser.ParseInto(internalDat, file.CurrentPath, filterRunner: FilterRunner);
+                Parser.ParseInto(internalDat, file.CurrentPath);
+                if (FilterRunner is not null)
+                    internalDat.ExecuteFilters(FilterRunner);
 
                 // Ensure there are output formats
                 var datFormats = DatFormats;

@@ -4,7 +4,6 @@ using System.IO;
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
 using System.Threading.Tasks;
 #endif
-using SabreTools.Metadata.Filter;
 using SabreTools.Metadata.DatFiles;
 using SabreTools.Metadata.DatItems;
 using SabreTools.IO;
@@ -40,10 +39,9 @@ namespace SabreTools.DatTools
         /// </summary>
         /// <param name="datFile">Current DatFile object to run operations on</param>
         /// <param name="useTags">True if DatFile tags override splitting, false otherwise</param>
-        /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
         /// <param name="throwOnError">True if the error that is thrown should be thrown back to the caller, false otherwise</param>
         /// <returns>True if the DatFile was split, false on error</returns>
-        public bool ApplySplitting(DatFile datFile, bool useTags, FilterRunner? filterRunner = null, bool throwOnError = false)
+        public bool ApplySplitting(DatFile datFile, bool useTags, bool throwOnError = false)
         {
             InternalStopwatch watch = new("Applying splitting to DAT");
 
@@ -62,41 +60,17 @@ namespace SabreTools.DatTools
                         // No-op
                         break;
                     case MergingFlag.Split:
-                        if (filterRunner is not null)
-                        {
-                            datFile.ExecuteFilters(filterRunner);
-                            datFile.ClearMarked();
-                        }
-
                         datFile.ApplySplit();
                         break;
                     case MergingFlag.Merged:
-                        if (filterRunner is not null)
-                        {
-                            datFile.ExecuteFilters(filterRunner);
-                            datFile.ClearMarked();
-                        }
-
                         datFile.ApplyMerged();
                         break;
                     case MergingFlag.NonMerged:
-                        if (filterRunner is not null)
-                        {
-                            datFile.ExecuteFilters(filterRunner);
-                            datFile.ClearMarked();
-                        }
-
                         datFile.ApplyNonMerged();
                         break;
 
                     // Nonstandard
                     case MergingFlag.FullMerged:
-                        if (filterRunner is not null)
-                        {
-                            datFile.ExecuteFilters(filterRunner);
-                            datFile.ClearMarked();
-                        }
-
                         datFile.ApplyFullyMerged();
                         break;
                     case MergingFlag.DeviceNonMerged:

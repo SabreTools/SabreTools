@@ -11,7 +11,6 @@ using SabreTools.Logging;
 using SabreTools.Metadata.DatFiles;
 using SabreTools.Metadata.DatFiles.Formats;
 using SabreTools.Metadata.DatItems;
-using SabreTools.Metadata.Filter;
 using SabreTools.Metadata.Reports;
 
 namespace SabreTools.DatTools
@@ -158,18 +157,16 @@ namespace SabreTools.DatTools
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
         /// <param name="keepext">True if original extension should be kept, false otherwise (default)</param>
         /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
         /// <param name="throwOnError">True if the error that is thrown should be thrown back to the caller, false otherwise</param>
         public static DatFile Parse(string filename,
             int indexId = 0,
             bool keep = false,
             bool keepext = false,
             bool statsOnly = false,
-            FilterRunner? filterRunner = null,
             bool throwOnError = false)
         {
             DatFile datFile = CreateDatFile();
-            ParseInto(datFile, filename, indexId, keep, keepext, statsOnly, filterRunner, throwOnError);
+            ParseInto(datFile, filename, indexId, keep, keepext, statsOnly, throwOnError);
             return datFile;
         }
 
@@ -182,7 +179,6 @@ namespace SabreTools.DatTools
         /// <param name="keep">True if full pathnames are to be kept, false otherwise (default)</param>
         /// <param name="keepext">True if original extension should be kept, false otherwise (default)</param>
         /// <param name="statsOnly">True to only add item statistics while parsing, false otherwise</param>
-        /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
         /// <param name="throwOnError">True if the error that is thrown should be thrown back to the caller, false otherwise</param>
         public static void ParseInto(
             DatFile datFile,
@@ -191,7 +187,6 @@ namespace SabreTools.DatTools
             bool keep = false,
             bool keepext = false,
             bool statsOnly = false,
-            FilterRunner? filterRunner = null,
             bool throwOnError = false)
         {
             // Check the file extension first as a safeguard
@@ -222,7 +217,6 @@ namespace SabreTools.DatTools
                     indexId,
                     keep,
                     statsOnly: statsOnly,
-                    filterRunner: filterRunner,
                     throwOnError: throwOnError);
 
                 // Copy the header values back
@@ -241,13 +235,12 @@ namespace SabreTools.DatTools
         /// </summary>
         /// <param name="filename">Name of the file to be parsed</param>
         /// <param name="throwOnError">True if the error that is thrown should be thrown back to the caller, false otherwise</param>
-        /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
         /// <remarks>
         /// Code must remove the existing format in order to ensure the format is derived
         /// from the input file instead. This should be addressed later by either always
         /// deriving the format, or by setting a flag for this to be done automatically.
         // </remarks>
-        public static DatFile ParseStatistics(string? filename, FilterRunner? filterRunner = null, bool throwOnError = false)
+        public static DatFile ParseStatistics(string? filename, bool throwOnError = false)
         {
             // Null filenames are invalid
             if (filename is null)
@@ -260,7 +253,7 @@ namespace SabreTools.DatTools
                 return CreateDatFile();
             }
 
-            return Parse(filename, statsOnly: true, filterRunner: filterRunner, throwOnError: throwOnError);
+            return Parse(filename, statsOnly: true, throwOnError: throwOnError);
         }
 
         /// <summary>
@@ -268,12 +261,11 @@ namespace SabreTools.DatTools
         /// </summary>
         /// <param name="datFile">Current DatFile object to use for updating</param>
         /// <param name="inputs">Paths to DATs to parse</param>
-        /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
         /// <returns>List of DatHeader objects representing headers</returns>
-        public static List<DatHeader> PopulateUserData(DatFile datFile, List<string> inputs, FilterRunner? filterRunner = null)
+        public static List<DatHeader> PopulateUserData(DatFile datFile, List<string> inputs)
         {
             List<ParentablePath> paths = inputs.ConvertAll(i => new ParentablePath(i));
-            return PopulateUserData(datFile, paths, filterRunner);
+            return PopulateUserData(datFile, paths);
         }
 
         /// <summary>
@@ -281,9 +273,8 @@ namespace SabreTools.DatTools
         /// </summary>
         /// <param name="datFile">Current DatFile object to use for updating</param>
         /// <param name="inputs">Paths to DATs to parse</param>
-        /// <param name="filterRunner">Optional FilterRunner to filter items on parse</param>
         /// <returns>List of DatHeader objects representing headers</returns>
-        public static List<DatHeader> PopulateUserData(DatFile datFile, List<ParentablePath> inputs, FilterRunner? filterRunner = null)
+        public static List<DatHeader> PopulateUserData(DatFile datFile, List<ParentablePath> inputs)
         {
             DatFile[] datFiles = new DatFile[inputs.Count];
             InternalStopwatch watch = new("Processing individual DATs");
@@ -314,7 +305,7 @@ namespace SabreTools.DatTools
                 // Ensure the format is reset after parsing
                 DatFormat? currentFormat = datFiles[i].Header.DatFormat;
                 datFiles[i].Header.DatFormat = null;
-                ParseInto(datFiles[i], input.CurrentPath, indexId: i, keep: true, filterRunner: filterRunner);
+                ParseInto(datFiles[i], input.CurrentPath, indexId: i, keep: true);
                 datFiles[i].Header.DatFormat = currentFormat;
 #if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             });

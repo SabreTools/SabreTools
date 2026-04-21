@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using SabreTools.Metadata.DatFiles;
-using SabreTools.Metadata.Filter;
 using SabreTools.Metadata.Reports;
 using Xunit;
 
@@ -261,7 +260,7 @@ namespace SabreTools.DatTools.Test
             if (filename is not null)
                 filename = Path.Combine(Environment.CurrentDirectory, "TestData", filename);
 
-            var datFile = Parser.ParseStatistics(filename, new FilterRunner(Array.Empty<string>()), throwOnError: true);
+            var datFile = Parser.ParseStatistics(filename, throwOnError: true);
             Assert.Equal(datFormat, datFile.Header.DatFormat);
             Assert.Equal(totalCount, datFile.Items.DatStatistics.TotalCount);
             //Assert.Equal(totalCount, datFile.ItemsDB.DatStatistics.TotalCount);

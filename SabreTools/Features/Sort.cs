@@ -105,10 +105,9 @@ namespace SabreTools.Features
                         continue;
                     }
 
-                    DatFile datdata = Parser.Parse(datfile.CurrentPath,
-                        indexId: int.MaxValue,
-                        keep: true,
-                        filterRunner: FilterRunner);
+                    DatFile datdata = Parser.Parse(datfile.CurrentPath, indexId: int.MaxValue, keep: true);
+                    if (FilterRunner is not null)
+                        datdata.ExecuteFilters(FilterRunner);
 
                     // Skip if nothing was parsed
                     if (datdata.DatStatistics.TotalCount == 0) // datdata.ItemsDB.SortedKeys.Length == 0
@@ -185,8 +184,9 @@ namespace SabreTools.Features
                     Parser.ParseInto(datdata,
                         datfile.CurrentPath,
                         indexId: int.MaxValue,
-                        keep: true,
-                        filterRunner: FilterRunner);
+                        keep: true);
+                    if (FilterRunner is not null)
+                        datdata.ExecuteFilters(FilterRunner);
                 }
 
                 // Set depot information

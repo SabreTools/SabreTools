@@ -76,8 +76,7 @@ namespace SabreTools.Features
                     // Parse in from the file
                     DatFile datdata = Parser.Parse(datfile.CurrentPath,
                         indexId: int.MaxValue,
-                        keep: true,
-                        filterRunner: FilterRunner!);
+                        keep: true);
 
                     // Ensure there are output formats
                     var datFormats = DatFormats;
@@ -85,12 +84,7 @@ namespace SabreTools.Features
                         datFormats = [datdata.Header.DatFormat ?? DatFormat.Logiqx];
 
                     // Perform additional processing steps
-                    Extras!.ApplyExtras(datdata);
-                    Extras!.ApplyExtrasDB(datdata);
-                    Splitter!.ApplySplitting(datdata, useTags: true, filterRunner: FilterRunner);
-                    datdata.ExecuteFilters(FilterRunner!);
-                    Cleaner!.ApplyCleaning(datdata);
-                    Remover!.ApplyRemovals(datdata);
+                    AdditionalProcessing(datdata);
 
                     // Set depot information
                     var inputDepot = Modifiers!.InputDepot;
@@ -144,8 +138,7 @@ namespace SabreTools.Features
                     Parser.ParseInto(datdata,
                         datfile.CurrentPath,
                         int.MaxValue,
-                        keep: true,
-                        filterRunner: FilterRunner);
+                        keep: true);
                 }
 
                 // Ensure there are output formats
@@ -154,12 +147,7 @@ namespace SabreTools.Features
                     datFormats = [datdata.Header.DatFormat ?? DatFormat.Logiqx];
 
                 // Perform additional processing steps
-                Extras!.ApplyExtras(datdata);
-                Extras!.ApplyExtrasDB(datdata);
-                Splitter!.ApplySplitting(datdata, useTags: true, filterRunner: FilterRunner);
-                datdata.ExecuteFilters(FilterRunner!);
-                Cleaner!.ApplyCleaning(datdata);
-                Remover!.ApplyRemovals(datdata);
+                AdditionalProcessing(datdata);
 
                 // Set depot information
                 var inputDepot = Modifiers!.InputDepot;
@@ -196,6 +184,20 @@ namespace SabreTools.Features
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Perform additional processing on a given DatFile
+        /// </summary>
+        /// <param name="datFile">DatFile to process</param>
+        private void AdditionalProcessing(DatFile datFile)
+        {
+            Extras!.ApplyExtras(datFile);
+            Extras!.ApplyExtrasDB(datFile);
+            Splitter!.ApplySplitting(datFile, useTags: false);
+            datFile.ExecuteFilters(FilterRunner!);
+            Cleaner!.ApplyCleaning(datFile);
+            Remover!.ApplyRemovals(datFile);
         }
     }
 }
