@@ -1508,8 +1508,8 @@ Some special strings that can be used:
             HashSet<DatFormat> datFormats = [];
             foreach (string ot in outputTypes)
             {
-                DatFormat dftemp = GetDatFormat(ot);
-                if (dftemp == 0x00)
+                DatFormat? dftemp = GetDatFormat(ot);
+                if (dftemp is null)
                 {
                     _logger.Error($"{ot} is not a recognized DAT format");
                     return null;
@@ -1520,7 +1520,7 @@ Some special strings that can be used:
                     dftemp = DatFormat.LogiqxDeprecated;
 
                 // Add both to the header and the format list
-                datFormats.Add(dftemp);
+                datFormats.Add(dftemp.Value);
             }
 
             return [.. datFormats];
@@ -1656,7 +1656,7 @@ Some special strings that can be used:
         /// </summary>
         /// <param name="input">String to get value from</param>
         /// <returns>DatFormat value corresponding to the string</returns>
-        protected static DatFormat GetDatFormat(string input)
+        protected static DatFormat? GetDatFormat(string input)
         {
             return (input?.Trim().ToLowerInvariant()) switch
             {
@@ -1689,7 +1689,7 @@ Some special strings that can be used:
                 "ssv" => DatFormat.SSV,
                 "tsv" => DatFormat.TSV,
                 "xml" or "logiqx" => DatFormat.Logiqx,
-                _ => 0x0,
+                _ => null,
             };
         }
 

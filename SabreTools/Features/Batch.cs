@@ -473,7 +473,7 @@ Reset the internal state:           reset();";
                 List<string> unmappedFormats = [];
                 foreach (string format in Arguments)
                 {
-                    if (GetDatFormat(format) == 0x0)
+                    if (GetDatFormat(format) is null)
                         unmappedFormats.Add(format);
                 }
 
@@ -494,9 +494,9 @@ Reset the internal state:           reset();";
                 batchState.DatFormats = [];
                 foreach (string format in Arguments)
                 {
-                    DatFormat datFormat = GetDatFormat(format);
-                    if (datFormat != 0x00)
-                        batchState.DatFormats.Add(datFormat);
+                    DatFormat? datFormat = GetDatFormat(format);
+                    if (datFormat is not null)
+                        batchState.DatFormats.Add(datFormat.Value);
                 }
             }
         }
