@@ -1233,7 +1233,7 @@ Some special strings that can be used:
 
             // Fallback to "Standard" if no flags are set
             if (includeInScan.Count == 0)
-                includeInScan = [HashType.CRC32, HashType.MD5, HashType.SHA1];
+                includeInScan = [HashType.CRC32, HashType.MD5, HashType.SHA1, HashType.SHA256];
 
             return [.. includeInScan];
         }

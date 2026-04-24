@@ -335,7 +335,7 @@ namespace SabreTools.DatTools
             BaseArchive? archive = FileTypeTool.CreateArchiveType(file);
 
             // Now get all extracted items from the archive
-            HashType[] hashTypes = quickScan ? [HashType.CRC32] : [HashType.CRC32, HashType.MD5, HashType.SHA1];
+            HashType[] hashTypes = quickScan ? [HashType.CRC32] : [HashType.CRC32, HashType.MD5, HashType.SHA1, HashType.SHA256];
             if (archive is not null)
             {
                 archive.SetHashTypes(hashTypes);
@@ -539,7 +539,7 @@ namespace SabreTools.DatTools
                     if (rule.TransformStream(fileStream, transformStream, keepReadOpen: true, keepWriteOpen: true))
                     {
                         // Get the file informations that we will be using
-                        HashType[] hashes = [HashType.CRC32, HashType.MD5, HashType.SHA1];
+                        HashType[] hashes = [HashType.CRC32, HashType.MD5, HashType.SHA1, HashType.SHA256];
                         Rom headerless = FileTypeTool.GetInfo(transformStream, hashes).ConvertToRom();
 
                         // If we have duplicates and we're not filtering
@@ -615,7 +615,7 @@ namespace SabreTools.DatTools
                 string? machinename = null;
 
                 // Get the item from the current file
-                HashType[] hashes = [HashType.CRC32, HashType.MD5, HashType.SHA1];
+                HashType[] hashes = [HashType.CRC32, HashType.MD5, HashType.SHA1, HashType.SHA256];
                 Rom item = FileTypeTool.GetInfo(stream, hashes).ConvertToRom();
                 item.Machine!.Description = Path.GetFileNameWithoutExtension(item.GetName());
                 item.Machine.Name = Path.GetFileNameWithoutExtension(item.GetName());
@@ -675,7 +675,7 @@ namespace SabreTools.DatTools
                 string? machinename = null;
 
                 // Get the item from the current file
-                HashType[] hashes = [HashType.CRC32, HashType.MD5, HashType.SHA1];
+                HashType[] hashes = [HashType.CRC32, HashType.MD5, HashType.SHA1, HashType.SHA256];
                 Rom rom = FileTypeTool.GetInfo(stream, hashes).ConvertToRom();
 
                 // Create a machine for the current item

@@ -55,7 +55,7 @@ namespace SabreTools.Features
             TreatAsFile treatAsFile = GetTreatAsFile();
             bool hashOnly = GetBoolean(HashOnlyValue);
             bool quickScan = GetBoolean(QuickValue);
-            HashType[] hashes = quickScan ? [HashType.CRC32] : [HashType.CRC32, HashType.MD5, HashType.SHA1];
+            HashType[] hashes = quickScan ? [HashType.CRC32] : [HashType.CRC32, HashType.MD5, HashType.SHA1, HashType.SHA256];
             var dfd = new DatTools.DatFromDir(hashes, SkipFileType.None, treatAsFile, addBlanks: false);
 
             // Ensure the output directory

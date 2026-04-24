@@ -277,7 +277,7 @@ Reset the internal state:           reset();";
             /// <remarks>TODO: Should any of the other options be added for D2D?</remarks>
             public override void Process(BatchState batchState)
             {
-                HashType[] hashes = [HashType.CRC32, HashType.MD5, HashType.SHA1];
+                HashType[] hashes = [HashType.CRC32, HashType.MD5, HashType.SHA1, HashType.SHA256];
                 var dfd = new DatTools.DatFromDir(hashes, SkipFileType.None, 0x00, addBlanks: false);
 
                 // Assume there could be multiple

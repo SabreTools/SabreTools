@@ -12,7 +12,7 @@ namespace SabreTools.FileTypes
         /// <summary>
         /// Hashes that are available for children
         /// </summary>
-        protected HashType[] _hashTypes = [HashType.CRC32, HashType.MD5, HashType.SHA1];
+        protected HashType[] _hashTypes = [HashType.CRC32, HashType.MD5, HashType.SHA1, HashType.SHA256];
 
         /// <summary>
         /// Set of children file objects
