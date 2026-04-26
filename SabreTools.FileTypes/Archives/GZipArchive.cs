@@ -304,6 +304,10 @@ namespace SabreTools.FileTypes.Archives
                 if (i == 4 || i == 5 || i == 6 || i == 7 || i == 9)
                     continue;
 
+                // If the file contains an alt header
+                else if (i == 10 && header[i] == 77)
+                    continue;
+
                 correct &= header[i] == TorrentGZHeader[i];
             }
 
@@ -365,6 +369,10 @@ namespace SabreTools.FileTypes.Archives
             {
                 // This is a temp fix to ignore the modification time and OS until romba can be fixed
                 if (i == 4 || i == 5 || i == 6 || i == 7 || i == 9)
+                    continue;
+
+                // If the file contains an alt header
+                else if (i == 10 && header[i] == 77)
                     continue;
 
                 correct &= header[i] == TorrentGZHeader[i];

@@ -84,7 +84,7 @@ namespace SabreTools.DatTools
                     continue;
 
                 // If we have a path, we want to try to get the rom information
-                GZipArchive tgz = new(foundpath);
+                var tgz = new GZipArchive(foundpath);
                 BaseFile? fileinfo = tgz.GetTorrentGZFileInfo();
 
                 // If the file information is null, then we continue
