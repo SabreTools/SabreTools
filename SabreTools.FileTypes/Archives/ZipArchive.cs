@@ -7,8 +7,8 @@ using System.IO.Compression;
 using System.Linq;
 using Compress;
 using Compress.ZipFile;
-using SabreTools.Core.Tools;
 using SabreTools.Hashing;
+using SabreTools.IO.Extensions;
 using SabreTools.Text.Compare;
 using SabreTools.Text.Extensions;
 
