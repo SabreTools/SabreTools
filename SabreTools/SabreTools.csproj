@@ -16,7 +16,7 @@
 
         <!-- Package Properties -->
         <Authors>Matt Nadareski</Authors>
-        <Copyright>Copyright (c)2016-2025 Matt Nadareski</Copyright>
+        <Copyright>Copyright (c)2016-2026 Matt Nadareski</Copyright>
         <PackageProjectUrl>https://github.com/SabreTools/</PackageProjectUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <RepositoryType>git</RepositoryType>
