@@ -972,6 +972,13 @@ Some special strings that can be used:
             "Set the root directory for calc",
             detailed: "In the case that the files will not be stored from the root directory, a new root can be set for path length calculations.");
 
+        internal const string SubsetStringValue = "subset";
+        internal static StringInput SubsetStringInput => new(
+            SubsetStringValue,
+            ["-su", "--subset"],
+            "Set a new subset of the DAT",
+            detailed: "Set the subset header field for the output DAT(s)");
+
         internal const string UrlStringValue = "url";
         internal static StringInput UrlStringInput => new(
             UrlStringValue,
@@ -1084,6 +1091,7 @@ Some special strings that can be used:
             Add(EmailStringInput);
             Add(HomepageStringInput);
             Add(UrlStringInput);
+            Add(SubsetStringInput);
             Add(CommentStringInput);
             Add(HeaderStringInput);
             Add(SuperdatFlag);
@@ -1495,6 +1503,7 @@ Some special strings that can be used:
                 Homepage = GetString(HomepageStringValue),
                 Name = GetString(NameStringValue),
                 RootDir = GetString(RootStringValue),
+                Subset = GetString(SubsetStringValue),
                 Type = GetBoolean(SuperdatValue) ? "SuperDAT" : null,
                 Url = GetString(UrlStringValue),
                 Version = GetString(VersionStringValue),

@@ -461,6 +461,10 @@ namespace SabreTools.DatTools
                         removed = true;
                         break;
                     // Header.Search is intentionally skipped
+                    case "subset":
+                        obj.Subset = null;
+                        removed = true;
+                        break;
                     case "system":
                         obj.System = null;
                         removed = true;
@@ -703,6 +707,10 @@ namespace SabreTools.DatTools
                         break;
                     case "score":
                         obj.Score = null;
+                        removed = true;
+                        break;
+                    case "settype":
+                        obj.SetType = null;
                         removed = true;
                         break;
                     case "source":

@@ -337,6 +337,9 @@ Features and Options:
       -u=, --url=                 Set a new URL of the DAT
           Set the URL header field for the output DAT(s)
 
+      -su=, --subset=             Set a new subset of the DAT
+          Set the subset header field for the output DAT(s)
+
       -co=, --comment=            Set a new comment of the DAT
           Set the comment header field for the output DAT(s)
 

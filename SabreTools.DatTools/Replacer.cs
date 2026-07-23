@@ -527,6 +527,9 @@ namespace SabreTools.DatTools
             if (fieldNames.Contains("score"))
                 machine.Score = repMachine.Score;
 
+            if (fieldNames.Contains("settype"))
+                machine.SetType = repMachine.SetType;
+
             if (fieldNames.Contains("source"))
                 machine.Source = repMachine.Source;
 

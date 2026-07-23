@@ -396,6 +396,10 @@ namespace SabreTools.DatTools
                         set = true;
                         break;
                     // Header.Search is intentionally skipped
+                    case "subset":
+                        obj.Subset = kvp.Value;
+                        set = true;
+                        break;
                     case "system":
                         obj.System = kvp.Value;
                         set = true;
@@ -638,6 +642,10 @@ namespace SabreTools.DatTools
                         break;
                     case "score":
                         obj.Score = kvp.Value;
+                        set = true;
+                        break;
+                    case "settype":
+                        obj.SetType = kvp.Value;
                         set = true;
                         break;
                     case "source":
