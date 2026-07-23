@@ -8,6 +8,7 @@ namespace SabreTools.DatTools.Test
     public class WriterTests
     {
         [Theory]
+        [InlineData(DatFormat.RedumpBLAKE3, "blake3")]
         [InlineData(DatFormat.CSV, "csv")]
         [InlineData(DatFormat.ClrMamePro, "dat")]
         [InlineData(DatFormat.RomCenter, "dat")]
@@ -67,7 +68,8 @@ namespace SabreTools.DatTools.Test
             var actual = Writer.CreateOutFileNames(datHeader, datFormats, outDir, overwrite: true);
 
             // Check the normalized results
-            Assert.Equal(30, actual.Count);
+            Assert.Equal(31, actual.Count);
+            Assert.Equal("C:\\Test\\test.blake3", actual[DatFormat.RedumpBLAKE3].Replace('/', '\\'));
             Assert.Equal("C:\\Test\\test.csv", actual[DatFormat.CSV].Replace('/', '\\'));
             Assert.Equal("C:\\Test\\test.dat", actual[DatFormat.ClrMamePro].Replace('/', '\\'));
             Assert.Equal("C:\\Test\\test.rc.dat", actual[DatFormat.RomCenter].Replace('/', '\\'));

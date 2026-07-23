@@ -107,6 +107,9 @@ namespace SabreTools.FileTypes
                     SHA384 = hashDict.ContainsKey(HashType.SHA384) ? hashDict[HashType.SHA384].FromHexString() : null,
                     SHA512 = hashDict.ContainsKey(HashType.SHA512) ? hashDict[HashType.SHA512].FromHexString() : null,
                     SpamSum = hashDict.ContainsKey(HashType.SpamSum) ? hashDict[HashType.SpamSum].FromHexString() : null,
+#if NET7_0_OR_GREATER
+                    BLAKE3 = hashDict.ContainsKey(HashType.BLAKE3) ? hashDict[HashType.BLAKE3].FromHexString() : null,
+#endif
                 };
 
                 // Deal with the input stream and return
@@ -140,6 +143,7 @@ namespace SabreTools.FileTypes
             to.SHA384 ??= from.SHA384;
             to.SHA512 ??= from.SHA512;
             to.SpamSum ??= from.SpamSum;
+            to.BLAKE3 ??= from.BLAKE3;
         }
 
         /// <summary>

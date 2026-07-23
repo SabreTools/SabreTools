@@ -225,6 +225,11 @@ Features and Options:
           flag overrides the default hashing behavior of including CRC32, MD5,
           and SHA-1 hashes.
 
+      -blake3, --include-blake3   Include BLAKE3 in output
+          This enables BLAKE3 calculation for each of the files. Adding this
+          flag overrides the default hashing behavior of including CRC32, MD5,
+          and SHA-1 hashes.
+
       -b, --no-automatic-date     Don't include date in file name
           Normally, the DAT will be created with the date in the file name in
           brackets. This flag removes that instead of the default.

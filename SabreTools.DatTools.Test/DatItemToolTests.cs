@@ -216,6 +216,7 @@ namespace SabreTools.DatTools.Test
             string sha384 = TextHelper.NormalizeSHA384("1234abcd")!;
             string sha512 = TextHelper.NormalizeSHA512("1234abcd")!;
             string spamSum = "1234abcd";
+            string blake3 = "1234abcd";
             long size = 12345;
 
             BaseFile baseFile = new BaseFile
@@ -233,6 +234,7 @@ namespace SabreTools.DatTools.Test
                 SHA384 = sha384.FromHexString(),
                 SHA512 = sha512.FromHexString(),
                 SpamSum = Encoding.ASCII.GetBytes(spamSum),
+                BLAKE3 = blake3.FromHexString(),
                 Size = size,
             };
 
@@ -251,6 +253,7 @@ namespace SabreTools.DatTools.Test
             Assert.Equal(sha384, actual.SHA384);
             Assert.Equal(sha512, actual.SHA512);
             Assert.Equal(spamSum, actual.SpamSum);
+            Assert.Equal(blake3, actual.BLAKE3);
             Assert.Equal(size, actual.Size);
             Assert.Equal((DupeType)0x00, actual.DupeType);
         }
@@ -361,6 +364,7 @@ namespace SabreTools.DatTools.Test
             string sha384 = TextHelper.NormalizeSHA384("1234abcd")!;
             string sha512 = TextHelper.NormalizeSHA512("1234abcd")!;
             string spamSum = "1234abcd";
+            string blake3 = "1234abcd";
             long size = 12345;
 
             Rom rom = new Rom
@@ -378,6 +382,7 @@ namespace SabreTools.DatTools.Test
                 SHA384 = sha384,
                 SHA512 = sha512,
                 SpamSum = spamSum,
+                BLAKE3 = blake3,
                 Size = size,
             };
 
@@ -397,6 +402,7 @@ namespace SabreTools.DatTools.Test
             Assert.Equal(sha512, actual.SHA512.ToHexString());
             string actualSpamSum = Encoding.ASCII.GetString(actual.SpamSum!);
             Assert.Equal(spamSum, actualSpamSum);
+            Assert.Equal(blake3, actual.BLAKE3.ToHexString());
             Assert.Equal(size, actual.Size);
         }
 

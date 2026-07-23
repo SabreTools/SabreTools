@@ -1350,6 +1350,12 @@ namespace SabreTools.DatTools
             if (fieldNames.Contains("btih") || fieldNames.Contains("bittorrentmagnethash"))
                 obj.BitTorrentMagnetHash = repObj.BitTorrentMagnetHash;
 
+            if (fieldNames.Contains("blake3"))
+            {
+                if (!string.IsNullOrEmpty(repObj.BLAKE3))
+                    obj.BLAKE3 = repObj.BLAKE3;
+            }
+
             if (fieldNames.Contains("cloth_cover_detection_module_version") || fieldNames.Contains("clothcoverdetectionmoduleversion"))
                 obj.ClothCoverDetectionModuleVersion = repObj.ClothCoverDetectionModuleVersion;
 

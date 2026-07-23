@@ -73,6 +73,7 @@ namespace SabreTools.DatTools
                 DatFormat.MissFile => new Missfile(baseDat),
                 DatFormat.OfflineList => new OfflineList(baseDat),
                 DatFormat.OpenMSX => new OpenMSX(baseDat),
+                DatFormat.RedumpBLAKE3 => new Blake3File(baseDat),
                 DatFormat.RedumpMD2 => new Md2File(baseDat),
                 DatFormat.RedumpMD4 => new Md4File(baseDat),
                 DatFormat.RedumpMD5 => new Md5File(baseDat),
@@ -127,6 +128,7 @@ namespace SabreTools.DatTools
             // Check against the list of known DAT extensions
             return ext switch
             {
+                "blake3" => true,
                 "csv" => true,
                 "dat" => true,
                 "json" => true,
@@ -435,6 +437,8 @@ namespace SabreTools.DatTools
             // Some formats should only require the extension to know
             switch (ext)
             {
+                case "blake3":
+                    return DatFormat.RedumpBLAKE3;
                 case "csv":
                     return DatFormat.CSV;
                 case "json":

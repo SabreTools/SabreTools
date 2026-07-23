@@ -25,6 +25,9 @@ namespace SabreTools.DatTools
         /// </summary>
         private static readonly Dictionary<DatFormat, string[]> ExtensionMappings = new()
         {
+            // .blake3
+            { DatFormat.RedumpBLAKE3, new string[] { ".blake3" } },
+
             // .csv
             { DatFormat.CSV, new string[] { ".csv" } },
 

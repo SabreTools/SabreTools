@@ -120,6 +120,7 @@ namespace SabreTools.DatTools.Test
             datItem.SHA384 = HashType.SHA384.ZeroString;
             datItem.SHA512 = HashType.SHA512.ZeroString;
             datItem.SpamSum = HashType.SpamSum.ZeroString;
+            datItem.BLAKE3 = HashType.BLAKE3.ZeroString;
 
             var repDatItem = new Rom();
             repDatItem.SetName("bar");
@@ -136,6 +137,7 @@ namespace SabreTools.DatTools.Test
             datItem.SHA384 = "deadbeef";
             datItem.SHA512 = "deadbeef";
             datItem.SpamSum = "deadbeef";
+            datItem.BLAKE3 = "deadbeef";
 
             var fields = new Dictionary<string, List<string>>
             {
@@ -174,6 +176,7 @@ namespace SabreTools.DatTools.Test
             Assert.Equal("deadbeef", datItem.SHA384);
             Assert.Equal("deadbeef", datItem.SHA512);
             Assert.Equal("deadbeef", datItem.SpamSum);
+            Assert.Equal("deadbeef", datItem.BLAKE3);
         }
 
         [Fact]

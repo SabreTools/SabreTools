@@ -2236,6 +2236,10 @@ namespace SabreTools.DatTools
                         obj.BitTorrentMagnetHash = null;
                         removed = true;
                         break;
+                    case "blake3":
+                        obj.BLAKE3 = null;
+                        removed = true;
+                        break;
                     case "cloth_cover_detection_module_version":
                     case "clothcoverdetectionmoduleversion":
                         obj.ClothCoverDetectionModuleVersion = null;

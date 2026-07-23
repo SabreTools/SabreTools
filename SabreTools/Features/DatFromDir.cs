@@ -35,6 +35,9 @@ namespace SabreTools.Features
             Add(IncludeSha384Flag);
             Add(IncludeSha512Flag);
             Add(IncludeSpamSumFlag);
+#if NET7_0_OR_GREATER
+            Add(IncludeBlake3Flag);
+#endif
 
             Add(NoAutomaticDateFlag);
             Add(AaruFormatsAsFilesFlag);

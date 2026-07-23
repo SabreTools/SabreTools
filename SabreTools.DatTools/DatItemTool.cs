@@ -150,6 +150,7 @@ namespace SabreTools.DatTools
             rom.Size = baseFile.Size;
             if (baseFile.SpamSum is not null)
                 rom.SpamSum = Encoding.UTF8.GetString(baseFile.SpamSum);
+            rom.BLAKE3 = baseFile.BLAKE3.ToHexString();
 
             rom.Status = null;
             rom.DupeType = 0x00;
@@ -259,6 +260,7 @@ namespace SabreTools.DatTools
                 SHA384 = rom.SHA384.FromHexString(),
                 SHA512 = rom.SHA512.FromHexString(),
                 SpamSum = spamSum is not null ? Encoding.UTF8.GetBytes(spamSum) : null,
+                BLAKE3 = rom.BLAKE3.FromHexString(),
             };
         }
 

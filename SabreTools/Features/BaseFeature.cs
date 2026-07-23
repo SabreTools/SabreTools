@@ -275,6 +275,15 @@ namespace SabreTools.Features
             "Check files by hash only",
             detailed: "This sets a mode where files are not checked based on name but rather hash alone. This allows verification of (possibly) incorrectly named folders and sets to be verified without worrying about the proper set structure to be there.");
 
+#if NET7_0_OR_GREATER
+        internal const string IncludeBlake3Value = "include-blake3";
+        internal static FlagInput IncludeBlake3Flag => new(
+            IncludeBlake3Value,
+            ["-blake3", "--include-blake3"],
+            "Include BLAKE3 in output",
+            detailed: "This enables BLAKE3 calculation for each of the files. Adding this flag overrides the default hashing behavior of including CRC32, MD5, and SHA-1 hashes.");
+#endif
+
         internal const string IncludeCrcValue = "include-crc";
         internal static FlagInput IncludeCrcFlag => new(
             IncludeCrcValue,
@@ -714,6 +723,7 @@ Possible values are:
     all                         - All available DAT types
     ado, archive                - Archive.org file list
     am, attractmode             - AttractMode XML
+    blake3                      - BLAKE3
     cmp, clrmamepro             - ClrMamePro
     csv                         - Standardized Comma-Separated Value
     dc, doscenter               - DOSCenter
@@ -1230,6 +1240,10 @@ Some special strings that can be used:
                 includeInScan.Add(HashType.SHA512);
             if (GetBoolean(IncludeSpamSumValue))
                 includeInScan.Add(HashType.SpamSum);
+#if NET7_0_OR_GREATER
+            if (GetBoolean(IncludeBlake3Value))
+                includeInScan.Add(HashType.BLAKE3);
+#endif
 
             // Fallback to "Standard" if no flags are set
             if (includeInScan.Count == 0)
@@ -1662,6 +1676,7 @@ Some special strings that can be used:
             {
                 "ado" or "archive" => DatFormat.ArchiveDotOrg,
                 "am" or "attractmode" => DatFormat.AttractMode,
+                "blake3" => DatFormat.RedumpBLAKE3,
                 "cmp" or "clrmamepro" => DatFormat.ClrMamePro,
                 "csv" => DatFormat.CSV,
                 "dc" or "doscenter" => DatFormat.DOSCenter,

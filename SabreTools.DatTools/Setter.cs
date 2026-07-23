@@ -2171,6 +2171,10 @@ namespace SabreTools.DatTools
                         obj.BitTorrentMagnetHash = kvp.Value;
                         set = true;
                         break;
+                    case "blake3":
+                        obj.BLAKE3 = kvp.Value;
+                        set = true;
+                        break;
                     case "cloth_cover_detection_module_version":
                     case "clothcoverdetectionmoduleversion":
                         obj.ClothCoverDetectionModuleVersion = kvp.Value;

@@ -49,6 +49,7 @@ namespace SabreTools.DatTools.Test
         [InlineData(DatFormat.RedumpSHA384, DatFormat.RedumpSHA384)]
         [InlineData(DatFormat.RedumpSHA512, DatFormat.RedumpSHA512)]
         [InlineData(DatFormat.RedumpSpamSum, DatFormat.RedumpSpamSum)]
+        [InlineData(DatFormat.RedumpBLAKE3, DatFormat.RedumpBLAKE3)]
         public void CreateDatFile_Format_NoBaseDat(DatFormat datFormat, DatFormat expected)
         {
             var datFile = Parser.CreateDatFile(datFormat);
@@ -89,6 +90,7 @@ namespace SabreTools.DatTools.Test
         [InlineData(DatFormat.RedumpSHA384, DatFormat.RedumpSHA384)]
         [InlineData(DatFormat.RedumpSHA512, DatFormat.RedumpSHA512)]
         [InlineData(DatFormat.RedumpSpamSum, DatFormat.RedumpSpamSum)]
+        [InlineData(DatFormat.RedumpBLAKE3, DatFormat.RedumpBLAKE3)]
         public void CreateDatFile_Format_BaseDat(DatFormat datFormat, DatFormat expected)
         {
             var baseDat = Parser.CreateDatFile();
@@ -133,6 +135,7 @@ namespace SabreTools.DatTools.Test
         [InlineData(DatFormat.RedumpSHA384, DatFormat.RedumpSHA384)]
         [InlineData(DatFormat.RedumpSHA512, DatFormat.RedumpSHA512)]
         [InlineData(DatFormat.RedumpSpamSum, DatFormat.RedumpSpamSum)]
+        [InlineData(DatFormat.RedumpBLAKE3, DatFormat.RedumpBLAKE3)]
         public void CreateDatFile_Format_FromHeader(DatFormat datFormat, DatFormat expected)
         {
             DatHeader datHeader = new DatHeader
@@ -208,6 +211,7 @@ namespace SabreTools.DatTools.Test
         [InlineData("test-sha384.sha384", DatFormat.RedumpSHA384, 1)]
         [InlineData("test-sha512.sha512", DatFormat.RedumpSHA512, 1)]
         [InlineData("test-spamsum.spamsum", DatFormat.RedumpSpamSum, 1)]
+        [InlineData("test-blake3.blake3", DatFormat.RedumpBLAKE3, 1)]
         public void ParseTest(string? filename, DatFormat? datFormat, int totalCount)
         {
             // For all filenames, add the local path for test data
@@ -254,6 +258,7 @@ namespace SabreTools.DatTools.Test
         [InlineData("test-sha384.sha384", DatFormat.RedumpSHA384, 1)]
         [InlineData("test-sha512.sha512", DatFormat.RedumpSHA512, 1)]
         [InlineData("test-spamsum.spamsum", DatFormat.RedumpSpamSum, 1)]
+        [InlineData("test-blake3.blake3", DatFormat.RedumpBLAKE3, 1)]
         public void ParseStatisticsTest(string? filename, DatFormat? datFormat, int totalCount)
         {
             // For all filenames, add the local path for test data

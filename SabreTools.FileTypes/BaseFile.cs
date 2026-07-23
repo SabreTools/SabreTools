@@ -79,6 +79,11 @@
         /// </summary>
         public byte[]? SpamSum { get; set; }
 
+        /// <summary>
+        /// BLAKE3 hash of the file
+        /// </summary>
+        public byte[]? BLAKE3 { get; set; }
+
         #endregion
 
         /// <summary>
