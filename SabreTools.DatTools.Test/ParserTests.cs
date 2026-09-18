@@ -187,7 +187,7 @@ namespace SabreTools.DatTools.Test
         [InlineData("test-listxml.xml", DatFormat.Listxml, 19)]
         [InlineData("test-offlinelist.xml", DatFormat.OfflineList, 1)]
         //[InlineData(null, DatFormat.SabreXML, 0)] // TODO: Create good-enough test file for this
-        [InlineData("test-openmsx.xml", DatFormat.OpenMSX, 3)]
+        [InlineData("test-openmsx.xml", DatFormat.OpenMSX, 5)]
         [InlineData("test-archivedotorg.xml", DatFormat.ArchiveDotOrg, 1)]
         [InlineData("test-cmp.dat", DatFormat.ClrMamePro, 6)]
         [InlineData("test-romcenter.dat", DatFormat.RomCenter, 1)]
@@ -234,7 +234,7 @@ namespace SabreTools.DatTools.Test
         [InlineData("test-listxml.xml", DatFormat.Listxml, 19)]
         [InlineData("test-offlinelist.xml", DatFormat.OfflineList, 1)]
         //[InlineData(null, DatFormat.SabreXML, 0)] // TODO: Create good-enough test file for this
-        [InlineData("test-openmsx.xml", DatFormat.OpenMSX, 3)]
+        [InlineData("test-openmsx.xml", DatFormat.OpenMSX, 5)]
         [InlineData("test-archivedotorg.xml", DatFormat.ArchiveDotOrg, 1)]
         [InlineData("test-cmp.dat", DatFormat.ClrMamePro, 6)]
         [InlineData("test-romcenter.dat", DatFormat.RomCenter, 1)]
