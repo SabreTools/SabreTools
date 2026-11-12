@@ -66,8 +66,6 @@ if (!$NO_BUILD.IsPresent) {
     dotnet restore
 
     # Create Nuget Packages
-    dotnet pack SabreTools.DatFiles\SabreTools.DatFiles.csproj --output $BUILD_FOLDER
-    dotnet pack SabreTools.DatItems\SabreTools.DatItems.csproj --output $BUILD_FOLDER
     dotnet pack SabreTools.DatTools\SabreTools.DatTools.csproj --output $BUILD_FOLDER
     dotnet pack SabreTools.FileTypes\SabreTools.FileTypes.csproj --output $BUILD_FOLDER
 
