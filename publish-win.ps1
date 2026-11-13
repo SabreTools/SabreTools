@@ -94,26 +94,17 @@ if (!$NO_BUILD.IsPresent) {
 
             # Only .NET 5 and above can publish to a single file
             if ($SINGLE_FILE_CAPABLE -contains $FRAMEWORK) {
-                # Only include Debug if set
-                if ($INCLUDE_DEBUG.IsPresent) {
-                    dotnet publish SabreTools\SabreTools.csproj -f $FRAMEWORK -r $RUNTIME -c Debug --self-contained true --version-suffix $COMMIT -p:PublishSingleFile=true
-                }
-
-                # Only include Release if set
-                if ($INCLUDE_RELEASE.IsPresent) {
-                    dotnet publish SabreTools\SabreTools.csproj -f $FRAMEWORK -r $RUNTIME -c Release --self-contained true --version-suffix $COMMIT -p:PublishSingleFile=true -p:DebugType=None -p:DebugSymbols=false
-                }
+                $EXTRA_OPTS = "-p:PublishSingleFile=true"
             }
-            else {
-                # Only include Debug if set
-                if ($INCLUDE_DEBUG.IsPresent) {
-                    dotnet publish SabreTools\SabreTools.csproj -f $FRAMEWORK -r $RUNTIME -c Debug --self-contained true --version-suffix $COMMIT
-                }
 
-                # Only include Release if set
-                if ($INCLUDE_RELEASE.IsPresent) {
-                    dotnet publish SabreTools\SabreTools.csproj -f $FRAMEWORK -r $RUNTIME -c Release --self-contained true --version-suffix $COMMIT -p:DebugType=None -p:DebugSymbols=false
-                }
+            # Only include Debug if set
+            if ($INCLUDE_DEBUG.IsPresent) {
+                dotnet publish SabreTools\SabreTools.csproj -f $FRAMEWORK -r $RUNTIME -c Debug --self-contained true --version-suffix $COMMIT $EXTRA_OPTS
+            }
+
+            # Only include Release if set
+            if ($INCLUDE_RELEASE.IsPresent) {
+                dotnet publish SabreTools\SabreTools.csproj -f $FRAMEWORK -r $RUNTIME -c Release --self-contained true --version-suffix $COMMIT -p:DebugType=None -p:DebugSymbols=false $EXTRA_OPTS
             }
         }
     }
@@ -121,6 +112,11 @@ if (!$NO_BUILD.IsPresent) {
 
 # Only create archives if requested
 if (!$NO_ARCHIVE.IsPresent) {
+    # Only include a version if one exists
+    if ($BUILD_VERSION -ne $null) {
+        $VERSION_STRING = "_$BUILD_VERSION"
+    }
+
     # Create SabreTools archives
     foreach ($FRAMEWORK in $FRAMEWORKS) {
         foreach ($RUNTIME in $RUNTIMES) {
@@ -142,23 +138,13 @@ if (!$NO_ARCHIVE.IsPresent) {
             # Only include Debug if set
             if ($INCLUDE_DEBUG.IsPresent) {
                 Set-Location -Path $BUILD_FOLDER\SabreTools\bin\Debug\${FRAMEWORK}\${RUNTIME}\publish\
-                if ($BUILD_VERSION -ne $null) {
-                    7z a -tzip $BUILD_FOLDER\SabreTools_${BUILD_VERSION}_${FRAMEWORK}_${RUNTIME}_debug.zip *
-                }
-                else {
-                    7z a -tzip $BUILD_FOLDER\SabreTools_${FRAMEWORK}_${RUNTIME}_debug.zip *
-                }
+                7z a -tzip $BUILD_FOLDER\SabreTools${VERSION_STRING}_${FRAMEWORK}_${RUNTIME}_debug.zip *
             }
 
             # Only include Release if set
             if ($INCLUDE_RELEASE.IsPresent) {
                 Set-Location -Path $BUILD_FOLDER\SabreTools\bin\Release\${FRAMEWORK}\${RUNTIME}\publish\
-                if ($BUILD_VERSION -ne $null) {
-                    7z a -tzip $BUILD_FOLDER\SabreTools_${BUILD_VERSION}_${FRAMEWORK}_${RUNTIME}_release.zip *
-                }
-                else {
-                    7z a -tzip $BUILD_FOLDER\SabreTools_${FRAMEWORK}_${RUNTIME}_release.zip *
-                }
+                7z a -tzip $BUILD_FOLDER\SabreTools${VERSION_STRING}_${FRAMEWORK}_${RUNTIME}_release.zip *
             }
         }
     }

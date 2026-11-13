@@ -15,7 +15,7 @@ INCLUDE_RELEASE=false
 NO_BUILD=false
 NO_ARCHIVE=false
 HAS_VERSION=false
-VERSION="NONE"
+BUILD_VERSION="NONE"
 while getopts "udrbav:" OPTION; do
     case $OPTION in
     u)
@@ -35,7 +35,7 @@ while getopts "udrbav:" OPTION; do
         ;;
     v)
         HAS_VERSION=true
-        VERSION=${OPTARG}
+        BUILD_VERSION=${OPTARG}
         ;;
     *)
         echo "Invalid option provided"
@@ -57,7 +57,7 @@ echo "  Include debug builds (-d)             $INCLUDE_DEBUG"
 echo "  Include release builds (-r)           $INCLUDE_RELEASE"
 echo "  No build (-b)                         $NO_BUILD"
 echo "  No archive (-a)                       $NO_ARCHIVE"
-echo "  Version (-v)                          $HAS_VERSION ($VERSION)"
+echo "  Version (-v)                          $HAS_VERSION ($BUILD_VERSION)"
 echo " "
 
 # Create the build matrix arrays
@@ -109,25 +109,17 @@ if [ $NO_BUILD = false ]; then
 
             # Only .NET 5 and above can publish to a single file
             if [[ $(echo ${SINGLE_FILE_CAPABLE[@]} | fgrep -w $FRAMEWORK) ]]; then
-                # Only include Debug if set
-                if [ $INCLUDE_DEBUG = true ]; then
-                    dotnet publish SabreTools/SabreTools.csproj -f $FRAMEWORK -r $RUNTIME -c Debug --self-contained true --version-suffix $COMMIT -p:PublishSingleFile=true
-                fi
+                EXTRA_OPTS="-p:PublishSingleFile=true"
+            fi
 
-                # Only include Release if set
-                if [ $INCLUDE_RELEASE = true ]; then
-                    dotnet publish SabreTools/SabreTools.csproj -f $FRAMEWORK -r $RUNTIME -c Release --self-contained true --version-suffix $COMMIT -p:PublishSingleFile=true -p:DebugType=None -p:DebugSymbols=false
-                fi
-            else
-                # Only include Debug if set
-                if [ $INCLUDE_DEBUG = true ]; then
-                    dotnet publish SabreTools/SabreTools.csproj -f $FRAMEWORK -r $RUNTIME -c Debug --self-contained true --version-suffix $COMMIT
-                fi
+            # Only include Debug if set
+            if [ $INCLUDE_DEBUG = true ]; then
+                dotnet publish SabreTools/SabreTools.csproj -f $FRAMEWORK -r $RUNTIME -c Debug --self-contained true --version-suffix $COMMIT $EXTRA_OPTS
+            fi
 
-                # Only include Release if set
-                if [ $INCLUDE_RELEASE = true ]; then
-                    dotnet publish SabreTools/SabreTools.csproj -f $FRAMEWORK -r $RUNTIME -c Release --self-contained true --version-suffix $COMMIT -p:DebugType=None -p:DebugSymbols=false
-                fi
+            # Only include Release if set
+            if [ $INCLUDE_RELEASE = true ]; then
+                dotnet publish SabreTools/SabreTools.csproj -f $FRAMEWORK -r $RUNTIME -c Release --self-contained true --version-suffix $COMMIT -p:DebugType=None -p:DebugSymbols=false $EXTRA_OPTS
             fi
         done
     done
@@ -135,6 +127,11 @@ fi
 
 # Only create archives if requested
 if [ $NO_ARCHIVE = false ]; then
+    # Only include a version if one exists
+    if [ $HAS_VERSION = true ]; then
+        VERSION_STRING="_$BUILD_VERSION"
+    fi
+
     # Create SabreTools archives
     for FRAMEWORK in "${FRAMEWORKS[@]}"; do
         for RUNTIME in "${RUNTIMES[@]}"; do
@@ -160,21 +157,13 @@ if [ $NO_ARCHIVE = false ]; then
             # Only include Debug if set
             if [ $INCLUDE_DEBUG = true ]; then
                 cd $BUILD_FOLDER/SabreTools/bin/Debug/${FRAMEWORK}/${RUNTIME}/publish/
-                if [ $HAS_VERSION = true ]; then
-                    zip -r $BUILD_FOLDER/SabreTools_${VERSION}_${FRAMEWORK}_${RUNTIME}_debug.zip .
-                else
-                    zip -r $BUILD_FOLDER/SabreTools_${FRAMEWORK}_${RUNTIME}_debug.zip .
-                fi
+                zip -r $BUILD_FOLDER/SabreTools${VERSION_STRING}_${FRAMEWORK}_${RUNTIME}_debug.zip .
             fi
 
             # Only include Release if set
             if [ $INCLUDE_RELEASE = true ]; then
                 cd $BUILD_FOLDER/SabreTools/bin/Release/${FRAMEWORK}/${RUNTIME}/publish/
-                if [ $HAS_VERSION = true ]; then
-                    zip -r $BUILD_FOLDER/SabreTools_${VERSION}_${FRAMEWORK}_${RUNTIME}_release.zip .
-                else
-                    zip -r $BUILD_FOLDER/SabreTools_${FRAMEWORK}_${RUNTIME}_release.zip .
-                fi
+                zip -r $BUILD_FOLDER/SabreTools${VERSION_STRING}_${FRAMEWORK}_${RUNTIME}_release.zip .
             fi
         done
     done
