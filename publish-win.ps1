@@ -17,6 +17,10 @@ param(
     [switch]$INCLUDE_DEBUG,
 
     [Parameter(Mandatory = $false)]
+    [Alias("IncludeRelease")]
+    [switch]$INCLUDE_RELEASE,
+
+    [Parameter(Mandatory = $false)]
     [Alias("NoBuild")]
     [switch]$NO_BUILD,
 
@@ -37,11 +41,12 @@ $COMMIT = git log --pretty=format:"%H" -1
 
 # Output the selected options
 Write-Host "Selected Options:"
-Write-Host "  Use all frameworks (-UseAll)          $USE_ALL"
-Write-Host "  Include debug builds (-IncludeDebug)  $INCLUDE_DEBUG"
-Write-Host "  No build (-NoBuild)                   $NO_BUILD"
-Write-Host "  No archive (-NoArchive)               $NO_ARCHIVE"
-Write-Host "  Version (-BuildVersion)               $BUILD_VERSION"
+Write-Host "  Use all frameworks (-UseAll)              $USE_ALL"
+Write-Host "  Include debug builds (-IncludeDebug)      $INCLUDE_DEBUG"
+Write-Host "  Include release builds (-IncludeRelease)  $INCLUDE_RELEASE"
+Write-Host "  No build (-NoBuild)                       $NO_BUILD"
+Write-Host "  No archive (-NoArchive)                   $NO_ARCHIVE"
+Write-Host "  Version (-BuildVersion)                   $BUILD_VERSION"
 Write-Host " "
 
 # Create the build matrix arrays
@@ -93,14 +98,22 @@ if (!$NO_BUILD.IsPresent) {
                 if ($INCLUDE_DEBUG.IsPresent) {
                     dotnet publish SabreTools\SabreTools.csproj -f $FRAMEWORK -r $RUNTIME -c Debug --self-contained true --version-suffix $COMMIT -p:PublishSingleFile=true
                 }
-                dotnet publish SabreTools\SabreTools.csproj -f $FRAMEWORK -r $RUNTIME -c Release --self-contained true --version-suffix $COMMIT -p:PublishSingleFile=true -p:DebugType=None -p:DebugSymbols=false
+
+                # Only include Release if set
+                if ($INCLUDE_RELEASE.IsPresent) {
+                    dotnet publish SabreTools\SabreTools.csproj -f $FRAMEWORK -r $RUNTIME -c Release --self-contained true --version-suffix $COMMIT -p:PublishSingleFile=true -p:DebugType=None -p:DebugSymbols=false
+                }
             }
             else {
                 # Only include Debug if set
                 if ($INCLUDE_DEBUG.IsPresent) {
                     dotnet publish SabreTools\SabreTools.csproj -f $FRAMEWORK -r $RUNTIME -c Debug --self-contained true --version-suffix $COMMIT
                 }
-                dotnet publish SabreTools\SabreTools.csproj -f $FRAMEWORK -r $RUNTIME -c Release --self-contained true --version-suffix $COMMIT -p:DebugType=None -p:DebugSymbols=false
+
+                # Only include Release if set
+                if ($INCLUDE_RELEASE.IsPresent) {
+                    dotnet publish SabreTools\SabreTools.csproj -f $FRAMEWORK -r $RUNTIME -c Release --self-contained true --version-suffix $COMMIT -p:DebugType=None -p:DebugSymbols=false
+                }
             }
         }
     }
@@ -136,13 +149,16 @@ if (!$NO_ARCHIVE.IsPresent) {
                     7z a -tzip $BUILD_FOLDER\SabreTools_${FRAMEWORK}_${RUNTIME}_debug.zip *
                 }
             }
-        
-            Set-Location -Path $BUILD_FOLDER\SabreTools\bin\Release\${FRAMEWORK}\${RUNTIME}\publish\
-            if ($BUILD_VERSION -ne $null) {
-                7z a -tzip $BUILD_FOLDER\SabreTools_${BUILD_VERSION}_${FRAMEWORK}_${RUNTIME}_release.zip *
-            }
-            else {
-                7z a -tzip $BUILD_FOLDER\SabreTools_${FRAMEWORK}_${RUNTIME}_release.zip *
+
+            # Only include Release if set
+            if ($INCLUDE_RELEASE.IsPresent) {
+                Set-Location -Path $BUILD_FOLDER\SabreTools\bin\Release\${FRAMEWORK}\${RUNTIME}\publish\
+                if ($BUILD_VERSION -ne $null) {
+                    7z a -tzip $BUILD_FOLDER\SabreTools_${BUILD_VERSION}_${FRAMEWORK}_${RUNTIME}_release.zip *
+                }
+                else {
+                    7z a -tzip $BUILD_FOLDER\SabreTools_${FRAMEWORK}_${RUNTIME}_release.zip *
+                }
             }
         }
     }
