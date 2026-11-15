@@ -22,6 +22,12 @@
         <RepositoryType>git</RepositoryType>
     </PropertyGroup>
 
+    <!-- Publishing Modifications -->
+    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+        <DebugSymbols>false</DebugSymbols>
+        <DebugType>None</DebugType>
+    </PropertyGroup>
+
     <ItemGroup>
         <ProjectReference Include="..\SabreTools.Serialization\SabreTools.Serialization\SabreTools.Serialization.csproj" />
     </ItemGroup>

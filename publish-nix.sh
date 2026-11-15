@@ -107,19 +107,14 @@ if [ $NO_BUILD = false ]; then
                 fi
             fi
 
-            # Only .NET 5 and above can publish to a single file
-            if [[ $(echo ${SINGLE_FILE_CAPABLE[@]} | fgrep -w $FRAMEWORK) ]]; then
-                EXTRA_OPTS="-p:PublishSingleFile=true"
-            fi
-
             # Only include Debug if set
             if [ $INCLUDE_DEBUG = true ]; then
-                dotnet publish SabreTools/SabreTools.csproj -f $FRAMEWORK -r $RUNTIME -c Debug --self-contained true --version-suffix $COMMIT $EXTRA_OPTS
+                dotnet publish SabreTools/SabreTools.csproj -f $FRAMEWORK -r $RUNTIME -c Debug ---version-suffix $COMMIT
             fi
 
             # Only include Release if set
             if [ $INCLUDE_RELEASE = true ]; then
-                dotnet publish SabreTools/SabreTools.csproj -f $FRAMEWORK -r $RUNTIME -c Release --self-contained true --version-suffix $COMMIT -p:DebugType=None -p:DebugSymbols=false $EXTRA_OPTS
+                dotnet publish SabreTools/SabreTools.csproj -f $FRAMEWORK -r $RUNTIME -c Release ---version-suffix $COMMIT
             fi
         done
     done
